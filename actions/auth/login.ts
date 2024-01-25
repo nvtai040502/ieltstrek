@@ -5,6 +5,9 @@ import { LoginSchema } from "@/lib/validations/auth";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
+import { getUserByEmail } from "../database/user";
+import { generateVerificationToken } from "../database/verification-token";
+import { sendVerificationEmail } from "./send-email";
 
 export const loginCredentials = async (
   values: z.infer<typeof LoginSchema>,
@@ -15,6 +18,24 @@ export const loginCredentials = async (
   }
   
   const { email, password } = validatedFields.data
+  const existingUser = await getUserByEmail(email);
+
+  if (!existingUser || !existingUser.email || !existingUser.password) {
+    return { error: "Email does not exist!" }
+  }
+
+  if (!existingUser.emailVerified) {
+    const verificationToken = await generateVerificationToken(
+      existingUser.email,
+    );
+
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
+
+    return { success: "Confirmation email sent!" };
+  }
   try {
     await signIn("credentials", {
       email,
@@ -35,7 +56,7 @@ export const loginCredentials = async (
   }
 }
 
-export const loginProviders = async (provider: "google" | "github") => {
+export const loginOAuth = async (provider: "google" | "github") => {
   await signIn(provider, {
     callbackUrl: DEFAULT_LOGIN_REDIRECT,
   });

@@ -6,7 +6,7 @@ import { FaGithub } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { loginProviders } from "@/actions/auth/login";
+import { loginOAuth } from "@/actions/auth/login";
 
 export const Social = () => {
   
@@ -16,7 +16,7 @@ export const Social = () => {
         size="lg"
         className="w-full"
         variant="outline"
-        onClick={() => loginProviders("google")}
+        onClick={() => loginOAuth("google")}
       >
         <FcGoogle className="h-5 w-5" />
       </Button>
@@ -24,7 +24,7 @@ export const Social = () => {
         size="lg"
         className="w-full"
         variant="outline"
-        onClick={() => loginProviders("github")}
+        onClick={() => loginOAuth("github")}
       >
         <FaGithub className="h-5 w-5" />
       </Button>
