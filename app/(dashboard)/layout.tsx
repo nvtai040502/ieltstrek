@@ -1,4 +1,3 @@
-import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -9,7 +8,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen w-full">
       <div className="sticky top-0 z-20 border-b bg-white">
-        <MaxWidthWrapper>
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
               <Link href="/">
@@ -28,7 +26,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Button>
             </div>
           </div>
-        </MaxWidthWrapper>
       </div>
       {children}
     </div>

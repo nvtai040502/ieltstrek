@@ -6,7 +6,7 @@ import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 
-export const login = async (
+export const loginCredentials = async (
   values: z.infer<typeof LoginSchema>,
 ) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -33,4 +33,10 @@ export const login = async (
 
       throw e
   }
+}
+
+export const loginProviders = async (provider: "google" | "github") => {
+  await signIn(provider, {
+    callbackUrl: DEFAULT_LOGIN_REDIRECT,
+  });
 }
