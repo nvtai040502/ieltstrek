@@ -5,6 +5,7 @@ import { LoginSchema } from "@/lib/validations/auth";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
+import bcrypt from "bcryptjs"
 import { getUserByEmail } from "../database/user";
 import { generateVerificationToken } from "../database/verification-token";
 import { sendTwoFactorTokenEmail, sendVerificationEmail } from "./send-email";
@@ -25,6 +26,11 @@ export const loginCredentials = async (
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email does not exist!" }
+  }
+  const passwordMatch = await bcrypt.compare(password, existingUser.password);
+
+  if (!passwordMatch) {
+    return { error: "Invalid password!" };
   }
 
   if (!existingUser.emailVerified) {
