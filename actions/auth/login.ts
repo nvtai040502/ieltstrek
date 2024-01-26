@@ -15,6 +15,7 @@ import { getTwoFactorConfirmationByUserId } from "../database/two-factor-confirm
 
 export const loginCredentials = async (
   values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null,
 ) => {
   const validatedFields = LoginSchema.safeParse(values);
   if (!validatedFields.success) {
@@ -100,7 +101,7 @@ export const loginCredentials = async (
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     })
   } catch(e) {
       if (e instanceof AuthError) {
@@ -116,8 +117,11 @@ export const loginCredentials = async (
   }
 }
 
-export const loginOAuth = async (provider: "google" | "github") => {
+export const loginOAuth = async (
+  provider: "google" | "github",
+  callbackUrl?: string | null,  
+) => {
   await signIn(provider, {
-    callbackUrl: DEFAULT_LOGIN_REDIRECT,
+    callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
   });
 }
