@@ -1,4 +1,5 @@
 import { CreateBook } from "@/components/cambridge-book/create-book"
+import { CreateTest } from "@/components/cambridge-book/create-test"
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header"
 import { db } from "@/lib/db"
 import axios from "axios"
@@ -14,11 +15,7 @@ const RootPage = async () => {
         </PageHeaderDescription>
       </PageHeader>
       <CreateBook/>
-      {books.map((book) => (
-        <div key={book.id}>
-          {book.version}
-        </div>
-      ))}
+      <CreateTest cambridgeBooks={books} />
     </div>
   )
 }
