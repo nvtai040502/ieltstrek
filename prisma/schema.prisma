@@ -8,10 +8,87 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+model CambridgeBook {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  version Int
+  imageCover String?
+  tests Test[]
+}
+
+model Test {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  number Int
+  cambridgeBookId String
+  cambridgeBook CambridgeBook @relation(fields: [cambridgeBookId], references: [id], onDelete: Cascade)
+  sessions Session[]
+}
+
+enum SessionType {
+  READING
+  LISTENING
+}
+model Session {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  type SessionType
+
+  testId String
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  parts Part[]
+}
+
+model Part {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  name String
+  sessionId String
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questions Question[]
+  passage Passage?
+}
+
+model Question {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  content String
+  partId String
+  answer String
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+}
+
+model Passage {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  content String
+  partId String @unique // Ensures that each Part can have only one Passage
+  part Part @relation(fields: [partId], references: [id])
+}
+
+
+
+
+
+
+
 enum UserRole {
   ADMIN
   USER
 }
+
+
+
 
 model User {
   id            String    @id @default(cuid())
