@@ -25,7 +25,6 @@ model Test {
   number Int
   sessonType SessionType
 
-
   cambridgeBookId String
   cambridgeBook CambridgeBook @relation(fields: [cambridgeBookId], references: [id], onDelete: Cascade)
   parts Part[]
@@ -55,11 +54,21 @@ model Question {
   updatedAt DateTime @default(now()) @updatedAt
 
   content String
-  partId String
   answer String
+  
+  partId String
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  choices Choice[]
 }
-
+model Choice {
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  content      String
+  isCorrect    Boolean
+  questionId   String
+  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
 model Passage {
   id String @id @default(cuid())
   createdAt DateTime @default(now())

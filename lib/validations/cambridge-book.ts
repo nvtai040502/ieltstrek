@@ -9,3 +9,9 @@ export const TestSchema = z.object({
   sessionType: z.string(),
   cambridgeBookId: z.string()
 })
+
+
+export const PartSchema = z.object({
+  name: z.string(),
+  testId: z.string()
+})

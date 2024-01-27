@@ -22,7 +22,6 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="en">
         <body>
-          <Toaster closeButton />
           <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -30,6 +29,7 @@ export default async function RootLayout({
               disableTransitionOnChange
             >
               {children}
+              <Toaster closeButton />
             </ThemeProvider>
         </body>
       </html>
