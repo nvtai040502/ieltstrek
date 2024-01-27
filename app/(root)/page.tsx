@@ -1,9 +1,9 @@
+import { CreateBook } from "@/components/cambridge-book/create-book"
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header"
+import { db } from "@/lib/db"
 import axios from "axios"
 const RootPage = async () => {
-  const book = await axios.get("https://openlibrary.org/api/books?bibkeys=ISBN%3A9781108409636&format=json&jscmd=viewapi")
-  console.log("🚀 ~ RootPage ~ book:", book.data)
-  
+  const books = await db.cambridgeBook.findMany()
   return (
     <div className="container relative">
       <PageHeader>
@@ -13,7 +13,12 @@ const RootPage = async () => {
           apps. Accessible. Customizable. Open Source.
         </PageHeaderDescription>
       </PageHeader>
-      
+      <CreateBook/>
+      {books.map((book) => (
+        <div key={book.id}>
+          {book.version}
+        </div>
+      ))}
     </div>
   )
 }
