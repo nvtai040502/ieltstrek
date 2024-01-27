@@ -19,21 +19,21 @@ import { MobileNav } from "./mobile-nav"
 import { Icons } from "../ui/icons"
 import { dashboardConfig } from "@/config/routes/dashboard-route"
 import { ExtendedUser } from "@/auth"
+import { LogoutButton } from "../auth/logout-button"
+import { LoginButton } from "../auth/login-button"
 
 interface SiteHeaderProps {
   user: ExtendedUser | undefined
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
-  
-
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center">
         <MainNav items={siteConfig.mainNav} />
         <MobileNav
           mainNavItems={siteConfig.mainNav}
-          sidebarNavItems={dashboardConfig.sidebarNav}
+          // sidebarNavItems={dashboardConfig.sidebarNav}
         />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
@@ -98,21 +98,22 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/signout">
-                      <ExitIcon className="mr-2 size-4" aria-hidden="true" />
-                      Log out
+                    <LogoutButton>
+                      <DropdownMenuItem>
+                        <ExitIcon className="h-4 w-4 mr-2" />
+                        Logout
                       <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                    </Link>
+                      </DropdownMenuItem>
+                    </LogoutButton>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button size="sm">
-                <Link href="/signin">
-                  Sign In
-                  <span className="sr-only">Sign In</span>
-                </Link>
-              </Button>
+              <LoginButton mode="modal" asChild>
+                <Button >
+                  Log in
+                </Button>
+              </LoginButton>
             )}
           </nav>
         </div>

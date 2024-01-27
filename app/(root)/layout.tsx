@@ -2,12 +2,12 @@ import { currentUser } from "@/actions/auth/user"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 
-interface LobyLayoutProps
+interface RootLayoutProps
   extends React.PropsWithChildren<{
     modal: React.ReactNode
   }> {}
 
-export default async function LobyLayout({ children, modal }: LobyLayoutProps) {
+export default async function RootLayout({ children, modal }: RootLayoutProps) {
   const user = await currentUser()
 
   return (

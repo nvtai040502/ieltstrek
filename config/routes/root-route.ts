@@ -41,6 +41,16 @@ export const siteConfig = {
         },
       ],
     },
+    {
+      title: "Account",
+      href: "/dashboard/account",
+      icon: "add",
+    },
+    {
+      title: "Stores",
+      href: "/dashboard/stores",
+      icon: "store",
+    },
   ] satisfies MainNavItem[],
   footerNav: [
     {

@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { LoginSchema } from "@/lib/validations/auth";
 import { signIn } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs"
 import { getUserByEmail } from "../database/user";
@@ -12,6 +11,7 @@ import { sendTwoFactorTokenEmail, sendVerificationEmail } from "./send-email";
 import { generateTwoFactorToken, getTwoFactorTokenByEmail } from "../database/two-factor-token";
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationByUserId } from "../database/two-factor-confirmation";
+import { DEFAULT_LOGIN_REDIRECT } from "@/config/routes/auth-routes";
 
 export const loginCredentials = async (
   values: z.infer<typeof LoginSchema>,

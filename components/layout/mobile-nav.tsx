@@ -19,29 +19,18 @@ import { Icons } from "@/components/ui/icons"
 import { siteConfig } from "@/config/routes/root-route"
 
 interface MobileNavProps {
-  mainNavItems?: MainNavItem[]
-  sidebarNavItems: SidebarNavItem[]
+  mainNavItems?: MainNavItem[];
+  sidebarNavItems?: SidebarNavItem[];
 }
 
 export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
-  const segment = useSelectedLayoutSegment()
-  const [isOpen, setIsOpen] = React.useState(false)
+  const segment = useSelectedLayoutSegment();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = React.useMemo(() => {
-    const items = mainNavItems ?? []
-    const myAccountItem = {
-      title: "My Account",
-      items: sidebarNavItems,
-    }
-    const myAccountIndex = items.findIndex(
-      (item) => item.title === "My Account"
-    )
-    if (myAccountIndex !== -1) {
-      items.splice(myAccountIndex, 1)
-    }
-    items.splice(1, 0, myAccountItem)
-    return items
-  }, [mainNavItems, sidebarNavItems])
+    const items = mainNavItems ?? [];
+    return items;
+  }, [mainNavItems, sidebarNavItems]);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -73,43 +62,56 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
               defaultValue={navItems.map((item) => item.title)}
               className="w-full"
             >
-              {navItems?.map((item, index) => (
-                <AccordionItem value={item.title} key={index}>
-                  <AccordionTrigger className="text-sm capitalize">
+              {navItems.map((item, index) => (
+                item.items ? (
+                  <AccordionItem value={item.title} key={index}>
+                    <AccordionTrigger className="text-sm capitalize">
+                      {item.title}
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex flex-col space-y-2">
+                        {item.items.map((subItem, subIndex) =>
+                          subItem.href ? (
+                            <MobileLink
+                              key={subIndex}
+                              href={String(subItem.href)}
+                              segment={String(segment)}
+                              setIsOpen={setIsOpen}
+                              disabled={subItem.disabled}
+                            >
+                              {subItem.title}
+                            </MobileLink>
+                          ) : (
+                            <div
+                              key={subIndex}
+                              className="text-foreground/70 transition-colors"
+                            >
+                              {item.title}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ) : (
+
+                  <MobileLink
+                    key={index}
+                    href={String(item.href)}
+                    segment={String(segment)}
+                    setIsOpen={setIsOpen}
+                    disabled={item.disabled}
+                  >
                     {item.title}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-col space-y-2">
-                      {item.items?.map((subItem, index) =>
-                        subItem.href ? (
-                          <MobileLink
-                            key={index}
-                            href={String(subItem.href)}
-                            segment={String(segment)}
-                            setIsOpen={setIsOpen}
-                            disabled={subItem.disabled}
-                          >
-                            {subItem.title}
-                          </MobileLink>
-                        ) : (
-                          <div
-                            key={index}
-                            className="text-foreground/70 transition-colors"
-                          >
-                            {item.title}
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                  </MobileLink>
+                )
               ))}
             </Accordion>
           </div>
         </ScrollArea>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
 interface MobileLinkProps extends React.PropsWithChildren {
@@ -130,7 +132,7 @@ function MobileLink({
     <Link
       href={href}
       className={cn(
-        "text-foreground/70 transition-colors hover:text-foreground",
+        "text-foreground/70 transition-colors hover:text-foreground flex flex-col py-2",
         href.includes(segment) && "text-foreground",
         disabled && "pointer-events-none opacity-60"
       )}
