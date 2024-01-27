@@ -12,13 +12,13 @@ interface TestLayoutProps
 export default async function TestLayout({ children }: TestLayoutProps) {
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="max-h-screen h-screen flex flex-col">
       <TestSiteHeader />
       <TestContentHeader />
-      
-      <main className="">
+      <div className="flex-grow overflow-y-auto bg-red-500">
         {children}
-      </main>
+      </div>
     </div>
+  
   )
 }

@@ -1,11 +1,42 @@
-import { Button } from "@/components/ui/button"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
-const TestIdPage = async () => {
+const TestIdPage = () => {
   return (
-    <div className="  ">
-        Hello
-
+    <div className="h-full">
+      <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
+        <ResizablePanel defaultSize={50} className="overflow-auto h-full">
+          <ScrollArea type="always" className="w-full h-full overflow-auto">
+          <div className="flex h-full items-center justify-center p-40">
+            <span className="font-semibold">Content</span>
+          </div>
+          <div className="flex h-full items-center justify-center p-40">
+            <span className="font-semibold">Content</span>
+          </div>
+          <div className="flex h-full items-center justify-center p-40">
+            <span className="font-semibold">Content</span>
+          </div>
+            <ScrollBar className="w-6" />
+          </ScrollArea>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={50}>
+        <ScrollArea type="always" className="w-full h-full overflow-auto">
+          <div className="flex h-full items-center justify-center p-40">
+            <span className="font-semibold">Content</span>
+          </div>
+          <div className="flex h-full items-center justify-center p-40">
+            <span className="font-semibold">Content</span>
+          </div>
+          <div className="flex h-full items-center justify-center p-40">
+            <span className="font-semibold">Content</span>
+          </div>
+            <ScrollBar className="w-6" />
+          </ScrollArea>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
-  )
-}
-export default TestIdPage
+  );
+};
+
+export default TestIdPage;
