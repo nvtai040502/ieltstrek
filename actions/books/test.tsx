@@ -1,15 +1,19 @@
 "use server"
 
 import { db } from "@/lib/db";
-import { SessionType } from "@prisma/client";
+import { SessionType, Test } from "@prisma/client";
 
-export const createTest = async (number: number, sessonType: SessionType, cambridgeBookId: string) => {
+export const createTest = async ({
+  bookImageCover,
+  bookName,
+  testNumber
+}: Pick<Test,|"bookImageCover" |"bookName" |"testNumber">) => {
   try {
     const test = await db.test.create({
       data: {
-        number,
-        sessonType,
-        cambridgeBookId
+        bookImageCover,
+        bookName,
+        testNumber
       },
     });
 

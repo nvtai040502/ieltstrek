@@ -1,38 +1,39 @@
 "use client"
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { z } from "zod";
-import { CambridgeBookSchema, PartSchema, TestSchema } from "@/lib/validations/books";
+import { undefined, z } from "zod";
+import { TestSchema } from "@/lib/validations/books";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
-import { createCambridgeBook } from "@/actions/books/cambridge-book";
-import { error } from "console";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createTest } from "@/actions/books/test";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { CambridgeBook, SessionType, Test } from "@prisma/client";
-import { createPart } from "@/actions/books/part";
-export function CreatePart ({tests}: {tests: Test[]}) {
+import { CardWrapper } from "../auth/card-wrapper";
+export function CreateBookForm () {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof PartSchema>>({
-    resolver: zodResolver(PartSchema),
+  const form = useForm<z.infer<typeof TestSchema>>({
+    resolver: zodResolver(TestSchema),
     defaultValues: {
-      name: "",
-      testId: "",
+      bookImageCover: "",
+      bookName: "",
+      testNumber: 1,
     },
   });
   const router= useRouter()
-  const onSubmit = (values: z.infer<typeof PartSchema>) => {
+  const onSubmit = (values: z.infer<typeof TestSchema>) => {
     startTransition(async () => {
-      const success = await createPart(values.name, values.testId);
+      const test = await createTest({
+        bookImageCover: values.bookImageCover,
+        bookName: values.bookName,
+        testNumber: values.testNumber
+      });
 
-      if (success) {
+      if (test) {
         toast("Test created successfully");
         form.reset()
-        router.refresh()
+        router.push(`/tests/${test.id}`)
       } else {
         toast("Failed to create Test");
       }
@@ -41,6 +42,9 @@ export function CreatePart ({tests}: {tests: Test[]}) {
     
   };
   return (
+    <CardWrapper
+      headerLabel="Create book"
+    >
     <Form {...form}>
         <form 
           onSubmit={form.handleSubmit(onSubmit)}
@@ -49,7 +53,7 @@ export function CreatePart ({tests}: {tests: Test[]}) {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="bookName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Version</FormLabel>
@@ -57,44 +61,32 @@ export function CreatePart ({tests}: {tests: Test[]}) {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="20"
-                      // type="number"
+                      placeholder="Cambridge Academy 16"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
-              <FormField
+            <FormField
                 control={form.control}
-                name="testId"
+                name="testNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Session</FormLabel>
-                    <Select
+                  <FormLabel>Version</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
                       disabled={isPending}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a session" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {tests.map((test) => (
-                        <SelectItem value={test.id} key={test.id}>
-                          {test.number}
-                        </SelectItem>
-
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
+                      placeholder="1"
+                      type="number"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
                 )}
               />
+              
           </div>
           
           <Button
@@ -106,5 +98,6 @@ export function CreatePart ({tests}: {tests: Test[]}) {
           </Button>
         </form>
       </Form>
+      </CardWrapper>
   )
 }

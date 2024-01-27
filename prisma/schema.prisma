@@ -9,24 +9,15 @@ generator client {
 }
 
 
-model CambridgeBook {
-  id String @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  version Int
-  imageCover String?
-  tests Test[]
-}
-
 model Test {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  number Int
-  sessonType SessionType
-
-  cambridgeBookId String
-  cambridgeBook CambridgeBook @relation(fields: [cambridgeBookId], references: [id], onDelete: Cascade)
+  bookName String
+  bookImageCover String?
+  testNumber Int
+  // for now just READING
+  sessonType SessionType @default(READING)
   parts Part[]
 }
 

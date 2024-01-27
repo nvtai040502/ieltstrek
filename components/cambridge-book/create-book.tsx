@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { z } from "zod";
-import { CambridgeBookSchema } from "@/lib/validations/cambridge-book";
+import { CambridgeBookSchema } from "@/lib/validations/books";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";

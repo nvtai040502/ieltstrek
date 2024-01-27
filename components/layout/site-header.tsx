@@ -23,7 +23,7 @@ import { LogoutButton } from "../auth/logout-button"
 import { LoginButton } from "../auth/login-button"
 
 interface SiteHeaderProps {
-  user: ExtendedUser | undefined
+  user?: ExtendedUser
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {

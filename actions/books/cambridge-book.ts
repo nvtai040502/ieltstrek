@@ -2,11 +2,11 @@
 
 import { db } from "@/lib/db";
 
-export const createCambridgeBook = async (version: number, imageCover?: string) => {
+export const createCambridgeBook = async (name: string, imageCover?: string) => {
   try {
     const cambridgeBook = await db.cambridgeBook.create({
       data: {
-        version,
+        name,
         imageCover,
       },
     });
