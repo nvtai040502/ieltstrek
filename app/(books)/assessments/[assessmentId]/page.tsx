@@ -1,8 +1,32 @@
 import { PassagePannelForm } from "@/components/books/passage-pannel-form";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { db } from "@/lib/db";
+import { notFound } from "next/navigation";
+interface AssessmentIdPageProps {
+  params: {
+    assessmentId: string
+  }
+}
+const AssessmentIdPage = async ({
+  params
+}: AssessmentIdPageProps) => {
+  const parts = await db.part.findMany({
+    where: {
+      assessmentId: params.assessmentId
+    }
+  })
+  const assessment = await db.assessment.findUnique({
+    where: {
+      id: params.assessmentId
+    }
+  })
 
-const TestIdPage = () => {
+  if (!assessment) {
+    return notFound()
+  }
+  console.log(parts)
+
   return (
     <div className="h-full">
       <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
@@ -42,4 +66,4 @@ const TestIdPage = () => {
   );
 };
 
-export default TestIdPage;
+export default AssessmentIdPage;

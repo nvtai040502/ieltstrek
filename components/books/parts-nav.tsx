@@ -2,7 +2,7 @@ import { Check } from "lucide-react"
 import { Button } from "../ui/button"
 import QuestionPalette from "./question-palette"
 
-const SectionsNavigator = () => {
+const PartsNavigator = () => {
   return (
     <div className="flex justify-between">
       <QuestionPalette />
@@ -14,4 +14,4 @@ const SectionsNavigator = () => {
     </div>
   )
 }
-export default SectionsNavigator
+export default PartsNavigator

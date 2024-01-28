@@ -1,9 +1,8 @@
 import { Button, buttonVariants } from "@/components/ui/button"
 import { AlignJustify, Bell, Wifi } from 'lucide-react';
-import { MainNav } from "../main-nav"
-import { Icons } from "../../ui/icons"
+import { Icons } from "../ui/icons"
 
-export function TestSiteHeader() {
+export function AssessmentSiteHeader() {
   return (
       <div className="px-4 py-2 flex items-center ">
       <div className="gap-6 flex items-center" >

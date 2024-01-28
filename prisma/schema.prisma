@@ -9,34 +9,38 @@ generator client {
 }
 
 
-model Test {
+model Assessment {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  bookName String
-  bookImageCover String?
-  testNumber Int
+
+  bookName String?
+  imageCover String?
+  name String
+
   // for now just READING
-  sessonType SessionType @default(READING)
-  sectons Section[]
+  sectionType SectionType @default(READING)
+  parts Part[]
 }
 
-enum SessionType {
+enum SectionType {
   READING
   LISTENING
+  WRITTING
+  SPEAKING
 }
 
 
-model Section {
+model Part {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
-  description String
+  title String?
+  description String?
 
-  testId String
-  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  assessmentId String
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questions Question[]
   passage Passage?
 }
@@ -52,8 +56,8 @@ model Question {
   content String
   answer String
   
-  sectionId String
-  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  partId String
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
   scorableItems ScorableItem[]
 }
 model ScorableItem {
@@ -91,8 +95,8 @@ model Passage {
   content String
 
 
-  sectionId String @unique // Ensures that each Part can have only one Passage
-  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  partId String @unique // Ensures that each Part can have only one Passage
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
 }
 
 

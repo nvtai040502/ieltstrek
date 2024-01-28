@@ -1,41 +1,47 @@
 "use client"
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { undefined, z } from "zod";
-import { TestSchema } from "@/lib/validations/books";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createTest } from "@/actions/books/test";
 import { CardWrapper } from "../auth/card-wrapper";
-export function CreateBookForm () {
+import { AssessmentSchema } from "@/lib/validations/books";
+import { createAssessment } from "@/actions/books/assessment";
+import { createAssessmentParts } from "@/actions/books/parts";
+
+export function CreateAssessmentForm () {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof TestSchema>>({
-    resolver: zodResolver(TestSchema),
+  const form = useForm<z.infer<typeof AssessmentSchema>>({
+    resolver: zodResolver(AssessmentSchema),
     defaultValues: {
-      bookImageCover: "",
+      name: "",
       bookName: "",
-      testNumber: 1,
+      imageCover: "",
     },
   });
   const router= useRouter()
-  const onSubmit = (values: z.infer<typeof TestSchema>) => {
+  const onSubmit = (values: z.infer<typeof AssessmentSchema>) => {
     startTransition(async () => {
-      const test = await createTest({
-        bookImageCover: values.bookImageCover,
+      const assessment = await createAssessment({
+        imageCover: values.imageCover,
         bookName: values.bookName,
-        testNumber: values.testNumber
+        name: values.name
       });
 
-      if (test) {
-        toast("Test created successfully");
-        form.reset()
-        router.push(`/tests/${test.id}`)
+      if (assessment) {
+        if (assessment.sectionType === "READING") {
+          const successfully = await createAssessmentParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
+          if (successfully) {
+            toast.success("Successfully created assessment!")
+            router.push(`/assessments/${assessment.id}`)
+          }
+        }
       } else {
-        toast("Failed to create Test");
+        toast("Failed to create Assessment");
       }
     })
 
@@ -43,7 +49,7 @@ export function CreateBookForm () {
   };
   return (
     <CardWrapper
-      headerLabel="Create book"
+      headerLabel="Create Assessment"
     >
     <Form {...form}>
         <form 
@@ -53,10 +59,10 @@ export function CreateBookForm () {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="bookName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Version</FormLabel>
+                  <FormLabel>Assessment Name</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -70,16 +76,15 @@ export function CreateBookForm () {
             />
             <FormField
                 control={form.control}
-                name="testNumber"
+                name="bookName"
                 render={({ field }) => (
                   <FormItem>
-                  <FormLabel>Version</FormLabel>
+                  <FormLabel>Book name optional</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
                       placeholder="1"
-                      type="number"
                     />
                   </FormControl>
                   <FormMessage />
@@ -94,7 +99,7 @@ export function CreateBookForm () {
             type="submit"
             className="w-full"
           >
-            Create
+            Create 
           </Button>
         </form>
       </Form>

@@ -8,19 +8,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/login-form";
-import { CreateBookForm } from "./create-book-form";
+import { CreateAssessmentForm } from "./create-assessment-form";
 
-interface CreateBookButtonProps {
+interface CreateAssessmentButtonProps {
   children: React.ReactNode;
   mode?: "modal" | "redirect",
   asChild?: boolean;
 };
 
-export const CreateBookButton = ({
+export const CreateAssessmentButton = ({
   children,
   mode = "redirect",
   asChild
-}: CreateBookButtonProps) => {
+}: CreateAssessmentButtonProps) => {
   const router = useRouter();
 
   const onClick = () => {
@@ -34,7 +34,7 @@ export const CreateBookButton = ({
           {children}
         </DialogTrigger>
         <DialogContent className="p-0 w-auto bg-transparent border-none">
-          <CreateBookForm />
+          <CreateAssessmentForm />
         </DialogContent>
       </Dialog>
     )
