@@ -18,7 +18,7 @@ model Test {
   testNumber Int
   // for now just READING
   sessonType SessionType @default(READING)
-  parts Part[]
+  sectons Section[]
 }
 
 enum SessionType {
@@ -27,12 +27,14 @@ enum SessionType {
 }
 
 
-model Part {
+model Section {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  name String
+  title String
+  description String
+
   testId String
   test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
   questions Question[]
@@ -44,29 +46,53 @@ model Question {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  title String
+  decription String
+
   content String
   answer String
   
-  partId String
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  sectionId String
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  scorableItems ScorableItem[]
+}
+model ScorableItem {
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+
+  content      String
+  
+  questionId   String
+  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
   choices Choice[]
 }
+
 model Choice {
   id           String       @id @default(cuid())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @default(now()) @updatedAt
-  content      String
-  isCorrect    Boolean
-  questionId   String
-  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  content String
+  isCorrect Boolean
+
+  scorableItemId   String
+  scorableItem     ScorableItem     @relation(fields: [scorableItemId], references: [id], onDelete: Cascade)
 }
+
 model Passage {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+
+  title String
+  description String?
+  imageHeader String?
   content String
-  partId String @unique // Ensures that each Part can have only one Passage
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+
+
+  sectionId String @unique // Ensures that each Part can have only one Passage
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
 
