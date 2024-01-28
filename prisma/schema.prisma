@@ -94,7 +94,6 @@ model Passage {
   imageHeader String?
   content String
 
-
   partId String @unique // Ensures that each Part can have only one Passage
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
 }

@@ -35,13 +35,10 @@ export function CreateAssessmentForm () {
 
       if (assessment) {
         if (assessment.sectionType === "READING") {
-          const successfully = await createAssessmentParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
-          if (successfully) {
+          const partsCreated = await createAssessmentParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
+          if (partsCreated.length) {
             toast.success("Successfully created assessment!")
-            // router.push(`/assessments/${assessment.id}`)
-
-            const newParams = new URLSearchParams({ "assessmentId": assessment.id });
-            router.push(createUrl("/player", newParams));
+            router.push(`/assessments/${assessment.id}/parts/${partsCreated[0].id}`)
           }
         }
       } else {

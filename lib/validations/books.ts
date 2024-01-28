@@ -28,6 +28,6 @@ export const PassageSchema = z.object({
   content: z.string().min(1, {
     message: "Content Passage is required"
   }),
-  imageHeader: z.string().nullable(),
-  description: z.string().nullable(),
+  imageHeader: z.string().optional(),
+  description: z.string().optional(),
 })

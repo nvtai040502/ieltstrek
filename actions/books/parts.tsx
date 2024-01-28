@@ -1,6 +1,7 @@
 "use server"
 
 import { db } from "@/lib/db";
+import { Part } from "@prisma/client";
 export const updatePart = async ({
   title,
   description,
@@ -36,12 +37,18 @@ export const createAssessmentParts = async ({
   numberOfPartsToCreate: number
 }) => {
   try {
-    const partsData = Array.from({ length: numberOfPartsToCreate }, () => ({ assessmentId }));
-    const createdParts = await db.part.createMany({
-      data: partsData,
-    });
+    const parts: Part[] = [];
 
-    return createdParts;
+    for (let i = 0; i < numberOfPartsToCreate; i++) {
+      const part = await db.part.create({
+        data: {
+          assessmentId
+        },
+      });
+      parts.push(part);
+    }
+
+    return parts;
   } catch (error) {
     console.error("Error creating assessment parts:", error);
     return [];

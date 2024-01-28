@@ -1,77 +1,68 @@
 import { PartHeader } from "@/components/books/part-header";
 import { AssessmentSiteHeader } from "@/components/books/assessment-side-header";
-import { PassagePannelForm } from "@/components/books/passage-pannel-form";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ResizePannelGroup from "@/components/books/resize-pannel-group";
+import { AssessmentExtended, PartWithPassage } from "@/types/db";
 interface AssessmentIdPageProps {
   params: {
-    assessmentId: string
+    assessmentId: string,
+    partId: string
   }
 }
-const AssessmentIdPage = async ({
+const PartIdPage = async ({
   params
 }: AssessmentIdPageProps) => {
-  const parts = await db.part.findMany({
-    where: {
-      assessmentId: params.assessmentId
-    }
-  })
-  const assessment = await db.assessment.findUnique({
+  const assessment: AssessmentExtended | null = await db.assessment.findUnique({
     where: {
       id: params.assessmentId
+    }, include: {
+      parts: {
+        where: {
+          assessmentId: params.assessmentId
+        }, include: {
+          passage: {
+            where: {
+              partId: params.partId
+            }
+          }
+        }
+      }
     }
   })
 
   if (!assessment) {
     return notFound()
   }
-  console.log(parts)
 
   return (
-    <div className="max-h-screen h-screen flex flex-col bg-red-500">
+    <div className="max-h-screen h-screen flex flex-col">
       <AssessmentSiteHeader />
-      <PartHeader />
-      <div className="flex-grow overflow-y-auto">
-    <div className="h-full">
-      <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
-        <ResizablePanel defaultSize={50} className="overflow-auto h-full">
-          <ScrollArea type="always" className="w-full h-full overflow-auto pl-4 pr-8">
-          <PassagePannelForm sectionId="test"/>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
+      <Tabs defaultValue={assessment.parts[0].id} className="overflow-hidden flex flex-col">
+        {assessment.parts.map((part) => (
+          <TabsContent key={part.id} value={part.id} className="overflow-hidden flex flex-col m-0">
+            {/* The following components are not changed when switching tabs */}
+            <PartHeader part={part}/>
             
-            <ScrollBar className="w-4" />
-          </ScrollArea>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50}>
-        <ScrollArea type="always" className="w-full h-full overflow-auto">
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-            <ScrollBar className="w-4" />
-          </ScrollArea>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
-    </div>
+            {/* <PartHeaderForm part={part}/> */}
+            <div className=" overflow-y-auto">
+              <ResizePannelGroup part={part} />
+            </div>
+          </TabsContent>
+        ))}
+
+        {/* TabsList remains outside the mapping to avoid multiple instances */}
+        <TabsList className="flex justify-between">
+          {assessment.parts.map((part, i) => (
+            <TabsTrigger key={part.id} value={part.id} className="w-full">
+                {part.title}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   );
 };
 
-export default AssessmentIdPage;
+export default PartIdPage;
