@@ -24,7 +24,8 @@ const ResizePannelGroup = () => {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
-        <ScrollArea type="always" className="w-full h-full overflow-auto">
+        <ScrollArea type="always" className="w-full h-full overflow-auto pl-4 pr-8">
+          <PassagePannelForm sectionId="test"/>
           <div className="flex h-full items-center justify-center p-40">
             <span className="font-semibold">Content</span>
           </div>
@@ -34,6 +35,7 @@ const ResizePannelGroup = () => {
           <div className="flex h-full items-center justify-center p-40">
             <span className="font-semibold">Content</span>
           </div>
+            
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>

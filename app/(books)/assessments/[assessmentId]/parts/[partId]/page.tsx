@@ -1,4 +1,4 @@
-import { AssessmentContentHeader } from "@/components/books/assessment-content-header";
+import { PartHeader } from "@/components/books/part-header";
 import { AssessmentSiteHeader } from "@/components/books/assessment-side-header";
 import { PassagePannelForm } from "@/components/books/passage-pannel-form";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
@@ -32,7 +32,7 @@ const AssessmentIdPage = async ({
   return (
     <div className="max-h-screen h-screen flex flex-col bg-red-500">
       <AssessmentSiteHeader />
-      <AssessmentContentHeader />
+      <PartHeader />
       <div className="flex-grow overflow-y-auto">
     <div className="h-full">
       <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">

@@ -1,11 +1,12 @@
-import { AssessmentContentHeader } from "@/components/books/assessment-content-header";
+import { PartHeader } from "@/components/books/part-header";
 import { AssessmentSiteHeader } from "@/components/books/assessment-side-header";
-import PartsNavigator from "@/components/books/parts-nav";
-import QuestionPalette from "@/components/books/question-palette";
 import ResizePannelGroup from "@/components/books/resize-pannel-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
+import { ChangePartForm } from "@/components/books/change-part-form";
+import { ChangePartButton } from "@/components/books/change-part-button";
+import { Button } from "@/components/ui/button";
 interface AssessmentIdPageProps {
   params: {
     assessmentId: string
@@ -17,8 +18,12 @@ const AssessmentIdPage = async ({
   const parts = await db.part.findMany({
     where: {
       assessmentId: params.assessmentId
+    }, orderBy: {
+      createdAt: "desc"
     }
   })
+  console.log("🚀 ~ parts:", parts)
+  
   const assessment = await db.assessment.findUnique({
     where: {
       id: params.assessmentId
@@ -36,7 +41,9 @@ const AssessmentIdPage = async ({
         {parts.map((part) => (
           <TabsContent key={part.id} value={part.id} className="overflow-hidden flex flex-col m-0">
             {/* The following components are not changed when switching tabs */}
-            <AssessmentContentHeader />
+            <PartHeader part={part}/>
+            
+            {/* <PartHeaderForm part={part}/> */}
             <div className=" overflow-y-auto">
               <ResizePannelGroup />
             </div>
@@ -47,7 +54,7 @@ const AssessmentIdPage = async ({
         <TabsList className="flex justify-between">
           {parts.map((part, i) => (
             <TabsTrigger key={part.id} value={part.id} className="w-full">
-                Part 1
+                {part.title}
             </TabsTrigger>
           ))}
         </TabsList>

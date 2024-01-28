@@ -10,6 +10,17 @@ export const AssessmentSchema = z.object({
 })
 
 
+export const PartSchema = z.object({
+  title: z.string().min(1, {
+    message: "Part title is required"
+  }),
+  description: z.string().min(1, {
+    message: "Part description is required"
+  }),
+})
+
+
+
 export const PassageSchema = z.object({
   title: z.string().min(1, {
     message: "Title Passage is required"

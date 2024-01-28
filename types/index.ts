@@ -1,4 +1,6 @@
 import { Icons } from "@/components/ui/icons"
+export type MODE_TYPE = "edit" | "exam" | "practice"
+
 
 export interface FooterItem {
   title: string

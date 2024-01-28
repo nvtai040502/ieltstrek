@@ -38,7 +38,7 @@ model Part {
 
   title String?
   description String?
-
+  
   assessmentId String
   assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questions Question[]
