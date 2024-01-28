@@ -1,6 +1,9 @@
-import { PassagePannelForm } from "@/components/books/passage-pannel-form";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { AssessmentContentHeader } from "@/components/books/assessment-content-header";
+import { AssessmentSiteHeader } from "@/components/books/assessment-side-header";
+import PartsNavigator from "@/components/books/parts-nav";
+import QuestionPalette from "@/components/books/question-palette";
+import ResizePannelGroup from "@/components/books/resize-pannel-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 interface AssessmentIdPageProps {
@@ -25,43 +28,30 @@ const AssessmentIdPage = async ({
   if (!assessment) {
     return notFound()
   }
-  console.log(parts)
 
   return (
-    <div className="h-full">
-      <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
-        <ResizablePanel defaultSize={50} className="overflow-auto h-full">
-          <ScrollArea type="always" className="w-full h-full overflow-auto pl-4 pr-8">
-          <PassagePannelForm sectionId="test"/>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-            
-            <ScrollBar className="w-4" />
-          </ScrollArea>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50}>
-        <ScrollArea type="always" className="w-full h-full overflow-auto">
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-            <ScrollBar className="w-4" />
-          </ScrollArea>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+    <div className="max-h-screen h-screen flex flex-col">
+      <AssessmentSiteHeader />
+      <Tabs defaultValue={parts[0].id} className="overflow-hidden flex flex-col">
+        {parts.map((part) => (
+          <TabsContent key={part.id} value={part.id} className="overflow-hidden flex flex-col m-0">
+            {/* The following components are not changed when switching tabs */}
+            <AssessmentContentHeader />
+            <div className=" overflow-y-auto">
+              <ResizePannelGroup />
+            </div>
+          </TabsContent>
+        ))}
+
+        {/* TabsList remains outside the mapping to avoid multiple instances */}
+        <TabsList className="flex justify-between">
+          {parts.map((part, i) => (
+            <TabsTrigger key={part.id} value={part.id} className="w-full">
+                Part 1
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   );
 };

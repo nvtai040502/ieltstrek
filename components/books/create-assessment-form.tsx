@@ -12,6 +12,7 @@ import { CardWrapper } from "../auth/card-wrapper";
 import { AssessmentSchema } from "@/lib/validations/books";
 import { createAssessment } from "@/actions/books/assessment";
 import { createAssessmentParts } from "@/actions/books/parts";
+import { createUrl } from "@/lib/utils";
 
 export function CreateAssessmentForm () {
   const [isPending, startTransition] = useTransition()
@@ -37,7 +38,10 @@ export function CreateAssessmentForm () {
           const successfully = await createAssessmentParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
           if (successfully) {
             toast.success("Successfully created assessment!")
-            router.push(`/assessments/${assessment.id}`)
+            // router.push(`/assessments/${assessment.id}`)
+
+            const newParams = new URLSearchParams({ "assessmentId": assessment.id });
+            router.push(createUrl("/player", newParams));
           }
         }
       } else {
