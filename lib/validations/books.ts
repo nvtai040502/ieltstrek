@@ -12,7 +12,14 @@ export const TestSchema = z.object({
 })
 
 
-export const PartSchema = z.object({
-  name: z.string(),
-  testId: z.string()
+export const PassageSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title Passage is required"
+  }),
+  content: z.string().min(1, {
+    message: "Content Passage is required"
+  }),
+  imageHeader: z.string().nullable(),
+  description: z.string().nullable(),
+
 })
