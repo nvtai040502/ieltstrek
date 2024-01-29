@@ -1,13 +1,9 @@
 import { currentUser } from "@/actions/auth/user"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
+import React from "react"
 
-interface RootLayoutProps
-  extends React.PropsWithChildren<{
-    modal: React.ReactNode
-  }> {}
-
-export default async function RootLayout({ children, modal }: RootLayoutProps) {
+export default async function RootLayout({ children }: {children: React.ReactNode}) {
   const user = await currentUser()
 
   return (
@@ -15,7 +11,6 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
       <SiteHeader user={user} />
       <main className="flex-1">
         {children}
-        {modal}
       </main>
       <SiteFooter />
     </div>

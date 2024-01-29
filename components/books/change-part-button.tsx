@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/login-form";
 import { CreateAssessmentForm } from "./create-assessment-form";
-import { EditPartForm } from "./edit-part-form";
+import { EditPartForm } from "./part/update-form";
 import { Part } from "@prisma/client";
 
 interface ChangePartButtonProps {

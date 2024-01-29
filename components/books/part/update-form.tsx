@@ -1,20 +1,20 @@
 "use client"
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CardWrapper } from "../auth/card-wrapper";
+import { CardWrapper } from "../../auth/card-wrapper";
 import { AssessmentSchema, UpdatePartSchema } from "@/lib/validations/books";
 import { createAssessment } from "@/actions/books/assessment";
 import { createAssessmentParts, updatePart } from "@/actions/books/parts";
 import { createUrl } from "@/lib/utils";
 import { Part } from "@prisma/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 
 export function EditPartForm ({part}: {part: Part}) {
   const [isPending, startTransition] = useTransition()
@@ -23,7 +23,6 @@ export function EditPartForm ({part}: {part: Part}) {
     defaultValues: {
       title: "",
       description: "",
-      // numberQuestions: 0,
     },
   });
   const router= useRouter()
@@ -33,7 +32,6 @@ export function EditPartForm ({part}: {part: Part}) {
         title: values.title,
         description: values.description,
         id: part.id,
-        numberQuestion: values.numberQuestions
       });
       
       if (partUpdated) {

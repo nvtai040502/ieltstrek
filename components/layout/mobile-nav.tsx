@@ -30,7 +30,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
   const navItems = React.useMemo(() => {
     const items = mainNavItems ?? [];
     return items;
-  }, [mainNavItems, sidebarNavItems]);
+  }, [mainNavItems]);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

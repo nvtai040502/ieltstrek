@@ -2,17 +2,16 @@
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { undefined, z } from "zod";
-import { PassageSchema, TestSchema } from "@/lib/validations/books";
+import { PassageSchema } from "@/lib/validations/books";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createTest } from "@/actions/books/test";
 import { CardWrapper } from "../auth/card-wrapper";
-import { createPassage } from "@/actions/books/passage";
-export function PassagePannelForm ({sectionId}: {sectionId: string}) {
+import { createPassage } from "@/actions/books/passages";
+export function PassagePannelForm ({partId}: {partId: string}) {
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof PassageSchema>>({
     resolver: zodResolver(PassageSchema),
@@ -32,7 +31,7 @@ export function PassagePannelForm ({sectionId}: {sectionId: string}) {
         content: values.content,
         description: values.description,
         imageHeader: values.imageHeader,
-        sectionId
+        partId
       });
 
       if (passage) {

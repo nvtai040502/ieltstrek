@@ -5,7 +5,6 @@ import { FaGithub } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { loginOAuth } from "@/actions/auth/login";
 import { useSearchParams } from "next/navigation";
 
