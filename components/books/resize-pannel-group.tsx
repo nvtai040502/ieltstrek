@@ -7,13 +7,15 @@ import { EditPassageForm } from "./edit-passage-form"
 import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
 import { CreateQuestionForm } from "./create-question-form"
+import { EditQuestionForm } from "./edit-question-form"
 
 const ResizePannelGroup = ({
   part
 }: {
   part: PartExtended,
 }) => {
-  const [isEditting, setIsEditting] = useState(true)
+  const [isEditting, setIsEditting] = useState(false)
+  const [isEdittingQuestion, setIsEdittingQuestion] = useState(false)
   console.log(part.questions)
   return (
     <div className="h-full">
@@ -45,10 +47,20 @@ const ResizePannelGroup = ({
           <CreateQuestionForm part={part}/>
           {part.questions && (
             part.questions.map((question) => (
-              <div key={question.id}>
-                <p>{question.title}</p>
-                <p>{question.decription}</p>
-              </div>
+              isEdittingQuestion ? (
+                <div key={question.id} className="flex justify-between items-center">
+                  <EditQuestionForm question={question} setIsEditting={setIsEdittingQuestion}/>
+                </div>
+              ): (
+                <div key={question.id} className="flex justify-between items-center">
+                  <div>
+                    <p>{question.title}</p>
+                    <p>{question.decription}</p>
+                  </div>
+                  <Button onClick={() => setIsEdittingQuestion(true)}>Update</Button>
+                </div>
+              )
+              
             ))
           )}
             <ScrollBar className="w-4" />

@@ -8,22 +8,23 @@ import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Part } from "@prisma/client";
+import { Part, Question } from "@prisma/client";
 import { createPassage, updatePassage } from "@/actions/books/passages";
-import { PassageSchema } from "@/lib/validations/books";
+import { PassageSchema, UpdateQuestionSchema } from "@/lib/validations/books";
 import { AutosizeTextarea } from "../ui/autosize-text-area";
 import { PartExtended } from "@/types/db";
+import { updateQuestion } from "@/actions/books/questions";
 
 export function EditQuestionForm ({
-  part, 
+  question,
   setIsEditting
 }: {
-  part: PartExtended, 
+  question: Question 
   setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof PassageSchema>>({
-    resolver: zodResolver(PassageSchema),
+  const form = useForm<z.infer<typeof UpdateQuestionSchema>>({
+    resolver: zodResolver(UpdateQuestionSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -31,25 +32,22 @@ export function EditQuestionForm ({
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof PassageSchema>) => {
+  const onSubmit = (values: z.infer<typeof UpdateQuestionSchema>) => {
     startTransition(async () => {
-      if (part.passage) {
-        const passage = await updatePassage({
+      
+        const questionUpdated = await updateQuestion({
           title: values.title,
           description: values.description,
-          content: values.content,
-          id: part.passage.id
+          id: question.id
         });
-        if (passage) {
-          toast.success("Successfully created Passage!")
+        if (questionUpdated) {
+          toast.success("Successfully updating question!")
           form.reset()
           router.refresh()
       }
-      }
       
-
        else {
-        toast("Failed to create passage");
+        toast("Failed to update question");
       }
     })
     setIsEditting(false)
@@ -97,24 +95,7 @@ export function EditQuestionForm ({
                 </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                  <FormLabel>Passage content</FormLabel>
-                  <FormControl>
-                    <AutosizeTextarea
-                      {...field}
-                      disabled={isPending}
-                      placeholder="Type content passage here." 
-                      className="h-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                )}
-              />
+              
           </div>
           <Button
             disabled={isPending}
