@@ -9,30 +9,33 @@ import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CardWrapper } from "../auth/card-wrapper";
-import { AssessmentSchema, PartSchema } from "@/lib/validations/books";
+import { AssessmentSchema, UpdatePartSchema } from "@/lib/validations/books";
 import { createAssessment } from "@/actions/books/assessment";
 import { createAssessmentParts, updatePart } from "@/actions/books/parts";
 import { createUrl } from "@/lib/utils";
 import { Part } from "@prisma/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
-export function ChangePartForm ({part}: {part: Part}) {
+export function EditPartForm ({part}: {part: Part}) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof PartSchema>>({
-    resolver: zodResolver(PartSchema),
+  const form = useForm<z.infer<typeof UpdatePartSchema>>({
+    resolver: zodResolver(UpdatePartSchema),
     defaultValues: {
       title: "",
       description: "",
+      // numberQuestions: 0,
     },
   });
   const router= useRouter()
-  const onSubmit = (values: z.infer<typeof PartSchema>) => {
+  const onSubmit = (values: z.infer<typeof UpdatePartSchema>) => {
     startTransition(async () => {
       const partUpdated = await updatePart({
         title: values.title,
         description: values.description,
-        id: part.id
+        id: part.id,
+        numberQuestion: values.numberQuestions
       });
-
+      
       if (partUpdated) {
           toast.success("Successfully updated Part!")
           form.reset()
@@ -88,7 +91,24 @@ export function ChangePartForm ({part}: {part: Part}) {
                 </FormItem>
                 )}
               />
-              
+              <FormField
+                control={form.control}
+                name="numberQuestions"
+                render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>numberQuestions</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="1"
+                      type="number"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+                )}
+              />
           </div>
           
           <Button

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/login-form";
 import { CreateAssessmentForm } from "./create-assessment-form";
-import { ChangePartForm } from "./change-part-form";
+import { EditPartForm } from "./edit-part-form";
 import { Part } from "@prisma/client";
 
 interface ChangePartButtonProps {
@@ -38,7 +38,7 @@ export const ChangePartButton = ({
           {children}
         </DialogTrigger>
         <DialogContent className="p-0 w-auto bg-transparent border-none">
-          <ChangePartForm part={part}/>
+          <EditPartForm part={part}/>
         </DialogContent>
       </Dialog>
     )

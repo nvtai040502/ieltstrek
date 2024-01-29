@@ -14,7 +14,7 @@ import { PassageSchema } from "@/lib/validations/books";
 import { AutosizeTextarea } from "../ui/autosize-text-area";
 import { PartExtended } from "@/types/db";
 
-export function EditPassageForm ({
+export function EditQuestionForm ({
   part, 
   setIsEditting
 }: {

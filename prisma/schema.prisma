@@ -38,7 +38,8 @@ model Part {
 
   title String?
   description String?
-  
+  numberQuestions Int?
+
   assessmentId String
   assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questions Question[]
@@ -52,10 +53,9 @@ model Question {
 
   title String
   decription String
+  headerForScorableItems String?
+  numberScorableItems Int?
 
-  content String
-  answer String
-  
   partId String
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
   scorableItems ScorableItem[]

@@ -1,9 +1,10 @@
-import { Assessment, Part, Passage } from "@prisma/client";
+import { Assessment, Part, Passage, Question } from "@prisma/client";
 
-export type PartWithPassage = Part & {
+export type PartExtended = Part & {
   passage: Passage | null;
+  questions: Question[]
 };
 
 export type AssessmentExtended = Assessment & {
-  parts: PartWithPassage[];
+  parts: PartExtended[];
 };

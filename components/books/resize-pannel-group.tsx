@@ -5,15 +5,16 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { Button } from "../ui/button"
 import { EditPassageForm } from "./edit-passage-form"
 import { startTransition, useState, useTransition } from "react"
-import { PartWithPassage } from "@/types/db"
+import { PartExtended } from "@/types/db"
+import { CreateQuestionForm } from "./create-question-form"
 
 const ResizePannelGroup = ({
   part
 }: {
-  part: PartWithPassage,
+  part: PartExtended,
 }) => {
   const [isEditting, setIsEditting] = useState(true)
-  
+  console.log(part.questions)
   return (
     <div className="h-full">
       <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
@@ -41,16 +42,15 @@ const ResizePannelGroup = ({
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
         <ScrollArea type="always" className="w-full h-full overflow-auto pl-4 pr-8">
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-          <div className="flex h-full items-center justify-center p-40">
-            <span className="font-semibold">Content</span>
-          </div>
-            
+          <CreateQuestionForm part={part}/>
+          {part.questions && (
+            part.questions.map((question) => (
+              <div key={question.id}>
+                <p>{question.title}</p>
+                <p>{question.decription}</p>
+              </div>
+            ))
+          )}
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>

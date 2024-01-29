@@ -5,11 +5,13 @@ import { Part } from "@prisma/client";
 export const updatePart = async ({
   title,
   description,
+  numberQuestion,
   id
 }: {
   title?: string
   description?: string,
   id: string,
+  numberQuestion?: number
 }) => {
   try {
     const part = await db.part.update({
@@ -19,6 +21,7 @@ export const updatePart = async ({
       data: {
         title,
         description,
+        numberQuestion
       },
     });
 

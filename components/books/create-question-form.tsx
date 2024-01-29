@@ -8,22 +8,18 @@ import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Part } from "@prisma/client";
-import { createPassage, updatePassage } from "@/actions/books/passages";
-import { PassageSchema } from "@/lib/validations/books";
-import { AutosizeTextarea } from "../ui/autosize-text-area";
+import { CreateQuestionSchema, PassageSchema } from "@/lib/validations/books";
 import { PartExtended } from "@/types/db";
+import { createQuestion } from "@/actions/books/questions";
 
-export function EditPassageForm ({
+export function CreateQuestionForm ({
   part, 
-  setIsEditting
 }: {
   part: PartExtended, 
-  setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof PassageSchema>>({
-    resolver: zodResolver(PassageSchema),
+  const form = useForm<z.infer<typeof CreateQuestionSchema>>({
+    resolver: zodResolver(CreateQuestionSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -31,28 +27,24 @@ export function EditPassageForm ({
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof PassageSchema>) => {
+  const onSubmit = (values: z.infer<typeof CreateQuestionSchema>) => {
     startTransition(async () => {
-      if (part.passage) {
-        const passage = await updatePassage({
+      
+        const question = await createQuestion({
           title: values.title,
           description: values.description,
-          content: values.content,
-          id: part.passage.id
+          partId: part.id
         });
-        if (passage) {
-          toast.success("Successfully created Passage!")
+        if (question) {
+          toast.success("Successfully created question!")
           form.reset()
           router.refresh()
       }
-      }
-      
-
        else {
-        toast("Failed to create passage");
+        toast("Failed to create question");
       }
     })
-    setIsEditting(false)
+    
     
   };
   return (
@@ -97,38 +89,15 @@ export function EditPassageForm ({
                 </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                  <FormLabel>Passage content</FormLabel>
-                  <FormControl>
-                    <AutosizeTextarea
-                      {...field}
-                      disabled={isPending}
-                      placeholder="Type content passage here." 
-                      className="h-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                )}
-              />
+              
           </div>
-          <Button
-            disabled={isPending}
-            onClick={() => setIsEditting(false)}
-            className="w-full"
-          >
-            Remove 
-          </Button>
+          
           <Button
             disabled={isPending}
             type="submit"
             className="w-full"
           >
-            Save 
+            Create 
           </Button>
         </form>
       </Form>
