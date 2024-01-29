@@ -8,6 +8,8 @@ import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
 import { CreateQuestionForm } from "./create-question-form"
 import { EditQuestionForm } from "./edit-question-form"
+import { CreateScorableItemForm } from "./scorable-item/create-form"
+import { UpdateScorableItemForm } from "./scorable-item/update-form"
 
 const ResizePannelGroup = ({
   part
@@ -16,6 +18,7 @@ const ResizePannelGroup = ({
 }) => {
   const [isEditting, setIsEditting] = useState(false)
   const [isEdittingQuestion, setIsEdittingQuestion] = useState(false)
+  const [isEdittingScorableItem, setIsEdittingScorableItem] = useState(false)
   console.log(part.questions)
   return (
     <div className="h-full">
@@ -52,6 +55,7 @@ const ResizePannelGroup = ({
                   <EditQuestionForm question={question} setIsEditting={setIsEdittingQuestion}/>
                 </div>
               ): (
+                <>
                 <div key={question.id} className="flex justify-between items-center">
                   <div>
                     <p>{question.title}</p>
@@ -59,6 +63,24 @@ const ResizePannelGroup = ({
                   </div>
                   <Button onClick={() => setIsEdittingQuestion(true)}>Update</Button>
                 </div>
+                <CreateScorableItemForm question={question}/>
+                {question.scorableItems && (
+                  question.scorableItems.map((scorableItem) => (
+                    isEdittingScorableItem ? (
+                      <div key={scorableItem.id}>
+                        <UpdateScorableItemForm scorableItem={scorableItem} setIsEditting={setIsEdittingScorableItem}/>
+                      </div>
+                    ): (
+                      <div key={scorableItem.id} className=" flex justify-between items-center">
+                        <div>
+                          <p>{scorableItem.content}</p>
+                        </div>
+                        <Button onClick={() => setIsEdittingScorableItem(true)}>Update</Button>
+                      </div>
+                    )
+                  ))
+                )}
+                </>
               )
               
             ))

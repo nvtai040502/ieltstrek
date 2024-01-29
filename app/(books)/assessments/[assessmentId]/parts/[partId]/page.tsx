@@ -23,7 +23,13 @@ const PartIdPage = async ({
           assessmentId: params.assessmentId
         }, include: {
           passage: true,
-          questions: true
+          questions: {
+            where: {
+              partId: params.partId
+            }, include: {
+              scorableItems: true
+            }
+          }
         }
       }
     }
