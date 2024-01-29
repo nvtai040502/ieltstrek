@@ -55,46 +55,64 @@ const ResizePannelGroup = ({
           </Dialog>
           {part.questions && (
             part.questions.map((question) => {
-              // Check if the current question is in update mode
               const isEdittingQuestion = edittingQuestions[question.id];
               return (
-                (
-                  isEdittingQuestion ? (
-                    <UpdateQuestionForm  key={question.id} question={question} setIsEditting={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: false })}/>
-                  ): (
-                    <>
-                    <div key={question.id}>
-                      <div>
-                        <p>{question.content}</p>
-                      </div>
-                      <Button onClick={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: true })}>Update</Button>
-                    </div>
+                <div key={question.id}>
+                <Dialog 
+                  open={isEdittingQuestion}
+                  onOpenChange={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: false })} 
+                  key={question.id}
+                >
+                  <DialogContent>
+                    <UpdateQuestionForm question={question} setIsEditting={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: false })}/>
+                  </DialogContent>
+                </Dialog>
+                <div>
+                  <p>{question.content}</p>
+                </div>
+                <Button onClick={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: true })}>Update</Button>
                     {question.scorableItems && (
                       question.scorableItems.map((scorableItem) => {
                         const isEdittingScorableItem = edittingScorableItems[scorableItem.id];
                         return (
-                          isEdittingScorableItem ? (
-                            <div key={scorableItem.id}>
-                              <UpdateScorableItemForm scorableItem={scorableItem} setIsEditting={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: false })}/>
-                            </div>
-                          ): (
-                            <div key={scorableItem.id} className=" flex justify-between items-center">
+                          <div  key={scorableItem.id}>
+                            <Dialog 
+                              open={isEdittingScorableItem}
+                              onOpenChange={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: false })} 
+                             
+                            >
+                              <DialogContent>
+                                <UpdateScorableItemForm 
+                                  scorableItem={scorableItem} 
+                                  setIsEditting={
+                                    () => setEdittingScorableItems({ 
+                                      ...edittingScorableItems, 
+                                      [scorableItem.id]: false 
+                                      })}
+                                />
+                              </DialogContent>
+                            </Dialog>
+                            
+                            <div className="space-y-2">
                               <div>
                                 <p>{scorableItem.content}</p>
+                                <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
+                                
                                 {question.type === "MULTIPLE_CHOICE" && scorableItem.multipleChoice && (
                                   <MultipleChoiceRender multipleChoice={scorableItem.multipleChoice}/>
                                 )}
+                              
                               </div>
-                              <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
+                              
                             </div>
-                          )
+                            </div>
                         )
                       })
                     )}
-                    </>
-                  )
+                    </div>  
+                
                   
-                )
+                
               )
             })
           )}

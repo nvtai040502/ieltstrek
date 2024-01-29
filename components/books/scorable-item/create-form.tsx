@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CreateQuestionSchema, CreateScorableItemSchema, PassageSchema } from "@/lib/validations/books";
+import { PassageSchema } from "@/lib/validations/books";
 import { PartExtended, QuestionExtended } from "@/types/db";
 import { createQuestion } from "@/actions/books/questions";
 import { Button } from "@/components/ui/button";

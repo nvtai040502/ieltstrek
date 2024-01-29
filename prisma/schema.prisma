@@ -103,7 +103,7 @@ model Choice {
   updatedAt    DateTime     @default(now()) @updatedAt
 
   content String
-  isCorrect Boolean
+  isCorrect Boolean @default(false)
   explanation String?
 
   multipleChoiceId String

@@ -42,6 +42,15 @@ export const QuestionSchema = z.object({
   headerForItems: z.string().optional()
 })
 
+export const ChoiceSchema = z.object({
+  content: z.string().min(1, {
+    message: "Content Choice is required"
+  }),
+  isCorrect: z.boolean(),
+  explanation: z.string().optional()
+})
+
+
 
 export const ScorableItemSchema = z.object({
   content: z.string().min(1, {

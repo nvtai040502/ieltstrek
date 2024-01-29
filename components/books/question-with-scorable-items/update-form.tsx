@@ -134,6 +134,7 @@ export function UpdateQuestionForm ({
               <Button
                 disabled={isPending}
                 variant="ghost"
+                type="reset"
                 onClick={() => setIsEditting(false)}
               >
                 Back 
