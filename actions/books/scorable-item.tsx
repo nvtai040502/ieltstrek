@@ -3,6 +3,27 @@
 import { db } from "@/lib/db";
 import { ScorableItemExtended } from "@/types/db";
 import { MultipleChoice, Passage, QuestionType, ShortAnswer} from "@prisma/client";
+export const createScorableItems = async ({
+  content,
+  questionId,
+  questionType,
+  amountScorableItemNeedToCreate,
+}: {
+  content: string;
+  questionId: string;
+  questionType: QuestionType;
+  amountScorableItemNeedToCreate: number;
+}): Promise<boolean> => {
+  try {
+    Array.from( {length: amountScorableItemNeedToCreate }).map(async () => (
+      await createScorableItem({content: content, questionId: questionId, questionType: questionType})
+    ))
+    return true
+  } catch (error) {
+    console.error("Error creating scorableItem:", error);
+    return false;
+  }
+};
 
 export const createScorableItem = async ({
   content,

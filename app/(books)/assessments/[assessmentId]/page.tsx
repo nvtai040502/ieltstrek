@@ -39,7 +39,6 @@ const AssessmentIdPage = async ({
   if (!assessment) {
     return notFound()
   }
-  console.log(assessment.parts[0].questions[0].scorableItems[0])
   return (
     <div className="max-h-screen h-screen flex flex-col">
       <AssessmentSiteHeader />

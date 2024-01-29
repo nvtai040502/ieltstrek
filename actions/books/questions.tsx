@@ -34,30 +34,35 @@ export const createQuestion = async ({
   }
 };
 
-// export const updateQuestion = async ({
-//   title,
-//   id,
-//   description,
-// }: {
-//   title?: string
-//   description?: string
-//   id: string
-// }) => {
-//   try {
-//     const question = await db.question.update({
-//       where: {
-//         id
-//       },
-//       data: {
-//         title,
-//         decription: description,
-        
-//       },
-//     });
+export const updateQuestion = async ({
+  content,
+  headerForItems,
+  scorableItemsCount,
+  type,
+  id
+}: {
+  content: string
+  headerForItems?: string,
+  type: QuestionType,
+  scorableItemsCount: number
+  id: string
+}) => {
+  try {
+    const question = await db.question.update({
+      where: {
+        id
+      },
+      data: {
+        content,
+        headerForItems,
+        scorableItemsCount,
+        type,
+      },
+    });
 
-//     return question;
-//   } catch (error) {
-//     console.error("Error updating question:", error);
-//     return null;
-//   }
-// };
+    return question;
+  } catch (error) {
+    console.error("Error updating question:", error);
+    return null;
+  }
+};

@@ -5,7 +5,7 @@ export type PartExtended = Part & {
   questions: QuestionExtended[]
 };
 export type ScorableItemExtended = ScorableItem & {
-  multipleChoice: MultipleChoice | null;
+  multipleChoice: MultipleChoiceExtended | null;
 };
 export type MultipleChoiceExtended = MultipleChoice & {
   choices: Choice[]

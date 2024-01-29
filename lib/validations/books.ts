@@ -42,9 +42,9 @@ export const QuestionSchema = z.object({
   headerForItems: z.string().optional()
 })
 
+
 export const ScorableItemSchema = z.object({
   content: z.string().min(1, {
     message: "Content ScorableItem is required"
   }),
- 
 })

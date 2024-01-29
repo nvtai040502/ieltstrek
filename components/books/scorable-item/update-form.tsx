@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CreateQuestionSchema, PassageSchema, UpdateScorableItemSchema } from "@/lib/validations/books";
+import { PassageSchema, ScorableItemSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
 import { createScorableItem, updateScorableItem } from "@/actions/books/scorable-item";
 import { Question, ScorableItem } from "@prisma/client";
@@ -20,15 +20,15 @@ export function UpdateScorableItemForm ({
   setIsEditting: (isEditting: boolean) => void 
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof UpdateScorableItemSchema>>({
-    resolver: zodResolver(UpdateScorableItemSchema),
+  const form = useForm<z.infer<typeof ScorableItemSchema>>({
+    resolver: zodResolver(ScorableItemSchema),
     defaultValues: {
       content: "",
     },
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof UpdateScorableItemSchema>) => {
+  const onSubmit = (values: z.infer<typeof ScorableItemSchema>) => {
     startTransition(async () => {
       
         const scorableItemUpdated = await updateScorableItem({

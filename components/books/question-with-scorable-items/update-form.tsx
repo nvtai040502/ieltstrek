@@ -8,9 +8,10 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Part, Question } from "@prisma/client";
-import { updateQuestion } from "@/actions/books/questions";
+import { Part, Question, QuestionType } from "@prisma/client";
 import { QuestionSchema } from "@/lib/validations/books";
+import { updateQuestion } from "@/actions/books/questions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function UpdateQuestionForm ({
   question,
@@ -23,9 +24,10 @@ export function UpdateQuestionForm ({
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: question.title || "",
-      description: question.decription || "",
-      headerForScorableItems: question.headerForScorableItems || ""
+      content: question.content || "",
+      type: question.type || "MULTIPLE_CHOICE",
+      scorableItemsCount: question.scorableItemsCount || 4,
+      headerForItems: question.headerForItems || ""
     },
   });
   const router= useRouter()
@@ -34,8 +36,10 @@ export function UpdateQuestionForm ({
     startTransition(async () => {
       
         const questionUpdated = await updateQuestion({
-          title: values.title,
-          description: values.description,
+          content: values.content,
+          headerForItems: values.headerForItems,
+          scorableItemsCount: values.scorableItemsCount,
+          type: values.type,
           id: question.id
         });
         if (questionUpdated) {
@@ -60,17 +64,35 @@ export function UpdateQuestionForm ({
         >
           <div className="flex flex-col gap-4">
             
-            <FormField
+          <FormField
               control={form.control}
-              name="title"
+              name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Question Title</FormLabel>
+                  <FormLabel>Question Content</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Question 1-6"
+                      placeholder="Hello"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="scorableItemsCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Number of Scorable Items</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="write a number in here"
+                      type="number"
                     />
                   </FormControl>
                   <FormMessage />
@@ -79,19 +101,31 @@ export function UpdateQuestionForm ({
             />
             <FormField
                 control={form.control}
-                name="description"
+                name="type"
                 render={({ field }) => (
                   <FormItem>
-                  <FormLabel>Question description</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
+                    <FormLabel>Role</FormLabel>
+                    <Select
                       disabled={isPending}
-                      placeholder="Read the text and answer questions"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a type for question" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={QuestionType.MULTIPLE_CHOICE}>
+                          Multiple Choice
+                        </SelectItem>
+                        <SelectItem value={QuestionType.SHORT_ANSWER}>
+                          Short Answer
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
               

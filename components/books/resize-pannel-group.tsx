@@ -6,11 +6,12 @@ import { Button } from "../ui/button"
 import { UpdatePassageForm } from "./passage/update-form"
 import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
-import { CreateQuestionForm } from "./question/create-form"
-import { UpdateQuestionForm } from "./question/update-form"
+import { CreateQuestionForm } from "./question-with-scorable-items/create-form"
+import { UpdateQuestionForm } from "./question-with-scorable-items/update-form"
 import { CreateScorableItemForm } from "./scorable-item/create-form"
 import { UpdateScorableItemForm } from "./scorable-item/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
+import { MultipleChoiceRender } from "./question-type-render/multiple-choice"
 
 const ResizePannelGroup = ({
   part
@@ -19,9 +20,8 @@ const ResizePannelGroup = ({
 }) => {
   const [isEdittingPassage, setIsEdittingPassage] = useState(false)
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false)
-  const [isEdittingScorableItem, setIsEdittingScorableItem] = useState(false)
-  // Use an object to keep track of which questions are in update mode
   const [edittingQuestions, setEdittingQuestions] = useState<{ [key: string]: boolean }>({});
+  const [edittingScorableItems, setEdittingScorableItems] = useState<{ [key: string]: boolean }>({});
   return (
     <div className="h-full">
       <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
@@ -66,27 +66,31 @@ const ResizePannelGroup = ({
                     <div key={question.id}>
                       <div>
                         <p>{question.content}</p>
-                        {/* <p>{question.decription}</p> */}
                       </div>
                       <Button onClick={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: true })}>Update</Button>
                     </div>
-                    {/* <CreateScorableItemForm question={question}/>
                     {question.scorableItems && (
-                      question.scorableItems.map((scorableItem) => (
-                        isEdittingScorableItem ? (
-                          <div key={scorableItem.id}>
-                            <UpdateScorableItemForm scorableItem={scorableItem} setIsEditting={setIsEdittingScorableItem}/>
-                          </div>
-                        ): (
-                          <div key={scorableItem.id} className=" flex justify-between items-center">
-                            <div>
-                              <p>{scorableItem.content}</p>
+                      question.scorableItems.map((scorableItem) => {
+                        const isEdittingScorableItem = edittingScorableItems[scorableItem.id];
+                        return (
+                          isEdittingScorableItem ? (
+                            <div key={scorableItem.id}>
+                              <UpdateScorableItemForm scorableItem={scorableItem} setIsEditting={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: false })}/>
                             </div>
-                            <Button onClick={() => setIsEdittingScorableItem(true)}>Update</Button>
-                          </div>
+                          ): (
+                            <div key={scorableItem.id} className=" flex justify-between items-center">
+                              <div>
+                                <p>{scorableItem.content}</p>
+                                {question.type === "MULTIPLE_CHOICE" && scorableItem.multipleChoice && (
+                                  <MultipleChoiceRender multipleChoice={scorableItem.multipleChoice}/>
+                                )}
+                              </div>
+                              <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
+                            </div>
+                          )
                         )
-                      ))
-                    )} */}
+                      })
+                    )}
                     </>
                   )
                   

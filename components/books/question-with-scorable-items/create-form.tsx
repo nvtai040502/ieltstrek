@@ -13,7 +13,7 @@ import { createQuestion } from "@/actions/books/questions";
 import { QuestionSchema } from "@/lib/validations/books";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { QuestionType } from "@prisma/client";
-import { createScorableItem } from "@/actions/books/scorable-item";
+import { createScorableItem, createScorableItems } from "@/actions/books/scorable-item";
 
 export function CreateQuestionForm ({
   part, 
@@ -29,7 +29,7 @@ export function CreateQuestionForm ({
       content: "",
       headerForItems: "",
       type: "MULTIPLE_CHOICE",
-      scorableItemsCount: 1
+      scorableItemsCount: 4
     },
   });
   const router= useRouter()
@@ -44,16 +44,15 @@ export function CreateQuestionForm ({
           partId: part.id
         });
         if (question) {
-          const scorableItem = await createScorableItem({
+          const successfully = await createScorableItems({
             content: "example",
             questionId: question.id,
-            questionType: question.type
+            questionType: question.type,
+            amountScorableItemNeedToCreate: 4
           })
-          // form.reset()
-          // router.refresh()
-          if(scorableItem) {
-            console.log("🚀 ~ startTransition ~ scorableItem:", scorableItem)
-
+          if(successfully) {
+            form.reset()
+            router.refresh()
             toast.success("Successfully created question!")
           }
       }
