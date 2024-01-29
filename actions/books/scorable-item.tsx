@@ -1,29 +1,56 @@
 "use server"
 
 import { db } from "@/lib/db";
-import { Passage} from "@prisma/client";
+import { ScorableItemExtended } from "@/types/db";
+import { MultipleChoice, Passage, QuestionType, ShortAnswer} from "@prisma/client";
 
 export const createScorableItem = async ({
   content,
-  questionId
+  questionId,
+  questionType
 }: {
-  content: string
-  questionId: string
-}) => {
+  content: string;
+  questionId: string;
+  questionType: QuestionType;
+}): Promise<ScorableItemExtended | null> => {
   try {
-    const scorableItem = await db.scorableItem.create({
-      data: {
-        content,
-        questionId
-      },
-    });
+    if (questionType === "MULTIPLE_CHOICE") {
+      const scorableItem: ScorableItemExtended = await db.scorableItem.create({
+        data: {
+          content,
+          questionId,
+          multipleChoice: {
+            create: {
+              choices: {
+                createMany: {
+                  data: [
+                    { content: "Option 1", isCorrect: false },
+                    { content: "Option 2", isCorrect: true },
+                    { content: "Option 3", isCorrect: true },
+                    { content: "Option 4", isCorrect: true }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        include: { multipleChoice: { include: { choices: true } } }
+      });
 
-    return scorableItem;
+      return scorableItem;
+    }
+
+    // Handle other question types here...
+
+    // If you have other question types, add appropriate code here
+
+    return null; // If questionType is not recognized
   } catch (error) {
     console.error("Error creating scorableItem:", error);
     return null;
   }
 };
+
 
 export const updateScorableItem = async ({
   content,

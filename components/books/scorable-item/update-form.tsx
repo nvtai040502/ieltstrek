@@ -84,6 +84,6 @@ export function UpdateScorableItemForm ({
           </Button>
         </form>
       </Form>
-      </div>
+    </div>
   )
 }

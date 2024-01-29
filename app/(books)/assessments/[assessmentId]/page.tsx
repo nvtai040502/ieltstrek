@@ -4,6 +4,7 @@ import ResizePannelGroup from "@/components/books/resize-pannel-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
+import { AssessmentExtended } from "@/types/db";
 
 interface AssessmentIdPageProps {
   params: {
@@ -14,46 +15,45 @@ const AssessmentIdPage = async ({
   params
 }: AssessmentIdPageProps) => {
   
-  
-  const assessment = await db.assessment.findUnique({
+  const assessment: AssessmentExtended | null = await db.assessment.findUnique({
     where: {
       id: params.assessmentId
     }, include: {
-      parts: {
-        where: {
-          assessmentId: params.assessmentId
-        }, include: {
-          passage: {
-            where: {
-              partId: this.parts.id
+      parts: { 
+        include: {
+          passage: true, 
+          questions: {
+            include: { 
+              scorableItems: {
+                include: {
+                  multipleChoice: {include: {choices: true}}
+                }
+              }
             }
           }
-        }
+        } 
       }
     }
   })
-
+  
   if (!assessment) {
     return notFound()
   }
-
+  console.log(assessment.parts[0].questions[0].scorableItems[0])
   return (
     <div className="max-h-screen h-screen flex flex-col">
       <AssessmentSiteHeader />
       <Tabs defaultValue={assessment.parts[0].id} className="overflow-hidden flex flex-col">
         {assessment.parts.map((part) => (
           <TabsContent key={part.id} value={part.id} className="overflow-hidden flex flex-col m-0">
-            {/* The following components are not changed when switching tabs */}
             <PartHeader part={part}/>
             
-            {/* <PartHeaderForm part={part}/> */}
             <div className=" overflow-y-auto">
-              <ResizePannelGroup part={part}/>
+              <ResizePannelGroup part={part} />
             </div>
           </TabsContent>
         ))}
 
-        {/* TabsList remains outside the mapping to avoid multiple instances */}
         <TabsList className="flex justify-between">
           {assessment.parts.map((part, i) => (
             <TabsTrigger key={part.id} value={part.id} className="w-full">

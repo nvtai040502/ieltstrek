@@ -45,16 +45,19 @@ model Part {
   questions Question[]
   passage Passage?
 }
-
+enum QuestionType {
+  MULTIPLE_CHOICE
+  SHORT_ANSWER
+}
 model Question {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
-  decription String
-  headerForScorableItems String?
-  numberScorableItems Int?
+  content String
+  type QuestionType
+  scorableItemsCount Int
+  headerForItems String?
 
   partId String
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
@@ -69,9 +72,31 @@ model ScorableItem {
   
   questionId   String
   question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  multipleChoice MultipleChoice?
+  shortAnswer ShortAnswer?
+}
+model MultipleChoice {
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+
   choices Choice[]
+  scorableItemId String @unique 
+  scorableItem ScorableItem @relation(fields: [scorableItemId], references: [id], onDelete: Cascade)
 }
 
+
+model ShortAnswer {
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+
+  correctAnswer String
+  explanation String? 
+
+  scorableItemId String @unique 
+  scorableItem ScorableItem @relation(fields: [scorableItemId], references: [id], onDelete: Cascade)
+}
 model Choice {
   id           String       @id @default(cuid())
   createdAt    DateTime     @default(now())
@@ -79,9 +104,10 @@ model Choice {
 
   content String
   isCorrect Boolean
+  explanation String?
 
-  scorableItemId   String
-  scorableItem     ScorableItem     @relation(fields: [scorableItemId], references: [id], onDelete: Cascade)
+  multipleChoiceId String
+  multipleChoice MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
 }
 
 model Passage {

@@ -1,21 +1,18 @@
 "use client"
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Part, Question } from "@prisma/client";
-import { createPassage, updatePassage } from "@/actions/books/passages";
-import { PassageSchema, UpdateQuestionSchema } from "@/lib/validations/books";
-import { AutosizeTextarea } from "../ui/autosize-text-area";
-import { PartExtended } from "@/types/db";
 import { updateQuestion } from "@/actions/books/questions";
+import { QuestionSchema } from "@/lib/validations/books";
 
-export function EditQuestionForm ({
+export function UpdateQuestionForm ({
   question,
   setIsEditting
 }: {
@@ -23,16 +20,17 @@ export function EditQuestionForm ({
   setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof UpdateQuestionSchema>>({
-    resolver: zodResolver(UpdateQuestionSchema),
+  const form = useForm<z.infer<typeof QuestionSchema>>({
+    resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: question.title || "",
+      description: question.decription || "",
+      headerForScorableItems: question.headerForScorableItems || ""
     },
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof UpdateQuestionSchema>) => {
+  const onSubmit = (values: z.infer<typeof QuestionSchema>) => {
     startTransition(async () => {
       
         const questionUpdated = await updateQuestion({
@@ -60,18 +58,19 @@ export function EditQuestionForm ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6"
         >
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
+            
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Passage Title</FormLabel>
+                  <FormLabel>Question Title</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Hello"
+                      placeholder="Question 1-6"
                     />
                   </FormControl>
                   <FormMessage />
@@ -83,7 +82,7 @@ export function EditQuestionForm ({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                  <FormLabel>Passage description</FormLabel>
+                  <FormLabel>Question description</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -97,20 +96,22 @@ export function EditQuestionForm ({
               />
               
           </div>
-          <Button
-            disabled={isPending}
-            onClick={() => setIsEditting(false)}
-            className="w-full"
-          >
-            Remove 
-          </Button>
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full"
-          >
-            Save 
-          </Button>
+          <div>
+              <Button
+                disabled={isPending}
+                variant="ghost"
+                onClick={() => setIsEditting(false)}
+              >
+                Back 
+              </Button>
+              <Button
+                disabled={isPending}
+                // variant="ghost"
+                type="submit"
+              >
+                Save 
+              </Button>
+            </div>
         </form>
       </Form>
       </div>

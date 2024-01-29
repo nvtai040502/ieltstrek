@@ -1,3 +1,4 @@
+import { QuestionType } from "@prisma/client";
 import * as z from "zod";
 
 
@@ -29,37 +30,21 @@ export const PassageSchema = z.object({
   description: z.string().optional(),
 })
 
-export const UpdatePassageSchema = z.object({
-  title: z.string().optional(),
-  content: z.string().optional(),
-  imageHeader: z.string().optional(),
-  description: z.string().optional(),
-  numberQuestions: z.number().optional()
+export const QuestionSchema = z.object({
+  content: z.string().min(1, {
+    message: "Content Question is required"
+  }),
+  type: z.enum([
+    QuestionType.MULTIPLE_CHOICE, 
+    QuestionType.SHORT_ANSWER,
+  ]),
+  scorableItemsCount: z.coerce.number().min(1),
+  headerForItems: z.string().optional()
 })
 
-export const CreateQuestionSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title Question is required"
-  }),
-  description: z.string().min(1, {
-    message: "Description Question is required"
-  }),
-  headerForScorableItems: z.string().optional(),
-  // description: z.string().optional(),
-})
-export const UpdateQuestionSchema = z.object({
-  title: z.string().optional(),
-  description: z.string().optional(),
-  headerForScorableItems: z.string().optional(),
-  // description: z.string().optional(),
-})
-
-export const CreateScorableItemSchema = z.object({
+export const ScorableItemSchema = z.object({
   content: z.string().min(1, {
     message: "Content ScorableItem is required"
   }),
  
-})
-export const UpdateScorableItemSchema = z.object({
-  content: z.string().optional(),
 })

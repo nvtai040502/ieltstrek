@@ -1,20 +1,19 @@
 "use client"
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Part } from "@prisma/client";
-import { createPassage, updatePassage } from "@/actions/books/passages";
+import { updatePassage } from "@/actions/books/passages";
 import { PassageSchema } from "@/lib/validations/books";
-import { AutosizeTextarea } from "../ui/autosize-text-area";
+import { AutosizeTextarea } from "../../ui/autosize-text-area";
 import { PartExtended } from "@/types/db";
 
-export function EditPassageForm ({
+export function UpdatePassageForm ({
   part, 
   setIsEditting
 }: {
@@ -25,8 +24,9 @@ export function EditPassageForm ({
   const form = useForm<z.infer<typeof PassageSchema>>({
     resolver: zodResolver(PassageSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: part.passage?.title || "",
+      description: part.passage?.description || "",
+      content: part.passage?.content || ""
     },
   });
   const router= useRouter()
@@ -58,11 +58,14 @@ export function EditPassageForm ({
   return (
     <div className="px-4">
     <Form {...form}>
+
         <form 
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
+          className="space-y-6 "
         >
-          <div className="space-y-4">
+          
+          <div className="flex flex-col gap-4">
+            
             <FormField
               control={form.control}
               name="title"
@@ -116,22 +119,24 @@ export function EditPassageForm ({
                 )}
               />
           </div>
-          <Button
-            disabled={isPending}
-            onClick={() => setIsEditting(false)}
-            className="w-full"
-          >
-            Remove 
-          </Button>
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full"
-          >
-            Save 
-          </Button>
+          <div>
+              <Button
+                disabled={isPending}
+                variant="ghost"
+                onClick={() => setIsEditting(false)}
+              >
+                Back 
+              </Button>
+              <Button
+                disabled={isPending}
+                // variant="ghost"
+                type="submit"
+              >
+                Save 
+              </Button>
+            </div>
         </form>
       </Form>
-      </div>
+    </div>
   )
 }

@@ -1,22 +1,28 @@
 "use server"
 
 import { db } from "@/lib/db";
-import { Passage} from "@prisma/client";
+import { Passage, QuestionType} from "@prisma/client";
 
 export const createQuestion = async ({
-  title,
-  description,
+  content,
+  headerForItems,
+  scorableItemsCount,
+  type,
   partId
 }: {
-  title: string
-  description: string,
+  content: string
+  headerForItems?: string,
+  type: QuestionType,
+  scorableItemsCount: number
   partId: string
 }) => {
   try {
     const question = await db.question.create({
       data: {
-        title,
-        decription: description,
+        content,
+        headerForItems,
+        scorableItemsCount,
+        type,
         partId
       },
     });
@@ -28,30 +34,30 @@ export const createQuestion = async ({
   }
 };
 
-export const updateQuestion = async ({
-  title,
-  id,
-  description,
-}: {
-  title?: string
-  description?: string
-  id: string
-}) => {
-  try {
-    const question = await db.question.update({
-      where: {
-        id
-      },
-      data: {
-        title,
-        decription: description,
+// export const updateQuestion = async ({
+//   title,
+//   id,
+//   description,
+// }: {
+//   title?: string
+//   description?: string
+//   id: string
+// }) => {
+//   try {
+//     const question = await db.question.update({
+//       where: {
+//         id
+//       },
+//       data: {
+//         title,
+//         decription: description,
         
-      },
-    });
+//       },
+//     });
 
-    return question;
-  } catch (error) {
-    console.error("Error updating question:", error);
-    return null;
-  }
-};
+//     return question;
+//   } catch (error) {
+//     console.error("Error updating question:", error);
+//     return null;
+//   }
+// };
