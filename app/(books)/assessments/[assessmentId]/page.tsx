@@ -26,7 +26,8 @@ const AssessmentIdPage = async ({
             include: { 
               scorableItems: {
                 include: {
-                  multipleChoice: {include: {choices: true}}
+                  multipleChoice: {include: {choices: true}},
+                  shortAnswer: true
                 }
               }
             }

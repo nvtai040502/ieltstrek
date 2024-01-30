@@ -1,28 +1,28 @@
 "use client"
 import Link from "next/link";
 
-import { MultipleChoiceExtended, ScorableItemExtended } from "@/types/db";
+import { ScorableItemExtended } from "@/types/db";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { UpdateChoiceForm } from "./choice-update-form";
 import { Button } from "@/components/ui/button";
-import { UpdateScorableItemForm } from "../scorable-item/update-form";
+import { UpdateShortAnswerForm } from "./update-form";
+import { Input } from "@/components/ui/input";
 
-interface MultipleChoiceRenderProps {
+interface ShortAnswerRenderProps {
   scorableItems: ScorableItemExtended[]
 };
-export const MultipleChoiceRender = ({
+export const ShortAnswerRender = ({
   scorableItems
-}: MultipleChoiceRenderProps) => {
-  const [edittingChoices, setEdittingChoices] = useState<{ [key: string]: boolean }>({});
+}: ShortAnswerRenderProps) => {
   const [edittingScorableItems, setEdittingScorableItems] = useState<{ [key: string]: boolean }>({});
+  const ref = useRef()
   return (
-    <>
+    <div className="flex gap-2 flex-wrap">
     {scorableItems.map((scorableItem) => {
         const isEdittingScorableItem = edittingScorableItems[scorableItem.id];
-        if (scorableItem.multipleChoice === undefined || scorableItem.multipleChoice === null) {
+        if (scorableItem.shortAnswer === undefined || scorableItem.shortAnswer === null) {
           return null
         }
         return (
@@ -32,7 +32,7 @@ export const MultipleChoiceRender = ({
               onOpenChange={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: false })} 
             >
               <DialogContent>
-                <UpdateScorableItemForm
+                <UpdateShortAnswerForm
                   scorableItem={scorableItem} 
                   setIsEditting={
                     () => setEdittingScorableItems({ 
@@ -42,9 +42,12 @@ export const MultipleChoiceRender = ({
                 />
               </DialogContent>
             </Dialog>
-            <div className="space-y-2">
+            <div className="flex items-center gap-2">
                 <p>{scorableItem.content}</p>
-                  <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
+                <Input className=" border-foreground "/>
+                <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
+                {/* <p>{scorableItem.shortAnswer.correctAnswer}</p> */}
+                  {/* <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
                   <RadioGroup>
                       {scorableItem.multipleChoice.choices.map((choice) => {
                         const isEdittingChoice = edittingChoices[choice.id]
@@ -67,14 +70,14 @@ export const MultipleChoiceRender = ({
                           </div>
                         )
                       })}
-                  </RadioGroup>
+                  </RadioGroup> */}
             </div>
             </div>
         )
       })
     }
     
-    </>
+    </div>
     
   );
 };

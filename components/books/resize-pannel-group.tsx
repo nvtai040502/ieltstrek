@@ -10,7 +10,8 @@ import { CreateQuestionForm } from "./question-with-scorable-items/create-form"
 import { UpdateQuestionForm } from "./question-with-scorable-items/update-form"
 import { UpdateScorableItemForm } from "./scorable-item/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { MultipleChoiceRender } from "./multiple-choice"
+import { MultipleChoiceRender } from "./question-type/multiple-choice"
+import { ShortAnswerRender } from "./question-type/short-anser"
 
 const ResizePannelGroup = ({
   part
@@ -74,7 +75,16 @@ const ResizePannelGroup = ({
                         <MultipleChoiceRender
                           scorableItems={question.scorableItems}
                         />
+                      ),
+                      (
+                        question.type === "SHORT_ANSWER" && (
+                          <ShortAnswerRender
+                            scorableItems={question.scorableItems}
+                          />
+                        )
                       )
+                      
+                      
                     )}
                     </div>  
                 

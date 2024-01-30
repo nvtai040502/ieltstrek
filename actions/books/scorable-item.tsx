@@ -83,6 +83,43 @@ export const createScorableItem = async ({
   }
 };
 
+export const updateScorableItemWithShortAnswer = async ({
+  scorableItemContent,
+  scorableItemId,
+  correctAnswer,
+  explanation
+}: {
+  scorableItemContent?: string
+  correctAnswer: string,
+  explanation?: string,
+  scorableItemId: string
+}) => {
+  try {
+    const scorableItem = await db.scorableItem.update({
+      where: {
+        id: scorableItemId
+      },
+      data: {
+        content: scorableItemContent,
+        shortAnswer: {
+          update: {
+            data: {
+              correctAnswer,
+              explanation
+            }
+          }
+        }
+      },
+      include: {shortAnswer: true}
+    });
+
+    return scorableItem;
+  } catch (error) {
+    console.error("Error updating scorableItem:", error);
+    return null;
+  }
+};
+
 
 export const updateScorableItem = async ({
   content,

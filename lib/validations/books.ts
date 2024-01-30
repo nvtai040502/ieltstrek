@@ -50,6 +50,15 @@ export const ChoiceSchema = z.object({
   explanation: z.string().optional()
 })
 
+export const ScorableItemWithShortAnswerSchema = z.object({
+  scorableItemContent: z.string().min(1, {
+    message: "Content ScoravleItem is required"
+  }),
+  correctAnswer: z.string().min(1, {
+    message: "Correct Answer is required"
+  }),
+  explanation: z.string().optional()
+})
 
 
 export const ScorableItemSchema = z.object({
