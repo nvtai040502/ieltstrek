@@ -4,19 +4,17 @@ import { db } from "@/lib/db";
 import { ScorableItemExtended } from "@/types/db";
 import { MultipleChoice, Passage, QuestionType, ShortAnswer} from "@prisma/client";
 export const createScorableItems = async ({
-  content,
   questionId,
   questionType,
   amountScorableItemNeedToCreate,
 }: {
-  content: string;
   questionId: string;
   questionType: QuestionType;
   amountScorableItemNeedToCreate: number;
 }): Promise<boolean> => {
   try {
     Array.from( {length: amountScorableItemNeedToCreate }).map(async () => (
-      await createScorableItem({content: content, questionId: questionId, questionType: questionType})
+      await createScorableItem({questionId: questionId, questionType: questionType})
     ))
     return true
   } catch (error) {
@@ -26,11 +24,9 @@ export const createScorableItems = async ({
 };
 
 export const createScorableItem = async ({
-  content,
   questionId,
   questionType
 }: {
-  content: string;
   questionId: string;
   questionType: QuestionType;
 }): Promise<ScorableItemExtended | null> => {
@@ -38,10 +34,10 @@ export const createScorableItem = async ({
     if (questionType === "MULTIPLE_CHOICE") {
       const scorableItem: ScorableItemExtended = await db.scorableItem.create({
         data: {
-          content,
           questionId,
           multipleChoice: {
             create: {
+              title: "example",
               choices: {
                 createMany: {
                   data: [
@@ -62,11 +58,11 @@ export const createScorableItem = async ({
     } else if (questionType === "SHORT_ANSWER") {
       const scorableItem: ScorableItemExtended = await db.scorableItem.create({
         data: {
-          content,
           questionId,
           shortAnswer: {
             create: {
-              correctAnswer: "example"
+              sentence: "Hello, What you name and how old are you?",
+              blank: "What"
             }
           }
         },
@@ -83,65 +79,4 @@ export const createScorableItem = async ({
   }
 };
 
-export const updateScorableItemWithShortAnswer = async ({
-  scorableItemContent,
-  scorableItemId,
-  correctAnswer,
-  explanation
-}: {
-  scorableItemContent?: string
-  correctAnswer: string,
-  explanation?: string,
-  scorableItemId: string
-}) => {
-  try {
-    const scorableItem = await db.scorableItem.update({
-      where: {
-        id: scorableItemId
-      },
-      data: {
-        content: scorableItemContent,
-        shortAnswer: {
-          update: {
-            data: {
-              correctAnswer,
-              explanation
-            }
-          }
-        }
-      },
-      include: {shortAnswer: true}
-    });
 
-    return scorableItem;
-  } catch (error) {
-    console.error("Error updating scorableItem:", error);
-    return null;
-  }
-};
-
-
-export const updateScorableItem = async ({
-  content,
-  id,
-}: {
-  content?: string
-  id: string
-}) => {
-  try {
-    const scorableItem = await db.scorableItem.update({
-      where: {
-        id
-      },
-      data: {
-        content
-        
-      },
-    });
-
-    return scorableItem;
-  } catch (error) {
-    console.error("Error updating scorableItem:", error);
-    return null;
-  }
-};

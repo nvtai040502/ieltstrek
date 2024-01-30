@@ -7,13 +7,12 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChoiceSchema, PassageSchema, ScorableItemSchema } from "@/lib/validations/books";
+import { ChoiceSchema, PassageSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
-import { createScorableItem, updateScorableItem } from "@/actions/books/scorable-item";
 import { Choice, Question, ScorableItem } from "@prisma/client";
-import { updateChoice } from "@/actions/books/choice";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { updateChoice } from "@/actions/books/multiple-choice";
 
 export function UpdateChoiceForm ({
   choice,

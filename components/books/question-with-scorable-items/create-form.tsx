@@ -45,10 +45,9 @@ export function CreateQuestionForm ({
         });
         if (question) {
           const successfully = await createScorableItems({
-            content: "example",
             questionId: question.id,
             questionType: question.type,
-            amountScorableItemNeedToCreate: 4
+            amountScorableItemNeedToCreate: values.scorableItemsCount
           })
           if(successfully) {
             form.reset()

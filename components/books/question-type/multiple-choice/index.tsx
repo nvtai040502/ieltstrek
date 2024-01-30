@@ -6,9 +6,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { UpdateChoiceForm } from "./choice-update-form";
+import { UpdateChoiceForm } from "./choice/choice-update-form";
 import { Button } from "@/components/ui/button";
-import { UpdateScorableItemForm } from "../../scorable-item/update-form";
+import { UpdateMultipleChoiceForm } from "./update-form";
 
 interface MultipleChoiceRenderProps {
   scorableItems: ScorableItemExtended[]
@@ -16,6 +16,7 @@ interface MultipleChoiceRenderProps {
 export const MultipleChoiceRender = ({
   scorableItems
 }: MultipleChoiceRenderProps) => {
+  console.log(scorableItems)
   const [edittingChoices, setEdittingChoices] = useState<{ [key: string]: boolean }>({});
   const [edittingScorableItems, setEdittingScorableItems] = useState<{ [key: string]: boolean }>({});
   return (
@@ -32,8 +33,8 @@ export const MultipleChoiceRender = ({
               onOpenChange={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: false })} 
             >
               <DialogContent>
-                <UpdateScorableItemForm
-                  scorableItem={scorableItem} 
+                <UpdateMultipleChoiceForm
+                  multipleChoice={scorableItem.multipleChoice} 
                   setIsEditting={
                     () => setEdittingScorableItems({ 
                       ...edittingScorableItems, 
@@ -43,7 +44,7 @@ export const MultipleChoiceRender = ({
               </DialogContent>
             </Dialog>
             <div className="space-y-2">
-                <p>{scorableItem.content}</p>
+                <p>{scorableItem.multipleChoice.title}</p>
                   <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
                   <RadioGroup>
                       {scorableItem.multipleChoice.choices.map((choice) => {

@@ -7,41 +7,42 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { PassageSchema, ScorableItemSchema } from "@/lib/validations/books";
+import { MultipleChoiceSchema, PassageSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
-import { createScorableItem, updateScorableItem } from "@/actions/books/scorable-item";
-import { Question, ScorableItem } from "@prisma/client";
+import { createScorableItem } from "@/actions/books/scorable-item";
+import { MultipleChoice, Question, ScorableItem } from "@prisma/client";
+import { updateMultipleChoice } from "@/actions/books/multiple-choice";
 
-export function UpdateScorableItemForm ({
-  scorableItem, 
+export function UpdateMultipleChoiceForm ({
+  multipleChoice, 
   setIsEditting
 }: {
-  scorableItem: ScorableItem,
+  multipleChoice: MultipleChoice,
   setIsEditting: (isEditting: boolean) => void 
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof ScorableItemSchema>>({
-    resolver: zodResolver(ScorableItemSchema),
+  const form = useForm<z.infer<typeof MultipleChoiceSchema>>({
+    resolver: zodResolver(MultipleChoiceSchema),
     defaultValues: {
-      content: "",
+      title: multipleChoice.title || "",
     },
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof ScorableItemSchema>) => {
+  const onSubmit = (values: z.infer<typeof MultipleChoiceSchema>) => {
     startTransition(async () => {
       
-        const scorableItemUpdated = await updateScorableItem({
-          content: values.content,
-          id: scorableItem.id
+        const multipleChoiceUpdated = await updateMultipleChoice({
+          title: values.title,
+          id: multipleChoice.id
         });
-        if (scorableItemUpdated) {
-          toast.success("Successfully updated scorableItem!")
+        if (multipleChoiceUpdated) {
+          toast.success("Successfully updated multipleChoice!")
           form.reset()
           router.refresh()
       }
        else {
-        toast("Failed to update scorableItem");
+        toast("Failed to update multipleChoice");
       }
     })
     setIsEditting(false)
@@ -57,7 +58,7 @@ export function UpdateScorableItemForm ({
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="content"
+              name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Passage Title</FormLabel>

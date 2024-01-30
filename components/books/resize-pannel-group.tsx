@@ -8,7 +8,6 @@ import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
 import { CreateQuestionForm } from "./question-with-scorable-items/create-form"
 import { UpdateQuestionForm } from "./question-with-scorable-items/update-form"
-import { UpdateScorableItemForm } from "./scorable-item/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { MultipleChoiceRender } from "./question-type/multiple-choice"
 import { ShortAnswerRender } from "./question-type/short-anser"
@@ -55,6 +54,7 @@ const ResizePannelGroup = ({
           {part.questions && (
             part.questions.map((question) => {
               const isEdittingQuestion = edittingQuestions[question.id];
+              console.log(question.scorableItems)
               return (
                 <div key={question.id}>
                 <Dialog 
@@ -75,16 +75,14 @@ const ResizePannelGroup = ({
                         <MultipleChoiceRender
                           scorableItems={question.scorableItems}
                         />
-                      ),
-                      (
-                        question.type === "SHORT_ANSWER" && (
-                          <ShortAnswerRender
-                            scorableItems={question.scorableItems}
-                          />
-                        )
                       )
-                      
-                      
+                      // (
+                      //   question.type === "SHORT_ANSWER" && (
+                      //     <ShortAnswerRender
+                      //       scorableItems={question.scorableItems}
+                      //     />
+                      //   )
+                      // )
                     )}
                     </div>  
                 

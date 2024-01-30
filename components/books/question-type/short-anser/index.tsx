@@ -17,7 +17,6 @@ export const ShortAnswerRender = ({
   scorableItems
 }: ShortAnswerRenderProps) => {
   const [edittingScorableItems, setEdittingScorableItems] = useState<{ [key: string]: boolean }>({});
-  const ref = useRef()
   return (
     <div className="flex gap-2 flex-wrap">
     {scorableItems.map((scorableItem) => {
