@@ -8,40 +8,40 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { updatePassage } from "@/actions/books/passages";
+import { createPassage, updatePassage } from "@/actions/books/passages";
 import { PassageSchema } from "@/lib/validations/books";
 import { AutosizeTextarea } from "../../ui/autosize-text-area";
 import { PartExtended } from "@/types/db";
 import { Passage } from "@prisma/client";
 
-export function UpdatePassageForm ({
-  passage, 
+export function CreatePassageForm ({
+  partId,
   setIsEditting
 }: {
-  passage: Passage, 
+  partId: string
   setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof PassageSchema>>({
     resolver: zodResolver(PassageSchema),
     defaultValues: {
-      title: passage.title || "",
-      description: passage.description || "",
-      content: passage.content || ""
+      title: "",
+      description: "",
+      content: ""
     },
   });
   const router= useRouter()
 
   const onSubmit = (values: z.infer<typeof PassageSchema>) => {
     startTransition(async () => {
-      const passageUpdated = await updatePassage({
+      const passage = await createPassage({
         title: values.title,
         description: values.description,
         content: values.content,
-        id: passage.id
+        partId
       });
-      if (passageUpdated) {
-        toast.success("Successfully updated Passage!")
+      if (passage) {
+        toast.success("Successfully create passage!")
         form.reset()
         router.refresh()
       } else {
