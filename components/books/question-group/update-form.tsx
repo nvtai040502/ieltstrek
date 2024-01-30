@@ -8,58 +8,51 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { PartExtended } from "@/types/db";
-import { createQuestion } from "@/actions/books/questions";
-import { QuestionSchema } from "@/lib/validations/books";
+import { Part, Question, QuestionType } from "@prisma/client";
+import { QuestionGroupSchema } from "@/lib/validations/books";
+import { updateQuestion } from "@/actions/books/questionGroup";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { QuestionType } from "@prisma/client";
-import { createScorableItem, createScorableItems } from "@/actions/books/scorable-item";
 
-export function CreateQuestionForm ({
-  part, 
-  setIsCreatingQuestion
+export function UpdateQuestionForm ({
+  question,
+  setIsEditting
 }: {
-  part: PartExtended, 
-  setIsCreatingQuestion: (isCreatingQuestion: boolean) => void
+  question: Question 
+  setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof QuestionSchema>>({
-    resolver: zodResolver(QuestionSchema),
+  const form = useForm<z.infer<typeof QuestionGroupSchema>>({
+    resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
-      content: "",
-      headerForItems: "",
-      type: "MULTIPLE_CHOICE",
-      scorableItemsCount: 4
+      content: question.content || "",
+      type: question.type || "MULTIPLE_CHOICE",
+      scorableItemsCount: question.scorableItemsCount || 4,
+      headerForItems: question.headerForItems || ""
     },
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof QuestionSchema>) => {
+  const onSubmit = (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
-        const question = await createQuestion({
+      
+        const questionUpdated = await updateQuestion({
           content: values.content,
           headerForItems: values.headerForItems,
-          type: values.type,
           scorableItemsCount: values.scorableItemsCount,
-          partId: part.id
+          type: values.type,
+          id: question.id
         });
-        if (question) {
-          const successfully = await createScorableItems({
-            questionId: question.id,
-            questionType: question.type,
-            amountScorableItemNeedToCreate: values.scorableItemsCount
-          })
-          if(successfully) {
-            form.reset()
-            router.refresh()
-            toast.success("Successfully created question!")
-          }
+        if (questionUpdated) {
+          toast.success("Successfully updating question!")
+          form.reset()
+          router.refresh()
       }
+      
        else {
-        toast("Failed to create question");
+        toast("Failed to update question");
       }
     })
-    setIsCreatingQuestion(false)
+    setIsEditting(false)
     
   };
   return (
@@ -69,8 +62,9 @@ export function CreateQuestionForm ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6"
         >
-          <div className="space-y-4">
-            <FormField
+          <div className="flex flex-col gap-4">
+            
+          <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
@@ -136,14 +130,23 @@ export function CreateQuestionForm ({
               />
               
           </div>
-          
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full"
-          >
-            Create 
-          </Button>
+          <div>
+              <Button
+                disabled={isPending}
+                variant="ghost"
+                type="reset"
+                onClick={() => setIsEditting(false)}
+              >
+                Back 
+              </Button>
+              <Button
+                disabled={isPending}
+                // variant="ghost"
+                type="submit"
+              >
+                Save 
+              </Button>
+            </div>
         </form>
       </Form>
       </div>

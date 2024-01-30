@@ -22,7 +22,7 @@ const AssessmentIdPage = async ({
       parts: { 
         include: {
           passage: true, 
-          questions: {
+          questionGroups: {
             include: { 
               scorableItems: {
                 include: {

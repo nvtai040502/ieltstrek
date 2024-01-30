@@ -33,17 +33,28 @@ export const PassageSchema = z.object({
   description: z.string().optional(),
 })
 
-export const QuestionSchema = z.object({
-  content: z.string().min(1, {
-    message: "Content Question is required"
+export const QuestionGroupSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title for the Question Group is required",
   }),
-  type: z.enum([
-    QuestionType.MULTIPLE_CHOICE, 
-    QuestionType.SHORT_ANSWER,
-  ]),
-  scorableItemsCount: z.coerce.number().min(1),
-  headerForItems: z.string().optional()
+  description: z.string().optional(),
+  titleForQuestions: z.string().optional(),
+  type: z.enum([QuestionType.MULTIPLE_CHOICE, QuestionType.SHORT_ANSWER]),
+  startQuestionNumber: z.coerce.number().min(1),
+  endQuestionNumber: z.coerce.number().min(1),
 })
+.refine((data) => {
+  if (data.endQuestionNumber <= data.startQuestionNumber) {
+    return false;
+  }
+
+  return true;
+}, {
+  message: "End question must be larger than start question",
+  path: ["endQuestionNumber"]
+})
+
+
 
 export const ChoiceSchema = z.object({
   content: z.string().min(1, {

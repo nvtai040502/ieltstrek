@@ -41,22 +41,24 @@ model Part {
 
   assessmentId String
   assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  questions Question[]
+  questionGroups QuestionGroup[]
   passage Passage?
 }
 enum QuestionType {
   MULTIPLE_CHOICE
   SHORT_ANSWER
 }
-model Question {
+model QuestionGroup {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  content String
+  title String
+  description String?
+  startQuestionNumber Int
+  endQuestionNumber Int
   type QuestionType
-  scorableItemsCount Int
-  headerForItems String?
+  titleForQuestions String?
 
   partId String
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
@@ -69,7 +71,7 @@ model ScorableItem {
 
   
   questionId   String
-  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionGroup QuestionGroup @relation(fields: [questionId], references: [id], onDelete: Cascade)
   multipleChoice MultipleChoice?
   shortAnswer ShortAnswer?
 }

@@ -6,13 +6,13 @@ import { Button } from "../ui/button"
 import { UpdatePassageForm } from "./passage/update-form"
 import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
-import { CreateQuestionForm } from "./question-with-scorable-items/create-form"
-import { UpdateQuestionForm } from "./question-with-scorable-items/update-form"
+import { UpdateQuestionForm } from "./question-group/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { MultipleChoiceRender } from "./question-type/multiple-choice"
 import { ShortAnswerRender } from "./question-type/short-anser"
 import { UpdatePartForm } from "./part/update-form"
 import { PassageRender } from "./passage/render"
+import { CreateQuestionGroupForm } from "./question-group/create-form"
 
 const ResizePannelGroup = ({
   part
@@ -37,37 +37,38 @@ const ResizePannelGroup = ({
           <Button onClick={() => setIsCreatingQuestion(true)}>Create</Button>
           <Dialog onOpenChange={setIsCreatingQuestion} open={isCreatingQuestion}>
             <DialogContent>
-              <CreateQuestionForm part={part} setIsCreatingQuestion={setIsCreatingQuestion}/>
+              <CreateQuestionGroupForm partId={part.id} setIsCreating={setIsCreatingQuestion}/>
             </DialogContent>
           </Dialog>
-          {part.questions && (
-            part.questions.map((question) => {
-              const isEdittingQuestion = edittingQuestions[question.id];
+          {part.questionGroups && (
+            part.questionGroups.map((questionGroup) => {
+              const isEdittingQuestion = edittingQuestions[questionGroup.id];
               return (
-                <div key={question.id}>
+                <div key={questionGroup.id}>
                 <Dialog 
                   open={isEdittingQuestion}
-                  onOpenChange={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: false })} 
-                  key={question.id}
+                  onOpenChange={() => setEdittingQuestions({ ...edittingQuestions, [questionGroup.id]: false })} 
+                  key={questionGroup.id}
                 >
                   <DialogContent>
-                    <UpdateQuestionForm question={question} setIsEditting={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: false })}/>
+                    <UpdateQuestionForm question={questionGroup} setIsEditting={() => setEdittingQuestions({ ...edittingQuestions, [questionGroup.id]: false })}/>
                   </DialogContent>
                 </Dialog>
                 <div>
-                  <p>{question.content}</p>
+                  <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
+                  <p className=" whitespace-pre-line">{questionGroup.title}</p>
                 </div>
-                <Button onClick={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: true })}>Update</Button>
-                    {question.scorableItems && (
-                      question.type === "MULTIPLE_CHOICE" && (
+                <Button onClick={() => setEdittingQuestions({ ...edittingQuestions, [questionGroup.id]: true })}>Update</Button>
+                    {questionGroup.scorableItems && (
+                      questionGroup.type === "MULTIPLE_CHOICE" && (
                         <MultipleChoiceRender
-                          scorableItems={question.scorableItems}
+                          scorableItems={questionGroup.scorableItems}
                         />
                       ),
                       (
-                        question.type === "SHORT_ANSWER" && (
+                        questionGroup.type === "SHORT_ANSWER" && (
                           <ShortAnswerRender
-                            scorableItems={question.scorableItems}
+                            scorableItems={questionGroup.scorableItems}
                           />
                         )
                       )
