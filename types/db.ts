@@ -1,10 +1,10 @@
-import { Assessment, Choice, MultipleChoice, Part, Passage, QuestionGroup, ScorableItem, ShortAnswer } from "@prisma/client";
+import { Assessment, Choice, MultipleChoice, Part, Passage, Question, QuestionGroup, ShortAnswer } from "@prisma/client";
 
 export type PartExtended = Part & {
   passage: Passage | null;
   questionGroups: QuestionGroupExtended[]
 };
-export type ScorableItemExtended = ScorableItem & {
+export type QuestionExtended = Question & {
   multipleChoice?: MultipleChoiceExtended | null;
   shortAnswer?: ShortAnswer | null;
 };
@@ -13,7 +13,7 @@ export type MultipleChoiceExtended = MultipleChoice & {
 }
 
 export type QuestionGroupExtended = QuestionGroup & {
-  scorableItems: ScorableItemExtended[]
+  questions: QuestionExtended[]
 }
 
 export type AssessmentExtended = Assessment & {

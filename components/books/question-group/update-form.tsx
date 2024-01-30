@@ -7,7 +7,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionGroup } from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
-import { updateQuestionGroup } from "@/actions/books/questionGroup";
+import { updateQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
 
 export function UpdateQuestionGroupForm ({

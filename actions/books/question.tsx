@@ -1,40 +1,40 @@
 "use server"
 
 import { db } from "@/lib/db";
-import { ScorableItemExtended } from "@/types/db";
-import { MultipleChoice, Passage, QuestionType, ShortAnswer} from "@prisma/client";
-export const createScorableItems = async ({
-  questionId,
+import { QuestionExtended } from "@/types/db";
+import { QuestionType } from "@prisma/client";
+export const createQuestions = async ({
+  questionGroupId,
   questionType,
-  amountScorableItemNeedToCreate,
+  numberQuestionsToCreate,
 }: {
-  questionId: string;
+  questionGroupId: string;
   questionType: QuestionType;
-  amountScorableItemNeedToCreate: number;
+  numberQuestionsToCreate: number;
 }): Promise<boolean> => {
   try {
-    Array.from( {length: amountScorableItemNeedToCreate }).map(async () => (
-      await createScorableItem({questionId: questionId, questionType: questionType})
+    Array.from( {length: numberQuestionsToCreate }).map(async () => (
+      await createQuestion({questionGroupId, questionType: questionType})
     ))
     return true
   } catch (error) {
-    console.error("Error creating scorableItem:", error);
+    console.error("Error creating questions:", error);
     return false;
   }
 };
 
-export const createScorableItem = async ({
-  questionId,
+export const createQuestion = async ({
+  questionGroupId,
   questionType
 }: {
-  questionId: string;
+  questionGroupId: string;
   questionType: QuestionType;
-}): Promise<ScorableItemExtended | null> => {
+}): Promise<QuestionExtended | null> => {
   try {
     if (questionType === "MULTIPLE_CHOICE") {
-      const scorableItem: ScorableItemExtended = await db.scorableItem.create({
+      const question: QuestionExtended = await db.question.create({
         data: {
-          questionId,
+          questionGroupId,
           multipleChoice: {
             create: {
               title: "example",
@@ -54,11 +54,11 @@ export const createScorableItem = async ({
         include: { multipleChoice: { include: { choices: true } } }
       }) 
 
-      return scorableItem;
+      return question;
     } else if (questionType === "SHORT_ANSWER") {
-      const scorableItem: ScorableItemExtended = await db.scorableItem.create({
+      const question: QuestionExtended = await db.question.create({
         data: {
-          questionId,
+          questionGroupId,
           shortAnswer: {
             create: {
               sentence: "Hello, What you name and how old are you?",
@@ -68,13 +68,13 @@ export const createScorableItem = async ({
         },
         include: { shortAnswer: true }
       })
-      return scorableItem;
+      return question;
       
     }
 
     return null; // If questionType is not recognized
   } catch (error) {
-    console.error("Error creating scorableItem:", error);
+    console.error("Error creating question:", error);
     return null;
   }
 };

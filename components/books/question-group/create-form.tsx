@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionGroupSchema } from "@/lib/validations/books";
-import { createScorableItems } from "@/actions/books/scorable-item";
-import { createQuestionGroup } from "@/actions/books/questionGroup";
+import { createQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
+import { createQuestions } from "@/actions/books/question";
 
 export function CreateQuestionGroupForm ({
   partId, 
@@ -37,11 +37,11 @@ export function CreateQuestionGroupForm ({
           partId
         });
         if (questionGroup) {
-          const amountScorableItemNeedToCreate = questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1
-          const successfully = await createScorableItems({
-            questionId: questionGroup.id,
+          const numberQuestionsToCreate = questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1
+          const successfully = await createQuestions({
+            questionGroupId: questionGroup.id,
             questionType: questionGroup.type,
-            amountScorableItemNeedToCreate
+            numberQuestionsToCreate
           })
           if(successfully) {
             form.reset()

@@ -24,7 +24,7 @@ const AssessmentIdPage = async ({
           passage: true, 
           questionGroups: {
             include: { 
-              scorableItems: {
+              questions: {
                 include: {
                   multipleChoice: {include: {choices: true}},
                   shortAnswer: true

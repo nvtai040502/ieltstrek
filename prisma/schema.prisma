@@ -30,7 +30,6 @@ enum SectionType {
   SPEAKING
 }
 
-
 model Part {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
@@ -62,16 +61,15 @@ model QuestionGroup {
 
   partId String
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
-  scorableItems ScorableItem[]
+  questions Question[]
 }
-model ScorableItem {
+model Question {
   id           String       @id @default(cuid())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @default(now()) @updatedAt
-
   
-  questionId   String
-  questionGroup QuestionGroup @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionGroupId   String
+  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
   multipleChoice MultipleChoice?
   shortAnswer ShortAnswer?
 }
@@ -83,8 +81,8 @@ model MultipleChoice {
   title String
 
   choices Choice[]
-  scorableItemId String @unique 
-  scorableItem ScorableItem @relation(fields: [scorableItemId], references: [id], onDelete: Cascade)
+  questionId String @unique 
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 
@@ -97,8 +95,8 @@ model ShortAnswer {
   blank String?
   explanation String? 
 
-  scorableItemId String @unique 
-  scorableItem ScorableItem @relation(fields: [scorableItemId], references: [id], onDelete: Cascade)
+  questionId String @unique 
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 model Choice {
   id           String       @id @default(cuid())
