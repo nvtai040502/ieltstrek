@@ -57,3 +57,10 @@ export const MultipleChoiceSchema = z.object({
     message: "Title Multiple Choice is required"
   }),
 })
+export const ShortAnswerSchema = z.object({
+  sentence: z.string().min(1, {
+    message: "Sentence ShortAnswer is required"
+  }),
+  blank: z.string().optional(),
+  explanation: z.string().optional()
+})

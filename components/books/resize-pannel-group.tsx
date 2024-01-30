@@ -54,7 +54,6 @@ const ResizePannelGroup = ({
           {part.questions && (
             part.questions.map((question) => {
               const isEdittingQuestion = edittingQuestions[question.id];
-              console.log(question.scorableItems)
               return (
                 <div key={question.id}>
                 <Dialog 
@@ -75,14 +74,14 @@ const ResizePannelGroup = ({
                         <MultipleChoiceRender
                           scorableItems={question.scorableItems}
                         />
+                      ),
+                      (
+                        question.type === "SHORT_ANSWER" && (
+                          <ShortAnswerRender
+                            scorableItems={question.scorableItems}
+                          />
+                        )
                       )
-                      // (
-                      //   question.type === "SHORT_ANSWER" && (
-                      //     <ShortAnswerRender
-                      //       scorableItems={question.scorableItems}
-                      //     />
-                      //   )
-                      // )
                     )}
                     </div>  
                 

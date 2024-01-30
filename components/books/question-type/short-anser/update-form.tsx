@@ -7,38 +7,39 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ScorableItemWithShortAnswerSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
-import { createScorableItem, updateScorableItem, updateScorableItemWithShortAnswer } from "@/actions/books/scorable-item";
 import { ScorableItemExtended } from "@/types/db";
+import { ShortAnswerSchema } from "@/lib/validations/books";
+import { ShortAnswer } from "@prisma/client";
+import { updateShortAnswer } from "@/actions/books/short-answer";
 
 export function UpdateShortAnswerForm ({
-  scorableItem,
+  shortAnswer,
   setIsEditting
 }: {
   setIsEditting: (isEditting: boolean) => void,
-  scorableItem: ScorableItemExtended
+  shortAnswer: ShortAnswer
 }) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof ScorableItemWithShortAnswerSchema>>({
-    resolver: zodResolver(ScorableItemWithShortAnswerSchema),
+  const form = useForm<z.infer<typeof ShortAnswerSchema>>({
+    resolver: zodResolver(ShortAnswerSchema),
     defaultValues: {
-      scorableItemContent: scorableItem.content || "",
-      correctAnswer: scorableItem.shortAnswer?.correctAnswer || "",
-      explanation: scorableItem.shortAnswer?.explanation || ""
+      sentence: shortAnswer.sentence || "",
+      blank: shortAnswer.blank || "",
+      explanation: shortAnswer.explanation || ""
     },
   });
   const router= useRouter()
 
-  const onSubmit = (values: z.infer<typeof ScorableItemWithShortAnswerSchema>) => {
+  const onSubmit = (values: z.infer<typeof ShortAnswerSchema>) => {
     startTransition(async () => {
-        const scorableItemUpdated = await updateScorableItemWithShortAnswer({
-          scorableItemContent: values.scorableItemContent,
+        const shortAnswerUpdated = await updateShortAnswer({
+          sentence: values.sentence,
           explanation: values.explanation,
-          correctAnswer: values.correctAnswer,
-          scorableItemId: scorableItem.id
+          blank: values.blank,
+          id: shortAnswer.id
         });
-        if (scorableItemUpdated) {
+        if (shortAnswerUpdated) {
           toast.success("Successfully updated short anser!")
           form.reset()
           router.refresh()
@@ -60,15 +61,15 @@ export function UpdateShortAnswerForm ({
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="scorableItemContent"
+              name="sentence"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Scorable Item Content</FormLabel>
+                  <FormLabel>Short Answer Sentent</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Hello"
+                      placeholder="You should you '___' to represent for blank"
                     />
                   </FormControl>
                   <FormMessage />
@@ -77,12 +78,12 @@ export function UpdateShortAnswerForm ({
             />
             <FormField
               control={form.control}
-              name="correctAnswer"
+              name="blank"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Correct Answer is</FormLabel>
+                  <FormLabel>Correct Answer</FormLabel>
                   <FormControl>
-                    <Input
+                  <Input
                       {...field}
                       disabled={isPending}
                       placeholder="Hello"

@@ -20,10 +20,12 @@ export const ShortAnswerRender = ({
   return (
     <div className="flex gap-2 flex-wrap">
     {scorableItems.map((scorableItem) => {
-        const isEdittingScorableItem = edittingScorableItems[scorableItem.id];
-        if (scorableItem.shortAnswer === undefined || scorableItem.shortAnswer === null) {
-          return null
-        }
+      const isEdittingScorableItem = edittingScorableItems[scorableItem.id];
+      if (scorableItem.shortAnswer === undefined || scorableItem.shortAnswer === null) {
+        return null
+      }
+      const sentence = scorableItem.shortAnswer.sentence
+      
         return (
           <div  key={scorableItem.id}>
             <Dialog 
@@ -32,7 +34,7 @@ export const ShortAnswerRender = ({
             >
               <DialogContent>
                 <UpdateShortAnswerForm
-                  scorableItem={scorableItem} 
+                  shortAnswer={scorableItem.shortAnswer} 
                   setIsEditting={
                     () => setEdittingScorableItems({ 
                       ...edittingScorableItems, 
@@ -41,35 +43,15 @@ export const ShortAnswerRender = ({
                 />
               </DialogContent>
             </Dialog>
-            <div className="flex items-center gap-2">
-                <p>{scorableItem.content}</p>
-                <Input className=" border-foreground "/>
-                <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
-                {/* <p>{scorableItem.shortAnswer.correctAnswer}</p> */}
-                  {/* <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
-                  <RadioGroup>
-                      {scorableItem.multipleChoice.choices.map((choice) => {
-                        const isEdittingChoice = edittingChoices[choice.id]
-                        return (
-                          <div key={choice.id}>
-                            <Dialog 
-                                open={isEdittingChoice}
-                                onOpenChange={() => setEdittingChoices({ ...edittingChoices, [choice.id]: false })} 
-                              >
-                                <DialogContent>
-                                  <UpdateChoiceForm choice={choice} setIsEditting={() => setEdittingChoices({ ...edittingChoices, [choice.id]: false })}/>
-                                </DialogContent>
-                              </Dialog>
-                            <div className="flex items-center space-x-2 w-full hover:bg-secondary" key={choice.id}>
-                              <RadioGroupItem value={choice.content} id={choice.id} />
-                              <Label htmlFor={choice.id} className="py-4 w-full cursor-pointer">{choice.content}</Label>
-                            </div>
-                            <Button onClick={() => setEdittingChoices({ ...edittingChoices, [choice.id]: true })}>Update</Button>
+            <div className="flex items-center gap-1">
+                {sentence.split(" ").map((word,i) => (
+                  <div key={i}>
+                    {word==="___" ? (<Input className=" border-foreground" />): (<p>{word}</p>)}
 
-                          </div>
-                        )
-                      })}
-                  </RadioGroup> */}
+                  </div>
+                ))}
+                <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
+                
             </div>
             </div>
         )
