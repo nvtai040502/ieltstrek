@@ -1,4 +1,4 @@
-import { CreateAssessmentButton } from "@/components/books/create-assessment-button"
+import { CreateAssessmentButton } from "@/components/books/assessment/create-assessment-button"
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 const RootPage = async () => {

@@ -11,10 +11,13 @@ export const AssessmentSchema = z.object({
 })
 
 
-export const UpdatePartSchema = z.object({
-  title: z.string().optional(),
-  description: z.string().optional(),
-  numberQuestions: z.coerce.number().optional(),
+export const PartSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title Passage is required"
+  }),
+  description: z.string().min(1, {
+    message: "Title Passage is required"
+  }),
 })
 
 

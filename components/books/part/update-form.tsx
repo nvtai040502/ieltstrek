@@ -8,59 +8,65 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CardWrapper } from "../../auth/card-wrapper";
-import { AssessmentSchema, UpdatePartSchema } from "@/lib/validations/books";
-import { createAssessment } from "@/actions/books/assessment";
-import { createAssessmentParts, updatePart } from "@/actions/books/parts";
-import { createUrl } from "@/lib/utils";
-import { Part } from "@prisma/client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import { Part, Question, QuestionType } from "@prisma/client";
+import { PartSchema, QuestionSchema } from "@/lib/validations/books";
+import { updateQuestion } from "@/actions/books/questions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { updatePart } from "@/actions/books/parts";
 
-export function EditPartForm ({part}: {part: Part}) {
+export function UpdatePartForm ({
+  part,
+  setIsEditting
+}: {
+  part: Part 
+  setIsEditting: (isEditting: boolean) => void
+}) {
   const [isPending, startTransition] = useTransition()
-  const form = useForm<z.infer<typeof UpdatePartSchema>>({
-    resolver: zodResolver(UpdatePartSchema),
+  const form = useForm<z.infer<typeof PartSchema>>({
+    resolver: zodResolver(PartSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: part.title || "",
+      description: part.description || "",
     },
   });
   const router= useRouter()
-  const onSubmit = (values: z.infer<typeof UpdatePartSchema>) => {
+
+  const onSubmit = (values: z.infer<typeof PartSchema>) => {
     startTransition(async () => {
-      const partUpdated = await updatePart({
-        title: values.title,
-        description: values.description,
-        id: part.id,
-      });
       
-      if (partUpdated) {
-          toast.success("Successfully updated Part!")
+        const partUpdated = await updatePart({
+          title: values.title,
+          description: values.description,
+          id: part.id
+        });
+        if (partUpdated) {
+          toast.success("Successfully updating part!")
           form.reset()
           router.refresh()
-      } else {
-        toast("Failed to update Part");
+      }
+      
+       else {
+        toast("Failed to update part");
       }
     })
-
+    setIsEditting(false)
     
   };
   return (
-    <CardWrapper
-      headerLabel="Change Part"
-    >
+    <div className="px-4">
     <Form {...form}>
         <form 
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6"
         >
-          <div className="space-y-4">
-            <FormField
+          <div className="flex flex-col gap-4">
+            
+          <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Part Title</FormLabel>
+                  <FormLabel>Part title</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -73,51 +79,43 @@ export function EditPartForm ({part}: {part: Part}) {
               )}
             />
             <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                  <FormLabel>Part description</FormLabel>
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Part Description</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="Read the text and answer questions 1–13."
+                      placeholder="write a number in here"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="numberQuestions"
-                render={({ field }) => (
-                  <FormItem>
-                  <FormLabel>numberQuestions</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="1"
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                )}
-              />
+              )}
+            />
+              
           </div>
-          
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="w-full"
-          >
-            Update 
-          </Button>
+          <div>
+              <Button
+                disabled={isPending}
+                variant="ghost"
+                type="reset"
+                onClick={() => setIsEditting(false)}
+              >
+                Back 
+              </Button>
+              <Button
+                disabled={isPending}
+                // variant="ghost"
+                type="submit"
+              >
+                Save 
+              </Button>
+            </div>
         </form>
       </Form>
-      </CardWrapper>
+      </div>
   )
 }

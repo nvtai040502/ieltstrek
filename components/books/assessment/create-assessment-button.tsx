@@ -8,27 +8,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LoginForm } from "@/components/auth/login-form";
-import { CreateAssessmentForm } from "./create-assessment-form";
-import { EditPartForm } from "./part/update-form";
-import { Part } from "@prisma/client";
+import { CreateAssessmentForm } from "./create-form";
 
-interface ChangePartButtonProps {
+interface CreateAssessmentButtonProps {
   children: React.ReactNode;
   mode?: "modal" | "redirect",
   asChild?: boolean;
-  part: Part;
 };
 
-export const ChangePartButton = ({
+export const CreateAssessmentButton = ({
   children,
-  mode = "modal",
-  part,
+  mode = "redirect",
   asChild
-}: ChangePartButtonProps) => {
+}: CreateAssessmentButtonProps) => {
   const router = useRouter();
 
   const onClick = () => {
-    // router.push("/books/create-book");
+    router.push("/books/create-book");
   };
 
   if (mode === "modal") {
@@ -38,7 +34,7 @@ export const ChangePartButton = ({
           {children}
         </DialogTrigger>
         <DialogContent className="p-0 w-auto bg-transparent border-none">
-          <EditPartForm part={part}/>
+          <CreateAssessmentForm />
         </DialogContent>
       </Dialog>
     )

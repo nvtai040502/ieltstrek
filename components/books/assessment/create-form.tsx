@@ -1,17 +1,17 @@
 "use client"
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CardWrapper } from "../auth/card-wrapper";
+import { CardWrapper } from "../../auth/card-wrapper";
 import { AssessmentSchema } from "@/lib/validations/books";
 import { createAssessment } from "@/actions/books/assessment";
-import { createAssessmentParts } from "@/actions/books/parts";
+import { createParts } from "@/actions/books/parts";
 import { createUrl } from "@/lib/utils";
 
 export function CreateAssessmentForm () {
@@ -35,8 +35,8 @@ export function CreateAssessmentForm () {
 
       if (assessment) {
         if (assessment.sectionType === "READING") {
-          const partsCreated = await createAssessmentParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
-          if (partsCreated.length) {
+          const successfully = await createParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
+          if (successfully) {
             toast.success("Successfully created assessment!")
             router.push(`/assessments/${assessment.id}`)
           }

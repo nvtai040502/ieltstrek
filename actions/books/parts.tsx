@@ -7,8 +7,8 @@ export const updatePart = async ({
   description,
   id
 }: {
-  title?: string
-  description?: string,
+  title: string
+  description: string,
   id: string,
 }) => {
   try {
@@ -28,29 +28,28 @@ export const updatePart = async ({
     return null;
   }
 };
-
-export const createAssessmentParts = async ({
+export const createParts = async ({
   assessmentId,
-  numberOfPartsToCreate
+  numberOfPartsToCreate,
 }: {
-  assessmentId: string,
-  numberOfPartsToCreate: number
+  assessmentId: string;
+  numberOfPartsToCreate: number;
 }) => {
   try {
-    const parts: Part[] = [];
 
-    for (let i = 0; i < numberOfPartsToCreate; i++) {
-      const part = await db.part.create({
-        data: {
+    await db.part.createMany({
+      data: Array.from({ length: numberOfPartsToCreate }).map((_,i) => {
+        return {
+          title: `Part ${i + 1}`,
+          description: "Description",
           assessmentId
-        },
-      });
-      parts.push(part);
-    }
+        };
+      }),
+    });
 
-    return parts;
+    return true;
   } catch (error) {
     console.error("Error creating assessment parts:", error);
-    return [];
+    return false;
   }
 };

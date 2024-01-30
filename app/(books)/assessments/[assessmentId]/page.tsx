@@ -1,10 +1,10 @@
-import { PartHeader } from "@/components/books/part-header";
 import { AssessmentSiteHeader } from "@/components/books/assessment-side-header";
 import ResizePannelGroup from "@/components/books/resize-pannel-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { AssessmentExtended } from "@/types/db";
+import { PartRender } from "@/components/books/part/part-render";
 
 interface AssessmentIdPageProps {
   params: {
@@ -46,9 +46,8 @@ const AssessmentIdPage = async ({
       <Tabs defaultValue={assessment.parts[0].id} className="overflow-hidden flex flex-col">
         {assessment.parts.map((part) => (
           <TabsContent key={part.id} value={part.id} className="overflow-hidden flex flex-col m-0">
-            <PartHeader part={part}/>
-            
-            <div className=" overflow-y-auto">
+            <PartRender part={part}/>
+            <div className="overflow-y-auto">
               <ResizePannelGroup part={part} />
             </div>
           </TabsContent>

@@ -36,9 +36,8 @@ model Part {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String?
-  description String?
-  numberQuestions Int?
+  title String
+  description String
 
   assessmentId String
   assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)

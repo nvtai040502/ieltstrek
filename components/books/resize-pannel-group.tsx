@@ -11,6 +11,7 @@ import { UpdateQuestionForm } from "./question-with-scorable-items/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { MultipleChoiceRender } from "./question-type/multiple-choice"
 import { ShortAnswerRender } from "./question-type/short-anser"
+import { UpdatePartForm } from "./part/update-form"
 
 const ResizePannelGroup = ({
   part
@@ -25,7 +26,7 @@ const ResizePannelGroup = ({
       <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
         <ResizablePanel defaultSize={50} className="overflow-auto h-full">
           <ScrollArea type="always" className="w-full h-full overflow-auto pl-4 pr-8">
-            {isEdittingPassage ? 
+          {isEdittingPassage ? 
             (
               <UpdatePassageForm part={part} setIsEditting={setIsEdittingPassage}/>
             ): (
@@ -38,7 +39,6 @@ const ResizePannelGroup = ({
               </div>
 
             )}
-            
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>
