@@ -1,33 +1,32 @@
 "use client"
 import { useForm } from "react-hook-form";
-import { Button } from "../../ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
-import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Part, Question, QuestionType } from "@prisma/client";
+import { QuestionGroup } from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
-import { updateQuestion } from "@/actions/books/questionGroup";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { updateQuestionGroup } from "@/actions/books/questionGroup";
+import { QuestionGroupForm } from "./form";
 
-export function UpdateQuestionForm ({
-  question,
+export function UpdateQuestionGroupForm ({
+  questionGroup,
   setIsEditting
 }: {
-  question: Question 
+  questionGroup: QuestionGroup
   setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof QuestionGroupSchema>>({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
-      content: question.content || "",
-      type: question.type || "MULTIPLE_CHOICE",
-      scorableItemsCount: question.scorableItemsCount || 4,
-      headerForItems: question.headerForItems || ""
+      title: questionGroup.title,
+      type: questionGroup.type,
+      startQuestionNumber: questionGroup.startQuestionNumber,
+      endQuestionNumber: questionGroup.endQuestionNumber,
+      description: questionGroup.description || "",
+      titleForQuestions: questionGroup.titleForQuestions || ""
     },
   });
   const router= useRouter()
@@ -35,120 +34,28 @@ export function UpdateQuestionForm ({
   const onSubmit = (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
       
-        const questionUpdated = await updateQuestion({
-          content: values.content,
-          headerForItems: values.headerForItems,
-          scorableItemsCount: values.scorableItemsCount,
+        const questionGroupUpdated = await updateQuestionGroup({
+          title: values.title,
+          titleForQuestions: values.titleForQuestions,
+          startQuestionNumber: values.startQuestionNumber,
           type: values.type,
-          id: question.id
+          id: questionGroup.id,
+          endQuestionNumber: questionGroup.endQuestionNumber
         });
-        if (questionUpdated) {
-          toast.success("Successfully updating question!")
+        if (questionGroupUpdated) {
+          toast.success("Successfully updating questionGroup!")
           form.reset()
           router.refresh()
       }
       
        else {
-        toast("Failed to update question");
+        toast("Failed to update questionGroup");
       }
     })
     setIsEditting(false)
     
   };
   return (
-    <div className="px-4">
-    <Form {...form}>
-        <form 
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
-          <div className="flex flex-col gap-4">
-            
-          <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Question Content</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="Hello"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="scorableItemsCount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Number of Scorable Items</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="write a number in here"
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a type for question" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={QuestionType.MULTIPLE_CHOICE}>
-                          Multiple Choice
-                        </SelectItem>
-                        <SelectItem value={QuestionType.SHORT_ANSWER}>
-                          Short Answer
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-          </div>
-          <div>
-              <Button
-                disabled={isPending}
-                variant="ghost"
-                type="reset"
-                onClick={() => setIsEditting(false)}
-              >
-                Back 
-              </Button>
-              <Button
-                disabled={isPending}
-                // variant="ghost"
-                type="submit"
-              >
-                Save 
-              </Button>
-            </div>
-        </form>
-      </Form>
-      </div>
+    <QuestionGroupForm isPending={isPending} form={form} onSubmit={onSubmit}/>
   )
 }
