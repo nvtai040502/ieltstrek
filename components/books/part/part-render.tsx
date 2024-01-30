@@ -1,6 +1,5 @@
 "use client"
 import { Part } from "@prisma/client";
-import { ChangePartButton } from "./change-part-button";
 import { Button } from "../../ui/button";
 import { PartExtended } from "@/types/db";
 import { Dialog, DialogContent } from "@/components/ui/dialog";

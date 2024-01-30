@@ -8,10 +8,8 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Part, Question, QuestionType } from "@prisma/client";
+import { Part, QuestionType } from "@prisma/client";
 import { PartSchema, QuestionGroupSchema } from "@/lib/validations/books";
-import { updateQuestion } from "@/actions/books/questionGroup";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updatePart } from "@/actions/books/parts";
 
 export function UpdatePartForm ({

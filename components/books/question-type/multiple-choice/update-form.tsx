@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { MultipleChoiceSchema, PassageSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
 import { createScorableItem } from "@/actions/books/scorable-item";
-import { MultipleChoice, Question, ScorableItem } from "@prisma/client";
+import { MultipleChoice, ScorableItem } from "@prisma/client";
 import { updateMultipleChoice } from "@/actions/books/multiple-choice";
 
 export function UpdateMultipleChoiceForm ({
