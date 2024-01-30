@@ -38,7 +38,7 @@ export function CreateAssessmentForm () {
           const partsCreated = await createAssessmentParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
           if (partsCreated.length) {
             toast.success("Successfully created assessment!")
-            router.push(`/assessments/${assessment.id}/parts/${partsCreated[0].id}`)
+            router.push(`/assessments/${assessment.id}`)
           }
         }
       } else {

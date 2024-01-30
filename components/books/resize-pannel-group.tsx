@@ -10,7 +10,7 @@ import { CreateQuestionForm } from "./question-with-scorable-items/create-form"
 import { UpdateQuestionForm } from "./question-with-scorable-items/update-form"
 import { UpdateScorableItemForm } from "./scorable-item/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { MultipleChoiceRender } from "./question-type-render/multiple-choice"
+import { MultipleChoiceRender } from "./multiple-choice"
 
 const ResizePannelGroup = ({
   part
@@ -20,7 +20,6 @@ const ResizePannelGroup = ({
   const [isEdittingPassage, setIsEdittingPassage] = useState(false)
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false)
   const [edittingQuestions, setEdittingQuestions] = useState<{ [key: string]: boolean }>({});
-  const [edittingScorableItems, setEdittingScorableItems] = useState<{ [key: string]: boolean }>({});
   return (
     <div className="h-full">
       <ResizablePanelGroup direction="horizontal" className="rounded-lg flex-grow">
@@ -71,42 +70,11 @@ const ResizePannelGroup = ({
                 </div>
                 <Button onClick={() => setEdittingQuestions({ ...edittingQuestions, [question.id]: true })}>Update</Button>
                     {question.scorableItems && (
-                      question.scorableItems.map((scorableItem) => {
-                        const isEdittingScorableItem = edittingScorableItems[scorableItem.id];
-                        return (
-                          <div  key={scorableItem.id}>
-                            <Dialog 
-                              open={isEdittingScorableItem}
-                              onOpenChange={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: false })} 
-                             
-                            >
-                              <DialogContent>
-                                <UpdateScorableItemForm 
-                                  scorableItem={scorableItem} 
-                                  setIsEditting={
-                                    () => setEdittingScorableItems({ 
-                                      ...edittingScorableItems, 
-                                      [scorableItem.id]: false 
-                                      })}
-                                />
-                              </DialogContent>
-                            </Dialog>
-                            
-                            <div className="space-y-2">
-                              <div>
-                                <p>{scorableItem.content}</p>
-                                <Button onClick={() => setEdittingScorableItems({ ...edittingScorableItems, [scorableItem.id]: true })}>Update</Button>
-                                
-                                {question.type === "MULTIPLE_CHOICE" && scorableItem.multipleChoice && (
-                                  <MultipleChoiceRender multipleChoice={scorableItem.multipleChoice}/>
-                                )}
-                              
-                              </div>
-                              
-                            </div>
-                            </div>
-                        )
-                      })
+                      question.type === "MULTIPLE_CHOICE" && (
+                        <MultipleChoiceRender
+                          scorableItems={question.scorableItems}
+                        />
+                      )
                     )}
                     </div>  
                 

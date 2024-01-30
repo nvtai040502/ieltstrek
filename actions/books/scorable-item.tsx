@@ -56,14 +56,25 @@ export const createScorableItem = async ({
           }
         },
         include: { multipleChoice: { include: { choices: true } } }
-      });
+      }) 
 
       return scorableItem;
+    } else if (questionType === "SHORT_ANSWER") {
+      const scorableItem: ScorableItemExtended = await db.scorableItem.create({
+        data: {
+          content,
+          questionId,
+          shortAnswer: {
+            create: {
+              correctAnswer: "example"
+            }
+          }
+        },
+        include: { shortAnswer: true }
+      })
+      return scorableItem;
+      
     }
-
-    // Handle other question types here...
-
-    // If you have other question types, add appropriate code here
 
     return null; // If questionType is not recognized
   } catch (error) {
