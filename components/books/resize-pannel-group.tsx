@@ -43,7 +43,7 @@ const ResizePannelGroup = ({
             part.questionGroups.map((questionGroup) => {
               const isEdittingQuestionGroup = edittingQuestionGroup[questionGroup.id];
               return (
-                <div key={questionGroup.id}>
+                <div key={questionGroup.id} className="flex flex-col gap-2">
                   <Dialog 
                     open={isEdittingQuestionGroup}
                     onOpenChange={() => setEdittingQuestionGroup({[questionGroup.id]: false })} 
@@ -53,19 +53,23 @@ const ResizePannelGroup = ({
                       <UpdateQuestionGroupForm questionGroup={questionGroup} setIsEditting={() => setEdittingQuestionGroup({[questionGroup.id]: false })}/>
                     </DialogContent>
                   </Dialog>
-                  <div>
-                    <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
-                    <p className=" whitespace-pre-line">{questionGroup.title}</p>
-                    <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
+                  <div className="flex items-center">
+                    <div>
+                      <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
+                      <p className=" whitespace-pre-line">{questionGroup.title}</p>
+                      <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
+                    </div>
+                    <UpdateButton setIsUpdating={() => setEdittingQuestionGroup({ [questionGroup.id]: true })} />
                   </div>
-                  <UpdateButton setIsUpdating={() => setEdittingQuestionGroup({ [questionGroup.id]: true })} />
-                  {questionGroup.questions.map((question) => {
-                    return (
-                      <>
-                        {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender question={question}/>}
-                      </>
-                    )
-                  })}
+                  <div className="flex flex-col gap-4">
+                    {questionGroup.questions.map((question) => {
+                      return (
+                        <div key={question.id} >
+                          {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender question={question}/>}
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>  
               )
             })
