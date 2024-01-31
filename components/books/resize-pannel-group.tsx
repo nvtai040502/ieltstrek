@@ -33,7 +33,9 @@ const ResizePannelGroup = ({
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
         <ScrollArea type="always" className="w-full h-full overflow-auto pl-4 pr-8">
-          <Button onClick={() => setIsCreatingQuestion(true)}>Create</Button>
+          <div className="flex justify-end">
+            <Button onClick={() => setIsCreatingQuestion(true)}>Create</Button>
+          </div>
           <Dialog onOpenChange={setIsCreatingQuestion} open={isCreatingQuestion}>
             <DialogContent>
               <CreateQuestionGroupForm partId={part.id} setIsCreating={setIsCreatingQuestion}/>
@@ -53,12 +55,13 @@ const ResizePannelGroup = ({
                       <UpdateQuestionGroupForm questionGroup={questionGroup} setIsEditting={() => setEdittingQuestionGroup({[questionGroup.id]: false })}/>
                     </DialogContent>
                   </Dialog>
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-between">
                     <div>
                       <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
                       <p className=" whitespace-pre-line">{questionGroup.title}</p>
                       <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
                     </div>
+                    
                     <UpdateButton setIsUpdating={() => setEdittingQuestionGroup({ [questionGroup.id]: true })} />
                   </div>
                   <div className="flex flex-col gap-4">
