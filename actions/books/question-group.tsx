@@ -18,7 +18,7 @@ export const createQuestionGroup = async ({
   type: QuestionType,
   endQuestionNumber: number,
   titleForQuestions?: string
-  partId: string
+  partId: number
 }) => {
   try {
     const questionGroup = await db.questionGroup.create({
@@ -55,7 +55,7 @@ export const updateQuestionGroup = async ({
   type: QuestionType,
   endQuestionNumber: number,
   titleForQuestions?: string
-  id: string
+  id: number
 }) => {
   try {
     const questionGroup = await db.questionGroup.update({

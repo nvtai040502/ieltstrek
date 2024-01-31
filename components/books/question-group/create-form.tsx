@@ -14,7 +14,7 @@ export function CreateQuestionGroupForm ({
   partId, 
   setIsCreating
 }: {
-  partId: string, 
+  partId: number, 
   setIsCreating: (isCreating: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()

@@ -10,7 +10,7 @@ export const updateShortAnswer = async ({
   sentence: string,
   blank?: string,
   explanation?: string,
-  id: string
+  id: number
 }) => {
   try {
     const shortAnswer = await db.shortAnswer.update({

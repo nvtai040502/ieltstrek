@@ -9,7 +9,7 @@ export const createQuestions = async ({
   startQuestionNumber,
   endQuestionNumber
 }: {
-  questionGroupId: string;
+  questionGroupId: number;
   questionType: QuestionType;
   startQuestionNumber: number;
   endQuestionNumber: number
@@ -31,7 +31,7 @@ export const createQuestion = async ({
   questionNumber,
   questionType
 }: {
-  questionGroupId: string;
+  questionGroupId: number;
   questionNumber: number
   questionType: QuestionType;
 }): Promise<QuestionExtended | null> => {

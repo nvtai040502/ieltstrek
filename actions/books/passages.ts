@@ -14,7 +14,7 @@ export const createPassage = async ({
   content: string
   imageHeader?: string
   description?: string
-  partId: string
+  partId: number
 }) => {
   try {
     const passage = await db.passage.create({
@@ -45,7 +45,7 @@ export const updatePassage = async ({
   content: string
   imageHeader?: string
   description?: string
-  id: string
+  id: number
 }) => {
   try {
     const passage = await db.passage.update({

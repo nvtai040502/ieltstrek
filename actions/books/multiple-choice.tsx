@@ -6,7 +6,7 @@ export const updateMultipleChoice = async ({
   id,
 }: {
   title: string
-  id: string
+  id: number
 }) => {
   try {
     const multipleChoice = await db.multipleChoice.update({
@@ -36,7 +36,7 @@ export const updateChoice = async ({
   content: string
   explanation?: string,
   isCorrect: boolean,
-  id: string
+  id: number
 }) => {
   try {
     const question = await db.choice.update({

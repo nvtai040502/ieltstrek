@@ -18,7 +18,7 @@ export function CreatePassageForm ({
   partId,
   setIsEditting
 }: {
-  partId: string
+  partId: number
   setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()

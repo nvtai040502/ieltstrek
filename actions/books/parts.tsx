@@ -9,7 +9,7 @@ export const updatePart = async ({
 }: {
   title: string
   description: string,
-  id: string,
+  id: number,
 }) => {
   try {
     const part = await db.part.update({
@@ -32,7 +32,7 @@ export const createParts = async ({
   assessmentId,
   numberOfPartsToCreate,
 }: {
-  assessmentId: string;
+  assessmentId: number;
   numberOfPartsToCreate: number;
 }) => {
   try {
