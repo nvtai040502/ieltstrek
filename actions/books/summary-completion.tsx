@@ -37,3 +37,36 @@ export const createSummaryCompletion = async ({
     return false;
   }
 };
+export const updateSummaryCompletion = async ({
+  paragraphWithBlanks,
+  expectedAnswers,
+  id
+}: {
+  paragraphWithBlanks: string;
+  expectedAnswers: string[];
+  id: number;
+}) => {
+  try {
+    const summaryCompletionUpdated = await db.summaryCompletion.update({
+      where: { id },
+      data: {
+        paragraphWithBlanks,
+        summaryCompletionItems: {
+          updateMany: expectedAnswers.map((expectedAnswer, index) => ({
+            where: { questionNumber: index + 1, summaryCompletionId: id },
+            data: {
+              expectedAnswer
+            }
+          }))
+        }
+      }
+    });
+
+    return summaryCompletionUpdated; 
+
+  } catch (error) {
+    console.log("Error updating summaryCompletion:", error);
+    throw error; 
+  }
+};
+
