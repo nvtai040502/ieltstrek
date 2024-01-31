@@ -59,8 +59,13 @@ const ResizePannelGroup = ({
                     <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
                   </div>
                   <UpdateButton setIsUpdating={() => setEdittingQuestionGroup({ [questionGroup.id]: true })} />
-                  {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender questions={questionGroup.questions}/>}
-                  {questionGroup.type === "SHORT_ANSWER" && <ShortAnswerRender scorableItems={questionGroup.questions}/>}
+                  {questionGroup.questions.map((question) => {
+                    return (
+                      <>
+                        {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender question={question}/>}
+                      </>
+                    )
+                  })}
                 </div>  
               )
             })
