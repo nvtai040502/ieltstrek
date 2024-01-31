@@ -3,17 +3,15 @@ import { Part } from "@prisma/client"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { Button } from "../ui/button"
-import { UpdatePassageForm } from "./passage/update-form"
 import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
 import { UpdateQuestionGroupForm } from "./question-group/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { MultipleChoiceRender } from "./question-type/multiple-choice/render"
-// import { SummaryCompletionRender } from "./question-type/summary-completion"
 import { PassageRender } from "./passage/render"
 import { CreateQuestionGroupForm } from "./question-group/create-form"
 import { UpdateButton } from "./update-button"
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice"
+import { SummaryCompletionRender } from "./question-type/summary-completion"
 
 const ResizePannelGroup = ({
   part
@@ -67,7 +65,7 @@ const ResizePannelGroup = ({
 
                   
                   {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceArrayRender multipleChoiceArray={questionGroup.multipleChoiceArray} />}
-                  {/* {questionGroup.type === "SUMMARY_COMPLETION" && <SummaryCompletionRender question={questionGroup.summaryCompletion}/>} */}
+                  {questionGroup.type === "SUMMARY_COMPLETION" && <SummaryCompletionRender summaryCompletion={questionGroup.summaryCompletion}/>}
                 </div>  
               )
             })

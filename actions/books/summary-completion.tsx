@@ -1,34 +1,39 @@
-"use server"
+"use server";
 import { db } from "@/lib/db";
 
-export const updateSummaryCompletion = async ({
-  sentence,
-  blank,
-  explanation,
-  id
+export const createSummaryCompletion = async ({
+  questionGroupId,
+  startQuestionNumber,
+  endQuestionNumber
 }: {
-  sentence: string,
-  blank?: string,
-  explanation?: string,
-  id: number
-}) => {
+  questionGroupId: number;
+  startQuestionNumber: number;
+  endQuestionNumber: number;
+}): Promise<boolean> => {
   try {
-    const summaryCompletion = await db.summaryCompletion.update({
-      where: {
-        id
-      },
-      data: {
-        sentence,
-        blank,
-        explanation
-      },
-    });
+    const summaryCompletionItems = [];
 
-    return summaryCompletion;
+    for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
+      summaryCompletionItems.push({
+        questionNumber: i,
+        expectedAnswer: "hello"
+      });
+    }
+
+    const summaryCompletion = await db.summaryCompletion.create({
+      data: {
+        paragraphWithBlanks: "May be ___ hello, what ___ your ___name. I am a student and want ___ to learn more.",
+        questionGroupId,
+        summaryCompletionItems: {
+          createMany: {
+            data: summaryCompletionItems
+          }
+        }
+      }
+    });
+    return true;
   } catch (error) {
-    console.error("Error updating summaryCompletion:", error);
-    return null;
+    console.log("Error creating summaryCompletion:", error);
+    return false;
   }
 };
-
-

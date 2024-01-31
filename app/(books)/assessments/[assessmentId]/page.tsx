@@ -35,7 +35,13 @@ const AssessmentIdPage = async ({
                   }
                 }
               },
-              summaryCompletion: true
+              summaryCompletion: {
+                include: {
+                  summaryCompletionItems: {
+                    orderBy: { id: 'asc' } // Order summaryCompletionItems by id
+                  }
+                }
+              }
             }
           }
         }

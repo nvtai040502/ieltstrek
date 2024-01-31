@@ -11,6 +11,7 @@ import { QuestionGroupForm } from "./form";
 import { createQuestions } from "@/actions/books/question";
 import { createMultipleChoiceArray } from "@/actions/books/multiple-choice";
 import { QuestionType } from "@prisma/client";
+import { createSummaryCompletion } from "@/actions/books/summary-completion";
 
 export function CreateQuestionGroupForm ({
   partId, 
@@ -42,6 +43,12 @@ export function CreateQuestionGroupForm ({
         if (questionGroup) {
           if (questionGroup.type === "MULTIPLE_CHOICE") {
             successfully = await createMultipleChoiceArray({
+              questionGroupId: questionGroup.id,
+              startQuestionNumber: questionGroup.startQuestionNumber,
+              endQuestionNumber: questionGroup.endQuestionNumber
+            })
+          } else if (questionGroup.type === "SUMMARY_COMPLETION") {
+            successfully = await createSummaryCompletion({
               questionGroupId: questionGroup.id,
               startQuestionNumber: questionGroup.startQuestionNumber,
               endQuestionNumber: questionGroup.endQuestionNumber

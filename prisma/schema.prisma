@@ -82,12 +82,25 @@ model SummaryCompletion {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  title String?
+  description String?
   paragraphWithBlanks String
-  
-  explanation String? 
 
+  summaryCompletionItems SummaryCompletionItem[]
   questionGroupId Int @unique 
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+model SummaryCompletionItem {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  questionNumber Int
+  expectedAnswer String
+  explanation String?
+
+  summaryCompletionId Int
+  summaryCompletion SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }
 model Choice {
   id Int @id @default(autoincrement())
