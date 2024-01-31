@@ -8,11 +8,12 @@ import { startTransition, useState, useTransition } from "react"
 import { PartExtended } from "@/types/db"
 import { UpdateQuestionGroupForm } from "./question-group/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
-import { MultipleChoiceRender } from "./question-type/multiple-choice"
-import { SummaryCompletionRender } from "./question-type/summary-completion"
+import { MultipleChoiceRender } from "./question-type/multiple-choice/render"
+// import { SummaryCompletionRender } from "./question-type/summary-completion"
 import { PassageRender } from "./passage/render"
 import { CreateQuestionGroupForm } from "./question-group/create-form"
 import { UpdateButton } from "./update-button"
+import { MultipleChoiceArrayRender } from "./question-type/multiple-choice"
 
 const ResizePannelGroup = ({
   part
@@ -59,21 +60,14 @@ const ResizePannelGroup = ({
                     <div>
                       <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
                       <p className=" whitespace-pre-line">{questionGroup.title}</p>
-                      <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
                     </div>
                     
                     <UpdateButton setIsUpdating={() => setEdittingQuestionGroup({ [questionGroup.id]: true })} />
                   </div>
-                  <div className="flex flex-col gap-4">
-                    {questionGroup.questions.map((question) => {
-                      return (
-                        <div key={question.id} >
-                          {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender question={question}/>}
-                          {questionGroup.type === "SUMMARY_COMPLETION" && <SummaryCompletionRender question={question}/>}
-                        </div>
-                      )
-                    })}
-                  </div>
+
+                  
+                  {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceArrayRender multipleChoiceArray={questionGroup.multipleChoiceArray} />}
+                  {/* {questionGroup.type === "SUMMARY_COMPLETION" && <SummaryCompletionRender question={questionGroup.summaryCompletion}/>} */}
                 </div>  
               )
             })

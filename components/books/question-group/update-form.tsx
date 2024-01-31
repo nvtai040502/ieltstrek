@@ -26,7 +26,6 @@ export function UpdateQuestionGroupForm ({
       startQuestionNumber: questionGroup.startQuestionNumber,
       endQuestionNumber: questionGroup.endQuestionNumber,
       description: questionGroup.description || "",
-      titleForQuestions: questionGroup.titleForQuestions || ""
     },
   });
   const router= useRouter()
@@ -36,7 +35,6 @@ export function UpdateQuestionGroupForm ({
       
         const questionGroupUpdated = await updateQuestionGroup({
           title: values.title,
-          titleForQuestions: values.titleForQuestions,
           startQuestionNumber: values.startQuestionNumber,
           type: values.type,
           id: questionGroup.id,

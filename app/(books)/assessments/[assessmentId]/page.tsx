@@ -27,19 +27,15 @@ const AssessmentIdPage = async ({
           questionGroups: {
             orderBy: { id: 'asc' }, // Order questionGroups by id
             include: {
-              questions: {
-                orderBy: { id: 'asc' }, // Order questions by id
+              multipleChoiceArray: {
+                orderBy: { id: 'asc' }, 
                 include: {
-                  multipleChoice: { 
-                    include: { 
-                      choices: {
-                        orderBy: { id: 'asc' } // Order choices by id
-                      }
-                    } 
-                  },
-                  summaryCompletion: true
+                  choices: {
+                    orderBy: { id: 'asc' } // Order choices by id
+                  }
                 }
-              }
+              },
+              summaryCompletion: true
             }
           }
         }

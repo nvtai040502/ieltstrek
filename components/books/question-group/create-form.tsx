@@ -9,6 +9,8 @@ import { QuestionGroupSchema } from "@/lib/validations/books";
 import { createQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
 import { createQuestions } from "@/actions/books/question";
+import { createMultipleChoiceArray } from "@/actions/books/multiple-choice";
+import { QuestionType } from "@prisma/client";
 
 export function CreateQuestionGroupForm ({
   partId, 
@@ -36,19 +38,21 @@ export function CreateQuestionGroupForm ({
           endQuestionNumber: values.endQuestionNumber,
           partId
         });
+        let successfully = false
         if (questionGroup) {
-          
-          const successfully = await createQuestions({
-            questionGroupId: questionGroup.id,
-            questionType: questionGroup.type,
-            startQuestionNumber: questionGroup.startQuestionNumber,
-            endQuestionNumber: questionGroup.endQuestionNumber
-          })
-          if(successfully) {
-            form.reset()
-            router.refresh()
-            toast.success("Successfully created questionGroup!")
+          if (questionGroup.type === "MULTIPLE_CHOICE") {
+            successfully = await createMultipleChoiceArray({
+              questionGroupId: questionGroup.id,
+              startQuestionNumber: questionGroup.startQuestionNumber,
+              endQuestionNumber: questionGroup.endQuestionNumber
+            })
           }
+        }
+
+      if(successfully) {
+        form.reset()
+        router.refresh()
+        toast.success("Successfully created questionGroup!")
       }
        else {
         toast("Failed to create questionGroup");

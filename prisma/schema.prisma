@@ -57,22 +57,10 @@ model QuestionGroup {
   startQuestionNumber Int
   endQuestionNumber Int
   type QuestionType
-  titleForQuestions String?
 
   partId Int
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
-  questions Question[]
-}
-model Question {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  
-  questionNumber Int
-
-  questionGroupId Int
-  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-  multipleChoice MultipleChoice?
+  multipleChoiceArray MultipleChoice[]
   summaryCompletion SummaryCompletion?
 }
 model MultipleChoice {
@@ -81,10 +69,11 @@ model MultipleChoice {
   updatedAt DateTime @default(now()) @updatedAt
 
   title String
+  questionNumber Int
 
   choices Choice[]
-  questionId Int @unique 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionGroupId Int
+  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 
@@ -93,12 +82,12 @@ model SummaryCompletion {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  sentence String
-  blank String?
+  paragraphWithBlanks String
+  
   explanation String? 
 
-  questionId Int @unique 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionGroupId Int @unique 
+  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 model Choice {
   id Int @id @default(autoincrement())

@@ -62,23 +62,7 @@ export function QuestionGroupForm ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="titleForQuestions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title For Questions</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="write a number in here"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            
             <FormField
                 control={form.control}
                 name="type"

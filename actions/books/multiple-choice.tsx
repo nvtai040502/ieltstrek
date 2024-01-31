@@ -1,6 +1,60 @@
 "use server"
 import { db } from "@/lib/db";
+import { MultipleChoiceExtended } from "@/types/db";
 
+export const createMultipleChoiceArray = async ({
+  questionGroupId,
+  startQuestionNumber,
+  endQuestionNumber
+}: {
+  questionGroupId: number;
+  startQuestionNumber: number;
+  endQuestionNumber: number;
+}): Promise<boolean> => {
+  try {
+    for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
+      await createMultipleChoice({ questionGroupId, questionNumber: i });
+    }
+    return true;
+  } catch (error) {
+    console.error("Error creating multipleChoicearray:", error);
+    return false;
+  }
+};
+
+export const createMultipleChoice = async ({
+  questionGroupId,
+  questionNumber,
+}: {
+  questionGroupId: number;
+  questionNumber: number;
+}): Promise<MultipleChoiceExtended | null> => {
+  try {
+    const multipleChoice: MultipleChoiceExtended = await db.multipleChoice.create({
+      data: {
+        questionNumber,
+        questionGroupId,
+        title: "example",
+        choices: {
+          createMany: {
+            data: [
+              { content: "Option 1", isCorrect: false },
+              { content: "Option 2", isCorrect: false },
+              { content: "Option 3", isCorrect: false },
+              { content: "Option 4", isCorrect: true }
+            ]
+          }
+        }
+      },
+      include: { choices: true }
+    });
+
+    return multipleChoice;
+  } catch (error) {
+    console.error("Error creating multipleChoice:", error);
+    return null;
+  }
+};
 export const updateMultipleChoice = async ({
   title,
   id,

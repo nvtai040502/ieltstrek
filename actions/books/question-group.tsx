@@ -9,7 +9,6 @@ export const createQuestionGroup = async ({
   startQuestionNumber,
   type,
   endQuestionNumber,
-  titleForQuestions,
   partId
 }: {
   title: string,
@@ -17,7 +16,6 @@ export const createQuestionGroup = async ({
   startQuestionNumber: number,
   type: QuestionType,
   endQuestionNumber: number,
-  titleForQuestions?: string
   partId: number
 }) => {
   try {
@@ -28,14 +26,13 @@ export const createQuestionGroup = async ({
         startQuestionNumber,
         type,
         endQuestionNumber,
-        titleForQuestions,
         partId
       },
     });
 
     return questionGroup;
   } catch (error) {
-    console.error("Error creating questionGroup:", error);
+    console.log("Error creating questionGroup:", error);
     return null;
   }
 };
@@ -46,7 +43,6 @@ export const updateQuestionGroup = async ({
   startQuestionNumber,
   type,
   endQuestionNumber,
-  titleForQuestions,
   id
 }: {
   title: string,
@@ -54,7 +50,6 @@ export const updateQuestionGroup = async ({
   startQuestionNumber: number,
   type: QuestionType,
   endQuestionNumber: number,
-  titleForQuestions?: string
   id: number
 }) => {
   try {
@@ -68,7 +63,6 @@ export const updateQuestionGroup = async ({
         startQuestionNumber,
         type,
         endQuestionNumber,
-        titleForQuestions,
       },
     });
 
