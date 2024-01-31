@@ -6,16 +6,19 @@ import { QuestionType } from "@prisma/client";
 export const createQuestions = async ({
   questionGroupId,
   questionType,
-  numberQuestionsToCreate,
+  startQuestionNumber,
+  endQuestionNumber
 }: {
   questionGroupId: string;
   questionType: QuestionType;
-  numberQuestionsToCreate: number;
+  startQuestionNumber: number;
+  endQuestionNumber: number
 }): Promise<boolean> => {
   try {
-    Array.from( {length: numberQuestionsToCreate }).map(async () => (
-      await createQuestion({questionGroupId, questionType: questionType})
-    ))
+    for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
+      await createQuestion({ questionGroupId, questionType, questionNumber: i });
+    }
+    
     return true
   } catch (error) {
     console.error("Error creating questions:", error);
@@ -25,15 +28,18 @@ export const createQuestions = async ({
 
 export const createQuestion = async ({
   questionGroupId,
+  questionNumber,
   questionType
 }: {
   questionGroupId: string;
+  questionNumber: number
   questionType: QuestionType;
 }): Promise<QuestionExtended | null> => {
   try {
     if (questionType === "MULTIPLE_CHOICE") {
       const question: QuestionExtended = await db.question.create({
         data: {
+          questionNumber,
           questionGroupId,
           multipleChoice: {
             create: {
@@ -58,6 +64,7 @@ export const createQuestion = async ({
     } else if (questionType === "SHORT_ANSWER") {
       const question: QuestionExtended = await db.question.create({
         data: {
+          questionNumber,
           questionGroupId,
           shortAnswer: {
             create: {

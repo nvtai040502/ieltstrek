@@ -37,11 +37,12 @@ export function CreateQuestionGroupForm ({
           partId
         });
         if (questionGroup) {
-          const numberQuestionsToCreate = questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1
+          
           const successfully = await createQuestions({
             questionGroupId: questionGroup.id,
             questionType: questionGroup.type,
-            numberQuestionsToCreate
+            startQuestionNumber: questionGroup.startQuestionNumber,
+            endQuestionNumber: questionGroup.endQuestionNumber
           })
           if(successfully) {
             form.reset()

@@ -44,7 +44,8 @@ export const MultipleChoiceRender = ({
               </DialogContent>
             </Dialog>
             <div className="space-y-2">
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
+                  <p>{question.questionNumber}</p>
                   <p>{question.multipleChoice.title}</p>
                   <UpdateButton setIsUpdating={() => setEdittingQuestions({ [question.id]: true })}/>
 
