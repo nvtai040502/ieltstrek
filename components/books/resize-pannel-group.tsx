@@ -17,21 +17,18 @@ import { UpdateButton } from "./update-button";
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
 import { SummaryCompletionRender } from "./question-type/summary-completion";
 
-const ResizePannelGroup = ({ part }: { part: PartExtended }) => {
+const ResizePannelGroup = ({
+  part,
+  handleQuestionSelectAnswer,
+}: {
+  part: PartExtended;
+  handleQuestionSelectAnswer: (questionId: string, value: string) => void;
+}) => {
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
     [key: string]: boolean;
   }>({});
-  const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
-  const handleQuestionSelectAnswer = (questionId: string, value: string) => {
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: value,
-    }));
-  };
-  const handleSubmit = () => {
-    console.log("User Answers:", userAnswers);
-  };
+
   return (
     <div className="h-full">
       <ResizablePanelGroup
@@ -57,7 +54,6 @@ const ResizePannelGroup = ({ part }: { part: PartExtended }) => {
               <Button onClick={() => setIsCreatingQuestion(true)}>
                 Create
               </Button>
-              <Button onClick={handleSubmit}>Submit Answers</Button>
             </div>
             <Dialog
               onOpenChange={setIsCreatingQuestion}
