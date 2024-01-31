@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Fragment, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SummaryCompletionExtended } from "@/types/db";
-import { Input } from "@/components/ui/input";
+import { Input, InputGap } from "@/components/ui/input";
 
 interface SummaryCompletionRenderProps {
   summaryCompletion?: SummaryCompletionExtended | null
@@ -26,16 +26,19 @@ export const SummaryCompletionRender = ({
           {/* <UpdateSummaryCompletionForm summaryCompletion={summaryCompletion} setIsEditting={setEdittingQuestion} /> */}
         </DialogContent>
       </Dialog>
-      {words.map((word, index) => (
-        <Fragment key={index}>
-          {word === '___' ? (
-            <input className="" type="text" placeholder="Enter a word" />
-          ) : (
-            <span>{word}</span>
-          )}
-          {index < words.length - 1 && <span>&nbsp;</span>} {/* Add space between words */}
-        </Fragment>
-      ))}
+      <div className="flex flex-wrap items-center gap-y-1">
+        {words.map((word, index) => (
+          <Fragment key={index}>
+            {word === '___' ? (
+                <InputGap placeholder="Enter a word" />
+
+            ) : (
+              <span>{word}</span>
+            )}
+            {index < words.length - 1 && <span>&nbsp;</span>} {/* Add space between words */}
+          </Fragment>
+        ))}
+      </div>
     </div>
     
   );
