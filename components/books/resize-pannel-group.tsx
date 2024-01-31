@@ -12,6 +12,7 @@ import { MultipleChoiceRender } from "./question-type/multiple-choice"
 import { ShortAnswerRender } from "./question-type/short-anser"
 import { PassageRender } from "./passage/render"
 import { CreateQuestionGroupForm } from "./question-group/create-form"
+import { UpdateButton } from "./update-button"
 
 const ResizePannelGroup = ({
   part
@@ -43,36 +44,24 @@ const ResizePannelGroup = ({
               const isEdittingQuestionGroup = edittingQuestionGroup[questionGroup.id];
               return (
                 <div key={questionGroup.id}>
-                <Dialog 
-                  open={isEdittingQuestionGroup}
-                  onOpenChange={() => setEdittingQuestionGroup({[questionGroup.id]: false })} 
-                  key={questionGroup.id}
-                >
-                  <DialogContent>
-                    <UpdateQuestionGroupForm questionGroup={questionGroup} setIsEditting={() => setEdittingQuestionGroup({[questionGroup.id]: false })}/>
-                  </DialogContent>
-                </Dialog>
-                <div>
-                  <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
-                  <p className=" whitespace-pre-line">{questionGroup.title}</p>
-                  <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
-                </div>
-                <Button onClick={() => setEdittingQuestionGroup({[questionGroup.id]: true })}>Update</Button>
-                    {questionGroup.scorableItems && (
-                      questionGroup.type === "MULTIPLE_CHOICE" && (
-                        <MultipleChoiceRender
-                          scorableItems={questionGroup.scorableItems}
-                        />
-                      ),
-                      (
-                        questionGroup.type === "SHORT_ANSWER" && (
-                          <ShortAnswerRender
-                            scorableItems={questionGroup.scorableItems}
-                          />
-                        )
-                      )
-                    )}
-                    </div>  
+                  <Dialog 
+                    open={isEdittingQuestionGroup}
+                    onOpenChange={() => setEdittingQuestionGroup({[questionGroup.id]: false })} 
+                    key={questionGroup.id}
+                  >
+                    <DialogContent>
+                      <UpdateQuestionGroupForm questionGroup={questionGroup} setIsEditting={() => setEdittingQuestionGroup({[questionGroup.id]: false })}/>
+                    </DialogContent>
+                  </Dialog>
+                  <div>
+                    <p className="font-bold">Questions {questionGroup.startQuestionNumber}-{questionGroup.endQuestionNumber}</p>
+                    <p className=" whitespace-pre-line">{questionGroup.title}</p>
+                    <p className="font-bold text-center">{questionGroup.titleForQuestions}</p>
+                  </div>
+                  <UpdateButton setIsUpdating={() => setEdittingQuestionGroup({ [questionGroup.id]: true })} />
+                  {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender questions={questionGroup.questions}/>}
+                  {questionGroup.type === "SHORT_ANSWER" && <ShortAnswerRender scorableItems={questionGroup.questions}/>}
+                </div>  
               )
             })
           )}

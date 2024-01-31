@@ -9,7 +9,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ChoiceSchema, PassageSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
-import { Choice, ScorableItem } from "@prisma/client";
+import { Choice } from "@prisma/client";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { updateChoice } from "@/actions/books/multiple-choice";
