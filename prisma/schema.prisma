@@ -45,7 +45,7 @@ model Part {
 }
 enum QuestionType {
   MULTIPLE_CHOICE
-  SHORT_ANSWER
+  SUMMARY_COMPLETION
 }
 model QuestionGroup {
   id Int @id @default(autoincrement())
@@ -65,20 +65,20 @@ model QuestionGroup {
 }
 model Question {
   id Int @id @default(autoincrement())
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   
   questionNumber Int
 
   questionGroupId Int
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
   multipleChoice MultipleChoice?
-  shortAnswer ShortAnswer?
+  summaryCompletion SummaryCompletion?
 }
 model MultipleChoice {
   id Int @id @default(autoincrement())
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   title String
 
@@ -88,10 +88,10 @@ model MultipleChoice {
 }
 
 
-model ShortAnswer {
+model SummaryCompletion {
   id Int @id @default(autoincrement())
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   sentence String
   blank String?

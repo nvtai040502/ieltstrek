@@ -8,44 +8,43 @@ import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ScorableItemExtended } from "@/types/db";
 import { ShortAnswerSchema } from "@/lib/validations/books";
-import { ShortAnswer } from "@prisma/client";
-import { updateShortAnswer } from "@/actions/books/short-answer";
+import { SummaryCompletion } from "@prisma/client";
+import { updateSummaryCompletion } from "@/actions/books/summary-completion";
 
-export function UpdateShortAnswerForm ({
-  shortAnswer,
+export function UpdateSummaryCompletionForm ({
+  summaryCompletion,
   setIsEditting
 }: {
   setIsEditting: (isEditting: boolean) => void,
-  shortAnswer: ShortAnswer
+  summaryCompletion: SummaryCompletion
 }) {
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof ShortAnswerSchema>>({
     resolver: zodResolver(ShortAnswerSchema),
     defaultValues: {
-      sentence: shortAnswer.sentence || "",
-      blank: shortAnswer.blank || "",
-      explanation: shortAnswer.explanation || ""
+      sentence: summaryCompletion.sentence || "",
+      blank: summaryCompletion.blank || "",
+      explanation: summaryCompletion.explanation || ""
     },
   });
   const router= useRouter()
 
   const onSubmit = (values: z.infer<typeof ShortAnswerSchema>) => {
     startTransition(async () => {
-        const shortAnswerUpdated = await updateShortAnswer({
+        const summaryCompletionUpdated = await updateSummaryCompletion({
           sentence: values.sentence,
           explanation: values.explanation,
           blank: values.blank,
-          id: shortAnswer.id
+          id: summaryCompletion.id
         });
-        if (shortAnswerUpdated) {
-          toast.success("Successfully updated short anser!")
+        if (summaryCompletionUpdated) {
+          toast.success("Successfully updated summaryCompletion!")
           form.reset()
           router.refresh()
       }
        else {
-        toast.error("Failed to update short anser");
+        toast.error("Failed to update summaryCompletion");
       }
     })
     setIsEditting(false)

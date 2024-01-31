@@ -1,4 +1,4 @@
-import { Assessment, Choice, MultipleChoice, Part, Passage, Question, QuestionGroup, ShortAnswer } from "@prisma/client";
+import { Assessment, Choice, MultipleChoice, Part, Passage, Question, QuestionGroup, SummaryCompletion } from "@prisma/client";
 
 export type PartExtended = Part & {
   passage: Passage | null;
@@ -6,7 +6,7 @@ export type PartExtended = Part & {
 };
 export type QuestionExtended = Question & {
   multipleChoice?: MultipleChoiceExtended | null;
-  shortAnswer?: ShortAnswer | null;
+  summaryCompletion?: SummaryCompletion | null;
 };
 export type MultipleChoiceExtended = MultipleChoice & {
   choices: Choice[]

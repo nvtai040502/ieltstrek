@@ -61,19 +61,19 @@ export const createQuestion = async ({
       }) 
 
       return question;
-    } else if (questionType === "SHORT_ANSWER") {
+    } else if (questionType === "SUMMARY_COMPLETION") {
       const question: QuestionExtended = await db.question.create({
         data: {
           questionNumber,
           questionGroupId,
-          shortAnswer: {
+          summaryCompletion: {
             create: {
               sentence: "Hello, What you name and how old are you?",
               blank: "What"
             }
           }
         },
-        include: { shortAnswer: true }
+        include: { summaryCompletion: true }
       })
       return question;
       

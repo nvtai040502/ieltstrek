@@ -1,7 +1,7 @@
 "use server"
 import { db } from "@/lib/db";
 
-export const updateShortAnswer = async ({
+export const updateSummaryCompletion = async ({
   sentence,
   blank,
   explanation,
@@ -13,7 +13,7 @@ export const updateShortAnswer = async ({
   id: number
 }) => {
   try {
-    const shortAnswer = await db.shortAnswer.update({
+    const summaryCompletion = await db.summaryCompletion.update({
       where: {
         id
       },
@@ -24,9 +24,9 @@ export const updateShortAnswer = async ({
       },
     });
 
-    return shortAnswer;
+    return summaryCompletion;
   } catch (error) {
-    console.error("Error updating shortAnswer:", error);
+    console.error("Error updating summaryCompletion:", error);
     return null;
   }
 };

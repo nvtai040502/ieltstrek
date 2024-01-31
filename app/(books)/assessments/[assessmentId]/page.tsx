@@ -37,7 +37,7 @@ const AssessmentIdPage = async ({
                       }
                     } 
                   },
-                  shortAnswer: true
+                  summaryCompletion: true
                 }
               }
             }

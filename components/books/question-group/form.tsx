@@ -99,8 +99,8 @@ export function QuestionGroupForm ({
                         <SelectItem value={QuestionType.MULTIPLE_CHOICE}>
                           Multiple Choice
                         </SelectItem>
-                        <SelectItem value={QuestionType.SHORT_ANSWER}>
-                          Short Answer
+                        <SelectItem value={QuestionType.SUMMARY_COMPLETION}>
+                          Summary Completion
                         </SelectItem>
                       </SelectContent>
                     </Select>

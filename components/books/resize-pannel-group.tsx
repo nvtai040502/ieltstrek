@@ -9,7 +9,7 @@ import { PartExtended } from "@/types/db"
 import { UpdateQuestionGroupForm } from "./question-group/update-form"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { MultipleChoiceRender } from "./question-type/multiple-choice"
-import { ShortAnswerRender } from "./question-type/short-anser"
+import { SummaryCompletionRender } from "./question-type/summary-completion"
 import { PassageRender } from "./passage/render"
 import { CreateQuestionGroupForm } from "./question-group/create-form"
 import { UpdateButton } from "./update-button"
@@ -69,6 +69,7 @@ const ResizePannelGroup = ({
                       return (
                         <div key={question.id} >
                           {questionGroup.type === "MULTIPLE_CHOICE" && <MultipleChoiceRender question={question}/>}
+                          {questionGroup.type === "SUMMARY_COMPLETION" && <SummaryCompletionRender question={question}/>}
                         </div>
                       )
                     })}

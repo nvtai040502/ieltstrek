@@ -39,7 +39,7 @@ export const QuestionGroupSchema = z.object({
   }),
   description: z.string().optional(),
   titleForQuestions: z.string().optional(),
-  type: z.enum([QuestionType.MULTIPLE_CHOICE, QuestionType.SHORT_ANSWER]),
+  type: z.enum([QuestionType.MULTIPLE_CHOICE, QuestionType.SUMMARY_COMPLETION]),
   startQuestionNumber: z.coerce.number().min(1),
   endQuestionNumber: z.coerce.number().min(1),
 })

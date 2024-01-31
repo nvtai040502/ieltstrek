@@ -47,8 +47,8 @@ export const MultipleChoiceRender = ({
                   </DialogContent>
                 </Dialog>
                 <div className="flex items-center space-x-2 px-4 w-full hover:bg-secondary" key={choice.id}>
-                  <RadioGroupItem value={choice.content} id={choice.id} />
-                  <Label htmlFor={choice.id} className="py-4 w-full cursor-pointer">{choice.content}</Label>
+                  <RadioGroupItem value={choice.content} id={String(choice.id)} />
+                  <Label htmlFor={String(choice.id)} className="py-4 w-full cursor-pointer">{choice.content}</Label>
                   <UpdateButton setIsUpdating={() => setEdittingChoices({ [choice.id]: true })}/>
                 </div>
               </div>
