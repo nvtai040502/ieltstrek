@@ -112,3 +112,25 @@ export const updateQuestionGroup = async ({
     return { error: "Failed to update questionGroup." };
   }
 };
+export const deleteQuestionGroup = async ({ id }: { id: number }) => {
+  try {
+    const questionGroup = await db.questionGroup.findUnique({
+      where: { id },
+    });
+
+    if (!questionGroup) {
+      return {
+        error: `QuestionGroup with id ${id} not found. Deletion failed.`,
+      };
+    }
+    await db.questionGroup.delete({
+      where: { id },
+    });
+    return {
+      success: "Successfully deleted questionGroup!",
+    };
+  } catch (error) {
+    console.error("Error deleting questionGroup:", error);
+    return { error: "Failed to delete questionGroup." };
+  }
+};

@@ -16,6 +16,9 @@ import { CreateQuestionGroupForm } from "./question-group/create-form";
 import { UpdateButton } from "./update-button";
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
 import { SummaryCompletionRender } from "./question-type/summary-completion";
+import { DeleteButton } from "./delete-button";
+import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
+import { DeleteQuestionGroupForm } from "./question-group/delete-form";
 
 const ResizePannelGroup = ({
   part,
@@ -26,6 +29,9 @@ const ResizePannelGroup = ({
 }) => {
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [deletingQuestionGroup, setDeletingQuestionGroup] = useState<{
     [key: string]: boolean;
   }>({});
 
@@ -70,6 +76,8 @@ const ResizePannelGroup = ({
               part.questionGroups.map((questionGroup) => {
                 const isEdittingQuestionGroup =
                   edittingQuestionGroup[questionGroup.id];
+                const isDeletingQuestionGroup =
+                deletingQuestionGroup[questionGroup.id];
                 return (
                   <div key={questionGroup.id} className="flex flex-col gap-2">
                     <Dialog
@@ -77,7 +85,6 @@ const ResizePannelGroup = ({
                       onOpenChange={() =>
                         setEdittingQuestionGroup({ [questionGroup.id]: false })
                       }
-                      key={questionGroup.id}
                     >
                       <DialogContent>
                         <UpdateQuestionGroupForm
@@ -91,6 +98,17 @@ const ResizePannelGroup = ({
                         />
                       </DialogContent>
                     </Dialog>
+                    <AlertDialog
+                      open={isDeletingQuestionGroup}
+                      onOpenChange={() =>
+                        setDeletingQuestionGroup({ [questionGroup.id]: false })
+                      }
+                    >
+                      <DeleteQuestionGroupForm questionGroup={questionGroup} setIsCUD={() =>
+                            setDeletingQuestionGroup({
+                              [questionGroup.id]: false,
+                            })}/>
+                    </AlertDialog>
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-bold">
@@ -101,12 +119,18 @@ const ResizePannelGroup = ({
                           {questionGroup.title}
                         </p>
                       </div>
-
-                      <UpdateButton
-                        setIsUpdating={() =>
-                          setEdittingQuestionGroup({ [questionGroup.id]: true })
-                        }
-                      />
+                      <div>
+                        <UpdateButton
+                          setIsUpdating={() =>
+                            setEdittingQuestionGroup({ [questionGroup.id]: true })
+                          }
+                        />
+                        <DeleteButton
+                          setIsUpdating={() =>
+                            setDeletingQuestionGroup({ [questionGroup.id]: true })
+                          }
+                        />
+                      </div>
                     </div>
 
                     {questionGroup.type === "MULTIPLE_CHOICE" && (
