@@ -1,10 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import React, { useRef, useState } from "react";
 const TestPage = () => {
   const numDivs = 10;
-  const divRefs = Array.from({ length: numDivs }, () => React.createRef<HTMLDivElement>());
+  const divRefs = Array.from({ length: numDivs }, () =>
+    React.createRef<HTMLDivElement>()
+  );
   const isMouseClickRef = useRef(false);
   const [currentDivIndex, setCurrentDivIndex] = useState(0);
 
@@ -31,14 +34,17 @@ const TestPage = () => {
   const handleDivFocus = (index: number) => {
     // Reset the flag for the next focus change
     isMouseClickRef.current = false;
-    if (index <= divRefs.length - 1){
+    if (index <= divRefs.length - 1) {
       setCurrentDivIndex(index);
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, index: number) => {
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+    index: number
+  ) => {
     // Check if the Tab key is pressed
-    if (event.key === 'Tab') {
+    if (event.key === "Tab") {
       handleDivFocus(index);
     }
   };
@@ -49,22 +55,41 @@ const TestPage = () => {
 
   return (
     <div>
-      {divRefs.map((divRef, index) => (
-        <div
-          key={index}
-          ref={divRef}
-          tabIndex={0}
-          onKeyDown={(event) => handleKeyDown(event, index+1)}
-          onMouseDown={handleMouseDown}
-          className={cn("bg-red-500 p-40", {
-            "bg-yellow-500": currentDivIndex === index,
-          })}
-        >
-          {index + 1}
-        </div>
-      ))}
+      <ScrollArea className="h-[600px] rounded-md border">
+        {divRefs.map((divRef, index) => (
+          <div
+            key={index}
+            ref={divRef}
+            tabIndex={0}
+            onKeyDown={(event) => handleKeyDown(event, index + 1)}
+            onMouseDown={handleMouseDown}
+            className={cn("bg-red-500 p-40", {
+              "bg-yellow-500": currentDivIndex === index,
+            })}
+          >
+            {index + 1}
+          </div>
+        ))}
+      </ScrollArea>
+
       <Button onClick={handleNextDiv}>Next Div</Button>
       <Button onClick={handlePrevDiv}>Prev Div</Button>
+      <div className="flex items-center">
+        {Array.from({ length: divRefs.length }).map((_, i) => {
+          return (
+            <div key={i} className="">
+              <p
+                className={cn(
+                  "p-4",
+                  currentDivIndex === i ? "border border-secondary-foreground" : ""
+                )}
+              >
+                {i + 1}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
