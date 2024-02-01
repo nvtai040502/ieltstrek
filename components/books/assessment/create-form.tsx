@@ -27,37 +27,30 @@ export function CreateAssessmentForm () {
   const onSubmit = async (values: z.infer<typeof AssessmentSchema>) => {
     try {
       startTransition(async () => {
-        // Create the assessment
         const assessment = await createAssessment({
           imageCover: values.imageCover,
           bookName: values.bookName,
-          name: values.name,
+          name: values.name
         });
   
         if (assessment) {
           if (assessment.sectionType === "READING") {
-            const successfully = await createAssessmentTemplate({
-              assessmentId: assessment.id,
-            });
-  
+            const successfully = await createParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
+            
             if (successfully) {
-              // If everything is successful, navigate to the assessment page and show success toast
-              router.push(`/assessments/${assessment.id}`);
               toast.success("Successfully created assessment!");
+              router.push(`/assessments/${assessment.id}`);
             } else {
-              // If creating parts fails, show an error toast
-              toast.error("Failed to create parts for the assessment");
+              throw new Error("Failed to create parts");
             }
           }
         } else {
-          // If creating assessment fails, show an error toast
-          toast.error("Failed to create Assessment");
+          throw new Error("Failed to create Assessment");
         }
       });
     } catch (error) {
-      // Catch any unexpected errors and show an error toast
-      toast.error(`An unexpected error occurred: ${error}`);
-      console.error("Unexpected error in onSubmit:", error);
+      console.error("Error:", error);
+      toast.error(`An error occurred: ${error}`);
     }
   };
   return (
