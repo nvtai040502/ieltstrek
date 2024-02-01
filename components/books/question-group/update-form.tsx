@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,16 +11,16 @@ import { updateQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
 import { PartExtended } from "@/types/db";
 
-export function UpdateQuestionGroupForm ({
+export function UpdateQuestionGroupForm({
   questionGroup,
   part,
-  setIsEditting
+  setIsEditting,
 }: {
-  questionGroup: QuestionGroup
-  part: PartExtended,
-  setIsEditting: (isEditting: boolean) => void
+  questionGroup: QuestionGroup;
+  part: PartExtended;
+  setIsEditting: (isEditting: boolean) => void;
 }) {
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof QuestionGroupSchema>>({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
@@ -31,33 +31,30 @@ export function UpdateQuestionGroupForm ({
       description: questionGroup.description || "",
     },
   });
-  const router= useRouter()
+  const router = useRouter();
 
   const onSubmit = (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
-      
-        const questionGroupUpdated = await updateQuestionGroup({
-          title: values.title,
-          startQuestionNumber: values.startQuestionNumber,
-          type: values.type,
-          endQuestionNumber: values.endQuestionNumber,
-          id: questionGroup.id,
-          assessmentId: part.assessmentId
-        });
-        if (questionGroupUpdated) {
-          toast.success("Successfully updating questionGroup!")
-          form.reset()
-          router.refresh()
+      const { data, success, error } = await updateQuestionGroup({
+        title: values.title,
+        description: values.description,
+        type: values.type,
+        startQuestionNumber: values.startQuestionNumber,
+        endQuestionNumber: values.endQuestionNumber,
+        id: questionGroup.id,
+      });
+
+      if (success && data) {
+        form.reset();
+        router.refresh();
+        toast.success(success);
+      } else {
+        toast.error(error);
       }
-      
-       else {
-        toast("Failed to update questionGroup");
-      }
-    })
-    setIsEditting(false)
-    
+      setIsEditting(false);
+    });
   };
   return (
-    <QuestionGroupForm isPending={isPending} form={form} onSubmit={onSubmit}/>
-  )
+    <QuestionGroupForm isPending={isPending} form={form} onSubmit={onSubmit} />
+  );
 }
