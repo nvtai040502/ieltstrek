@@ -11,7 +11,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CardWrapper } from "../auth/card-wrapper";
 import { createPassage } from "@/actions/books/passages";
-export function PassagePannelForm ({partId}: {partId: string}) {
+export function PassagePannelForm ({partId}: {partId: number}) {
   const [isPending, startTransition] = useTransition()
   const form = useForm<z.infer<typeof PassageSchema>>({
     resolver: zodResolver(PassageSchema),

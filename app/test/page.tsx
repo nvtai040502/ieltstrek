@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import React, { useRef, useState } from "react";
 const TestPage = () => {
   const numDivs = 10;
@@ -10,10 +11,15 @@ const TestPage = () => {
   );
   const isMouseClickRef = useRef(false);
   const [currentDivIndex, setCurrentDivIndex] = useState(0);
-
+  const hasPrevDiv = (index: number) => {
+    return index > 0;
+  };
+  const hasNextDiv = (index: number) => {
+    return index < divRefs.length - 1;
+  };
   const handleNextDiv = () => {
     setCurrentDivIndex((prevIndex) => {
-      if (prevIndex < divRefs.length - 1) {
+      if (hasNextDiv(prevIndex)) {
         divRefs[prevIndex + 1].current?.focus();
         return prevIndex + 1;
       }
@@ -72,8 +78,20 @@ const TestPage = () => {
         ))}
       </ScrollArea>
 
-      <Button onClick={handleNextDiv}>Next Div</Button>
-      <Button onClick={handlePrevDiv}>Prev Div</Button>
+      <Button
+        onClick={handlePrevDiv}
+        disabled={!hasPrevDiv(currentDivIndex)}
+        size="xl"
+      >
+        <ArrowLeft />
+      </Button>
+      <Button
+        onClick={handleNextDiv}
+        disabled={!hasNextDiv(currentDivIndex)}
+        size="xl"
+      >
+        <ArrowRight />
+      </Button>
       <div className="flex items-center">
         {Array.from({ length: divRefs.length }).map((_, i) => {
           return (
@@ -81,7 +99,9 @@ const TestPage = () => {
               <p
                 className={cn(
                   "p-4",
-                  currentDivIndex === i ? "border border-secondary-foreground" : ""
+                  currentDivIndex === i
+                    ? "border border-secondary-foreground"
+                    : ""
                 )}
               >
                 {i + 1}

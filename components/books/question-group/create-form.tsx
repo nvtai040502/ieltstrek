@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { QuestionGroupSchema } from "@/lib/validations/books";
 import { createQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
-import { createQuestions } from "@/actions/books/question";
 import { createMultipleChoiceArray } from "@/actions/books/multiple-choice";
 import { QuestionType } from "@prisma/client";
 import { createSummaryCompletion } from "@/actions/books/summary-completion";
