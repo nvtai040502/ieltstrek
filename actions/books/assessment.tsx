@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { db } from "@/lib/db";
 import { AssessmentExtended } from "@/types/db";
@@ -9,9 +9,9 @@ export const createAssessment = async ({
   imageCover,
   bookName,
 }: {
-  imageCover?: string
-  bookName?: string,
-  name: string
+  imageCover?: string;
+  bookName?: string;
+  name: string;
 }): Promise<Assessment | undefined> => {
   try {
     const assessment = await db.assessment.create({
@@ -45,28 +45,25 @@ type TemplateType = {
 
 const Template: TemplateType = {
   "Part 1": [
-    { "startQuestionNumber": 1, "endQuestionNumber": 6 },
-    { "startQuestionNumber": 7, "endQuestionNumber": 13 },
+    { startQuestionNumber: 1, endQuestionNumber: 6 },
+    { startQuestionNumber: 7, endQuestionNumber: 13 },
   ],
   "Part 2": [
-    { "startQuestionNumber": 14, "endQuestionNumber": 21 },
-    { "startQuestionNumber": 22, "endQuestionNumber": 27 },
+    { startQuestionNumber: 14, endQuestionNumber: 21 },
+    { startQuestionNumber: 22, endQuestionNumber: 27 },
   ],
   "Part 3": [
-    { "startQuestionNumber": 28, "endQuestionNumber": 34 },
-    { "startQuestionNumber": 35, "endQuestionNumber": 40 },
+    { startQuestionNumber: 28, endQuestionNumber: 34 },
+    { startQuestionNumber: 35, endQuestionNumber: 40 },
   ],
 };
 
 export const createAssessmentTemplate = async ({
-  assessmentId
+  assessmentId,
 }: {
   assessmentId: number;
-  
 }): Promise<boolean> => {
   try {
-    
-
     await Promise.all(
       Array.from({ length: 3 }).map(async (_, i) => {
         const part = await db.part.create({
@@ -79,7 +76,12 @@ export const createAssessmentTemplate = async ({
 
         if (part) {
           await db.passage.create({
-            data: { partId: part.id, title: "hello", description: "hello", content: "hello" },
+            data: {
+              partId: part.id,
+              title: "hello",
+              description: "hello",
+              content: "hello",
+            },
           });
 
           await Promise.all(
@@ -96,7 +98,11 @@ export const createAssessmentTemplate = async ({
               });
 
               if (questionGroup && questionGroup.type === "MULTIPLE_CHOICE") {
-                for (let m = questionGroup.startQuestionNumber; m <= questionGroup.endQuestionNumber; m++) {
+                for (
+                  let m = questionGroup.startQuestionNumber;
+                  m <= questionGroup.endQuestionNumber;
+                  m++
+                ) {
                   await db.multipleChoice.create({
                     data: {
                       questionNumber: m,

@@ -41,6 +41,7 @@ export function UpdateQuestionGroupForm ({
           endQuestionNumber: questionGroup.endQuestionNumber
         });
         if (questionGroupUpdated) {
+          console.log("🚀 ~ startTransition ~ questionGroupUpdated:", questionGroupUpdated)
           toast.success("Successfully updating questionGroup!")
           form.reset()
           router.refresh()

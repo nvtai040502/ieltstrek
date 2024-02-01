@@ -74,6 +74,8 @@ model MultipleChoice {
   choices Choice[]
   questionGroupId Int
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+
+  @@unique([questionNumber, questionGroupId], name: "UniqueQuestionNumberInGroup")
 }
 
 

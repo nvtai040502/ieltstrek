@@ -53,20 +53,29 @@ export const updateQuestionGroup = async ({
   id: number
 }) => {
   try {
-    const questionGroup = await db.questionGroup.update({
+    const multipleChoice = await db.multipleChoice.findUnique({
       where: {
-        id
-      },
-      data: {
-        title,
-        description,
-        startQuestionNumber,
-        type,
-        endQuestionNumber,
-      },
-    });
+        UniqueQuestionNumberInGroup: {
+          questionNumber: 3,
+          questionGroupId: id,
+        }
+      }
+    })
+    
 
-    return questionGroup;
+    // const questionGroupUpdated = await db.questionGroup.update({
+    //   where: {
+    //     id
+    //   },
+    //   data: {
+    //     title,
+    //     description,
+    //     startQuestionNumber,
+    //     type,
+    //     endQuestionNumber,
+    //   },
+    // });
+    return multipleChoice;
   } catch (error) {
     console.error("Error updating question:", error);
     return null;
