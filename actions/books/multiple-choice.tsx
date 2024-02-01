@@ -5,15 +5,17 @@ import { MultipleChoiceExtended } from "@/types/db";
 export const createMultipleChoiceArray = async ({
   questionGroupId,
   startQuestionNumber,
-  endQuestionNumber
+  endQuestionNumber,
+  assessmentId
 }: {
   questionGroupId: number;
   startQuestionNumber: number;
   endQuestionNumber: number;
+  assessmentId: number
 }): Promise<boolean> => {
   try {
     for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
-      await createMultipleChoice({ questionGroupId, questionNumber: i });
+      await createMultipleChoice({ assessmentId,questionGroupId, questionNumber: i });
     }
     return true;
   } catch (error) {
@@ -25,14 +27,17 @@ export const createMultipleChoiceArray = async ({
 export const createMultipleChoice = async ({
   questionGroupId,
   questionNumber,
+  assessmentId
 }: {
   questionGroupId: number;
   questionNumber: number;
+  assessmentId: number;
 }): Promise<MultipleChoiceExtended | null> => {
   try {
     const multipleChoice: MultipleChoiceExtended = await db.multipleChoice.create({
       data: {
         questionNumber,
+        assessmentId,
         questionGroupId,
         title: "example",
         choices: {

@@ -12,12 +12,14 @@ import { createQuestions } from "@/actions/books/question";
 import { createMultipleChoiceArray } from "@/actions/books/multiple-choice";
 import { QuestionType } from "@prisma/client";
 import { createSummaryCompletion } from "@/actions/books/summary-completion";
+import { PartExtended } from "@/types/db";
+import { error } from "console";
 
 export function CreateQuestionGroupForm ({
-  partId, 
+  part, 
   setIsCreating
 }: {
-  partId: number, 
+  part: PartExtended, 
   setIsCreating: (isCreating: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
@@ -31,43 +33,52 @@ export function CreateQuestionGroupForm ({
 
   const onSubmit = (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
-        const questionGroup = await createQuestionGroup({
+      try {
+        const { success: questionGroup, error } = await createQuestionGroup({
           title: values.title,
           description: values.description,
           type: values.type,
           startQuestionNumber: values.startQuestionNumber,
           endQuestionNumber: values.endQuestionNumber,
-          partId
+          partId: part.id,
+          assessmentId: part.assessmentId,
         });
-        let successfully = false
+  
         if (questionGroup) {
+          let successfully = false;
+  
           if (questionGroup.type === "MULTIPLE_CHOICE") {
             successfully = await createMultipleChoiceArray({
               questionGroupId: questionGroup.id,
               startQuestionNumber: questionGroup.startQuestionNumber,
-              endQuestionNumber: questionGroup.endQuestionNumber
-            })
+              endQuestionNumber: questionGroup.endQuestionNumber,
+              assessmentId: part.assessmentId,
+            });
           } else if (questionGroup.type === "SUMMARY_COMPLETION") {
             successfully = await createSummaryCompletion({
               questionGroupId: questionGroup.id,
               startQuestionNumber: questionGroup.startQuestionNumber,
-              endQuestionNumber: questionGroup.endQuestionNumber
-            })
+              endQuestionNumber: questionGroup.endQuestionNumber,
+            });
           }
+  
+          if (successfully) {
+            form.reset();
+            router.refresh();
+            toast.success("Successfully created questionGroup!");
+          }
+        } else {
+          toast.error(error);
         }
-
-      if(successfully) {
-        form.reset()
-        router.refresh()
-        toast.success("Successfully created questionGroup!")
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        toast.error("Failed to create questionGroup.");
+      } finally {
+        setIsCreating(false);
       }
-       else {
-        toast("Failed to create questionGroup");
-      }
-    })
-    setIsCreating(false)
-    
+    });
   };
+  
   return (
     <QuestionGroupForm isPending={isPending} form={form} onSubmit={onSubmit}/>
   )

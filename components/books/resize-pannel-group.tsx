@@ -61,7 +61,7 @@ const ResizePannelGroup = ({
             >
               <DialogContent>
                 <CreateQuestionGroupForm
-                  partId={part.id}
+                  part={part}
                   setIsCreating={setIsCreatingQuestion}
                 />
               </DialogContent>
