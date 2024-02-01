@@ -35,10 +35,11 @@ export function QuestionGroupForm ({
                 <FormItem>
                   <FormLabel>Question Group Title</FormLabel>
                   <FormControl>
-                    <AutosizeTextarea
+                    <Input
                       {...field}
                       disabled={isPending}
                       placeholder="Hello"
+                      className="h-full"
                     />
                   </FormControl>
                   <FormMessage />

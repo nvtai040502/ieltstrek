@@ -10,7 +10,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CardWrapper } from "../../auth/card-wrapper";
 import { AssessmentSchema } from "@/lib/validations/books";
-import { createAssessment } from "@/actions/books/assessment";
+import { createAssessment, createAssessmentTemplate } from "@/actions/books/assessment";
 import { createParts } from "@/actions/books/parts";
 
 export function CreateAssessmentForm () {
@@ -24,28 +24,41 @@ export function CreateAssessmentForm () {
     },
   });
   const router= useRouter()
-  const onSubmit = (values: z.infer<typeof AssessmentSchema>) => {
-    startTransition(async () => {
-      const assessment = await createAssessment({
-        imageCover: values.imageCover,
-        bookName: values.bookName,
-        name: values.name
-      });
-
-      if (assessment) {
-        if (assessment.sectionType === "READING") {
-          const successfully = await createParts({assessmentId: assessment.id, numberOfPartsToCreate: 3})
-          if (successfully) {
-            toast.success("Successfully created assessment!")
-            router.push(`/assessments/${assessment.id}`)
+  const onSubmit = async (values: z.infer<typeof AssessmentSchema>) => {
+    try {
+      startTransition(async () => {
+        // Create the assessment
+        const assessment = await createAssessment({
+          imageCover: values.imageCover,
+          bookName: values.bookName,
+          name: values.name,
+        });
+  
+        if (assessment) {
+          if (assessment.sectionType === "READING") {
+            const successfully = await createAssessmentTemplate({
+              assessmentId: assessment.id,
+            });
+  
+            if (successfully) {
+              // If everything is successful, navigate to the assessment page and show success toast
+              router.push(`/assessments/${assessment.id}`);
+              toast.success("Successfully created assessment!");
+            } else {
+              // If creating parts fails, show an error toast
+              toast.error("Failed to create parts for the assessment");
+            }
           }
+        } else {
+          // If creating assessment fails, show an error toast
+          toast.error("Failed to create Assessment");
         }
-      } else {
-        toast("Failed to create Assessment");
-      }
-    })
-
-    
+      });
+    } catch (error) {
+      // Catch any unexpected errors and show an error toast
+      toast.error(`An unexpected error occurred: ${error}`);
+      console.error("Unexpected error in onSubmit:", error);
+    }
   };
   return (
     <CardWrapper
