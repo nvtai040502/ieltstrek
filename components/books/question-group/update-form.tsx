@@ -33,25 +33,32 @@ export function UpdateQuestionGroupForm({
   });
   const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof QuestionGroupSchema>) => {
+  const onSubmit = async (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
-      const { data, success, error } = await updateQuestionGroup({
-        title: values.title,
-        description: values.description,
-        type: values.type,
-        startQuestionNumber: values.startQuestionNumber,
-        endQuestionNumber: values.endQuestionNumber,
-        id: questionGroup.id,
-      });
+      try {
+        const { data, success, error } = await updateQuestionGroup({
+          title: values.title,
+          description: values.description,
+          type: values.type,
+          startQuestionNumber: values.startQuestionNumber,
+          endQuestionNumber: values.endQuestionNumber,
+          id: questionGroup.id,
+        });
 
-      if (success && data) {
-        form.reset();
-        router.refresh();
-        toast.success(success);
-      } else {
-        toast.error(error);
+        if (success && data) {
+          form.reset();
+          router.refresh();
+          toast.success("Successfully updated questionGroup!");
+        } else {
+          console.error("Error updating questionGroup:", error);
+          toast.error(error);
+        }
+      } catch (error) {
+        console.error("Error creating question group:", error);
+        toast.error("Failed to create question group.");
+      } finally {
+        setIsEditting(false);
       }
-      setIsEditting(false);
     });
   };
   return (

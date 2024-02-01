@@ -7,9 +7,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionGroup } from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
-import { deleteQuestionGroup, updateQuestionGroup } from "@/actions/books/question-group";
-import { QuestionGroupForm } from "./form";
-import { PartExtended } from "@/types/db";
+import { deleteQuestionGroup } from "@/actions/books/question-group";
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -42,26 +40,24 @@ export function DeleteQuestionGroupForm({
 
   const onSubmit = async () => {
     try {
-      startTransition(() => handleDelete());
-    } catch (error) {
-      console.error("Error deleting questionGroup:", error);
+      startTransition(async () => {
+        const { success, error } = await deleteQuestionGroup({
+          id: questionGroup.id,
+        });
+
+        if (success) {
+          form.reset();
+          router.refresh();
+          toast.success("Successfully deleted questionGroup!");
+        } else {
+          toast.error(error);
+        }
+      });
+    } catch (e) {
+      console.error("Error deleting questionGroup:", e);
       toast.error("Failed to delete questionGroup.");
     } finally {
       setIsCUD(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    const { success, error } = await deleteQuestionGroup({
-      id: questionGroup.id,
-    });
-
-    if (success) {
-      form.reset();
-      router.refresh();
-      toast.success(success);
-    } else {
-      toast.error(error);
     }
   };
 

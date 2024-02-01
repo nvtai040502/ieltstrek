@@ -35,7 +35,7 @@ export function QuestionGroupForm ({
                 <FormItem>
                   <FormLabel>Question Group Title</FormLabel>
                   <FormControl>
-                    <Input
+                    <AutosizeTextarea
                       {...field}
                       disabled={isPending}
                       placeholder="Hello"

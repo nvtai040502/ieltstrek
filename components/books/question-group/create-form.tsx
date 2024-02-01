@@ -27,49 +27,69 @@ export function CreateQuestionGroupForm({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
       type: "MULTIPLE_CHOICE",
+      title: "",
+      startQuestionNumber: 1,
+      endQuestionNumber: 2,
+      description: ""
     },
   });
   const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof QuestionGroupSchema>) => {
+  const onSubmit = async (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
-      const { questionGroup, success, error } = await createQuestionGroup({
-        title: values.title,
-        description: values.description,
-        type: values.type,
-        startQuestionNumber: values.startQuestionNumber,
-        endQuestionNumber: values.endQuestionNumber,
-        partId: part.id,
-        assessmentId: part.assessmentId,
-      });
+      try {
+        const { questionGroup, success, error } = await createQuestionGroup({
+          title: values.title,
+          description: values.description,
+          type: values.type,
+          startQuestionNumber: values.startQuestionNumber,
+          endQuestionNumber: values.endQuestionNumber,
+          partId: part.id,
+          assessmentId: part.assessmentId,
+        });
 
-      if (success && questionGroup) {
-        let successfully = false;
+        if (success && questionGroup) {
+          let successfully = false;
 
-        if (questionGroup.type === "MULTIPLE_CHOICE") {
-          successfully = await createMultipleChoiceArray({
-            questionGroupId: questionGroup.id,
-            startQuestionNumber: questionGroup.startQuestionNumber,
-            endQuestionNumber: questionGroup.endQuestionNumber,
-            assessmentId: part.assessmentId,
-          });
-        } else if (questionGroup.type === "SUMMARY_COMPLETION") {
-          successfully = await createSummaryCompletion({
-            questionGroupId: questionGroup.id,
-            startQuestionNumber: questionGroup.startQuestionNumber,
-            endQuestionNumber: questionGroup.endQuestionNumber,
-          });
+          switch (questionGroup.type) {
+            case "MULTIPLE_CHOICE":
+              successfully = await createMultipleChoiceArray({
+                questionGroupId: questionGroup.id,
+                startQuestionNumber: questionGroup.startQuestionNumber,
+                endQuestionNumber: questionGroup.endQuestionNumber,
+                assessmentId: part.assessmentId,
+              });
+              break;
+
+            case "SUMMARY_COMPLETION":
+              successfully = await createSummaryCompletion({
+                questionGroupId: questionGroup.id,
+                startQuestionNumber: questionGroup.startQuestionNumber,
+                endQuestionNumber: questionGroup.endQuestionNumber,
+              });
+              break;
+
+            default:
+              console.error(
+                "Unsupported question group type:",
+                questionGroup.type
+              );
+          }
+
+          if (successfully) {
+            form.reset();
+            router.refresh();
+            toast.success(success);
+          }
+        } else {
+          toast.error(error);
         }
-
-        if (successfully) {
-          form.reset();
-          router.refresh();
-          toast.success(success);
-        }
-      } else {
-        toast.error(error);
+      } catch (error) {
+        console.error("Error creating question group:", error);
+        toast.error("Failed to create question group.");
+      } finally {
+        setIsCreating(false);
       }
-      setIsCreating(false);
     });
   };
 

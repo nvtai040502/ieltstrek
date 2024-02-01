@@ -4,7 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
-import { ThemeProvider } from "@/components/providers/theme-provider"
+import { ThemeProvider } from "@/components/providers/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,17 +20,17 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <SessionProvider session={session}>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body>
           <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster closeButton />
-            </ThemeProvider>
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster closeButton />
+          </ThemeProvider>
         </body>
       </html>
     </SessionProvider>
