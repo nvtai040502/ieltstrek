@@ -20,10 +20,10 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
         include: {
           passage: true,
           questionGroups: {
-            orderBy: { id: "asc" }, // Order questionGroups by id
+            orderBy: { startQuestionNumber: "asc" }, 
             include: {
               multipleChoiceArray: {
-                orderBy: { id: "asc" },
+                orderBy: { questionNumber: "asc" },
                 include: {
                   choices: {
                     orderBy: { id: "asc" }, // Order choices by id
@@ -33,7 +33,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               summaryCompletion: {
                 include: {
                   summaryCompletionItems: {
-                    orderBy: { id: "asc" }, // Order summaryCompletionItems by id
+                    orderBy: { questionNumber: "asc" }, // Order summaryCompletionItems by id
                   },
                 },
               },
