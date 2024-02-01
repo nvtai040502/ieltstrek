@@ -108,6 +108,7 @@ export const createAssessmentTemplate = async ({
                       questionNumber: m,
                       title: "Hello",
                       questionGroupId: questionGroup.id,
+                      assessmentId,
                       choices: {
                         createMany: {
                           data: [

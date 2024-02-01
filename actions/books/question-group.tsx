@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
 import { db } from "@/lib/db";
-import { Passage, QuestionType} from "@prisma/client";
+import { Passage, QuestionType } from "@prisma/client";
 
 export const createQuestionGroup = async ({
   title,
@@ -9,14 +9,14 @@ export const createQuestionGroup = async ({
   startQuestionNumber,
   type,
   endQuestionNumber,
-  partId
+  partId,
 }: {
-  title: string,
-  description?: string,
-  startQuestionNumber: number,
-  type: QuestionType,
-  endQuestionNumber: number,
-  partId: number
+  title: string;
+  description?: string;
+  startQuestionNumber: number;
+  type: QuestionType;
+  endQuestionNumber: number;
+  partId: number;
 }) => {
   try {
     const questionGroup = await db.questionGroup.create({
@@ -26,7 +26,7 @@ export const createQuestionGroup = async ({
         startQuestionNumber,
         type,
         endQuestionNumber,
-        partId
+        partId,
       },
     });
 
@@ -43,41 +43,73 @@ export const updateQuestionGroup = async ({
   startQuestionNumber,
   type,
   endQuestionNumber,
-  id
+  assessmentId,
+  id,
 }: {
-  title: string,
-  description?: string,
-  startQuestionNumber: number,
-  type: QuestionType,
-  endQuestionNumber: number,
-  id: number
+  title: string;
+  description?: string;
+  startQuestionNumber: number;
+  type: QuestionType;
+  endQuestionNumber: number;
+  id: number;
+  assessmentId: number;
 }) => {
   try {
-    const multipleChoice = await db.multipleChoice.findUnique({
-      where: {
-        UniqueQuestionNumberInGroup: {
-          questionNumber: 3,
-          questionGroupId: id,
-        }
-      }
-    })
-    
+    const questionGroup = await db.questionGroup.findUnique({
+      where: { id },
+      include: { multipleChoiceArray: true },
+    });
 
-    // const questionGroupUpdated = await db.questionGroup.update({
-    //   where: {
-    //     id
-    //   },
-    //   data: {
-    //     title,
-    //     description,
-    //     startQuestionNumber,
-    //     type,
-    //     endQuestionNumber,
-    //   },
-    // });
-    return multipleChoice;
+    if (!questionGroup) {
+      return undefined;
+    }
+
+    // Check if startQuestionNumber or endQuestionNumber is changed
+    if (startQuestionNumber !== questionGroup.startQuestionNumber || endQuestionNumber !== questionGroup.endQuestionNumber) {
+      // Find questions within the old range
+      const questionsToMove = await db.multipleChoice.findMany({
+        where: {
+          assessmentId,
+          questionNumber: {
+            gte: startQuestionNumber,
+            lte: endQuestionNumber,
+          },
+        },
+      });
+      // Calculate the difference in question numbers
+      const questionNumberDifference = startQuestionNumber - questionGroup.startQuestionNumber;
+      console.log(questionsToMove)
+      console.log("🚀 ~ questionNumberDifference:", questionNumberDifference)
+
+      // for (const questionToMove of questionsToMove) {
+      //   // Move to the new range
+      //   await db.multipleChoice.update({
+      //     where: {
+      //       id: questionToMove.id,
+      //     },
+      //     data: {
+      //       questionNumber: questionToMove.questionNumber + questionNumberDifference,
+      //     },
+      //   });
+      // }
+    }
+
+    const questionGroupUpdated = await db.questionGroup.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        // description,
+        // startQuestionNumber,
+        // type,
+        // endQuestionNumber,
+      },
+    });
+
+    return questionGroupUpdated;
   } catch (error) {
     console.error("Error updating question:", error);
-    return null;
+    return undefined;
   }
 };

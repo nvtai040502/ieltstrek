@@ -21,6 +21,7 @@ model Assessment {
   // for now just READING
   sectionType SectionType @default(READING)
   parts Part[]
+  multipleChoiceArray MultipleChoice[]
 }
 
 enum SectionType {
@@ -74,8 +75,9 @@ model MultipleChoice {
   choices Choice[]
   questionGroupId Int
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-
-  @@unique([questionNumber, questionGroupId], name: "UniqueQuestionNumberInGroup")
+  assessmentId Int
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  @@unique([questionNumber, assessmentId], name: "UniqueQuestionNumberInAssessmentId")
 }
 
 

@@ -82,6 +82,7 @@ const ResizePannelGroup = ({
                       <DialogContent>
                         <UpdateQuestionGroupForm
                           questionGroup={questionGroup}
+                          part={part}
                           setIsEditting={() =>
                             setEdittingQuestionGroup({
                               [questionGroup.id]: false,

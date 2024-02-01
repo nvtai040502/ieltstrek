@@ -9,12 +9,15 @@ import { QuestionGroup } from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
 import { updateQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
+import { PartExtended } from "@/types/db";
 
 export function UpdateQuestionGroupForm ({
   questionGroup,
+  part,
   setIsEditting
 }: {
   questionGroup: QuestionGroup
+  part: PartExtended,
   setIsEditting: (isEditting: boolean) => void
 }) {
   const [isPending, startTransition] = useTransition()
@@ -37,11 +40,11 @@ export function UpdateQuestionGroupForm ({
           title: values.title,
           startQuestionNumber: values.startQuestionNumber,
           type: values.type,
+          endQuestionNumber: values.endQuestionNumber,
           id: questionGroup.id,
-          endQuestionNumber: questionGroup.endQuestionNumber
+          assessmentId: part.assessmentId
         });
         if (questionGroupUpdated) {
-          console.log("🚀 ~ startTransition ~ questionGroupUpdated:", questionGroupUpdated)
           toast.success("Successfully updating questionGroup!")
           form.reset()
           router.refresh()
