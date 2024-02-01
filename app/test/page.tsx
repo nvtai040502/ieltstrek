@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import React, { useRef, useState } from "react";
-
 const TestPage = () => {
   const numDivs = 10;
   const divRefs = Array.from({ length: numDivs }, () => React.createRef<HTMLDivElement>());
@@ -11,34 +10,43 @@ const TestPage = () => {
 
   const handleNextDiv = () => {
     setCurrentDivIndex((prevIndex) => {
-      const nextIndex = prevIndex < numDivs - 1 ? prevIndex + 1 : prevIndex;
-      divRefs[nextIndex].current?.focus();
-      return nextIndex;
+      if (prevIndex < divRefs.length - 1) {
+        divRefs[prevIndex + 1].current?.focus();
+        return prevIndex + 1;
+      }
+      return prevIndex;
     });
   };
 
   const handlePrevDiv = () => {
     setCurrentDivIndex((prevIndex) => {
-      const prevIndexClamped = prevIndex > 0 ? prevIndex - 1 : prevIndex;
-      divRefs[prevIndexClamped].current?.focus();
-      return prevIndexClamped;
+      if (prevIndex > 0) {
+        divRefs[prevIndex - 1].current?.focus();
+        return prevIndex - 1;
+      }
+      return prevIndex;
     });
   };
 
   const handleDivFocus = (index: number) => {
-    // Check if the focus change is due to a mouse click
-    if (isMouseClickRef.current) {
-      // Reset the flag for the next focus change
-      isMouseClickRef.current = false;
-      return;
+    // Reset the flag for the next focus change
+    isMouseClickRef.current = false;
+    if (index <= divRefs.length - 1){
+      setCurrentDivIndex(index);
     }
-
-    setCurrentDivIndex(index);
   };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, index: number) => {
+    // Check if the Tab key is pressed
+    if (event.key === 'Tab') {
+      handleDivFocus(index);
+    }
+  };
+
   const handleMouseDown = () => {
-    // Set the flag to indicate a mouse click
     isMouseClickRef.current = true;
   };
+
   return (
     <div>
       {divRefs.map((divRef, index) => (
@@ -46,7 +54,7 @@ const TestPage = () => {
           key={index}
           ref={divRef}
           tabIndex={0}
-          onFocus={() => handleDivFocus(index)} 
+          onKeyDown={(event) => handleKeyDown(event, index+1)}
           onMouseDown={handleMouseDown}
           className={cn("bg-red-500 p-40", {
             "bg-yellow-500": currentDivIndex === index,
