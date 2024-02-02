@@ -25,10 +25,12 @@ const ResizePannelGroup = ({
   part,
   handleQuestionSelectAnswer,
   setNextTab,
+  setPrevTab,
 }: {
   part: PartExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
   setNextTab: () => void;
+  setPrevTab: () => void;
 }) => {
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
@@ -41,9 +43,7 @@ const ResizePannelGroup = ({
     React.createRef<HTMLDivElement>()
   );
   const [currentDivIndex, setCurrentDivIndex] = useState(
-    part.questionGroups[0]
-      ? part.questionGroups[0].startQuestionNumber - 1
-      : 0
+    part.questionGroups[0] ? part.questionGroups[0].startQuestionNumber - 1 : 0
   );
   const hasPrevDiv = (index: number) => {
     return index > 0;
@@ -53,25 +53,34 @@ const ResizePannelGroup = ({
     return index < divRefs.length - 1;
   };
   const handleNextDiv = () => {
-    if (currentDivIndex+2 <= part.questionGroups[part.questionGroups.length-1].endQuestionNumber){
+    if (
+      currentDivIndex + 2 <=
+      part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
+    ) {
       setCurrentDivIndex((prevIndex) => {
         divRefs[prevIndex + 1].current?.focus();
         return prevIndex + 1;
       });
-    } else{
-      setNextTab()
+    } else {
+      setNextTab();
     }
   };
 
   const handlePrevDiv = () => {
-    setCurrentDivIndex((prevIndex) => {
-      if (prevIndex > 0) {
+    console.log(currentDivIndex, part.questionGroups[0].startQuestionNumber)
+    if (
+      currentDivIndex >=
+      part.questionGroups[0].startQuestionNumber
+    ) {
+      setCurrentDivIndex((prevIndex) => {
         divRefs[prevIndex - 1].current?.focus();
         return prevIndex - 1;
-      }
-      return prevIndex;
-    });
+      });
+    } else {
+      setPrevTab();
+    }
   };
+
   const handleDivFocus = (index: number) => {
     // Reset the flag for the next focus change
     isMouseClickRef.current = false;

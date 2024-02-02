@@ -42,7 +42,8 @@ export const AllContentTabs = ({
           <div className="overflow-y-auto">
             <ResizePannelGroup
               part={part}
-              setNextTab={() => setActiveTab(String(assessment.parts[i+1].id))} 
+              setNextTab={() => i< assessment.parts.length - 1 ? setActiveTab(String(assessment.parts[i+1].id)): setActiveTab("delivering")}
+              setPrevTab={() => setActiveTab(String(assessment.parts[i-1].id))} 
               handleQuestionSelectAnswer={handleQuestionSelectAnswer}
             />
           </div>
