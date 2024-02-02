@@ -29,7 +29,6 @@ export const AllContentTabs = ({
   };
   return (
     <Tabs
-      onValueChange={() => console.log("a")}
       value={activeTab}
       className="overflow-hidden  flex-1 flex flex-col"
     >

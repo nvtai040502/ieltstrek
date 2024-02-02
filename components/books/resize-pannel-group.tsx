@@ -52,23 +52,15 @@ const ResizePannelGroup = ({
   const hasNextDiv = (index: number) => {
     return index < divRefs.length - 1;
   };
-  const hasNextDivInCurrentPart = () => {};
   const handleNextDiv = () => {
-    setCurrentDivIndex((prevIndex) => {
-      console.log(part.multipleChoiceArray.length, prevIndex + 2);
-      if (prevIndex < divRefs.length - 1) {
-        if (prevIndex + 2 <= part.questionGroups[part.questionGroups.length-1].endQuestionNumber) {
-          divRefs[prevIndex + 1].current?.focus();
-          return prevIndex + 1;
-        } else {
-          setNextTab();
-          // setCurrentDivIndex(prevIndex+1)
-          divRefs[prevIndex + 1].current?.focus();
-          return prevIndex + 1;
-        }
-      }
-      return prevIndex;
-    });
+    if (currentDivIndex+2 <= part.questionGroups[part.questionGroups.length-1].endQuestionNumber){
+      setCurrentDivIndex((prevIndex) => {
+        divRefs[prevIndex + 1].current?.focus();
+        return prevIndex + 1;
+      });
+    } else{
+      setNextTab()
+    }
   };
 
   const handlePrevDiv = () => {
