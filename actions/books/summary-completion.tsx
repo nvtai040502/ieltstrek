@@ -1,5 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
+import { createQuestion } from "./question";
 
 export const createSummaryCompletion = async ({
   questionGroupId,
@@ -21,7 +22,7 @@ export const createSummaryCompletion = async ({
       () => sentence
     ).toString();
 
-    await db.summaryCompletion.create({
+    const summaryCompletion = await db.summaryCompletion.create({
       data: {
         paragraphWithBlanks,
         questionGroupId,
@@ -29,16 +30,30 @@ export const createSummaryCompletion = async ({
           createMany: {
             data: Array.from(
               { length: endQuestionNumber - startQuestionNumber + 1 },
-              (_, i) => ({
-                questionNumber: startQuestionNumber + i,
+              () => ({
                 expectedAnswer: "is",
-                assessmentId,
-                partId,
               })
             ),
           },
         },
       },
+      include: {
+        summaryCompletionItems: true,
+      },
+    });
+
+    const questionData = Array.from(
+      { length: endQuestionNumber - startQuestionNumber + 1 },
+      (_, i) => ({
+        partId,
+        assessmentId,
+        questionNumber: startQuestionNumber + i,
+        summaryCompletionId: summaryCompletion.id,
+      })
+    );
+
+    await db.question.createMany({
+      data: questionData,
     });
 
     return true;
@@ -47,6 +62,7 @@ export const createSummaryCompletion = async ({
     return false;
   }
 };
+
 export const updateSummaryCompletion = async ({
   paragraphWithBlanks,
   expectedAnswers,

@@ -22,20 +22,21 @@ export const createQuestionGroup = async ({
   try {
     const existingQuestionNumbers = await db.multipleChoice.findMany({
       where: {
-        assessmentId,
-        questionNumber: {
-          gte: startQuestionNumber,
-          lte: endQuestionNumber,
-        },
+        question: {
+          questionNumber: {
+            gte: startQuestionNumber,
+            lte: endQuestionNumber,
+          },
+        }
       },
       select: {
-        questionNumber: true,
+        question: true,
       },
     });
 
     if (existingQuestionNumbers.length) {
       const existingNumbersArray = existingQuestionNumbers.map(
-        (item) => item.questionNumber
+        (item) => item.question.questionNumber
       );
       return {
         error: `The following Questions ${existingNumbersArray.join(

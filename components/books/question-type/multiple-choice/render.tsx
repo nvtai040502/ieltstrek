@@ -52,7 +52,7 @@ export const MultipleChoiceRender = ({
       </Dialog>
       <div
         className="space-y-2"
-        ref={divRefs[multipleChoice.questionNumber - 1]}
+        ref={divRefs[multipleChoice.question.questionNumber - 1]}
         tabIndex={0}
         // onKeyDown={(event) => handleKeyDown(event, multipleChoice.questionNumber)}
         // onMouseDown={handleMouseDown}
@@ -61,12 +61,12 @@ export const MultipleChoiceRender = ({
           <p
             className={cn(
               "px-2 py-1",
-              currentDivIndex === multipleChoice.questionNumber - 1
+              currentDivIndex === multipleChoice.question.questionNumber - 1
                 ? "border border-foreground"
                 : ""
             )}
           >
-            {multipleChoice.questionNumber}
+            {multipleChoice.question.questionNumber}
           </p>
           <p>{multipleChoice.title}</p>
           <UpdateButton setIsUpdating={() => setEdittingMultipleChoice(true)} />

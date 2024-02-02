@@ -21,8 +21,7 @@ model Assessment {
   // for now just READING
   sectionType SectionType @default(READING)
   parts Part[]
-  multipleChoiceArray MultipleChoice[]
-  summaryCompletionItems SummaryCompletionItem[]
+  questions Question[]
 }
 
 enum SectionType {
@@ -44,8 +43,7 @@ model Part {
   assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroups QuestionGroup[]
   passage Passage?
-  multipleChoiceArray MultipleChoice[]
-  summaryCompletionItems SummaryCompletionItem[]
+  questions Question[]
 
 }
 enum QuestionType {
@@ -69,7 +67,24 @@ model QuestionGroup {
   summaryCompletion SummaryCompletion?
 }
 
+model Question {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
+  questionNumber Int
+
+  multipleChoice MultipleChoice?
+  summaryCompletionId Int?
+  summaryCompletion SummaryCompletion? @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
+
+  partId Int
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  assessmentId Int
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  @@unique([questionNumber, assessmentId])
+  
+}
 
 model MultipleChoice {
   id Int @id @default(autoincrement())
@@ -77,16 +92,14 @@ model MultipleChoice {
   updatedAt DateTime @default(now()) @updatedAt
 
   title String
-  questionNumber Int
 
-  partId Int
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  questionId Int @unique 
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
   choices Choice[]
   questionGroupId Int
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-  assessmentId Int
-  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  @@unique([questionNumber, assessmentId], name: "UniqueQuestionNumberInAssessmentId")
+  
 }
 
 
@@ -99,6 +112,8 @@ model SummaryCompletion {
   description String?
   paragraphWithBlanks String
 
+  questions Question[]
+
   summaryCompletionItems SummaryCompletionItem[]
   questionGroupId Int @unique 
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
@@ -108,14 +123,9 @@ model SummaryCompletionItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  questionNumber Int
   expectedAnswer String
   explanation String?
-  partId Int
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
-  assessmentId Int
-  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  @@unique([questionNumber, assessmentId], name: "UniqueQuestionNumberInAssessmentId")
+  
   summaryCompletionId Int
   summaryCompletion SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }

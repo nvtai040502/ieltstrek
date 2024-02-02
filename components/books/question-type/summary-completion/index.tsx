@@ -46,7 +46,7 @@ export const SummaryCompletionRender = ({
             {word === "___" ? (
               (() => {
                 const questionNumber =
-                summaryCompletion.summaryCompletionItems[count]
+                summaryCompletion.questions[count]
                 .questionNumber - 1;
                 count += 1;
                 return (

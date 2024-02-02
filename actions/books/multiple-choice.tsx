@@ -1,6 +1,8 @@
 "use server";
 import { db } from "@/lib/db";
 import { MultipleChoiceExtended } from "@/types/db";
+import { create } from "domain";
+import { createQuestion } from "./question";
 
 export const createMultipleChoiceArray = async ({
   questionGroupId,
@@ -21,7 +23,7 @@ export const createMultipleChoiceArray = async ({
         assessmentId,
         questionGroupId,
         questionNumber: i,
-        partId
+        partId,
       });
     }
     return true;
@@ -30,7 +32,6 @@ export const createMultipleChoiceArray = async ({
     return false;
   }
 };
-
 export const createMultipleChoice = async ({
   questionGroupId,
   questionNumber,
@@ -43,34 +44,39 @@ export const createMultipleChoice = async ({
   partId: number;
 }) => {
   try {
-    const multipleChoice: MultipleChoiceExtended =
-      await db.multipleChoice.create({
-        data: {
-          partId,
-          questionNumber,
-          assessmentId,
-          questionGroupId,
-          title: "example",
-          choices: {
-            createMany: {
-              data: [
-                { content: "Option 1", isCorrect: false },
-                { content: "Option 2", isCorrect: false },
-                { content: "Option 3", isCorrect: false },
-                { content: "Option 4", isCorrect: true },
-              ],
-            },
+    const question = await createQuestion({
+      partId,
+      assessmentId,
+      questionNumber
+    })
+    if (!question) {
+      throw new Error("Question Can not Created successfully")
+    }
+    await db.multipleChoice.create({
+      data: {
+        questionGroupId,
+        title: "example",
+        questionId: question.id,
+        choices: {
+          createMany: {
+            data: [
+              { content: "Option 1", isCorrect: false },
+              { content: "Option 2", isCorrect: false },
+              { content: "Option 3", isCorrect: false },
+              { content: "Option 4", isCorrect: true },
+            ],
           },
         },
-        include: { choices: true },
-      });
+      },
+    });
 
-    return multipleChoice;
+    return true;
   } catch (error) {
     console.error("Error creating multipleChoice:", error);
-    return null;
+    return false;
   }
 };
+
 export const updateMultipleChoice = async ({
   title,
   id,

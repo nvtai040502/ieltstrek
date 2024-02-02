@@ -1,89 +1,28 @@
-// "use server"
+"use server"
 
-// import { db } from "@/lib/db";
-// import { QuestionExtended } from "@/types/db";
-// import { QuestionType } from "@prisma/client";
-// export const createQuestions = async ({
-//   questionGroupId,
-//   questionType,
-//   startQuestionNumber,
-//   endQuestionNumber
-// }: {
-//   questionGroupId: number;
-//   questionType: QuestionType;
-//   startQuestionNumber: number;
-//   endQuestionNumber: number
-// }): Promise<boolean> => {
-//   try {
-//     for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
-//       await createQuestion({ questionGroupId, questionType, questionNumber: i });
-//     }
+import { db } from "@/lib/db";
+
+export const createQuestion = async ({
+  partId,
+  assessmentId,
+  questionNumber
+}: {
+  questionNumber: number;
+  assessmentId: number;
+  partId: number;
+}) => {
+  try {
+    const question = await db.question.create({
+      data: {
+        partId,
+        assessmentId,
+        questionNumber
+      }
+    })
     
-//     return true
-//   } catch (error) {
-//     console.error("Error creating questions:", error);
-//     return false;
-//   }
-// };
-
-// export const createQuestion = async ({
-//   questionGroupId,
-//   questionNumber,
-//   questionType
-// }: {
-//   questionGroupId: number;
-//   questionNumber: number
-//   questionType: QuestionType;
-// }): Promise<QuestionExtended | null> => {
-//   try {
-//     if (questionType === "MULTIPLE_CHOICE") {
-//       const question: QuestionExtended = await db.question.create({
-//         data: {
-//           questionNumber,
-//           questionGroupId,
-//           multipleChoice: {
-//             create: {
-//               title: "example",
-//               choices: {
-//                 createMany: {
-//                   data: [
-//                     { content: "Option 1", isCorrect: false },
-//                     { content: "Option 2", isCorrect: true },
-//                     { content: "Option 3", isCorrect: true },
-//                     { content: "Option 4", isCorrect: true }
-//                   ]
-//                 }
-//               }
-//             }
-//           }
-//         },
-//         include: { multipleChoice: { include: { choices: true } } }
-//       }) 
-
-//       return question;
-//     } else if (questionType === "SUMMARY_COMPLETION") {
-//       const question: QuestionExtended = await db.question.create({
-//         data: {
-//           questionNumber,
-//           questionGroupId,
-//           summaryCompletion: {
-//             create: {
-//               sentence: "Hello, What you name and how old are you?",
-//               blank: "What"
-//             }
-//           }
-//         },
-//         include: { summaryCompletion: true }
-//       })
-//       return question;
-      
-//     }
-
-//     return null; // If questionType is not recognized
-//   } catch (error) {
-//     console.error("Error creating question:", error);
-//     return null;
-//   }
-// };
-
-
+    return question
+  } catch (error) {
+    console.error("Error creating questionGroup:", error);
+    return undefined
+  }
+};

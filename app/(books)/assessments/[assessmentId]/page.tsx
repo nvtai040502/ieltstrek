@@ -19,23 +19,27 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
         orderBy: { id: "asc" }, // Order parts by id
         include: {
           passage: true,
-          multipleChoiceArray: true,
+          questions: true,
           questionGroups: {
-            orderBy: { startQuestionNumber: "asc" }, 
+            orderBy: { startQuestionNumber: "asc" },
             include: {
               multipleChoiceArray: {
-                orderBy: { questionNumber: "asc" },
                 include: {
                   choices: {
                     orderBy: { id: "asc" }, // Order choices by id
                   },
+                  question: true,
+                },
+                orderBy: {
+                  question: { questionNumber: "asc" },
                 },
               },
               summaryCompletion: {
                 include: {
-                  summaryCompletionItems: {
-                    orderBy: { questionNumber: "asc" }, // Order summaryCompletionItems by id
+                  questions: {
+                    orderBy: {questionNumber: "asc"}
                   },
+                  summaryCompletionItems: true
                 },
               },
             },

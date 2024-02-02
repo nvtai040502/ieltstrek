@@ -134,7 +134,7 @@ export const AllContentTabs = ({
               >
                 <p className="px-1 whitespace-nowrap">{part.title}</p>
                 <div className="flex items-center">
-                  {part.multipleChoiceArray.map((part) => (
+                  {part.questions.map((part) => (
                     <div
                       key={part.id}
                       role="button"
