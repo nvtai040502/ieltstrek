@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { db } from "@/lib/db";
 import { MultipleChoiceExtended } from "@/types/db";
 
@@ -6,16 +6,23 @@ export const createMultipleChoiceArray = async ({
   questionGroupId,
   startQuestionNumber,
   endQuestionNumber,
-  assessmentId
+  assessmentId,
+  partId,
 }: {
   questionGroupId: number;
   startQuestionNumber: number;
   endQuestionNumber: number;
-  assessmentId: number
+  assessmentId: number;
+  partId: number;
 }): Promise<boolean> => {
   try {
     for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
-      await createMultipleChoice({ assessmentId,questionGroupId, questionNumber: i });
+      await createMultipleChoice({
+        assessmentId,
+        questionGroupId,
+        questionNumber: i,
+        partId
+      });
     }
     return true;
   } catch (error) {
@@ -27,32 +34,36 @@ export const createMultipleChoiceArray = async ({
 export const createMultipleChoice = async ({
   questionGroupId,
   questionNumber,
-  assessmentId
+  assessmentId,
+  partId,
 }: {
   questionGroupId: number;
   questionNumber: number;
   assessmentId: number;
+  partId: number;
 }): Promise<MultipleChoiceExtended | null> => {
   try {
-    const multipleChoice: MultipleChoiceExtended = await db.multipleChoice.create({
-      data: {
-        questionNumber,
-        assessmentId,
-        questionGroupId,
-        title: "example",
-        choices: {
-          createMany: {
-            data: [
-              { content: "Option 1", isCorrect: false },
-              { content: "Option 2", isCorrect: false },
-              { content: "Option 3", isCorrect: false },
-              { content: "Option 4", isCorrect: true }
-            ]
-          }
-        }
-      },
-      include: { choices: true }
-    });
+    const multipleChoice: MultipleChoiceExtended =
+      await db.multipleChoice.create({
+        data: {
+          partId,
+          questionNumber,
+          assessmentId,
+          questionGroupId,
+          title: "example",
+          choices: {
+            createMany: {
+              data: [
+                { content: "Option 1", isCorrect: false },
+                { content: "Option 2", isCorrect: false },
+                { content: "Option 3", isCorrect: false },
+                { content: "Option 4", isCorrect: true },
+              ],
+            },
+          },
+        },
+        include: { choices: true },
+      });
 
     return multipleChoice;
   } catch (error) {
@@ -64,16 +75,16 @@ export const updateMultipleChoice = async ({
   title,
   id,
 }: {
-  title: string
-  id: number
+  title: string;
+  id: number;
 }) => {
   try {
     const multipleChoice = await db.multipleChoice.update({
       where: {
-        id
+        id,
       },
       data: {
-        title
+        title,
       },
     });
 
@@ -84,28 +95,26 @@ export const updateMultipleChoice = async ({
   }
 };
 
-
-
 export const updateChoice = async ({
   content,
   explanation,
   isCorrect,
-  id
+  id,
 }: {
-  content: string
-  explanation?: string,
-  isCorrect: boolean,
-  id: number
+  content: string;
+  explanation?: string;
+  isCorrect: boolean;
+  id: number;
 }) => {
   try {
     const question = await db.choice.update({
       where: {
-        id
+        id,
       },
       data: {
         content,
         explanation,
-        isCorrect
+        isCorrect,
       },
     });
 

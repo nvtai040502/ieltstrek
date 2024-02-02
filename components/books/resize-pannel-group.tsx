@@ -24,9 +24,11 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 const ResizePannelGroup = ({
   part,
   handleQuestionSelectAnswer,
+  setNextTab,
 }: {
   part: PartExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
+  setNextTab: () => void;
 }) => {
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
@@ -38,7 +40,11 @@ const ResizePannelGroup = ({
   const divRefs = Array.from({ length: 40 }, () =>
     React.createRef<HTMLDivElement>()
   );
-  const [currentDivIndex, setCurrentDivIndex] = useState(0);
+  const [currentDivIndex, setCurrentDivIndex] = useState(
+    part.questionGroups[0]
+      ? part.questionGroups[0].startQuestionNumber - 1
+      : 0
+  );
   const hasPrevDiv = (index: number) => {
     return index > 0;
   };
@@ -46,11 +52,20 @@ const ResizePannelGroup = ({
   const hasNextDiv = (index: number) => {
     return index < divRefs.length - 1;
   };
+  const hasNextDivInCurrentPart = () => {};
   const handleNextDiv = () => {
     setCurrentDivIndex((prevIndex) => {
-      if (hasNextDiv(prevIndex)) {
-        divRefs[prevIndex + 1].current?.focus();
-        return prevIndex + 1;
+      console.log(part.multipleChoiceArray.length, prevIndex + 2);
+      if (prevIndex < divRefs.length - 1) {
+        if (prevIndex + 2 <= part.questionGroups[part.questionGroups.length-1].endQuestionNumber) {
+          divRefs[prevIndex + 1].current?.focus();
+          return prevIndex + 1;
+        } else {
+          setNextTab();
+          // setCurrentDivIndex(prevIndex+1)
+          divRefs[prevIndex + 1].current?.focus();
+          return prevIndex + 1;
+        }
       }
       return prevIndex;
     });
@@ -89,22 +104,22 @@ const ResizePannelGroup = ({
   return (
     <div className="h-full">
       <div className="absolute inset-0 h-20">
-      <Button
-        onClick={handlePrevDiv}
-        disabled={!hasPrevDiv(currentDivIndex)}
-        size="xl"
-      >
-        <ArrowLeft />
-      </Button>
-      <Button
-        onClick={handleNextDiv}
-        disabled={!hasNextDiv(currentDivIndex)}
-        size="xl"
-      >
-        <ArrowRight />
-      </Button>  
+        <Button
+          onClick={handlePrevDiv}
+          disabled={!hasPrevDiv(currentDivIndex)}
+          size="xl"
+        >
+          <ArrowLeft />
+        </Button>
+        <Button
+          onClick={handleNextDiv}
+          disabled={!hasNextDiv(currentDivIndex)}
+          size="xl"
+        >
+          <ArrowRight />
+        </Button>
       </div>
-      
+
       <ResizablePanelGroup
         direction="horizontal"
         className="rounded-lg flex-grow"

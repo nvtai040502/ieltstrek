@@ -29,12 +29,11 @@ export const AllContentTabs = ({
   };
   return (
     <Tabs
-      defaultValue={String(assessment.parts[0].id)}
       onValueChange={() => console.log("a")}
       value={activeTab}
       className="overflow-hidden  flex-1 flex flex-col"
     >
-      {assessment.parts.map((part) => (
+      {assessment.parts.map((part, i) => (
         <TabsContent
           key={part.id}
           value={String(part.id)}
@@ -44,6 +43,7 @@ export const AllContentTabs = ({
           <div className="overflow-y-auto">
             <ResizePannelGroup
               part={part}
+              setNextTab={() => setActiveTab(String(assessment.parts[i+1].id))} 
               handleQuestionSelectAnswer={handleQuestionSelectAnswer}
             />
           </div>

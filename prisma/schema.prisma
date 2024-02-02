@@ -43,6 +43,7 @@ model Part {
   assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroups QuestionGroup[]
   passage Passage?
+  multipleChoiceArray MultipleChoice[]
 }
 enum QuestionType {
   MULTIPLE_CHOICE
@@ -72,6 +73,8 @@ model MultipleChoice {
   title String
   questionNumber Int
 
+  partId Int
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
   choices Choice[]
   questionGroupId Int
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
