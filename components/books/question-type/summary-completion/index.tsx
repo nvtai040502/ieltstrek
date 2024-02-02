@@ -46,12 +46,11 @@ export const SummaryCompletionRender = ({
             {word === "___" ? (
               (() => {
                 const questionNumber =
-                summaryCompletion.questions[count]
-                .questionNumber - 1;
+                summaryCompletion.summaryCompletionItems[count]
+                .question.questionNumber - 1;
                 count += 1;
                 return (
                   <>
-                    {questionNumber}, {count}
                     <InputGap
                       key={index}
                       placeholder="Enter a word"

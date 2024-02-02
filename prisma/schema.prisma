@@ -75,8 +75,7 @@ model Question {
   questionNumber Int
 
   multipleChoice MultipleChoice?
-  summaryCompletionId Int?
-  summaryCompletion SummaryCompletion? @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
+  summaryCompletionItem SummaryCompletionItem?
 
   partId Int
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
@@ -112,8 +111,6 @@ model SummaryCompletion {
   description String?
   paragraphWithBlanks String
 
-  questions Question[]
-
   summaryCompletionItems SummaryCompletionItem[]
   questionGroupId Int @unique 
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
@@ -126,6 +123,9 @@ model SummaryCompletionItem {
   expectedAnswer String
   explanation String?
   
+  questionId Int @unique 
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
   summaryCompletionId Int
   summaryCompletion SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }

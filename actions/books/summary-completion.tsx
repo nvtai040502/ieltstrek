@@ -22,18 +22,32 @@ export const createSummaryCompletion = async ({
       () => sentence
     ).toString();
 
+    const questions = await Promise.all(
+      Array.from({ length: endQuestionNumber - startQuestionNumber + 1 }, async (_, i) => {
+        const question = await createQuestion({
+          partId,
+          assessmentId,
+          questionNumber: startQuestionNumber + i,
+        });
+
+        if (!question) {
+          throw new Error("Error creating question");
+        }
+
+        return question;
+      })
+    );
+
     const summaryCompletion = await db.summaryCompletion.create({
       data: {
         paragraphWithBlanks,
         questionGroupId,
         summaryCompletionItems: {
           createMany: {
-            data: Array.from(
-              { length: endQuestionNumber - startQuestionNumber + 1 },
-              () => ({
-                expectedAnswer: "is",
-              })
-            ),
+            data: questions.map((question) => ({
+              expectedAnswer: "is",
+              questionId: question.id,
+            })),
           },
         },
       },
@@ -42,20 +56,7 @@ export const createSummaryCompletion = async ({
       },
     });
 
-    const questionData = Array.from(
-      { length: endQuestionNumber - startQuestionNumber + 1 },
-      (_, i) => ({
-        partId,
-        assessmentId,
-        questionNumber: startQuestionNumber + i,
-        summaryCompletionId: summaryCompletion.id,
-      })
-    );
-
-    await db.question.createMany({
-      data: questionData,
-    });
-
+    console.log("Summary completion created:", summaryCompletion);
     return true;
   } catch (error) {
     console.log("Error creating summaryCompletion:", error);
@@ -63,34 +64,37 @@ export const createSummaryCompletion = async ({
   }
 };
 
-export const updateSummaryCompletion = async ({
-  paragraphWithBlanks,
-  expectedAnswers,
-  id,
-}: {
-  paragraphWithBlanks: string;
-  expectedAnswers: string[];
-  id: number;
-}) => {
-  try {
-    const summaryCompletionUpdated = await db.summaryCompletion.update({
-      where: { id },
-      data: {
-        paragraphWithBlanks,
-        summaryCompletionItems: {
-          updateMany: expectedAnswers.map((expectedAnswer, index) => ({
-            where: { questionNumber: index + 1, summaryCompletionId: id },
-            data: {
-              expectedAnswer,
-            },
-          })),
-        },
-      },
-    });
+// export const updateSummaryCompletion = async ({
+//   paragraphWithBlanks,
+//   expectedAnswers,
+//   id,
+// }: {
+//   paragraphWithBlanks: string;
+//   expectedAnswers: string[];
+//   id: number;
+// }) => {
+//   try {
+//     const summaryCompletionUpdated = await db.summaryCompletion.update({
+//       where: { id },
+//       data: {
+//         paragraphWithBlanks,
+//         questions: {},  // You may need to provide the correct type for questions as well
+//         summaryCompletionItems: {
+//           updateMany: {
+//             where: { summaryCompletionId: id },
+//             data: {
+//               expectedAnswer: {
+//                 set: expectedAnswers,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     });
 
-    return summaryCompletionUpdated;
-  } catch (error) {
-    console.log("Error updating summaryCompletion:", error);
-    throw error;
-  }
-};
+//     return summaryCompletionUpdated;
+//   } catch (error) {
+//     console.log("Error updating summaryCompletion:", error);
+//     throw error;
+//   }
+// };

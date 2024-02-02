@@ -1,13 +1,13 @@
 "use client";
-import { AssessmentExtended, PartExtended } from "@/types/db";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { PartRender } from "./part/part-render";
-import ResizePannelGroup from "./resize-pannel-group";
+import React, { Fragment, useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Send } from "lucide-react";
+import { AssessmentExtended, PartExtended } from "@/types/db";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import React, { Fragment, useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList } from "../ui/tabs";
 import { cn } from "@/lib/utils";
+import ResizePannelGroup from "./resize-pannel-group";
+import { PartRender } from "./part/part-render";
 
 export const AllContentTabs = ({
   assessment,
@@ -18,30 +18,27 @@ export const AllContentTabs = ({
   const [activeTab, setActiveTab] = useState<string>(
     String(assessment.parts[0].id)
   );
+  const [currentDivIndex, setCurrentDivIndex] = useState<number>(0);
+
   const handleQuestionSelectAnswer = (questionId: string, value: string) => {
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [questionId]: value,
-    }));
+    setUserAnswers((prevAnswers) => ({ ...prevAnswers, [questionId]: value }));
   };
+
   const handleSubmit = () => {
     console.log("User Answers:", userAnswers);
   };
-  const divRefs = Array.from({ length: 40 }, () =>
+
+  const divRefs = Array.from({ length: assessment.questions.length }, () =>
     React.createRef<HTMLDivElement | HTMLInputElement>()
   );
 
-  const [currentDivIndex, setCurrentDivIndex] = useState<number>(0);
-  const hasPrevDiv = (index: number) => {
-    return index > 0;
-  };
+  const hasPrevDiv = (index: number) => index > 0;
   const handleMoveToDiv = (index: number) => {
     divRefs[index].current?.focus();
     setCurrentDivIndex(index);
   };
-  const hasNextDiv = (index: number) => {
-    return index < divRefs.length - 1;
-  };
+
+  const hasNextDiv = (index: number) => index < divRefs.length - 1;
   const handleNextDiv = (part: PartExtended, i: number) => {
     if (
       currentDivIndex + 2 <=
@@ -76,8 +73,9 @@ export const AllContentTabs = ({
       );
     }
   };
+
   return (
-    <Tabs value={activeTab} className="overflow-hidden  flex-1 flex flex-col">
+    <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
       {assessment.parts.map((part, i) => (
         <TabsContent
           key={part.id}
@@ -122,7 +120,7 @@ export const AllContentTabs = ({
             </Button>
           </div>
         </div>
-        <Separator className="hidden xl:block mt-20 " />
+        <Separator className="hidden xl:block mt-20" />
       </TabsContent>
       <TabsList className="flex justify-between items-center h-40">
         {assessment.parts.map((part, i) => (

@@ -15,11 +15,14 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
       id: Number(params.assessmentId),
     },
     include: {
+      questions: true,
       parts: {
         orderBy: { id: "asc" }, // Order parts by id
         include: {
           passage: true,
-          questions: true,
+          questions: {
+            orderBy: {questionNumber: "asc"}
+          },
           questionGroups: {
             orderBy: { startQuestionNumber: "asc" },
             include: {
@@ -36,10 +39,14 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               },
               summaryCompletion: {
                 include: {
-                  questions: {
-                    orderBy: {questionNumber: "asc"}
-                  },
-                  summaryCompletionItems: true
+                  summaryCompletionItems: {
+                    include: {
+                      question: true
+                    },
+                    orderBy: {
+                      question: {questionNumber: "asc"}
+                    }
+                  }
                 },
               },
             },

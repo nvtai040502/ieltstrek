@@ -25,12 +25,14 @@ export type QuestionGroupExtended = QuestionGroup & {
   summaryCompletion?: SummaryCompletionExtended | null;
 };
 
-
+export type SummaryCompletionItemExtended = SummaryCompletionItem & {
+  question: Question;
+};
 
 export type SummaryCompletionExtended = SummaryCompletion & {
-  summaryCompletionItems: SummaryCompletionItem[];
-  questions: Question[]
+  summaryCompletionItems: SummaryCompletionItemExtended[];
 };
 export type AssessmentExtended = Assessment & {
   parts: PartExtended[];
+  questions: Question[]
 };
