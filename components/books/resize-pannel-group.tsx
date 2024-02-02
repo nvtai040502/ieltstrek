@@ -6,7 +6,7 @@ import {
 } from "../ui/resizable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import React, { startTransition, useRef, useState, useTransition } from "react";
+import React, { startTransition, useEffect, useRef, useState, useTransition } from "react";
 import { PartExtended } from "@/types/db";
 import { UpdateQuestionGroupForm } from "./question-group/update-form";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
@@ -23,13 +23,15 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 const ResizePannelGroup = ({
   part,
   handleQuestionSelectAnswer,
-  setNextTab,
-  setPrevTab,
+  divRefs,
+  currentDivIndex,
+  setCurrentDivIndex
 }: {
   part: PartExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-  setNextTab: () => void;
-  setPrevTab: () => void;
+  divRefs: React.RefObject<HTMLDivElement>[]
+  currentDivIndex: number
+  setCurrentDivIndex: (index: number) => void
 }) => {
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
@@ -38,84 +40,11 @@ const ResizePannelGroup = ({
   const [deletingQuestionGroup, setDeletingQuestionGroup] = useState<{
     [key: string]: boolean;
   }>({});
-  const divRefs = Array.from({ length: 40 }, () =>
-    React.createRef<HTMLDivElement>()
-  );
-  const [currentDivIndex, setCurrentDivIndex] = useState(
-    part.questionGroups[0] ? part.questionGroups[0].startQuestionNumber - 1 : 0
-  );
-  const hasPrevDiv = (index: number) => {
-    return index > 0;
-  };
-  const isMouseClickRef = useRef(false);
-  const hasNextDiv = (index: number) => {
-    return index < divRefs.length - 1;
-  };
-  const handleNextDiv = () => {
-    if (
-      currentDivIndex + 2 <=
-      part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
-    ) {
-      setCurrentDivIndex((prevIndex) => {
-        divRefs[prevIndex + 1].current?.focus();
-        return prevIndex + 1;
-      });
-    } else {
-      setNextTab();
-    }
-  };
-
-  const handlePrevDiv = () => {
-    if (currentDivIndex >= part.questionGroups[0].startQuestionNumber) {
-      setCurrentDivIndex((prevIndex) => {
-        divRefs[prevIndex - 1].current?.focus();
-        return prevIndex - 1;
-      });
-    } else {
-      setPrevTab();
-    }
-  };
-
-  const handleDivFocus = (index: number) => {
-    // Reset the flag for the next focus change
-    isMouseClickRef.current = false;
-    if (index <= divRefs.length - 1) {
-      setCurrentDivIndex(index);
-    }
-  };
-
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLDivElement>,
-    index: number
-  ) => {
-    // Check if the Tab key is pressed
-    if (event.key === "Tab") {
-      handleDivFocus(index);
-    }
-  };
-
-  const handleMouseDown = () => {
-    isMouseClickRef.current = true;
-  };
+  useEffect(() => {
+    setCurrentDivIndex(part.questionGroups[0].startQuestionNumber-1)
+  }, []);
   return (
     <div className="h-full">
-      <div className="absolute inset-0 h-20">
-        <Button
-          onClick={handlePrevDiv}
-          disabled={!hasPrevDiv(currentDivIndex)}
-          size="xl"
-        >
-          <ArrowLeft />
-        </Button>
-        <Button
-          onClick={handleNextDiv}
-          disabled={!hasNextDiv(currentDivIndex)}
-          size="xl"
-        >
-          <ArrowRight />
-        </Button>
-      </div>
-
       <ResizablePanelGroup
         direction="horizontal"
         className="rounded-lg flex-grow"

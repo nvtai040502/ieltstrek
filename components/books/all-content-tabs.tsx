@@ -1,12 +1,12 @@
 "use client";
-import { AssessmentExtended } from "@/types/db";
+import { AssessmentExtended, PartExtended } from "@/types/db";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { PartRender } from "./part/part-render";
 import ResizePannelGroup from "./resize-pannel-group";
-import { Check, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Send } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const AllContentTabs = ({
@@ -27,68 +27,134 @@ export const AllContentTabs = ({
   const handleSubmit = () => {
     console.log("User Answers:", userAnswers);
   };
+  const divRefs = Array.from({ length: 40 }, () =>
+    React.createRef<HTMLDivElement>()
+  );
+
+  const [currentDivIndex, setCurrentDivIndex] = useState<number>(0);
+  const hasPrevDiv = (index: number) => {
+    return index > 0;
+  };
+  const handleMoveToDiv = (index: number) => {
+    divRefs[index].current?.focus();
+    setCurrentDivIndex(index);
+  };
+  const hasNextDiv = (index: number) => {
+    return index < divRefs.length - 1;
+  };
+  const handleNextDiv = (part: PartExtended, i: number) => {
+    if (
+      currentDivIndex + 2 <=
+      part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
+    ) {
+      setCurrentDivIndex((prevIndex) => {
+        divRefs[prevIndex + 1].current?.focus();
+        return prevIndex + 1;
+      });
+    } else {
+      if (i < assessment.parts.length - 1) {
+        setCurrentDivIndex(
+          assessment.parts[i + 1].questionGroups[0].startQuestionNumber - 1
+        );
+        setActiveTab(String(assessment.parts[i + 1].id));
+      } else {
+        setActiveTab("delivering");
+      }
+    }
+  };
+
+  const handlePrevDiv = (part: PartExtended, i: number) => {
+    if (currentDivIndex >= part.questionGroups[0].startQuestionNumber) {
+      setCurrentDivIndex((prevIndex) => {
+        divRefs[prevIndex - 1].current?.focus();
+        return prevIndex - 1;
+      });
+    } else {
+      setActiveTab(String(assessment.parts[i - 1].id));
+      setCurrentDivIndex(
+        assessment.parts[i - 1].questionGroups[0].startQuestionNumber - 1
+      );
+    }
+  };
   return (
-    <Tabs value={activeTab} className="overflow-hidden  flex-1 flex flex-col">
-      {assessment.parts.map((part, i) => (
-        <TabsContent
-          key={part.id}
-          value={String(part.id)}
-          className="overflow-hidden flex flex-col"
-        >
-          <PartRender part={part} />
-          <div className="overflow-y-auto">
-            <ResizePannelGroup
-              part={part}
-              setNextTab={() =>
-                i < assessment.parts.length - 1
-                  ? setActiveTab(String(assessment.parts[i + 1].id))
-                  : setActiveTab("delivering")
-              }
-              setPrevTab={() =>
-                setActiveTab(String(assessment.parts[i - 1].id))
-              }
-              handleQuestionSelectAnswer={handleQuestionSelectAnswer}
-            />
+    <>
+      <Tabs value={activeTab} className="overflow-hidden  flex-1 flex flex-col">
+        {assessment.parts.map((part, i) => (
+          <TabsContent
+            key={part.id}
+            value={String(part.id)}
+            className="overflow-hidden flex flex-col"
+          >
+            <PartRender part={part} />
+            <div className="absolute inset-0 h-20">
+              <Button
+                onClick={() => handlePrevDiv(part, i)}
+                disabled={!hasPrevDiv(currentDivIndex)}
+                size="xl"
+              >
+                <ArrowLeft />
+              </Button>
+              <Button
+                onClick={() => handleNextDiv(part, i)}
+                disabled={!hasNextDiv(currentDivIndex)}
+                size="xl"
+              >
+                <ArrowRight />
+              </Button>
+            </div>
+            <div className="overflow-y-auto">
+              <ResizePannelGroup
+                part={part}
+                handleQuestionSelectAnswer={handleQuestionSelectAnswer}
+                divRefs={divRefs}
+                currentDivIndex={currentDivIndex}
+                setCurrentDivIndex={setCurrentDivIndex}
+              />
+            </div>
+          </TabsContent>
+        ))}
+        <TabsContent value="delivering" className="h-full">
+          <div className="flex items-center justify-center w-full">
+            <div className="flex justify-between items-center w-full max-w-3xl">
+              <p>Click next to continue</p>
+              <Button size="lg" onClick={handleSubmit}>
+                <Send className="mr-2 h-4 w-4" />
+                Next
+              </Button>
+            </div>
           </div>
+          <Separator className="hidden xl:block mt-20 " />
         </TabsContent>
-      ))}
-      <TabsContent value="delivering" className="h-full">
-        <div className="flex items-center justify-center w-full">
-          <div className="flex justify-between items-center w-full max-w-3xl">
-            <p>Click next to continue</p>
-            <Button size="lg" onClick={handleSubmit}>
-              <Send className="mr-2 h-4 w-4" />
-              Next
-            </Button>
-          </div>
-        </div>
-        <Separator className="hidden xl:block mt-20 " />
-      </TabsContent>
-      <TabsList className="flex justify-between items-center h-40">
-        {assessment.parts.map((part) =>
-          activeTab === String(part.id) ? (
-            <Button
-              key={part.id}
-              className="w-full rounded-none border-none hover:bg-background"
-              variant="outline"
-            >
-              <p>{part.title}</p>
-              
-            </Button>
-          ) : (
-            <Button
-              key={part.id}
-              className="w-full rounded-none border-none"
-              variant="outline"
-            >
-              {part.title}
-            </Button>
-          )
-        )}
-        <Button variant="secondary" onClick={() => setActiveTab("delivering")}>
-          <Check className="h-4 w-4" />
-        </Button>
-      </TabsList>
-    </Tabs>
+        <TabsList className="flex justify-between items-center h-40">
+          {assessment.parts.map((part, i) => (
+            <Fragment key={part.id}>
+              {activeTab === String(part.id) ? (
+                <Button
+                  key={part.id}
+                  className="w-full rounded-none border-none hover:bg-background"
+                  variant="outline"
+                >
+                  <p>{part.title}</p>
+                </Button>
+              ) : (
+                <Button
+                  className="w-full rounded-none border-none"
+                  variant="outline"
+                  onClick={() => setActiveTab(String(part.id))}
+                >
+                  {part.title}
+                </Button>
+              )}
+            </Fragment>
+          ))}
+          <Button
+            variant="secondary"
+            onClick={() => setActiveTab("delivering")}
+          >
+            <Check className="h-4 w-4" />
+          </Button>
+        </TabsList>
+      </Tabs>
+    </>
   );
 };
