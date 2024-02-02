@@ -126,6 +126,7 @@ model SummaryCompletionItem {
   questionId Int @unique 
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
+
   summaryCompletionId Int
   summaryCompletion SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }

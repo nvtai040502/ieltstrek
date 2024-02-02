@@ -17,18 +17,15 @@ export type PartExtended = Part & {
 };
 export type MultipleChoiceExtended = MultipleChoice & {
   choices: Choice[];
-  question: Question;
 };
 
 export type QuestionGroupExtended = QuestionGroup & {
   multipleChoiceArray: MultipleChoiceExtended[];
   summaryCompletion?: SummaryCompletionExtended | null;
 };
-
 export type SummaryCompletionItemExtended = SummaryCompletionItem & {
-  question: Question;
-};
-
+  question: Question
+}
 export type SummaryCompletionExtended = SummaryCompletion & {
   summaryCompletionItems: SummaryCompletionItemExtended[];
 };

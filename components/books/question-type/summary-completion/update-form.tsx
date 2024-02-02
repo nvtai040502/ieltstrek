@@ -19,7 +19,7 @@ import { SummaryCompletionSchema } from "@/lib/validations/books";
 import { SummaryCompletion } from "@prisma/client";
 import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
 import { SummaryCompletionExtended } from "@/types/db";
-import { updateSummaryCompletion } from "@/actions/books/summary-completion";
+import { updateSummaryCompletionItem } from "@/actions/books/summary-completion";
 
 export function UpdateSummaryCompletionForm({
   summaryCompletion,
@@ -40,23 +40,29 @@ export function UpdateSummaryCompletionForm({
   });
   const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof SummaryCompletionSchema>) => {
+  const onSubmit = async (values: z.infer<typeof SummaryCompletionSchema>) => {
     startTransition(async () => {
-      const summaryCompletionUpdated = await updateSummaryCompletion({
-        paragraphWithBlanks: values.paragraphWithBlanks,
-        expectedAnswers: values.expectedAnswers,
-        id: summaryCompletion.id
-      });
-      if (summaryCompletionUpdated) {
-        form.reset()
+      try {
+        const updatePromises = summaryCompletion.summaryCompletionItems.map(
+          async (item) => {
+            await updateSummaryCompletionItem({
+              id: item.id,
+              expectedAnswer: values.expectedAnswers[item.question.questionNumber-1],
+            });
+          }
+        );
+  
+        await Promise.all(updatePromises);
+  
+        toast.success("Successfully updated summaryCompletion!");
         router.refresh()
-        toast.success("Successfully updated summaryCompletion!")
-    }
-      else {
-      toast.error("Failed to update summaryCompletion");
-    }
-  })
-    setIsEditting(false)
+      } catch (error) {
+        console.error("Failed to update summaryCompletion:", error);
+        toast.error("Failed to update summaryCompletion");
+      }
+    });
+  
+    setIsEditting(false);
   };
   return (
     <div className="px-4">
@@ -82,15 +88,15 @@ export function UpdateSummaryCompletionForm({
                 </FormItem>
               )}
             />
-            {summaryCompletion.summaryCompletionItems.map((summaryCompletionItem, index) => (
+            {summaryCompletion.summaryCompletionItems.map((summaryCompletionItem) => (
               <Fragment key={summaryCompletionItem.id}>
                 <FormField
                   control={form.control}
-                  name={`expectedAnswers.${index}`} 
+                  name={`expectedAnswers.${summaryCompletionItem.question.questionNumber-1}`} 
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {`Expected Answer ${index + 1}`}
+                        {`Expected Answer ${summaryCompletionItem.question.questionNumber}`}
                       </FormLabel>
                       <FormControl>
                         <Input

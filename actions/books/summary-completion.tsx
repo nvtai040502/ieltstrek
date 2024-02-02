@@ -56,7 +56,6 @@ export const createSummaryCompletion = async ({
       },
     });
 
-    console.log("Summary completion created:", summaryCompletion);
     return true;
   } catch (error) {
     console.log("Error creating summaryCompletion:", error);
@@ -64,37 +63,24 @@ export const createSummaryCompletion = async ({
   }
 };
 
-// export const updateSummaryCompletion = async ({
-//   paragraphWithBlanks,
-//   expectedAnswers,
-//   id,
-// }: {
-//   paragraphWithBlanks: string;
-//   expectedAnswers: string[];
-//   id: number;
-// }) => {
-//   try {
-//     const summaryCompletionUpdated = await db.summaryCompletion.update({
-//       where: { id },
-//       data: {
-//         paragraphWithBlanks,
-//         questions: {},  // You may need to provide the correct type for questions as well
-//         summaryCompletionItems: {
-//           updateMany: {
-//             where: { summaryCompletionId: id },
-//             data: {
-//               expectedAnswer: {
-//                 set: expectedAnswers,
-//               },
-//             },
-//           },
-//         },
-//       },
-//     });
+export const updateSummaryCompletionItem = async ({
+  expectedAnswer,
+  id,
+}: {
+  expectedAnswer: string;
+  id: number;
+}) => {
+  try {
+    const summaryCompletionUpdated = await db.summaryCompletionItem.update({
+      where: { id },
+      data: {
+        expectedAnswer
+      }
+    });
 
-//     return summaryCompletionUpdated;
-//   } catch (error) {
-//     console.log("Error updating summaryCompletion:", error);
-//     throw error;
-//   }
-// };
+    return summaryCompletionUpdated;
+  } catch (error) {
+    console.log("Error updating summaryCompletion:", error);
+    throw error;
+  }
+};
