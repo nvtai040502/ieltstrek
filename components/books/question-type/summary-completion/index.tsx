@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Fragment, useState } from "react";
+import { Fragment, RefObject, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,15 +16,20 @@ import { UpdateSummaryCompletionForm } from "./update-form";
 
 interface SummaryCompletionRenderProps {
   summaryCompletion?: SummaryCompletionExtended | null;
+  divRefs: React.RefObject<HTMLDivElement>[];
+  currentDivIndex: number;
 }
 export const SummaryCompletionRender = ({
   summaryCompletion,
+  divRefs,
+  currentDivIndex,
 }: SummaryCompletionRenderProps) => {
   const [isEdittingQuestion, setEdittingQuestion] = useState(false);
   if (summaryCompletion === undefined || summaryCompletion === null) {
     return null;
   }
   const words = summaryCompletion.paragraphWithBlanks.split(" ");
+  let count = 0;
   return (
     <div className="flex flex-wrap">
       <Dialog open={isEdittingQuestion} onOpenChange={setEdittingQuestion}>
@@ -39,7 +44,22 @@ export const SummaryCompletionRender = ({
         {words.map((word, index) => (
           <Fragment key={index}>
             {word === "___" ? (
-              <InputGap placeholder="Enter a word" />
+              (() => {
+                const questionNumber =
+                summaryCompletion.summaryCompletionItems[count]
+                .questionNumber - 1;
+                count += 1;
+                return (
+                  <>
+                    {questionNumber}, {count}
+                    <InputGap
+                      key={index}
+                      placeholder="Enter a word"
+                      ref={divRefs[questionNumber] as RefObject<HTMLInputElement>}
+                    />
+                  </>
+                );
+              })()
             ) : (
               <span>{word}</span>
             )}

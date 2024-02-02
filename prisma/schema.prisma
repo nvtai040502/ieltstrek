@@ -22,6 +22,7 @@ model Assessment {
   sectionType SectionType @default(READING)
   parts Part[]
   multipleChoiceArray MultipleChoice[]
+  summaryCompletionItems SummaryCompletionItem[]
 }
 
 enum SectionType {
@@ -44,6 +45,8 @@ model Part {
   questionGroups QuestionGroup[]
   passage Passage?
   multipleChoiceArray MultipleChoice[]
+  summaryCompletionItems SummaryCompletionItem[]
+
 }
 enum QuestionType {
   MULTIPLE_CHOICE
@@ -65,6 +68,9 @@ model QuestionGroup {
   multipleChoiceArray MultipleChoice[]
   summaryCompletion SummaryCompletion?
 }
+
+
+
 model MultipleChoice {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -105,7 +111,11 @@ model SummaryCompletionItem {
   questionNumber Int
   expectedAnswer String
   explanation String?
-
+  partId Int
+  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  assessmentId Int
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  @@unique([questionNumber, assessmentId], name: "UniqueQuestionNumberInAssessmentId")
   summaryCompletionId Int
   summaryCompletion SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }

@@ -28,7 +28,7 @@ export const AllContentTabs = ({
     console.log("User Answers:", userAnswers);
   };
   const divRefs = Array.from({ length: 40 }, () =>
-    React.createRef<HTMLDivElement>()
+    React.createRef<HTMLDivElement | HTMLInputElement>()
   );
 
   const [currentDivIndex, setCurrentDivIndex] = useState<number>(0);
@@ -77,104 +77,99 @@ export const AllContentTabs = ({
     }
   };
   return (
-    <>
-      <Tabs value={activeTab} className="overflow-hidden  flex-1 flex flex-col">
-        {assessment.parts.map((part, i) => (
-          <TabsContent
-            key={part.id}
-            value={String(part.id)}
-            className="overflow-hidden flex flex-col"
-          >
-            <PartRender part={part} />
-            <div className="absolute inset-0 h-20">
-              <Button
-                onClick={() => handlePrevDiv(part, i)}
-                disabled={!hasPrevDiv(currentDivIndex)}
-                size="xl"
-              >
-                <ArrowLeft />
-              </Button>
-              <Button
-                onClick={() => handleNextDiv(part, i)}
-                disabled={!hasNextDiv(currentDivIndex)}
-                size="xl"
-              >
-                <ArrowRight />
-              </Button>
-            </div>
-            <div className="overflow-y-auto">
-              <ResizePannelGroup
-                part={part}
-                handleQuestionSelectAnswer={handleQuestionSelectAnswer}
-                divRefs={divRefs}
-                currentDivIndex={currentDivIndex}
-                setCurrentDivIndex={setCurrentDivIndex}
-              />
-            </div>
-          </TabsContent>
-        ))}
-        <TabsContent value="delivering" className="h-full">
-          <div className="flex items-center justify-center w-full">
-            <div className="flex justify-between items-center w-full max-w-3xl">
-              <p>Click next to continue</p>
-              <Button size="lg" onClick={handleSubmit}>
-                <Send className="mr-2 h-4 w-4" />
-                Next
-              </Button>
-            </div>
+    <Tabs value={activeTab} className="overflow-hidden  flex-1 flex flex-col">
+      {assessment.parts.map((part, i) => (
+        <TabsContent
+          key={part.id}
+          value={String(part.id)}
+          className="overflow-hidden flex flex-col"
+        >
+          <PartRender part={part} />
+          <div className="absolute inset-0 h-20">
+            <Button
+              onClick={() => handlePrevDiv(part, i)}
+              disabled={!hasPrevDiv(currentDivIndex)}
+              size="xl"
+            >
+              <ArrowLeft />
+            </Button>
+            <Button
+              onClick={() => handleNextDiv(part, i)}
+              disabled={!hasNextDiv(currentDivIndex)}
+              size="xl"
+            >
+              <ArrowRight />
+            </Button>
           </div>
-          <Separator className="hidden xl:block mt-20 " />
+          <div className="overflow-y-auto">
+            <ResizePannelGroup
+              part={part}
+              handleQuestionSelectAnswer={handleQuestionSelectAnswer}
+              divRefs={divRefs}
+              currentDivIndex={currentDivIndex}
+              setCurrentDivIndex={setCurrentDivIndex}
+            />
+          </div>
         </TabsContent>
-        <TabsList className="flex justify-between items-center h-40">
-          {assessment.parts.map((part, i) => (
-            <Fragment key={part.id}>
-              {activeTab === String(part.id) ? (
-                <div
-                  key={part.id}
-                  className="flex items-center justify-center gap-8 w-full"
-                >
-                  <p className="px-1 whitespace-nowrap">{part.title}</p>
-                  <div className="flex items-center">
-                    {part.multipleChoiceArray.map((part) => (
-                      <div
-                        key={part.id}
-                        role="button"
-                        className="hover:border hover:border-secondary-foreground"
-                        onClick={() => handleMoveToDiv(part.questionNumber-1)}
+      ))}
+      <TabsContent value="delivering" className="h-full">
+        <div className="flex items-center justify-center w-full">
+          <div className="flex justify-between items-center w-full max-w-3xl">
+            <p>Click next to continue</p>
+            <Button size="lg" onClick={handleSubmit}>
+              <Send className="mr-2 h-4 w-4" />
+              Next
+            </Button>
+          </div>
+        </div>
+        <Separator className="hidden xl:block mt-20 " />
+      </TabsContent>
+      <TabsList className="flex justify-between items-center h-40">
+        {assessment.parts.map((part, i) => (
+          <Fragment key={part.id}>
+            {activeTab === String(part.id) ? (
+              <div
+                key={part.id}
+                className="flex items-center justify-center gap-8 w-full"
+              >
+                <p className="px-1 whitespace-nowrap">{part.title}</p>
+                <div className="flex items-center">
+                  {part.multipleChoiceArray.map((part) => (
+                    <div
+                      key={part.id}
+                      role="button"
+                      className="hover:border hover:border-secondary-foreground"
+                      onClick={() => handleMoveToDiv(part.questionNumber - 1)}
+                    >
+                      <p
+                        className={cn(
+                          "px-2",
+                          currentDivIndex === part.questionNumber - 1
+                            ? "border border-secondary-foreground"
+                            : ""
+                        )}
                       >
-                        <p
-                          className={cn(
-                            "p-2",
-                            currentDivIndex === part.questionNumber-1
-                              ? "border border-secondary-foreground"
-                              : ""
-                          )}
-                        >
-                          {part.questionNumber}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                        {part.questionNumber}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <Button
-                  className="w-full rounded-none border-none"
-                  variant="outline"
-                  onClick={() => setActiveTab(String(part.id))}
-                >
-                  {part.title}
-                </Button>
-              )}
-            </Fragment>
-          ))}
-          <Button
-            variant="secondary"
-            onClick={() => setActiveTab("delivering")}
-          >
-            <Check className="h-4 w-4" />
-          </Button>
-        </TabsList>
-      </Tabs>
-    </>
+              </div>
+            ) : (
+              <Button
+                className="w-full rounded-none border-none"
+                variant="outline"
+                onClick={() => setActiveTab(String(part.id))}
+              >
+                {part.title}
+              </Button>
+            )}
+          </Fragment>
+        ))}
+        <Button variant="secondary" onClick={() => setActiveTab("delivering")}>
+          <Check className="h-4 w-4" />
+        </Button>
+      </TabsList>
+    </Tabs>
   );
 };

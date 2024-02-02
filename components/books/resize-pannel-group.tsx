@@ -41,7 +41,10 @@ const ResizePannelGroup = ({
     [key: string]: boolean;
   }>({});
   useEffect(() => {
-    setCurrentDivIndex(part.questionGroups[0].startQuestionNumber-1)
+    if (part.questionGroups.length) {
+      divRefs[part.questionGroups[0].startQuestionNumber-1].current?.focus()
+      setCurrentDivIndex(part.questionGroups[0].startQuestionNumber-1)
+    } 
   }, []);
   return (
     <div className="h-full">
@@ -162,6 +165,8 @@ const ResizePannelGroup = ({
                     {questionGroup.type === "SUMMARY_COMPLETION" && (
                       <SummaryCompletionRender
                         summaryCompletion={questionGroup.summaryCompletion}
+                        divRefs={divRefs}
+                        currentDivIndex={currentDivIndex}
                       />
                     )}
                   </div>

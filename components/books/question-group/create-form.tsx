@@ -66,6 +66,8 @@ export function CreateQuestionGroupForm({
                 questionGroupId: questionGroup.id,
                 startQuestionNumber: questionGroup.startQuestionNumber,
                 endQuestionNumber: questionGroup.endQuestionNumber,
+                assessmentId: part.assessmentId,
+                partId: part.id
               });
               break;
 

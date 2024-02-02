@@ -4,33 +4,43 @@ import { db } from "@/lib/db";
 export const createSummaryCompletion = async ({
   questionGroupId,
   startQuestionNumber,
-  endQuestionNumber
+  endQuestionNumber,
+  partId,
+  assessmentId,
 }: {
   questionGroupId: number;
   startQuestionNumber: number;
   endQuestionNumber: number;
-}): Promise<boolean> => {
+  partId: number;
+  assessmentId: number;
+}) => {
   try {
-    const summaryCompletionItems = [];
+    const sentence = "Hello, this ___ a website simulate ielts test exam?";
+    const paragraphWithBlanks = Array.from(
+      { length: endQuestionNumber - startQuestionNumber + 1 },
+      () => sentence
+    ).toString();
 
-    for (let i = startQuestionNumber; i <= endQuestionNumber; i++) {
-      summaryCompletionItems.push({
-        questionNumber: i,
-        expectedAnswer: "hello"
-      });
-    }
-
-    const summaryCompletion = await db.summaryCompletion.create({
+    await db.summaryCompletion.create({
       data: {
-        paragraphWithBlanks: "May be ___ hello, what ___ your ___name. I am a student and want ___ to learn more.",
+        paragraphWithBlanks,
         questionGroupId,
         summaryCompletionItems: {
           createMany: {
-            data: summaryCompletionItems
-          }
-        }
-      }
+            data: Array.from(
+              { length: endQuestionNumber - startQuestionNumber + 1 },
+              (_, i) => ({
+                questionNumber: startQuestionNumber + i,
+                expectedAnswer: "is",
+                assessmentId,
+                partId,
+              })
+            ),
+          },
+        },
+      },
     });
+
     return true;
   } catch (error) {
     console.log("Error creating summaryCompletion:", error);
@@ -40,7 +50,7 @@ export const createSummaryCompletion = async ({
 export const updateSummaryCompletion = async ({
   paragraphWithBlanks,
   expectedAnswers,
-  id
+  id,
 }: {
   paragraphWithBlanks: string;
   expectedAnswers: string[];
@@ -55,18 +65,16 @@ export const updateSummaryCompletion = async ({
           updateMany: expectedAnswers.map((expectedAnswer, index) => ({
             where: { questionNumber: index + 1, summaryCompletionId: id },
             data: {
-              expectedAnswer
-            }
-          }))
-        }
-      }
+              expectedAnswer,
+            },
+          })),
+        },
+      },
     });
 
-    return summaryCompletionUpdated; 
-
+    return summaryCompletionUpdated;
   } catch (error) {
     console.log("Error updating summaryCompletion:", error);
-    throw error; 
+    throw error;
   }
 };
-

@@ -41,7 +41,7 @@ export const createMultipleChoice = async ({
   questionNumber: number;
   assessmentId: number;
   partId: number;
-}): Promise<MultipleChoiceExtended | null> => {
+}) => {
   try {
     const multipleChoice: MultipleChoiceExtended =
       await db.multipleChoice.create({
