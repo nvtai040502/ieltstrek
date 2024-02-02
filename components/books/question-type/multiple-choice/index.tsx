@@ -6,10 +6,18 @@ import { MultipleChoiceRender } from "./render";
 interface MultipleChoiceArrayRenderProps {
   multipleChoiceArray: MultipleChoiceExtended[];
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
+  divRefs: React.RefObject<HTMLDivElement>[]
+  currentDivIndex: number
+  // handleMouseDown:() => void
+  // handleKeyDown:(event: React.KeyboardEvent<HTMLDivElement>, index: number) => void
 }
 export const MultipleChoiceArrayRender = ({
   multipleChoiceArray,
   handleQuestionSelectAnswer,
+  divRefs,
+  currentDivIndex,
+  // handleMouseDown,
+  // handleKeyDown
 }: MultipleChoiceArrayRenderProps) => {
   return (
     <>
@@ -19,6 +27,10 @@ export const MultipleChoiceArrayRender = ({
             handleQuestionSelectAnswer={handleQuestionSelectAnswer}
             multipleChoice={multipleChoice}
             key={multipleChoice.id}
+            divRefs={divRefs}
+            currentDivIndex={currentDivIndex}
+            // handleMouseDown={handleMouseDown}
+            // handleKeyDown={handleKeyDown}
           />
         );
       })}

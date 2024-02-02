@@ -7,7 +7,7 @@ import {
 } from "../ui/resizable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import { startTransition, useState, useTransition } from "react";
+import React, { startTransition, useRef, useState, useTransition } from "react";
 import { PartExtended } from "@/types/db";
 import { UpdateQuestionGroupForm } from "./question-group/update-form";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
@@ -19,6 +19,7 @@ import { SummaryCompletionRender } from "./question-type/summary-completion";
 import { DeleteButton } from "./delete-button";
 import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
 import { DeleteQuestionGroupForm } from "./question-group/delete-form";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const ResizePannelGroup = ({
   part,
@@ -34,9 +35,76 @@ const ResizePannelGroup = ({
   const [deletingQuestionGroup, setDeletingQuestionGroup] = useState<{
     [key: string]: boolean;
   }>({});
+  const divRefs = Array.from({ length: 40 }, () =>
+    React.createRef<HTMLDivElement>()
+  );
+  const [currentDivIndex, setCurrentDivIndex] = useState(0);
+  const hasPrevDiv = (index: number) => {
+    return index > 0;
+  };
+  const isMouseClickRef = useRef(false);
+  const hasNextDiv = (index: number) => {
+    return index < divRefs.length - 1;
+  };
+  const handleNextDiv = () => {
+    setCurrentDivIndex((prevIndex) => {
+      if (hasNextDiv(prevIndex)) {
+        divRefs[prevIndex + 1].current?.focus();
+        return prevIndex + 1;
+      }
+      return prevIndex;
+    });
+  };
 
+  const handlePrevDiv = () => {
+    setCurrentDivIndex((prevIndex) => {
+      if (prevIndex > 0) {
+        divRefs[prevIndex - 1].current?.focus();
+        return prevIndex - 1;
+      }
+      return prevIndex;
+    });
+  };
+  const handleDivFocus = (index: number) => {
+    // Reset the flag for the next focus change
+    isMouseClickRef.current = false;
+    if (index <= divRefs.length - 1) {
+      setCurrentDivIndex(index);
+    }
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+    index: number
+  ) => {
+    // Check if the Tab key is pressed
+    if (event.key === "Tab") {
+      handleDivFocus(index);
+    }
+  };
+
+  const handleMouseDown = () => {
+    isMouseClickRef.current = true;
+  };
   return (
     <div className="h-full">
+      <div className="absolute inset-0 h-20">
+      <Button
+        onClick={handlePrevDiv}
+        disabled={!hasPrevDiv(currentDivIndex)}
+        size="xl"
+      >
+        <ArrowLeft />
+      </Button>
+      <Button
+        onClick={handleNextDiv}
+        disabled={!hasNextDiv(currentDivIndex)}
+        size="xl"
+      >
+        <ArrowRight />
+      </Button>  
+      </div>
+      
       <ResizablePanelGroup
         direction="horizontal"
         className="rounded-lg flex-grow"
@@ -77,7 +145,7 @@ const ResizePannelGroup = ({
                 const isEdittingQuestionGroup =
                   edittingQuestionGroup[questionGroup.id];
                 const isDeletingQuestionGroup =
-                deletingQuestionGroup[questionGroup.id];
+                  deletingQuestionGroup[questionGroup.id];
                 return (
                   <div key={questionGroup.id} className="flex flex-col gap-2">
                     <Dialog
@@ -104,10 +172,14 @@ const ResizePannelGroup = ({
                         setDeletingQuestionGroup({ [questionGroup.id]: false })
                       }
                     >
-                      <DeleteQuestionGroupForm questionGroup={questionGroup} setIsCUD={() =>
-                            setDeletingQuestionGroup({
-                              [questionGroup.id]: false,
-                            })}/>
+                      <DeleteQuestionGroupForm
+                        questionGroup={questionGroup}
+                        setIsCUD={() =>
+                          setDeletingQuestionGroup({
+                            [questionGroup.id]: false,
+                          })
+                        }
+                      />
                     </AlertDialog>
                     <div className="flex items-center justify-between">
                       <div>
@@ -122,12 +194,16 @@ const ResizePannelGroup = ({
                       <div>
                         <UpdateButton
                           setIsUpdating={() =>
-                            setEdittingQuestionGroup({ [questionGroup.id]: true })
+                            setEdittingQuestionGroup({
+                              [questionGroup.id]: true,
+                            })
                           }
                         />
                         <DeleteButton
                           setIsUpdating={() =>
-                            setDeletingQuestionGroup({ [questionGroup.id]: true })
+                            setDeletingQuestionGroup({
+                              [questionGroup.id]: true,
+                            })
                           }
                         />
                       </div>
@@ -137,6 +213,10 @@ const ResizePannelGroup = ({
                       <MultipleChoiceArrayRender
                         handleQuestionSelectAnswer={handleQuestionSelectAnswer}
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
+                        divRefs={divRefs}
+                        currentDivIndex={currentDivIndex}
+                        // handleMouseDown={handleMouseDown}
+                        // handleKeyDown={handleKeyDown}
                       />
                     )}
                     {questionGroup.type === "SUMMARY_COMPLETION" && (

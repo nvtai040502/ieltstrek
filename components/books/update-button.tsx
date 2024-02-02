@@ -9,7 +9,7 @@ export const UpdateButton = ({
   return (
     <Button 
       variant="ghost"
-      size="sm"
+      size="xs"
       onClick={setIsUpdating}
     >
       <Edit />

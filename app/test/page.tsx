@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import React, { useRef, useState } from "react";
 const TestPage = () => {
-  const numDivs = 10;
+  const numDivs = 20;
   const divRefs = Array.from({ length: numDivs }, () =>
     React.createRef<HTMLDivElement>()
   );
@@ -67,8 +67,8 @@ const TestPage = () => {
             key={index}
             ref={divRef}
             tabIndex={0}
-            onKeyDown={(event) => handleKeyDown(event, index + 1)}
-            onMouseDown={handleMouseDown}
+            // onKeyDown={(event) => handleKeyDown(event, index + 1)}
+            // onMouseDown={handleMouseDown}
             className={cn("bg-red-500 p-40", {
               "bg-yellow-500": currentDivIndex === index,
             })}
@@ -78,6 +78,7 @@ const TestPage = () => {
         ))}
       </ScrollArea>
 
+      <div className="fixed inset-0 h-20">
       <Button
         onClick={handlePrevDiv}
         disabled={!hasPrevDiv(currentDivIndex)}
@@ -91,7 +92,8 @@ const TestPage = () => {
         size="xl"
       >
         <ArrowRight />
-      </Button>
+      </Button>  
+      </div>
       <div className="flex items-center">
         {Array.from({ length: divRefs.length }).map((_, i) => {
           return (

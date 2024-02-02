@@ -10,20 +10,30 @@ import { Button } from "@/components/ui/button";
 import { UpdateMultipleChoiceForm } from "./update-form";
 import { UpdateButton } from "../../update-button";
 import { MultipleChoiceExtended } from "@/types/db";
+import { cn } from "@/lib/utils";
 
 interface MultipleChoiceRenderProps {
   multipleChoice: MultipleChoiceExtended;
-  handleQuestionSelectAnswer: (questionId: string, value: string) => void
+  handleQuestionSelectAnswer: (questionId: string, value: string) => void;
+  divRefs: React.RefObject<HTMLDivElement>[];
+  currentDivIndex: number;
+  // handleMouseDown:() => void
+  // handleKeyDown:(event: React.KeyboardEvent<HTMLDivElement>, index: number) => void
+
 }
 export const MultipleChoiceRender = ({
   multipleChoice,
-  handleQuestionSelectAnswer
+  handleQuestionSelectAnswer,
+  divRefs,
+  currentDivIndex,
+  // handleMouseDown,
+  // handleKeyDown
 }: MultipleChoiceRenderProps) => {
   const [edittingChoices, setEdittingChoices] = useState<{
     [key: string]: boolean;
   }>({});
   const [isEdittingMultipleChoice, setEdittingMultipleChoice] = useState(false);
-  
+
   if (multipleChoice === undefined || multipleChoice === null) {
     return null;
   }
@@ -40,15 +50,33 @@ export const MultipleChoiceRender = ({
           />
         </DialogContent>
       </Dialog>
-      <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <p>{multipleChoice.questionNumber}</p>
+      <div
+        className="space-y-2"
+        ref={divRefs[multipleChoice.questionNumber - 1]}
+        tabIndex={0}
+        // onKeyDown={(event) => handleKeyDown(event, multipleChoice.questionNumber)}
+        // onMouseDown={handleMouseDown}
+      >
+        <div className="flex items-center gap-2 ">
+          <p
+            className={cn(
+              "px-2 py-1",
+              currentDivIndex === multipleChoice.questionNumber - 1
+                ? "border border-foreground"
+                : ""
+            )}
+          >
+            {multipleChoice.questionNumber}
+          </p>
           <p>{multipleChoice.title}</p>
           <UpdateButton setIsUpdating={() => setEdittingMultipleChoice(true)} />
         </div>
         <RadioGroup
           onValueChange={(answerSelected) => {
-            handleQuestionSelectAnswer(String(multipleChoice.id), answerSelected);
+            handleQuestionSelectAnswer(
+              String(multipleChoice.id),
+              answerSelected
+            );
           }}
         >
           {multipleChoice.choices.map((choice) => {
@@ -94,7 +122,6 @@ export const MultipleChoiceRender = ({
             );
           })}
         </RadioGroup>
-        
       </div>
     </div>
   );
