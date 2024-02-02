@@ -7,6 +7,7 @@ import { Check, Send } from "lucide-react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export const AllContentTabs = ({
   assessment,
@@ -14,6 +15,9 @@ export const AllContentTabs = ({
   assessment: AssessmentExtended;
 }) => {
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
+  const [activeTab, setActiveTab] = useState<string>(
+    String(assessment.parts[0].id)
+  );
   const handleQuestionSelectAnswer = (questionId: string, value: string) => {
     setUserAnswers((prevAnswers) => ({
       ...prevAnswers,
@@ -26,6 +30,8 @@ export const AllContentTabs = ({
   return (
     <Tabs
       defaultValue={String(assessment.parts[0].id)}
+      onValueChange={() => console.log("a")}
+      value={activeTab}
       className="overflow-hidden  flex-1 flex flex-col"
     >
       {assessment.parts.map((part) => (
@@ -56,20 +62,22 @@ export const AllContentTabs = ({
         <Separator className="mt-20 hidden xl:block" />
       </TabsContent>
       <TabsList className="flex justify-between items-center h-40">
-        {assessment.parts.map((part, i) => (
-          <TabsTrigger key={part.id} value={String(part.id)} className="w-full">
+        {assessment.parts.map((part) => (
+          <Button
+            key={part.id}
+            variant="outline"
+            onClick={() => setActiveTab(String(part.id))}
+            className={cn(
+              "w-full rounded-none",
+              activeTab === String(part.id) ? "bg-secondary" : ""
+            )}
+          >
             {part.title}
-          </TabsTrigger>
-        ))}
-        <TabsTrigger
-          asChild
-          value="delivering"
-          className="data-[state=active]:bg-secondary"
-        >
-          <Button variant="secondary">
-            <Check className="h-4 w-4" />
           </Button>
-        </TabsTrigger>
+        ))}
+        <Button variant="secondary" onClick={() => setActiveTab("delivering")}>
+          <Check className="h-4 w-4" />
+        </Button>
       </TabsList>
     </Tabs>
   );
