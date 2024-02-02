@@ -129,13 +129,33 @@ export const AllContentTabs = ({
           {assessment.parts.map((part, i) => (
             <Fragment key={part.id}>
               {activeTab === String(part.id) ? (
-                <Button
+                <div
                   key={part.id}
-                  className="w-full rounded-none border-none hover:bg-background"
-                  variant="outline"
+                  className="flex items-center justify-center gap-8 w-full"
                 >
-                  <p>{part.title}</p>
-                </Button>
+                  <p className="px-1 whitespace-nowrap">{part.title}</p>
+                  <div className="flex items-center">
+                    {part.multipleChoiceArray.map((part) => (
+                      <div
+                        key={part.id}
+                        role="button"
+                        className="hover:border hover:border-secondary-foreground"
+                        onClick={() => handleMoveToDiv(part.questionNumber-1)}
+                      >
+                        <p
+                          className={cn(
+                            "p-2",
+                            currentDivIndex === part.questionNumber-1
+                              ? "border border-secondary-foreground"
+                              : ""
+                          )}
+                        >
+                          {part.questionNumber}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ) : (
                 <Button
                   className="w-full rounded-none border-none"
