@@ -10,7 +10,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CardWrapper } from "../../auth/card-wrapper";
 import { AssessmentSchema } from "@/lib/validations/books";
-import { createAssessment, createAssessmentTemplate } from "@/actions/books/assessment";
+import { createAssessment } from "@/actions/books/assessment";
 import { createParts } from "@/actions/books/parts";
 
 export function CreateAssessmentForm () {

@@ -17,6 +17,7 @@ export type PartExtended = Part & {
 };
 export type MultipleChoiceExtended = MultipleChoice & {
   choices: Choice[];
+  question: Question;
 };
 
 export type QuestionGroupExtended = QuestionGroup & {

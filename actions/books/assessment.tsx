@@ -3,7 +3,57 @@
 import { db } from "@/lib/db";
 import { AssessmentExtended } from "@/types/db";
 import { Assessment } from "@prisma/client";
-
+export const getAssessmentExtended = async ({ id }: { id: number }) => {
+  const assessmentExtended: AssessmentExtended | null =
+    await db.assessment.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        questions: {
+          orderBy: { questionNumber: "asc" },
+        },
+        parts: {
+          orderBy: { id: "asc" }, // Order parts by id
+          include: {
+            passage: true,
+            questions: {
+              orderBy: {
+                questionNumber: "asc",
+              },
+            },
+            questionGroups: {
+              orderBy: { startQuestionNumber: "asc" },
+              include: {
+                multipleChoiceArray: {
+                  include: {
+                    choices: {
+                      orderBy: { id: "asc" }, // Order choices by id
+                    },
+                    question: true,
+                  },
+                  orderBy: {
+                    question: { questionNumber: "asc" },
+                  },
+                },
+                summaryCompletion: {
+                  include: {
+                    summaryCompletionItems: {
+                      include: {
+                        question: true,
+                      },
+                      orderBy: { question: { questionNumber: "asc" } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  return assessmentExtended;
+};
 export const createAssessment = async ({
   name,
   imageCover,
@@ -56,82 +106,4 @@ const Template: TemplateType = {
     { startQuestionNumber: 28, endQuestionNumber: 34 },
     { startQuestionNumber: 35, endQuestionNumber: 40 },
   ],
-};
-
-export const createAssessmentTemplate = async ({
-  assessmentId,
-}: {
-  assessmentId: number;
-}): Promise<boolean> => {
-  try {
-    await Promise.all(
-      Array.from({ length: 3 }).map(async (_, i) => {
-        const part = await db.part.create({
-          data: {
-            title: `Part ${i + 1}`,
-            description: "Description",
-            assessmentId,
-          },
-        });
-
-        if (part) {
-          await db.passage.create({
-            data: {
-              partId: part.id,
-              title: "hello",
-              description: "hello",
-              content: "hello",
-            },
-          });
-
-          await Promise.all(
-            Array.from({ length: 2 }).map(async (_, j) => {
-              const partKey = `Part ${i + 1}` as keyof TemplateType;
-              const questionGroup = await db.questionGroup.create({
-                data: {
-                  startQuestionNumber: Template[partKey][j].startQuestionNumber,
-                  endQuestionNumber: Template[partKey][j].endQuestionNumber,
-                  title: "hello",
-                  type: "MULTIPLE_CHOICE",
-                  partId: part.id,
-                },
-              });
-
-              if (questionGroup && questionGroup.type === "MULTIPLE_CHOICE") {
-                for (
-                  let m = questionGroup.startQuestionNumber;
-                  m <= questionGroup.endQuestionNumber;
-                  m++
-                ) {
-                  await db.multipleChoice.create({
-                    data: {
-                      questionNumber: m,
-                      title: "Hello",
-                      questionGroupId: questionGroup.id,
-                      assessmentId,
-                      choices: {
-                        createMany: {
-                          data: [
-                            { content: "Option 1", isCorrect: false },
-                            { content: "Option 2", isCorrect: false },
-                            { content: "Option 3", isCorrect: false },
-                            { content: "Option 4", isCorrect: true },
-                          ],
-                        },
-                      },
-                    },
-                  });
-                }
-              }
-            })
-          );
-        }
-      })
-    );
-
-    return true;
-  } catch (error) {
-    console.error("Error creating Assessment:", error);
-    return false;
-  }
 };

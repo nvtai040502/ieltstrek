@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { AssessmentExtended } from "@/types/db";
 import { AllContentTabs } from "@/components/books/all-content-tabs";
+import { getAssessmentExtended } from "@/actions/books/assessment";
 
 interface AssessmentIdPageProps {
   params: {
@@ -10,52 +11,8 @@ interface AssessmentIdPageProps {
   };
 }
 const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
-  const assessment: AssessmentExtended | null = await db.assessment.findUnique({
-    where: {
-      id: Number(params.assessmentId),
-    },
-    include: {
-      questions: {
-        orderBy: { questionNumber: "asc" },
-      },
-      parts: {
-        orderBy: { id: "asc" }, // Order parts by id
-        include: {
-          passage: true,
-          questions: {
-            orderBy: {
-              questionNumber: "asc",
-            },
-          },
-          questionGroups: {
-            orderBy: { startQuestionNumber: "asc" },
-            include: {
-              multipleChoiceArray: {
-                include: {
-                  choices: {
-                    orderBy: { id: "asc" }, // Order choices by id
-                  },
-                  question: true,
-                },
-                orderBy: {
-                  question: { questionNumber: "asc" },
-                },
-              },
-              summaryCompletion: {
-                include: {
-                  summaryCompletionItems: {
-                    include: {
-                      question: true,
-                    },
-                    orderBy: { question: { questionNumber: "asc" } },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+  const assessment: AssessmentExtended | null = await getAssessmentExtended({
+    id: Number(params.assessmentId),
   });
 
   if (!assessment) {

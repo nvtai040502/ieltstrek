@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Send } from "lucide-react";
 import { AssessmentExtended, PartExtended } from "@/types/db";
 import { Button } from "../ui/button";
@@ -8,12 +8,19 @@ import { Tabs, TabsContent, TabsList } from "../ui/tabs";
 import { cn } from "@/lib/utils";
 import ResizePannelGroup from "./resize-pannel-group";
 import { PartRender } from "./part/part-render";
+import { IeltExamContext } from "@/global/exam-context";
 
 export const AllContentTabs = ({
   assessment,
 }: {
   assessment: AssessmentExtended;
 }) => {
+  const {assessmentExtended,setAssessmentExtended} = useContext(IeltExamContext)
+  useEffect(() => {
+    setAssessmentExtended(assessment);
+    console.log(assessmentExtended)
+  }, []);
+  
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
   const [activeTab, setActiveTab] = useState<string>(
     String(assessment.parts[0].id)
@@ -73,7 +80,9 @@ export const AllContentTabs = ({
       );
     }
   };
-
+  if (!assessmentExtended) {
+    return null
+  }
   return (
     <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
       {assessment.parts.map((part, i) => (
