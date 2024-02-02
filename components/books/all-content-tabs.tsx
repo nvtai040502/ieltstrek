@@ -28,10 +28,7 @@ export const AllContentTabs = ({
     console.log("User Answers:", userAnswers);
   };
   return (
-    <Tabs
-      value={activeTab}
-      className="overflow-hidden  flex-1 flex flex-col"
-    >
+    <Tabs value={activeTab} className="overflow-hidden  flex-1 flex flex-col">
       {assessment.parts.map((part, i) => (
         <TabsContent
           key={part.id}
@@ -42,8 +39,14 @@ export const AllContentTabs = ({
           <div className="overflow-y-auto">
             <ResizePannelGroup
               part={part}
-              setNextTab={() => i< assessment.parts.length - 1 ? setActiveTab(String(assessment.parts[i+1].id)): setActiveTab("delivering")}
-              setPrevTab={() => setActiveTab(String(assessment.parts[i-1].id))} 
+              setNextTab={() =>
+                i < assessment.parts.length - 1
+                  ? setActiveTab(String(assessment.parts[i + 1].id))
+                  : setActiveTab("delivering")
+              }
+              setPrevTab={() =>
+                setActiveTab(String(assessment.parts[i - 1].id))
+              }
               handleQuestionSelectAnswer={handleQuestionSelectAnswer}
             />
           </div>
@@ -59,22 +62,29 @@ export const AllContentTabs = ({
             </Button>
           </div>
         </div>
-        <Separator className="mt-20 hidden xl:block" />
+        <Separator className="hidden xl:block mt-20 " />
       </TabsContent>
       <TabsList className="flex justify-between items-center h-40">
-        {assessment.parts.map((part) => (
-          <Button
-            key={part.id}
-            variant="outline"
-            onClick={() => setActiveTab(String(part.id))}
-            className={cn(
-              "w-full rounded-none",
-              activeTab === String(part.id) ? "bg-secondary" : ""
-            )}
-          >
-            {part.title}
-          </Button>
-        ))}
+        {assessment.parts.map((part) =>
+          activeTab === String(part.id) ? (
+            <Button
+              key={part.id}
+              className="w-full rounded-none border-none hover:bg-background"
+              variant="outline"
+            >
+              <p>{part.title}</p>
+              
+            </Button>
+          ) : (
+            <Button
+              key={part.id}
+              className="w-full rounded-none border-none"
+              variant="outline"
+            >
+              {part.title}
+            </Button>
+          )
+        )}
         <Button variant="secondary" onClick={() => setActiveTab("delivering")}>
           <Check className="h-4 w-4" />
         </Button>

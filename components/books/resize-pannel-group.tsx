@@ -1,5 +1,4 @@
 "use client";
-import { Part } from "@prisma/client";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -67,11 +66,7 @@ const ResizePannelGroup = ({
   };
 
   const handlePrevDiv = () => {
-    console.log(currentDivIndex, part.questionGroups[0].startQuestionNumber)
-    if (
-      currentDivIndex >=
-      part.questionGroups[0].startQuestionNumber
-    ) {
+    if (currentDivIndex >= part.questionGroups[0].startQuestionNumber) {
       setCurrentDivIndex((prevIndex) => {
         divRefs[prevIndex - 1].current?.focus();
         return prevIndex - 1;

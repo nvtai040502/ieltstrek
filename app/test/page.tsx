@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import React, { useRef, useState } from "react";
+
 const TestPage = () => {
   const numDivs = 20;
   const divRefs = Array.from({ length: numDivs }, () =>
@@ -11,48 +12,34 @@ const TestPage = () => {
   );
   const isMouseClickRef = useRef(false);
   const [currentDivIndex, setCurrentDivIndex] = useState(0);
-  const hasPrevDiv = (index: number) => {
-    return index > 0;
-  };
-  const hasNextDiv = (index: number) => {
-    return index < divRefs.length - 1;
-  };
-  const handleNextDiv = () => {
-    setCurrentDivIndex((prevIndex) => {
-      if (hasNextDiv(prevIndex)) {
-        divRefs[prevIndex + 1].current?.focus();
-        return prevIndex + 1;
-      }
-      return prevIndex;
-    });
-  };
 
-  const handlePrevDiv = () => {
-    setCurrentDivIndex((prevIndex) => {
-      if (prevIndex > 0) {
-        divRefs[prevIndex - 1].current?.focus();
-        return prevIndex - 1;
-      }
-      return prevIndex;
-    });
-  };
+  const hasPrevDiv = (index: number) => index > 0;
+  const hasNextDiv = (index: number) => index < divRefs.length - 1;
+
+  const handleNextDiv = () =>
+    setCurrentDivIndex((prevIndex) =>
+      hasNextDiv(prevIndex) ? prevIndex + 1 : prevIndex
+    );
+  const handlePrevDiv = () =>
+    setCurrentDivIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : prevIndex
+    );
 
   const handleDivFocus = (index: number) => {
-    // Reset the flag for the next focus change
     isMouseClickRef.current = false;
-    if (index <= divRefs.length - 1) {
-      setCurrentDivIndex(index);
-    }
+    if (index <= divRefs.length - 1) setCurrentDivIndex(index);
+  };
+
+  const handleMoveToDiv = (index: number) => {
+    divRefs[index].current?.focus();
+    setCurrentDivIndex(index);
   };
 
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLDivElement>,
     index: number
   ) => {
-    // Check if the Tab key is pressed
-    if (event.key === "Tab") {
-      handleDivFocus(index);
-    }
+    if (event.key === "Tab") handleDivFocus(index);
   };
 
   const handleMouseDown = () => {
@@ -67,8 +54,6 @@ const TestPage = () => {
             key={index}
             ref={divRef}
             tabIndex={0}
-            // onKeyDown={(event) => handleKeyDown(event, index + 1)}
-            // onMouseDown={handleMouseDown}
             className={cn("bg-red-500 p-40", {
               "bg-yellow-500": currentDivIndex === index,
             })}
@@ -79,38 +64,42 @@ const TestPage = () => {
       </ScrollArea>
 
       <div className="fixed inset-0 h-20">
-      <Button
-        onClick={handlePrevDiv}
-        disabled={!hasPrevDiv(currentDivIndex)}
-        size="xl"
-      >
-        <ArrowLeft />
-      </Button>
-      <Button
-        onClick={handleNextDiv}
-        disabled={!hasNextDiv(currentDivIndex)}
-        size="xl"
-      >
-        <ArrowRight />
-      </Button>  
+        <Button
+          onClick={handlePrevDiv}
+          disabled={!hasPrevDiv(currentDivIndex)}
+          size="xl"
+        >
+          <ArrowLeft />
+        </Button>
+        <Button
+          onClick={handleNextDiv}
+          disabled={!hasNextDiv(currentDivIndex)}
+          size="xl"
+        >
+          <ArrowRight />
+        </Button>
       </div>
+
       <div className="flex items-center">
-        {Array.from({ length: divRefs.length }).map((_, i) => {
-          return (
-            <div key={i} className="">
-              <p
-                className={cn(
-                  "p-4",
-                  currentDivIndex === i
-                    ? "border border-secondary-foreground"
-                    : ""
-                )}
-              >
-                {i + 1}
-              </p>
-            </div>
-          );
-        })}
+        {Array.from({ length: divRefs.length }).map((_, i) => (
+          <div
+            key={i}
+            role="button"
+            className="hover:border hover:border-secondary-foreground"
+            onClick={() => handleMoveToDiv(i)}
+          >
+            <p
+              className={cn(
+                "p-4",
+                currentDivIndex === i
+                  ? "border border-secondary-foreground"
+                  : ""
+              )}
+            >
+              {i + 1}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
