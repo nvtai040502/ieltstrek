@@ -1,26 +1,27 @@
-"use client"
+"use client";
 
-import { FC, useState } from "react"
-import { IeltExamContext } from "./exam-context"
-import { AssessmentExtended } from "@/types/db"
+import { FC, useState } from "react";
+import { ExamContext } from "./exam-context";
+import { AssessmentExtended } from "@/types/db";
 
 interface GlobalStateProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
-export const GlobalState: FC<GlobalStateProps> = ({children}) => {
-  const [activeTab, setActiveTab] = useState<string>("")
-  const [assessmentExtended, setAssessmentExtended] = useState<AssessmentExtended|null>(null)
-    return (
-    <IeltExamContext.Provider
+export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
+  const [activeTab, setActiveTab] = useState<string>("");
+  const [selectedAssessment, setSelectedAssessment] =
+    useState<AssessmentExtended | null>(null);
+  return (
+    <ExamContext.Provider
       value={{
         activeTab,
-        assessmentExtended,
-        setAssessmentExtended,
+        selectedAssessment,
+        setSelectedAssessment,
         setActiveTab,
       }}
     >
       {children}
-    </IeltExamContext.Provider>
-  )
-}
+    </ExamContext.Provider>
+  );
+};

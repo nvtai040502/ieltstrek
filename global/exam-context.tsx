@@ -2,15 +2,15 @@ import { AssessmentExtended } from "@/types/db"
 import { Assessment } from "@prisma/client"
 import { Dispatch, SetStateAction, createContext } from "react"
 
-interface IeltExamContextProps {
+interface ExamContextProps {
   activeTab: string
-  assessmentExtended: AssessmentExtended | null
-  setAssessmentExtended: Dispatch<SetStateAction<AssessmentExtended|null>>
+  selectedAssessment: AssessmentExtended | null
+  setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended|null>>
   setActiveTab: Dispatch<SetStateAction<string>>
 }
-export const IeltExamContext = createContext<IeltExamContextProps>({
+export const ExamContext = createContext<ExamContextProps>({
   activeTab: "",
-  assessmentExtended: null,
-  setAssessmentExtended: () => {},
+  selectedAssessment: null,
+  setSelectedAssessment: () => {},
   setActiveTab: () => {},
 })
