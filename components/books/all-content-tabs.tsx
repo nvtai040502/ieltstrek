@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import ResizePannelGroup from "./resize-pannel-group";
 import { PartRender } from "./part/part-render";
 import { ExamContext } from "@/global/exam-context";
+import { useExamHandler } from "@/global/exam-hook";
+import ButtonNavigateQuestions from "./button-nav-questions";
 
 export const AllContentTabs = ({
   assessment,
@@ -19,8 +21,6 @@ export const AllContentTabs = ({
     selectedAssessment,
     setSelectedAssessment,
     activeTab,
-    userAnswers,
-    setUserAnswers,
     setActiveTab,
     questionRefs,
     setCurrentQuestionIndex,
@@ -32,51 +32,12 @@ export const AllContentTabs = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSubmit = () => {
-    console.log("User Answers:", userAnswers);
+  const {handleSubmit} = useExamHandler()
+  const handleMoveToDiv = (questionIndex: number) => {
+    questionRefs[questionIndex].current?.focus();
+    setCurrentQuestionIndex(questionIndex);
   };
-
-  const hasPrevDiv = (index: number) => index > 0;
-  const handleMoveToDiv = (index: number) => {
-    questionRefs[index].current?.focus();
-    setCurrentQuestionIndex(index);
-  };
-
-  const hasNextDiv = (index: number) => index < questionRefs.length - 1;
-  const handleNextDiv = (part: PartExtended, i: number) => {
-    if (
-      currentQuestionIndex + 2 <=
-      part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
-    ) {
-      setCurrentQuestionIndex((prevIndex) => {
-        questionRefs[prevIndex + 1].current?.focus();
-        return prevIndex + 1;
-      });
-    } else {
-      if (i < assessment.parts.length - 1) {
-        setCurrentQuestionIndex(
-          assessment.parts[i + 1].questionGroups[0].startQuestionNumber - 1
-        );
-        setActiveTab(String(assessment.parts[i + 1].id));
-      } else {
-        setActiveTab("delivering");
-      }
-    }
-  };
-
-  const handlePrevDiv = (part: PartExtended, i: number) => {
-    if (currentQuestionIndex >= part.questionGroups[0].startQuestionNumber) {
-      setCurrentQuestionIndex((prevIndex) => {
-        questionRefs[prevIndex - 1].current?.focus();
-        return prevIndex - 1;
-      });
-    } else {
-      setActiveTab(String(assessment.parts[i - 1].id));
-      setCurrentQuestionIndex(
-        assessment.parts[i - 1].questionGroups[0].startQuestionNumber - 1
-      );
-    }
-  };
+  
   if (!selectedAssessment) {
     return null;
   }
@@ -89,22 +50,7 @@ export const AllContentTabs = ({
           className="overflow-hidden flex flex-col"
         >
           <PartRender part={part} />
-          <div className="absolute inset-0 h-20">
-            <Button
-              onClick={() => handlePrevDiv(part, i)}
-              disabled={!hasPrevDiv(currentQuestionIndex)}
-              size="xl"
-            >
-              <ArrowLeft />
-            </Button>
-            <Button
-              onClick={() => handleNextDiv(part, i)}
-              disabled={!hasNextDiv(currentQuestionIndex)}
-              size="xl"
-            >
-              <ArrowRight />
-            </Button>
-          </div>
+          <ButtonNavigateQuestions part={part} partIndex={i}/>
           <div className="overflow-y-auto">
             <ResizePannelGroup
               part={part}
