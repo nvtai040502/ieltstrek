@@ -20,13 +20,17 @@ export const ItemRender = ({
   item,
   handleQuestionSelectAnswer,
 }: ItemRenderProps) => {
-  const { questionRefs, currentQuestionIndex } = useContext(ExamContext);
+  const { questionRefs, currentQuestionIndex, setCurrentQuestionIndex } = useContext(ExamContext);
   const [isEditingMultipleChoice, setEditingMultipleChoice] = useState(false);
 
   if (!item) {
     return null;
   }
 
+  const handleAnswerSelected= (answerSelected: string) => {
+    setCurrentQuestionIndex(item.question.questionNumber-1)
+    handleQuestionSelectAnswer(String(item.id), answerSelected)
+  }
   return (
     <div>
       <Dialog
@@ -62,9 +66,7 @@ export const ItemRender = ({
         </div>
 
         <RadioGroup
-          onValueChange={(answerSelected) =>
-            handleQuestionSelectAnswer(String(item.id), answerSelected)
-          }
+          onValueChange={handleAnswerSelected}
         >
           {[
             IdentifyingInformationAnswer.TRUE,

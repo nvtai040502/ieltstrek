@@ -22,25 +22,29 @@ export const MultipleChoiceRender = ({
   multipleChoice,
   handleQuestionSelectAnswer,
 }: MultipleChoiceRenderProps) => {
-  const {questionRefs, currentQuestionIndex} = useContext(ExamContext)
-  const [edittingChoices, setEdittingChoices] = useState<{
+  const {questionRefs, currentQuestionIndex, setCurrentQuestionIndex} = useContext(ExamContext)
+  const [editingChoices, setEditingChoices] = useState<{
     [key: string]: boolean;
   }>({});
-  const [isEdittingMultipleChoice, setEdittingMultipleChoice] = useState(false);
+  const [isEditingMultipleChoice, setEditingMultipleChoice] = useState(false);
 
   if (multipleChoice === undefined || multipleChoice === null) {
     return null;
   }
+  const handleAnswerSelected= (answerSelected: string) => {
+    setCurrentQuestionIndex(multipleChoice.question.questionNumber-1)
+    handleQuestionSelectAnswer(String(multipleChoice.id), answerSelected)
+  }
   return (
     <div>
       <Dialog
-        open={isEdittingMultipleChoice}
-        onOpenChange={setEdittingMultipleChoice}
+        open={isEditingMultipleChoice}
+        onOpenChange={setEditingMultipleChoice}
       >
         <DialogContent>
           <UpdateMultipleChoiceForm
             multipleChoice={multipleChoice}
-            setIsEditting={setEdittingMultipleChoice}
+            setIsEditting={setEditingMultipleChoice}
           />
         </DialogContent>
       </Dialog>
@@ -63,31 +67,26 @@ export const MultipleChoiceRender = ({
             {multipleChoice.question.questionNumber}
           </p>
           <p>{multipleChoice.title}</p>
-          <UpdateButton setIsUpdating={() => setEdittingMultipleChoice(true)} />
+          <UpdateButton setIsUpdating={() => setEditingMultipleChoice(true)} />
         </div>
         <RadioGroup
-          onValueChange={(answerSelected) => {
-            handleQuestionSelectAnswer(
-              String(multipleChoice.id),
-              answerSelected
-            );
-          }}
+          onValueChange={handleAnswerSelected}
         >
           {multipleChoice.choices.map((choice) => {
-            const isEdittingChoice = edittingChoices[choice.id];
+            const isEdittingChoice = editingChoices[choice.id];
             return (
               <div key={choice.id}>
                 <Dialog
                   open={isEdittingChoice}
                   onOpenChange={() =>
-                    setEdittingChoices({ [choice.id]: false })
+                    setEditingChoices({ [choice.id]: false })
                   }
                 >
                   <DialogContent>
                     <UpdateChoiceForm
                       choice={choice}
                       setIsEditting={() =>
-                        setEdittingChoices({ [choice.id]: false })
+                        setEditingChoices({ [choice.id]: false })
                       }
                     />
                   </DialogContent>
@@ -109,7 +108,7 @@ export const MultipleChoiceRender = ({
                   </Label>
                   <UpdateButton
                     setIsUpdating={() =>
-                      setEdittingChoices({ [choice.id]: true })
+                      setEditingChoices({ [choice.id]: true })
                     }
                   />
                 </div>
