@@ -6,6 +6,8 @@ interface ExamContextProps {
   activeTab: string;
   selectedAssessment: AssessmentExtended | null;
   questionRefs: RefObject<HTMLDivElement | HTMLInputElement>[];
+  currentQuestionIndex: number;
+  setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
   setQuestionRefs: Dispatch<
     SetStateAction<RefObject<HTMLDivElement | HTMLInputElement>[]>
   >;
@@ -16,6 +18,8 @@ export const ExamContext = createContext<ExamContextProps>({
   activeTab: "",
   selectedAssessment: null,
   questionRefs: [],
+  currentQuestionIndex: 0,
+  setCurrentQuestionIndex: () => {},
   setQuestionRefs: () => {},
   setSelectedAssessment: () => {},
   setActiveTab: () => {},

@@ -6,12 +6,10 @@ import { MultipleChoiceRender } from "./render";
 interface MultipleChoiceArrayRenderProps {
   multipleChoiceArray: MultipleChoiceExtended[];
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-  currentDivIndex: number
 }
 export const MultipleChoiceArrayRender = ({
   multipleChoiceArray,
   handleQuestionSelectAnswer,
-  currentDivIndex,
 }: MultipleChoiceArrayRenderProps) => {
   return (
     <>
@@ -21,7 +19,6 @@ export const MultipleChoiceArrayRender = ({
             handleQuestionSelectAnswer={handleQuestionSelectAnswer}
             multipleChoice={multipleChoice}
             key={multipleChoice.id}
-            currentDivIndex={currentDivIndex}
           />
         );
       })}

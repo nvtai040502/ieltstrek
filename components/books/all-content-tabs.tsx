@@ -21,15 +21,16 @@ export const AllContentTabs = ({
     activeTab,
     setActiveTab,
     questionRefs,
+    setCurrentQuestionIndex,
+    currentQuestionIndex
   } = useContext(ExamContext);
+
   useEffect(() => {
     setSelectedAssessment(assessment);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
-
-  const [currentDivIndex, setCurrentDivIndex] = useState<number>(0);
 
   const handleQuestionSelectAnswer = (questionId: string, value: string) => {
     setUserAnswers((prevAnswers) => ({ ...prevAnswers, [questionId]: value }));
@@ -42,22 +43,22 @@ export const AllContentTabs = ({
   const hasPrevDiv = (index: number) => index > 0;
   const handleMoveToDiv = (index: number) => {
     questionRefs[index].current?.focus();
-    setCurrentDivIndex(index);
+    setCurrentQuestionIndex(index);
   };
 
   const hasNextDiv = (index: number) => index < questionRefs.length - 1;
   const handleNextDiv = (part: PartExtended, i: number) => {
     if (
-      currentDivIndex + 2 <=
+      currentQuestionIndex + 2 <=
       part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
     ) {
-      setCurrentDivIndex((prevIndex) => {
+      setCurrentQuestionIndex((prevIndex) => {
         questionRefs[prevIndex + 1].current?.focus();
         return prevIndex + 1;
       });
     } else {
       if (i < assessment.parts.length - 1) {
-        setCurrentDivIndex(
+        setCurrentQuestionIndex(
           assessment.parts[i + 1].questionGroups[0].startQuestionNumber - 1
         );
         setActiveTab(String(assessment.parts[i + 1].id));
@@ -68,14 +69,14 @@ export const AllContentTabs = ({
   };
 
   const handlePrevDiv = (part: PartExtended, i: number) => {
-    if (currentDivIndex >= part.questionGroups[0].startQuestionNumber) {
-      setCurrentDivIndex((prevIndex) => {
+    if (currentQuestionIndex >= part.questionGroups[0].startQuestionNumber) {
+      setCurrentQuestionIndex((prevIndex) => {
         questionRefs[prevIndex - 1].current?.focus();
         return prevIndex - 1;
       });
     } else {
       setActiveTab(String(assessment.parts[i - 1].id));
-      setCurrentDivIndex(
+      setCurrentQuestionIndex(
         assessment.parts[i - 1].questionGroups[0].startQuestionNumber - 1
       );
     }
@@ -95,14 +96,14 @@ export const AllContentTabs = ({
           <div className="absolute inset-0 h-20">
             <Button
               onClick={() => handlePrevDiv(part, i)}
-              disabled={!hasPrevDiv(currentDivIndex)}
+              disabled={!hasPrevDiv(currentQuestionIndex)}
               size="xl"
             >
               <ArrowLeft />
             </Button>
             <Button
               onClick={() => handleNextDiv(part, i)}
-              disabled={!hasNextDiv(currentDivIndex)}
+              disabled={!hasNextDiv(currentQuestionIndex)}
               size="xl"
             >
               <ArrowRight />
@@ -112,8 +113,6 @@ export const AllContentTabs = ({
             <ResizePannelGroup
               part={part}
               handleQuestionSelectAnswer={handleQuestionSelectAnswer}
-              currentDivIndex={currentDivIndex}
-              setCurrentDivIndex={setCurrentDivIndex}
             />
           </div>
         </TabsContent>
@@ -150,7 +149,7 @@ export const AllContentTabs = ({
                       <p
                         className={cn(
                           "px-2",
-                          currentDivIndex === part.questionNumber - 1
+                          currentQuestionIndex === part.questionNumber - 1
                             ? "border border-secondary-foreground"
                             : ""
                         )}

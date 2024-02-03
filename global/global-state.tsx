@@ -13,7 +13,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [selectedAssessment, setSelectedAssessment] =
     useState<AssessmentExtended | null>(null);
     const [questionRefs, setQuestionRefs] = useState<RefObject<HTMLDivElement | HTMLInputElement>[]>([]);
-  
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+
   useEffect(() => {
     if (!selectedAssessment) {
       return;
@@ -31,6 +32,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         activeTab,
         selectedAssessment,
         questionRefs,
+        currentQuestionIndex,
+        setCurrentQuestionIndex,
         setQuestionRefs,
         setSelectedAssessment,
         setActiveTab,

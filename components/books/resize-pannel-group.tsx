@@ -24,15 +24,11 @@ import { ExamContext } from "@/global/exam-context";
 const ResizePannelGroup = ({
   part,
   handleQuestionSelectAnswer,
-  currentDivIndex,
-  setCurrentDivIndex
 }: {
   part: PartExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-  currentDivIndex: number
-  setCurrentDivIndex: (index: number) => void
 }) => {
-  const {questionRefs}=useContext(ExamContext)
+  const {questionRefs, setCurrentQuestionIndex}=useContext(ExamContext)
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
     [key: string]: boolean;
@@ -43,7 +39,7 @@ const ResizePannelGroup = ({
   useEffect(() => {
     if (questionRefs.length && part.questionGroups.length) {
       questionRefs[part.questionGroups[0].startQuestionNumber-1].current?.focus()
-      setCurrentDivIndex(part.questionGroups[0].startQuestionNumber-1)
+      setCurrentQuestionIndex(part.questionGroups[0].startQuestionNumber-1)
     } 
   }, []);
   return (
@@ -156,7 +152,6 @@ const ResizePannelGroup = ({
                       <MultipleChoiceArrayRender
                         handleQuestionSelectAnswer={handleQuestionSelectAnswer}
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
-                        currentDivIndex={currentDivIndex}
                         // handleMouseDown={handleMouseDown}
                         // handleKeyDown={handleKeyDown}
                       />
@@ -164,7 +159,6 @@ const ResizePannelGroup = ({
                     {questionGroup.type === "SUMMARY_COMPLETION" && (
                       <SummaryCompletionRender
                         summaryCompletion={questionGroup.summaryCompletion}
-                        currentDivIndex={currentDivIndex}
                       />
                     )}
                   </div>

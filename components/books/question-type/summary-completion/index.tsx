@@ -17,11 +17,9 @@ import { ExamContext } from "@/global/exam-context";
 
 interface SummaryCompletionRenderProps {
   summaryCompletion?: SummaryCompletionExtended | null;
-  currentDivIndex: number;
 }
 export const SummaryCompletionRender = ({
   summaryCompletion,
-  currentDivIndex,
 }: SummaryCompletionRenderProps) => {
   const {questionRefs} =useContext(ExamContext)
   const [isEdittingQuestion, setEdittingQuestion] = useState(false);

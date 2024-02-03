@@ -16,15 +16,13 @@ import { ExamContext } from "@/global/exam-context";
 interface MultipleChoiceRenderProps {
   multipleChoice: MultipleChoiceExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-  currentDivIndex: number;
 
 }
 export const MultipleChoiceRender = ({
   multipleChoice,
   handleQuestionSelectAnswer,
-  currentDivIndex,
 }: MultipleChoiceRenderProps) => {
-  const {questionRefs} = useContext(ExamContext)
+  const {questionRefs, currentQuestionIndex} = useContext(ExamContext)
   const [edittingChoices, setEdittingChoices] = useState<{
     [key: string]: boolean;
   }>({});
@@ -57,7 +55,7 @@ export const MultipleChoiceRender = ({
           <p
             className={cn(
               "px-2 py-1",
-              currentDivIndex === multipleChoice.question.questionNumber - 1
+              currentQuestionIndex === multipleChoice.question.questionNumber - 1
                 ? "border border-foreground"
                 : ""
             )}
