@@ -20,6 +20,7 @@ import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
 import { DeleteQuestionGroupForm } from "./question-group/delete-form";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ExamContext } from "@/global/exam-context";
+import { IdentifyingInformationRender } from "./question-type/identifying-information";
 
 const ResizePannelGroup = ({
   part,
@@ -159,6 +160,12 @@ const ResizePannelGroup = ({
                     {questionGroup.type === "SUMMARY_COMPLETION" && (
                       <SummaryCompletionRender
                         summaryCompletion={questionGroup.summaryCompletion}
+                      />
+                    )}
+                    {questionGroup.type === "IDENTIFYING_INFOMATION" && (
+                      <IdentifyingInformationRender
+                        identifyingInformation={questionGroup.identifyingInformation}
+                        handleQuestionSelectAnswer={handleQuestionSelectAnswer}
                       />
                     )}
                   </div>

@@ -49,6 +49,7 @@ model Part {
 enum QuestionType {
   MULTIPLE_CHOICE
   SUMMARY_COMPLETION
+  IDENTIFYING_INFOMATION
 }
 model QuestionGroup {
   id Int @id @default(autoincrement())
@@ -65,6 +66,7 @@ model QuestionGroup {
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
   multipleChoiceArray MultipleChoice[]
   summaryCompletion SummaryCompletion?
+  identifyingInformation IdentifyingInformation?
 }
 
 model Question {
@@ -76,6 +78,7 @@ model Question {
 
   multipleChoice MultipleChoice?
   summaryCompletionItem SummaryCompletionItem?
+  identifyingInformationItem IdentifyingInformationItem?
 
   partId Int
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
@@ -101,6 +104,36 @@ model MultipleChoice {
   
 }
 
+model IdentifyingInformation {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  identifyingInformationItems IdentifyingInformationItem[]
+  questionGroupId Int @unique 
+  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
+enum IdentifyingInformationAnswer {
+  TRUE
+  FALSE
+  NOT_GIVEN
+}
+model IdentifyingInformationItem {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title String
+  expectedAnswer IdentifyingInformationAnswer
+  explanation String?
+
+  questionId Int @unique 
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  identifyingInformationId Int
+  identifyingInformation IdentifyingInformation @relation(fields: [identifyingInformationId], references: [id], onDelete: Cascade)
+}
 
 model SummaryCompletion {
   id Int @id @default(autoincrement())

@@ -13,6 +13,7 @@ import { QuestionType } from "@prisma/client";
 import { createSummaryCompletion } from "@/actions/books/summary-completion";
 import { PartExtended } from "@/types/db";
 import { error } from "console";
+import { createIdentifyingInfomation } from "@/actions/books/identifying-infomation";
 
 export function CreateQuestionGroupForm({
   part,
@@ -29,7 +30,7 @@ export function CreateQuestionGroupForm({
       title: "",
       startQuestionNumber: 1,
       endQuestionNumber: 2,
-      description: ""
+      description: "",
     },
   });
   const router = useRouter();
@@ -57,7 +58,7 @@ export function CreateQuestionGroupForm({
                 startQuestionNumber: questionGroup.startQuestionNumber,
                 endQuestionNumber: questionGroup.endQuestionNumber,
                 assessmentId: part.assessmentId,
-                partId: part.id
+                partId: part.id,
               });
               break;
 
@@ -67,10 +68,18 @@ export function CreateQuestionGroupForm({
                 startQuestionNumber: questionGroup.startQuestionNumber,
                 endQuestionNumber: questionGroup.endQuestionNumber,
                 assessmentId: part.assessmentId,
-                partId: part.id
+                partId: part.id,
               });
               break;
-
+            case "IDENTIFYING_INFOMATION":
+              successfully = await createIdentifyingInfomation({
+                questionGroupId: questionGroup.id,
+                startQuestionNumber: questionGroup.startQuestionNumber,
+                endQuestionNumber: questionGroup.endQuestionNumber,
+                assessmentId: part.assessmentId,
+                partId: part.id,
+              });
+              break;
             default:
               console.error(
                 "Unsupported question group type:",

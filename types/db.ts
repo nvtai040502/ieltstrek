@@ -1,6 +1,8 @@
 import {
   Assessment,
   Choice,
+  IdentifyingInformation,
+  IdentifyingInformationItem,
   MultipleChoice,
   Part,
   Passage,
@@ -23,14 +25,21 @@ export type MultipleChoiceExtended = MultipleChoice & {
 export type QuestionGroupExtended = QuestionGroup & {
   multipleChoiceArray: MultipleChoiceExtended[];
   summaryCompletion?: SummaryCompletionExtended | null;
+  identifyingInformation?: IdentifyingInformationExtended | null
 };
 export type SummaryCompletionItemExtended = SummaryCompletionItem & {
-  question: Question
-}
+  question: Question;
+};
+export type IdentifyingInformationItemExtended = IdentifyingInformationItem & {
+  question: Question;
+};
 export type SummaryCompletionExtended = SummaryCompletion & {
   summaryCompletionItems: SummaryCompletionItemExtended[];
 };
+export type IdentifyingInformationExtended = IdentifyingInformation & {
+  identifyingInformationItems: IdentifyingInformationItemExtended[];
+};
 export type AssessmentExtended = Assessment & {
   parts: PartExtended[];
-  questions: Question[]
+  questions: Question[];
 };

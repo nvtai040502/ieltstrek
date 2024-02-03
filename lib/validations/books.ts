@@ -1,4 +1,4 @@
-import { QuestionType } from "@prisma/client";
+import { IdentifyingInformationAnswer, QuestionType } from "@prisma/client";
 import * as z from "zod";
 
 export const AssessmentSchema = z.object({
@@ -38,6 +38,7 @@ export const QuestionGroupSchema = z.object({
   type: z.enum([
     QuestionType.MULTIPLE_CHOICE,
     QuestionType.SUMMARY_COMPLETION,
+    QuestionType.IDENTIFYING_INFOMATION
   ]),
   startQuestionNumber: z.coerce.number().min(1),
   endQuestionNumber: z.coerce.number().min(1),
@@ -84,4 +85,16 @@ export const SummaryCompletionSchema = z.object({
   expectedAnswers: z.array(z.string().min(1, {
     message: "Expected answer is required",
   }))
+});
+
+export const IdentifyingInfomationItemSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title Identifying Infomation Item is required",
+  }),
+  expectedAnswer: z.enum([
+    IdentifyingInformationAnswer.TRUE,
+    IdentifyingInformationAnswer.FALSE,
+    IdentifyingInformationAnswer.NOT_GIVEN
+  ]),
+  explanation: z.string().optional()
 });

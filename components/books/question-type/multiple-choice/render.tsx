@@ -96,6 +96,7 @@ export const MultipleChoiceRender = ({
                   className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
                   key={choice.id}
                 >
+                  
                   <RadioGroupItem
                     value={choice.content}
                     id={String(choice.id)}
