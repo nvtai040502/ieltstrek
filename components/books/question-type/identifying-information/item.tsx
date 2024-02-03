@@ -9,6 +9,7 @@ import { IdentifyingInformationItemExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationAnswer } from "@prisma/client";
+import { UpdateIdentifyingInformationForm } from "./update-form";
 
 interface ItemRenderProps {
   item: IdentifyingInformationItemExtended;
@@ -32,13 +33,12 @@ export const ItemRender = ({
         open={isEditingMultipleChoice}
         onOpenChange={() => setEditingMultipleChoice(!isEditingMultipleChoice)}
       >
-        {/* Uncomment the following when UpdateMultipleChoiceForm is available */}
-        {/* <DialogContent>
-          <UpdateMultipleChoiceForm
-            multipleChoice={multipleChoice}
+        <DialogContent>
+          <UpdateIdentifyingInformationForm
+            identifyingInformationItem={item}
             setIsEditing={setEditingMultipleChoice}
           />
-        </DialogContent> */}
+        </DialogContent>
       </Dialog>
 
       <div

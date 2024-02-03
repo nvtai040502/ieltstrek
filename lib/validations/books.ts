@@ -87,9 +87,9 @@ export const SummaryCompletionSchema = z.object({
   }))
 });
 
-export const IdentifyingInfomationItemSchema = z.object({
+export const IdentifyingInformationItemSchema = z.object({
   title: z.string().min(1, {
-    message: "Title Identifying Infomation Item is required",
+    message: "Title Identifying Information Item is required",
   }),
   expectedAnswer: z.enum([
     IdentifyingInformationAnswer.TRUE,

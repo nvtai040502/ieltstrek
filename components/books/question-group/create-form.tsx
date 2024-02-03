@@ -13,7 +13,7 @@ import { QuestionType } from "@prisma/client";
 import { createSummaryCompletion } from "@/actions/books/summary-completion";
 import { PartExtended } from "@/types/db";
 import { error } from "console";
-import { createIdentifyingInfomation } from "@/actions/books/identifying-infomation";
+import { createIdentifyingInformation } from "@/actions/books/identifying-infomation";
 
 export function CreateQuestionGroupForm({
   part,
@@ -72,7 +72,7 @@ export function CreateQuestionGroupForm({
               });
               break;
             case "IDENTIFYING_INFOMATION":
-              successfully = await createIdentifyingInfomation({
+              successfully = await createIdentifyingInformation({
                 questionGroupId: questionGroup.id,
                 startQuestionNumber: questionGroup.startQuestionNumber,
                 endQuestionNumber: questionGroup.endQuestionNumber,
