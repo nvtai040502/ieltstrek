@@ -22,7 +22,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationRender } from "./question-type/identifying-information";
 
-const ResizePannelGroup = ({
+const ResizePanelGroup = ({
   part,
 }: {
   part: PartExtended;
@@ -177,4 +177,4 @@ const ResizePannelGroup = ({
   );
 };
 
-export default ResizePannelGroup;
+export default ResizePanelGroup;

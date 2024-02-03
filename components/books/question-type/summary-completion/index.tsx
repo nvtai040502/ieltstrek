@@ -14,6 +14,7 @@ import { Input, InputGap } from "@/components/ui/input";
 import { UpdateButton } from "../../update-button";
 import { UpdateSummaryCompletionForm } from "./update-form";
 import { ExamContext } from "@/global/exam-context";
+import BlankRender from "../../blank-render";
 
 interface SummaryCompletionRenderProps {
   summaryCompletion?: SummaryCompletionExtended | null;
@@ -48,29 +49,7 @@ export const SummaryCompletionRender = ({
                   summaryCompletion.summaryCompletionItems[count].question
                     .questionNumber;
                 count += 1;
-                return (
-                  <>
-                    <InputGap
-                      key={index}
-                      onFocus={() => {
-                        setCurrentQuestionIndex(questionNumber - 1);
-                      }}
-                      defaultValue={userAnswers[questionNumber] || ""}
-                      placeholder="Enter a word"
-                      onChange={(event) => {
-                        setUserAnswers((prevAnswers) => ({
-                          ...prevAnswers,
-                          [questionNumber]: event.target.value,
-                        }));
-                      }}
-                      ref={
-                        questionRefs[
-                          questionNumber - 1
-                        ] as RefObject<HTMLInputElement>
-                      }
-                    />
-                  </>
-                );
+                return <BlankRender key={index} questionNumber={questionNumber}/>
               })()
             ) : (
               <span>{word}</span>

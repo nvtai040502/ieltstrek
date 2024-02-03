@@ -1,108 +1,59 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import React, { useRef, useState } from "react";
+import { InputGap } from '@/components/ui/input';
+import { useState } from 'react';
 
-const TestPage = () => {
-  const numDivs = 20;
-  const divRefs = Array.from({ length: numDivs }, () =>
-    React.createRef<HTMLDivElement>()
-  );
-  const isMouseClickRef = useRef(false);
-  const [currentDivIndex, setCurrentDivIndex] = useState(0);
+const NoteCompletionForm = () => {
+  const [sentence, setSentence] = useState('');
+  const [blanks, setBlanks] = useState<string[]>([]);
 
-  const hasPrevDiv = (index: number) => index > 0;
-  const hasNextDiv = (index: number) => index < divRefs.length - 1;
-
-  const handleNextDiv = () =>
-    setCurrentDivIndex((prevIndex) =>
-      hasNextDiv(prevIndex) ? prevIndex + 1 : prevIndex
-    );
-  const handlePrevDiv = () =>
-    setCurrentDivIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : prevIndex
-    );
-
-  const handleDivFocus = (index: number) => {
-    isMouseClickRef.current = false;
-    if (index <= divRefs.length - 1) setCurrentDivIndex(index);
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSentence(e.target.value);
   };
 
-  const handleMoveToDiv = (index: number) => {
-    divRefs[index].current?.focus();
-    setCurrentDivIndex(index);
+  const handleSubmit = () => {
+    // Parse the sentence to identify blanks
+    const blankIndices: string[] = [];
+    const modifiedSentence = sentence.replace(/___/g, (_, index) => {
+      blankIndices.push(index.toString());
+      return '___';
+    });
+
+    // Set blanks state with the indices of blanks
+    setBlanks(blankIndices);
+
+    console.log('Modified Sentence:', modifiedSentence);
+    // You can now store or process the modified sentence as needed
   };
 
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLDivElement>,
-    index: number
-  ) => {
-    if (event.key === "Tab") handleDivFocus(index);
-  };
-
-  const handleMouseDown = () => {
-    isMouseClickRef.current = true;
+  const handleBlankChange = (index: string, value: string) => {
+    // Update the sentence with the user's input for the blank
+    const updatedSentence = sentence.slice(0, +index) + value + sentence.slice(+index + 3);
+    setSentence(updatedSentence);
   };
 
   return (
     <div>
-      <ScrollArea className="h-[600px] rounded-md border">
-        {divRefs.map((divRef, index) => (
-          <div
-            key={index}
-            ref={divRef}
-            tabIndex={0}
-            className={cn("bg-red-500 p-40", {
-              "bg-yellow-500": currentDivIndex === index,
-            })}
-          >
-            {index + 1}
-          </div>
-        ))}
-      </ScrollArea>
+      <h1>Create Note Completion Question</h1>
+      <textarea
+        rows={4}
+        cols={50}
+        placeholder="Enter the sentence with '___' for blanks, e.g., 'The capital of France is ___.'"
+        value={sentence}
+        onChange={handleInputChange}
+      ></textarea>
+      <br />
+      <button onClick={handleSubmit}>Submit</button>
 
-      <div className="fixed inset-0 h-20">
-        <Button
-          onClick={handlePrevDiv}
-          disabled={!hasPrevDiv(currentDivIndex)}
-          size="xl"
-        >
-          <ArrowLeft />
-        </Button>
-        <Button
-          onClick={handleNextDiv}
-          disabled={!hasNextDiv(currentDivIndex)}
-          size="xl"
-        >
-          <ArrowRight />
-        </Button>
-      </div>
-
-      <div className="flex items-center">
-        {Array.from({ length: divRefs.length }).map((_, i) => (
-          <div
-            key={i}
-            role="button"
-            className="hover:border hover:border-secondary-foreground"
-            onClick={() => handleMoveToDiv(i)}
-          >
-            <p
-              className={cn(
-                "p-4",
-                currentDivIndex === i
-                  ? "border border-secondary-foreground"
-                  : ""
-              )}
-            >
-              {i + 1}
-            </p>
-          </div>
-        ))}
-      </div>
+      {blanks.map((index) => (
+        <InputGap
+          key={index}
+          type="text"
+          value={sentence.slice(+index, +index + 3)}
+          onChange={(e) => handleBlankChange(index, e.target.value)}
+        />
+      ))}
     </div>
   );
 };
 
-export default TestPage;
+export default NoteCompletionForm;

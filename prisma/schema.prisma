@@ -49,7 +49,7 @@ model Part {
 enum QuestionType {
   MULTIPLE_CHOICE
   SUMMARY_COMPLETION
-  IDENTIFYING_INFOMATION
+  IDENTIFYING_INFORMATION
 }
 model QuestionGroup {
   id Int @id @default(autoincrement())

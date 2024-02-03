@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList } from "../ui/tabs";
 import { cn } from "@/lib/utils";
-import ResizePannelGroup from "./resize-pannel-group";
+import ResizePanelGroup from "./resize-panel-group";
 import { PartRender } from "./part/part-render";
 import { ExamContext } from "@/global/exam-context";
 import { useExamHandler } from "@/global/exam-hook";
@@ -24,7 +24,7 @@ export const AllContentTabs = ({
     setActiveTab,
     questionRefs,
     setCurrentQuestionIndex,
-    currentQuestionIndex
+    currentQuestionIndex,
   } = useContext(ExamContext);
 
   useEffect(() => {
@@ -32,12 +32,12 @@ export const AllContentTabs = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const {handleSubmit} = useExamHandler()
+  const { handleSubmit } = useExamHandler();
   const handleMoveToDiv = (questionIndex: number) => {
     questionRefs[questionIndex].current?.focus();
     setCurrentQuestionIndex(questionIndex);
   };
-  
+
   if (!selectedAssessment) {
     return null;
   }
@@ -50,11 +50,9 @@ export const AllContentTabs = ({
           className="overflow-hidden flex flex-col"
         >
           <PartRender part={part} />
-          <ButtonNavigateQuestions part={part} partIndex={i}/>
+          <ButtonNavigateQuestions part={part} partIndex={i} />
           <div className="overflow-y-auto">
-            <ResizePannelGroup
-              part={part}
-            />
+            <ResizePanelGroup part={part} />
           </div>
         </TabsContent>
       ))}
@@ -71,7 +69,7 @@ export const AllContentTabs = ({
         <Separator className="hidden xl:block mt-20" />
       </TabsContent>
       <TabsList className="flex justify-between items-center h-40">
-        {assessment.parts.map((part, i) => (
+        {assessment.parts.map((part) => (
           <Fragment key={part.id}>
             {activeTab === String(part.id) ? (
               <div
@@ -80,22 +78,22 @@ export const AllContentTabs = ({
               >
                 <p className="px-1 whitespace-nowrap">{part.title}</p>
                 <div className="flex items-center">
-                  {part.questions.map((part) => (
+                  {part.questions.map((question) => (
                     <div
-                      key={part.id}
+                      key={question.id}
                       role="button"
                       className="hover:border hover:border-secondary-foreground"
-                      onClick={() => handleMoveToDiv(part.questionNumber - 1)}
+                      onClick={() => handleMoveToDiv(question.questionNumber - 1)}
                     >
                       <p
                         className={cn(
                           "px-2",
-                          currentQuestionIndex === part.questionNumber - 1
+                          currentQuestionIndex === question.questionNumber - 1
                             ? "border border-secondary-foreground"
                             : ""
                         )}
                       >
-                        {part.questionNumber}
+                        {question.questionNumber}
                       </p>
                     </div>
                   ))}
