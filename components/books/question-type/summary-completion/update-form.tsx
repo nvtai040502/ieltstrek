@@ -23,9 +23,9 @@ import { updateSummaryCompletionItem } from "@/actions/books/summary-completion"
 
 export function UpdateSummaryCompletionForm({
   summaryCompletion,
-  setIsEditting,
+  setIsEditing,
 }: {
-  setIsEditting: (isEditting: boolean) => void;
+  setIsEditing: (isEditing: boolean) => void;
   summaryCompletion: SummaryCompletionExtended;
 }) {
   const [isPending, startTransition] = useTransition();
@@ -62,7 +62,7 @@ export function UpdateSummaryCompletionForm({
       }
     });
   
-    setIsEditting(false);
+    setIsEditing(false);
   };
   return (
     <div className="px-4">

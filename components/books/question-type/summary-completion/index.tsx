@@ -1,19 +1,12 @@
 "use client";
-import Link from "next/link";
-
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Fragment, RefObject, useContext, useState } from "react";
 import {
   Dialog,
-  DialogContent,
   DialogContentWithScrollArea,
 } from "@/components/ui/dialog";
 import { SummaryCompletionExtended } from "@/types/db";
-import { Input, InputGap } from "@/components/ui/input";
 import { UpdateButton } from "../../update-button";
 import { UpdateSummaryCompletionForm } from "./update-form";
-import { ExamContext } from "@/global/exam-context";
 import BlankRender from "../../blank-render";
 
 interface SummaryCompletionRenderProps {
@@ -22,21 +15,19 @@ interface SummaryCompletionRenderProps {
 export const SummaryCompletionRender = ({
   summaryCompletion,
 }: SummaryCompletionRenderProps) => {
-  const { questionRefs, setUserAnswers, userAnswers, setCurrentQuestionIndex } =
-    useContext(ExamContext);
-  const [isEdittingQuestion, setEdittingQuestion] = useState(false);
+  const [isEditingQuestion, setEditingQuestion] = useState(false);
   if (summaryCompletion === undefined || summaryCompletion === null) {
     return null;
   }
   const words = summaryCompletion.paragraphWithBlanks.split(" ");
-  let count = 0;
+  let blankCount = 0;
   return (
     <div className="flex flex-wrap">
-      <Dialog open={isEdittingQuestion} onOpenChange={setEdittingQuestion}>
+      <Dialog open={isEditingQuestion} onOpenChange={setEditingQuestion}>
         <DialogContentWithScrollArea>
           <UpdateSummaryCompletionForm
             summaryCompletion={summaryCompletion}
-            setIsEditting={setEdittingQuestion}
+            setIsEditing={setEditingQuestion}
           />
         </DialogContentWithScrollArea>
       </Dialog>
@@ -44,13 +35,13 @@ export const SummaryCompletionRender = ({
         {words.map((word, index) => (
           <Fragment key={index}>
             {word === "___" ? (
-              (() => {
-                const questionNumber =
-                  summaryCompletion.summaryCompletionItems[count].question
-                    .questionNumber;
-                count += 1;
-                return <BlankRender key={index} questionNumber={questionNumber}/>
-              })()
+              <BlankRender
+                key={index}
+                questionNumber={
+                  summaryCompletion.summaryCompletionItems[blankCount++].question
+                    .questionNumber
+                }
+              />
             ) : (
               <span>{word}</span>
             )}
@@ -58,7 +49,7 @@ export const SummaryCompletionRender = ({
             {/* Add space between words */}
           </Fragment>
         ))}
-        <UpdateButton setIsUpdating={() => setEdittingQuestion(true)} />
+        <UpdateButton setIsUpdating={() => setEditingQuestion(true)} />
       </div>
     </div>
   );
