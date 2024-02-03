@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Fragment, RefObject, useState } from "react";
+import { Fragment, RefObject, useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,17 +13,17 @@ import { SummaryCompletionExtended } from "@/types/db";
 import { Input, InputGap } from "@/components/ui/input";
 import { UpdateButton } from "../../update-button";
 import { UpdateSummaryCompletionForm } from "./update-form";
+import { ExamContext } from "@/global/exam-context";
 
 interface SummaryCompletionRenderProps {
   summaryCompletion?: SummaryCompletionExtended | null;
-  divRefs: React.RefObject<HTMLDivElement>[];
   currentDivIndex: number;
 }
 export const SummaryCompletionRender = ({
   summaryCompletion,
-  divRefs,
   currentDivIndex,
 }: SummaryCompletionRenderProps) => {
+  const {questionRefs} =useContext(ExamContext)
   const [isEdittingQuestion, setEdittingQuestion] = useState(false);
   if (summaryCompletion === undefined || summaryCompletion === null) {
     return null;
@@ -54,7 +54,7 @@ export const SummaryCompletionRender = ({
                     <InputGap
                       key={index}
                       placeholder="Enter a word"
-                      ref={divRefs[questionNumber] as RefObject<HTMLInputElement>}
+                      ref={questionRefs[questionNumber] as RefObject<HTMLInputElement>}
                     />
                   </>
                 );

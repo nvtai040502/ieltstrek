@@ -15,8 +15,13 @@ export const AllContentTabs = ({
 }: {
   assessment: AssessmentExtended;
 }) => {
-  const { selectedAssessment, setSelectedAssessment, activeTab, setActiveTab } =
-    useContext(ExamContext);
+  const {
+    selectedAssessment,
+    setSelectedAssessment,
+    activeTab,
+    setActiveTab,
+    questionRefs,
+  } = useContext(ExamContext);
   useEffect(() => {
     setSelectedAssessment(assessment);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,24 +39,20 @@ export const AllContentTabs = ({
     console.log("User Answers:", userAnswers);
   };
 
-  const divRefs = Array.from({ length: assessment.questions.length }, () =>
-    React.createRef<HTMLDivElement | HTMLInputElement>()
-  );
-
   const hasPrevDiv = (index: number) => index > 0;
   const handleMoveToDiv = (index: number) => {
-    divRefs[index].current?.focus();
+    questionRefs[index].current?.focus();
     setCurrentDivIndex(index);
   };
 
-  const hasNextDiv = (index: number) => index < divRefs.length - 1;
+  const hasNextDiv = (index: number) => index < questionRefs.length - 1;
   const handleNextDiv = (part: PartExtended, i: number) => {
     if (
       currentDivIndex + 2 <=
       part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
     ) {
       setCurrentDivIndex((prevIndex) => {
-        divRefs[prevIndex + 1].current?.focus();
+        questionRefs[prevIndex + 1].current?.focus();
         return prevIndex + 1;
       });
     } else {
@@ -69,7 +70,7 @@ export const AllContentTabs = ({
   const handlePrevDiv = (part: PartExtended, i: number) => {
     if (currentDivIndex >= part.questionGroups[0].startQuestionNumber) {
       setCurrentDivIndex((prevIndex) => {
-        divRefs[prevIndex - 1].current?.focus();
+        questionRefs[prevIndex - 1].current?.focus();
         return prevIndex - 1;
       });
     } else {
@@ -111,7 +112,6 @@ export const AllContentTabs = ({
             <ResizePannelGroup
               part={part}
               handleQuestionSelectAnswer={handleQuestionSelectAnswer}
-              divRefs={divRefs}
               currentDivIndex={currentDivIndex}
               setCurrentDivIndex={setCurrentDivIndex}
             />

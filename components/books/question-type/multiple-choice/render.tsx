@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { UpdateChoiceForm } from "./choice/choice-update-form";
 import { Button } from "@/components/ui/button";
@@ -11,24 +11,20 @@ import { UpdateMultipleChoiceForm } from "./update-form";
 import { UpdateButton } from "../../update-button";
 import { MultipleChoiceExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
+import { ExamContext } from "@/global/exam-context";
 
 interface MultipleChoiceRenderProps {
   multipleChoice: MultipleChoiceExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-  divRefs: React.RefObject<HTMLDivElement>[];
   currentDivIndex: number;
-  // handleMouseDown:() => void
-  // handleKeyDown:(event: React.KeyboardEvent<HTMLDivElement>, index: number) => void
 
 }
 export const MultipleChoiceRender = ({
   multipleChoice,
   handleQuestionSelectAnswer,
-  divRefs,
   currentDivIndex,
-  // handleMouseDown,
-  // handleKeyDown
 }: MultipleChoiceRenderProps) => {
+  const {questionRefs} = useContext(ExamContext)
   const [edittingChoices, setEdittingChoices] = useState<{
     [key: string]: boolean;
   }>({});
@@ -52,7 +48,7 @@ export const MultipleChoiceRender = ({
       </Dialog>
       <div
         className="space-y-2"
-        ref={divRefs[multipleChoice.question.questionNumber - 1]}
+        ref={questionRefs[multipleChoice.question.questionNumber - 1]}
         tabIndex={0}
         // onKeyDown={(event) => handleKeyDown(event, multipleChoice.questionNumber)}
         // onMouseDown={handleMouseDown}

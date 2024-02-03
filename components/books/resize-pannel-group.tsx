@@ -6,7 +6,7 @@ import {
 } from "../ui/resizable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import React, { startTransition, useEffect, useRef, useState, useTransition } from "react";
+import React, { startTransition, useContext, useEffect, useRef, useState, useTransition } from "react";
 import { PartExtended } from "@/types/db";
 import { UpdateQuestionGroupForm } from "./question-group/update-form";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
@@ -19,20 +19,20 @@ import { DeleteButton } from "./delete-button";
 import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
 import { DeleteQuestionGroupForm } from "./question-group/delete-form";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ExamContext } from "@/global/exam-context";
 
 const ResizePannelGroup = ({
   part,
   handleQuestionSelectAnswer,
-  divRefs,
   currentDivIndex,
   setCurrentDivIndex
 }: {
   part: PartExtended;
   handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-  divRefs: React.RefObject<HTMLDivElement>[]
   currentDivIndex: number
   setCurrentDivIndex: (index: number) => void
 }) => {
+  const {questionRefs}=useContext(ExamContext)
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
     [key: string]: boolean;
@@ -41,8 +41,8 @@ const ResizePannelGroup = ({
     [key: string]: boolean;
   }>({});
   useEffect(() => {
-    if (part.questionGroups.length) {
-      divRefs[part.questionGroups[0].startQuestionNumber-1].current?.focus()
+    if (questionRefs.length && part.questionGroups.length) {
+      questionRefs[part.questionGroups[0].startQuestionNumber-1].current?.focus()
       setCurrentDivIndex(part.questionGroups[0].startQuestionNumber-1)
     } 
   }, []);
@@ -156,7 +156,6 @@ const ResizePannelGroup = ({
                       <MultipleChoiceArrayRender
                         handleQuestionSelectAnswer={handleQuestionSelectAnswer}
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
-                        divRefs={divRefs}
                         currentDivIndex={currentDivIndex}
                         // handleMouseDown={handleMouseDown}
                         // handleKeyDown={handleKeyDown}
@@ -165,7 +164,6 @@ const ResizePannelGroup = ({
                     {questionGroup.type === "SUMMARY_COMPLETION" && (
                       <SummaryCompletionRender
                         summaryCompletion={questionGroup.summaryCompletion}
-                        divRefs={divRefs}
                         currentDivIndex={currentDivIndex}
                       />
                     )}
