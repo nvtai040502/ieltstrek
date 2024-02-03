@@ -15,14 +15,16 @@ import { ExamContext } from "@/global/exam-context";
 
 interface MultipleChoiceRenderProps {
   multipleChoice: MultipleChoiceExtended;
-  handleQuestionSelectAnswer: (questionId: string, value: string) => void;
-
 }
 export const MultipleChoiceRender = ({
   multipleChoice,
-  handleQuestionSelectAnswer,
 }: MultipleChoiceRenderProps) => {
-  const {questionRefs, currentQuestionIndex, setCurrentQuestionIndex} = useContext(ExamContext)
+  const {
+    questionRefs,
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    setUserAnswers,
+  } = useContext(ExamContext);
   const [editingChoices, setEditingChoices] = useState<{
     [key: string]: boolean;
   }>({});
@@ -31,10 +33,13 @@ export const MultipleChoiceRender = ({
   if (multipleChoice === undefined || multipleChoice === null) {
     return null;
   }
-  const handleAnswerSelected= (answerSelected: string) => {
-    setCurrentQuestionIndex(multipleChoice.question.questionNumber-1)
-    handleQuestionSelectAnswer(String(multipleChoice.id), answerSelected)
-  }
+  const handleAnswerSelected = (answerSelected: string) => {
+    setCurrentQuestionIndex(multipleChoice.question.questionNumber - 1);
+    setUserAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [multipleChoice.question.questionNumber]: answerSelected,
+    }));
+  };
   return (
     <div>
       <Dialog
@@ -59,7 +64,8 @@ export const MultipleChoiceRender = ({
           <p
             className={cn(
               "px-2 py-1",
-              currentQuestionIndex === multipleChoice.question.questionNumber - 1
+              currentQuestionIndex ===
+                multipleChoice.question.questionNumber - 1
                 ? "border border-foreground"
                 : ""
             )}
@@ -69,18 +75,14 @@ export const MultipleChoiceRender = ({
           <p>{multipleChoice.title}</p>
           <UpdateButton setIsUpdating={() => setEditingMultipleChoice(true)} />
         </div>
-        <RadioGroup
-          onValueChange={handleAnswerSelected}
-        >
+        <RadioGroup onValueChange={handleAnswerSelected}>
           {multipleChoice.choices.map((choice) => {
             const isEdittingChoice = editingChoices[choice.id];
             return (
               <div key={choice.id}>
                 <Dialog
                   open={isEdittingChoice}
-                  onOpenChange={() =>
-                    setEditingChoices({ [choice.id]: false })
-                  }
+                  onOpenChange={() => setEditingChoices({ [choice.id]: false })}
                 >
                   <DialogContent>
                     <UpdateChoiceForm
@@ -95,7 +97,6 @@ export const MultipleChoiceRender = ({
                   className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
                   key={choice.id}
                 >
-                  
                   <RadioGroupItem
                     value={choice.content}
                     id={String(choice.id)}

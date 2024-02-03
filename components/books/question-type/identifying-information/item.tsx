@@ -13,14 +13,14 @@ import { UpdateIdentifyingInformationForm } from "./update-form";
 
 interface ItemRenderProps {
   item: IdentifyingInformationItemExtended;
-  handleQuestionSelectAnswer: (questionId: string, value: string) => void;
+  
 }
 
 export const ItemRender = ({
   item,
-  handleQuestionSelectAnswer,
+  
 }: ItemRenderProps) => {
-  const { questionRefs, currentQuestionIndex, setCurrentQuestionIndex } = useContext(ExamContext);
+  const { questionRefs, currentQuestionIndex, setCurrentQuestionIndex, setUserAnswers } = useContext(ExamContext);
   const [isEditingMultipleChoice, setEditingMultipleChoice] = useState(false);
 
   if (!item) {
@@ -29,7 +29,7 @@ export const ItemRender = ({
 
   const handleAnswerSelected= (answerSelected: string) => {
     setCurrentQuestionIndex(item.question.questionNumber-1)
-    handleQuestionSelectAnswer(String(item.id), answerSelected)
+    setUserAnswers((prevAnswers) => ({ ...prevAnswers, [item.question.questionNumber]: answerSelected }));
   }
   return (
     <div>

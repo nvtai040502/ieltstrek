@@ -19,6 +19,8 @@ export const AllContentTabs = ({
     selectedAssessment,
     setSelectedAssessment,
     activeTab,
+    userAnswers,
+    setUserAnswers,
     setActiveTab,
     questionRefs,
     setCurrentQuestionIndex,
@@ -29,12 +31,6 @@ export const AllContentTabs = ({
     setSelectedAssessment(assessment);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
-
-  const handleQuestionSelectAnswer = (questionId: string, value: string) => {
-    setUserAnswers((prevAnswers) => ({ ...prevAnswers, [questionId]: value }));
-  };
 
   const handleSubmit = () => {
     console.log("User Answers:", userAnswers);
@@ -112,7 +108,6 @@ export const AllContentTabs = ({
           <div className="overflow-y-auto">
             <ResizePannelGroup
               part={part}
-              handleQuestionSelectAnswer={handleQuestionSelectAnswer}
             />
           </div>
         </TabsContent>

@@ -24,10 +24,8 @@ import { IdentifyingInformationRender } from "./question-type/identifying-inform
 
 const ResizePannelGroup = ({
   part,
-  handleQuestionSelectAnswer,
 }: {
   part: PartExtended;
-  handleQuestionSelectAnswer: (questionId: string, value: string) => void;
 }) => {
   const {questionRefs, setCurrentQuestionIndex}=useContext(ExamContext)
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
@@ -151,7 +149,7 @@ const ResizePannelGroup = ({
 
                     {questionGroup.type === "MULTIPLE_CHOICE" && (
                       <MultipleChoiceArrayRender
-                        handleQuestionSelectAnswer={handleQuestionSelectAnswer}
+                        
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
                         // handleMouseDown={handleMouseDown}
                         // handleKeyDown={handleKeyDown}
@@ -165,7 +163,7 @@ const ResizePannelGroup = ({
                     {questionGroup.type === "IDENTIFYING_INFOMATION" && (
                       <IdentifyingInformationRender
                         identifyingInformation={questionGroup.identifyingInformation}
-                        handleQuestionSelectAnswer={handleQuestionSelectAnswer}
+                        
                       />
                     )}
                   </div>
