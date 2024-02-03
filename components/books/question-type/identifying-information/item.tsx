@@ -75,8 +75,8 @@ export const ItemRender = ({
               key={answer}
               className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
             >
-              <RadioGroupItem value={answer} id={answer} />
-              <Label htmlFor={answer} className="py-4 w-full cursor-pointer">
+              <RadioGroupItem value={answer} id={`radio-${item.id}-${answer}`}/>
+              <Label htmlFor={`radio-${item.id}-${answer}`} className="py-4 w-full cursor-pointer">
                 {answer}
               </Label>
             </div>
