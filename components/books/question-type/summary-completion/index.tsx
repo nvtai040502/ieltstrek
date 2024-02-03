@@ -21,7 +21,8 @@ interface SummaryCompletionRenderProps {
 export const SummaryCompletionRender = ({
   summaryCompletion,
 }: SummaryCompletionRenderProps) => {
-  const {questionRefs} =useContext(ExamContext)
+  const { questionRefs, setUserAnswers, userAnswers, setCurrentQuestionIndex } =
+    useContext(ExamContext);
   const [isEdittingQuestion, setEdittingQuestion] = useState(false);
   if (summaryCompletion === undefined || summaryCompletion === null) {
     return null;
@@ -44,15 +45,29 @@ export const SummaryCompletionRender = ({
             {word === "___" ? (
               (() => {
                 const questionNumber =
-                summaryCompletion.summaryCompletionItems[count]
-                .question.questionNumber - 1;
+                  summaryCompletion.summaryCompletionItems[count].question
+                    .questionNumber;
                 count += 1;
                 return (
                   <>
                     <InputGap
                       key={index}
+                      onFocus={() => {
+                        setCurrentQuestionIndex(questionNumber - 1);
+                      }}
+                      defaultValue={userAnswers[questionNumber] || ""}
                       placeholder="Enter a word"
-                      ref={questionRefs[questionNumber] as RefObject<HTMLInputElement>}
+                      onChange={(event) => {
+                        setUserAnswers((prevAnswers) => ({
+                          ...prevAnswers,
+                          [questionNumber]: event.target.value,
+                        }));
+                      }}
+                      ref={
+                        questionRefs[
+                          questionNumber - 1
+                        ] as RefObject<HTMLInputElement>
+                      }
                     />
                   </>
                 );

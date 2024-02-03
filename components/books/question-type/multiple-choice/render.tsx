@@ -24,6 +24,7 @@ export const MultipleChoiceRender = ({
     currentQuestionIndex,
     setCurrentQuestionIndex,
     setUserAnswers,
+    userAnswers,
   } = useContext(ExamContext);
   const [editingChoices, setEditingChoices] = useState<{
     [key: string]: boolean;
@@ -75,7 +76,12 @@ export const MultipleChoiceRender = ({
           <p>{multipleChoice.title}</p>
           <UpdateButton setIsUpdating={() => setEditingMultipleChoice(true)} />
         </div>
-        <RadioGroup onValueChange={handleAnswerSelected}>
+        <RadioGroup
+          onValueChange={handleAnswerSelected}
+          defaultValue={
+            userAnswers[multipleChoice.question.questionNumber] || ""
+          }
+        >
           {multipleChoice.choices.map((choice) => {
             const isEdittingChoice = editingChoices[choice.id];
             return (

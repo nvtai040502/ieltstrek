@@ -13,24 +13,29 @@ import { UpdateIdentifyingInformationForm } from "./update-form";
 
 interface ItemRenderProps {
   item: IdentifyingInformationItemExtended;
-  
 }
 
-export const ItemRender = ({
-  item,
-  
-}: ItemRenderProps) => {
-  const { questionRefs, currentQuestionIndex, setCurrentQuestionIndex, setUserAnswers } = useContext(ExamContext);
+export const ItemRender = ({ item }: ItemRenderProps) => {
+  const {
+    questionRefs,
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    setUserAnswers,
+    userAnswers,
+  } = useContext(ExamContext);
   const [isEditingMultipleChoice, setEditingMultipleChoice] = useState(false);
 
   if (!item) {
     return null;
   }
 
-  const handleAnswerSelected= (answerSelected: string) => {
-    setCurrentQuestionIndex(item.question.questionNumber-1)
-    setUserAnswers((prevAnswers) => ({ ...prevAnswers, [item.question.questionNumber]: answerSelected }));
-  }
+  const handleAnswerSelected = (answerSelected: string) => {
+    setCurrentQuestionIndex(item.question.questionNumber - 1);
+    setUserAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [item.question.questionNumber]: answerSelected,
+    }));
+  };
   return (
     <div>
       <Dialog
@@ -67,6 +72,7 @@ export const ItemRender = ({
 
         <RadioGroup
           onValueChange={handleAnswerSelected}
+          defaultValue={userAnswers[item.question.questionNumber] || ""}
         >
           {[
             IdentifyingInformationAnswer.TRUE,
@@ -77,8 +83,14 @@ export const ItemRender = ({
               key={answer}
               className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
             >
-              <RadioGroupItem value={answer} id={`radio-${item.id}-${answer}`}/>
-              <Label htmlFor={`radio-${item.id}-${answer}`} className="py-4 w-full cursor-pointer">
+              <RadioGroupItem
+                value={answer}
+                id={`radio-${item.id}-${answer}`}
+              />
+              <Label
+                htmlFor={`radio-${item.id}-${answer}`}
+                className="py-4 w-full cursor-pointer"
+              >
                 {answer}
               </Label>
             </div>
