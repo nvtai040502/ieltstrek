@@ -3,57 +3,7 @@
 import { db } from "@/lib/db";
 import { AssessmentExtended } from "@/types/db";
 import { Assessment } from "@prisma/client";
-export const getAssessmentExtended = async ({ id }: { id: number }) => {
-  const assessmentExtended: AssessmentExtended | null =
-    await db.assessment.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        questions: {
-          orderBy: { questionNumber: "asc" },
-        },
-        parts: {
-          orderBy: { id: "asc" }, // Order parts by id
-          include: {
-            passage: true,
-            questions: {
-              orderBy: {
-                questionNumber: "asc",
-              },
-            },
-            questionGroups: {
-              orderBy: { startQuestionNumber: "asc" },
-              include: {
-                multipleChoiceArray: {
-                  include: {
-                    choices: {
-                      orderBy: { id: "asc" }, // Order choices by id
-                    },
-                    question: true,
-                  },
-                  orderBy: {
-                    question: { questionNumber: "asc" },
-                  },
-                },
-                summaryCompletion: {
-                  include: {
-                    summaryCompletionItems: {
-                      include: {
-                        question: true,
-                      },
-                      orderBy: { question: { questionNumber: "asc" } },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-  return assessmentExtended;
-};
+
 export const createAssessment = async ({
   name,
   imageCover,
