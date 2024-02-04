@@ -44,6 +44,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               },
               noteCompletion: {
                 include: {
+                  questionGroup: true,
                   noteCompletionGroupItemArray: {
                     include: {
                       noteCompletionItems: {

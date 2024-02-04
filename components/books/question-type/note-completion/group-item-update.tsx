@@ -15,9 +15,15 @@ import { toast } from "sonner";
 import { Fragment, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { NoteCompletionGroupItemSchema } from "@/lib/validations/books";
+import {
+  NoteCompletionGroupItemSchema,
+  NoteCompletionSchema,
+} from "@/lib/validations/books";
 import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
-import { NoteCompletionGroupItemExtended } from "@/types/db";
+import {
+  NoteCompletionExtended,
+  NoteCompletionGroupItemExtended,
+} from "@/types/db";
 import { updateSummaryCompletionItem } from "@/actions/books/summary-completion";
 
 export function UpdateGroupItemForm({
@@ -31,33 +37,60 @@ export function UpdateGroupItemForm({
   const [sentences, setSentences] = useState(
     groupItem.noteCompletionItems.length
   );
-  const form = useForm<z.infer<typeof NoteCompletionGroupItemSchema>>({
-    resolver: zodResolver(NoteCompletionGroupItemSchema),
+  const [groupItemArray, setGroupItemArray] = useState(1);
+  const form = useForm<z.infer<typeof NoteCompletionSchema>>({
+    resolver: zodResolver(NoteCompletionSchema),
     defaultValues: {
-      title: "",
-      sentences: Array.from({length: sentences}).map((_, i) => "")
+      // expectedAnswers: groupItem.noteCompletionItems.map(
+      //   (item) => item.blank?.expectedAnswer || ""
+      // ),
+      groupItems: Array.from({ length: groupItemArray }).map((_, i) => ({
+        title: "",
+        sentences: Array.from({ length: sentences }).map((_, i) => ""),
+      })),
     },
   });
   const router = useRouter();
-
+  const handleAddGroupItem = () => {
+    setGroupItemArray((prevGroupItemArray) => prevGroupItemArray + 1);
+    // Add a new empty group item to the defaultValues
+    form.setValue("groupItems", [
+      ...form.getValues("groupItems"),
+      { title: "", sentences: [] },
+    ]);
+  };
+  const handleDeleteGroupItem = () => {
+    setGroupItemArray((prevGroupItemArray) =>
+      Math.max(0, prevGroupItemArray - 1)
+    );
+    // Remove the last group item from the defaultValues
+    form.setValue(
+      "groupItems",
+      form
+        .getValues("groupItems")
+        .slice(0, form.getValues("groupItems").length - 1)
+    );
+  };
   const handleAddSentence = () => {
     setSentences((prevSentences) => prevSentences + 1);
-    form.setValue(
-      'sentences',
-      Array.from({ length: sentences+1 }).map((_, i) => form.getValues(`sentences.${i}`) || "")
-    );
+    // form.setValue(
+    //   "sentences",
+    //   Array.from({ length: sentences + 1 }).map(
+    //     (_, i) => form.getValues(`sentences.${i}`) || ""
+    //   )
+    // );
   };
   const handleDeleteSentence = () => {
     setSentences((prevSentences) => Math.max(0, prevSentences - 1));
-    form.setValue(
-      'sentences',
-      Array.from({ length: Math.max(0, sentences - 1) }).map((_, i) => form.getValues(`sentences.${i}`) || "")
-    );
+    // form.setValue(
+    //   "sentences",
+    //   Array.from({ length: Math.max(0, sentences - 1) }).map(
+    //     (_, i) => form.getValues(`sentences.${i}`) || ""
+    //   )
+    // );
   };
 
-  const onSubmit = async (
-    values: z.infer<typeof NoteCompletionGroupItemSchema>
-  ) => {
+  const onSubmit = async (values: z.infer<typeof NoteCompletionSchema>) => {
     console.log(values);
     // startTransition(async () => {
     //   try {
@@ -87,47 +120,31 @@ export function UpdateGroupItemForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Group Item Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="hello"
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <div className="flex">
-              <Button type="button" onClick={handleAddSentence}>
-                Add Last sentence
+              <Button type="button" onClick={handleAddGroupItem}>
+                Add Last Group Item
               </Button>
-              <Button type="button" disabled={sentences===1} onClick={handleDeleteSentence}>
-                Delete Last sentence
+              <Button
+                type="button"
+                disabled={sentences === 1}
+                onClick={handleDeleteGroupItem}
+              >
+                Delete Last group item
               </Button>
             </div>
-
-            {Array.from({ length: sentences }).map((_, i) => (
+            {Array.from({ length: groupItemArray }).map((_, i) => (
               <Fragment key={i}>
                 <FormField
                   control={form.control}
-                  name={`sentences.${i}`}
-                  key={i}
+                  name={`groupItems.${i}.title`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{`Sentence ${i + 1}`}</FormLabel>
+                      <FormLabel>Group Item Title</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           disabled={isPending}
-                          placeholder="content sentence"
+                          placeholder="hello"
                         />
                       </FormControl>
 
@@ -135,38 +152,71 @@ export function UpdateGroupItemForm({
                     </FormItem>
                   )}
                 />
-              </Fragment>
-            ))}
-            {/* {groupItem.noteCompletionItems.map(
-              (item) =>
-                item.blank && (
-                  <Fragment key={item.id}>
+                <div className="flex">
+                  <Button type="button" onClick={handleAddSentence}>
+                    Add Last sentence
+                  </Button>
+                  <Button
+                    type="button"
+                    disabled={sentences === 1}
+                    onClick={handleDeleteSentence}
+                  >
+                    Delete Last sentence
+                  </Button>
+                </div>
+
+                {Array.from({ length: sentences }).map((_, j) => (
+                  <Fragment key={j}>
                     <FormField
                       control={form.control}
-                      name={`expectedAnswers.${
-                        item.blank.question.questionNumber - 1
-                      }`}
+                      name={`groupItems.${i}.sentences.${j}`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>
-                            {`Expected Answer ${
-                              item.blank!.question.questionNumber
-                            }`}
-                          </FormLabel>
+                          <FormLabel>{`Sentence ${j + 1}`}</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               disabled={isPending}
-                              placeholder="Enter expected answer"
+                              placeholder="content sentence"
                             />
                           </FormControl>
+
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </Fragment>
-                )
-            )} */}
+                ))}
+                {/* {groupItem.noteCompletionItems.map(
+                  (item) =>
+                    item.blank && (
+                      <Fragment key={item.id}>
+                        <FormField
+                          control={form.control}
+                          name={`expectedAnswers.${
+                            item.blank.question.questionNumber - 1
+                          }`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                {`Expected Answer ${item.blank?.question.questionNumber}`}
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  disabled={isPending}
+                                  placeholder="Enter expected answer"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </Fragment>
+                    )
+                )} */}
+              </Fragment>
+            ))}
           </div>
 
           <Button disabled={isPending} type="submit" className="w-full">

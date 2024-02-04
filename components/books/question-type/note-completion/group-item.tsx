@@ -3,10 +3,15 @@ import Link from "next/link";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Fragment, useContext, useState } from "react";
-import { Dialog, DialogContent, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogContentWithScrollArea,
+} from "@/components/ui/dialog";
 import { UpdateButton } from "../../update-button";
 import {
   IdentifyingInformationItemExtended,
+  NoteCompletionExtended,
   NoteCompletionGroupItemExtended,
 } from "@/types/db";
 import { cn } from "@/lib/utils";
@@ -19,7 +24,9 @@ interface GroupItemRenderProps {
   groupItem: NoteCompletionGroupItemExtended;
 }
 
-export const GroupItemRender = ({ groupItem }: GroupItemRenderProps) => {
+export const GroupItemRender = ({
+  groupItem,
+}: GroupItemRenderProps) => {
   const [isEditing, setEditing] = useState(false);
 
   if (!groupItem) {
@@ -28,10 +35,7 @@ export const GroupItemRender = ({ groupItem }: GroupItemRenderProps) => {
 
   return (
     <div>
-      <Dialog
-        open={isEditing}
-        onOpenChange={() => setEditing(!isEditing)}
-      >
+      <Dialog open={isEditing} onOpenChange={() => setEditing(!isEditing)}>
         <DialogContentWithScrollArea>
           <UpdateGroupItemForm
             groupItem={groupItem}
@@ -44,7 +48,6 @@ export const GroupItemRender = ({ groupItem }: GroupItemRenderProps) => {
         <div className="flex gap-2 items-center">
           {groupItem.title && <p className=" font-bold"> {groupItem.title} </p>}
           <UpdateButton setIsUpdating={() => setEditing(true)} />
-
         </div>
         {groupItem.noteCompletionItems.map((item) => (
           <div key={item.id} className="py-4 px-8 flex items-center">

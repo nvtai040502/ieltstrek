@@ -56,6 +56,7 @@ export type NoteCompletionGroupItemExtended = NoteCompletionGroupItem & {
 }
 export type NoteCompletionExtended = NoteCompletion & {
   noteCompletionGroupItemArray: NoteCompletionGroupItemExtended[]
+  questionGroup: QuestionGroup
 }
 
 export type AssessmentExtended = Assessment & {
