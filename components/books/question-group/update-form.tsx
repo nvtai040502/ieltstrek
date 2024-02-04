@@ -37,7 +37,7 @@ export function UpdateQuestionGroupForm({
     startTransition(async () => {
       try {
         const { data, success, error } = await updateQuestionGroup({
-          title: values.title,
+          title: values.title || "",
           description: values.description,
           type: values.type,
           startQuestionNumber: values.startQuestionNumber,

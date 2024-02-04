@@ -9,7 +9,7 @@ import { IdentifyingInformationItemExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationAnswer } from "@prisma/client";
-import { UpdateIdentifyingInformationForm } from "./update-form";
+import { useEditHook } from "@/global/use-edit-hook";
 
 interface ItemRenderProps {
   item: IdentifyingInformationItemExtended;
@@ -23,7 +23,7 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
     setUserAnswers,
     userAnswers,
   } = useContext(ExamContext);
-  const [isEditingMultipleChoice, setEditingMultipleChoice] = useState(false);
+  const { onOpen } = useEditHook();
 
   if (!item) {
     return null;
@@ -37,66 +37,56 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
     }));
   };
   return (
-    <div>
-      <Dialog
-        open={isEditingMultipleChoice}
-        onOpenChange={() => setEditingMultipleChoice(!isEditingMultipleChoice)}
-      >
-        <DialogContent>
-          <UpdateIdentifyingInformationForm
-            identifyingInformationItem={item}
-            setIsEditing={setEditingMultipleChoice}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <div
-        className="space-y-2"
-        ref={questionRefs[item.question.questionNumber - 1]}
-        tabIndex={0}
-      >
-        <div className="flex items-center gap-2 ">
-          <p
-            className={cn(
-              "px-2 py-1",
-              currentQuestionIndex === item.question.questionNumber - 1
-                ? "border border-foreground"
-                : ""
-            )}
-          >
-            {item.question.questionNumber}
-          </p>
-          <p>{item.title}</p>
-          <UpdateButton setIsUpdating={() => setEditingMultipleChoice(true)} />
-        </div>
-
-        <RadioGroup
-          onValueChange={handleAnswerSelected}
-          defaultValue={userAnswers[item.question.questionNumber] || ""}
+    <div
+      className="space-y-2"
+      ref={questionRefs[item.question.questionNumber - 1]}
+      tabIndex={0}
+    >
+      <div className="flex items-center gap-2 ">
+        <p
+          className={cn(
+            "px-2 py-1",
+            currentQuestionIndex === item.question.questionNumber - 1
+              ? "border border-foreground"
+              : ""
+          )}
         >
-          {[
-            IdentifyingInformationAnswer.TRUE,
-            IdentifyingInformationAnswer.FALSE,
-            IdentifyingInformationAnswer.NOT_GIVEN,
-          ].map((answer) => (
-            <div
-              key={answer}
-              className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
-            >
-              <RadioGroupItem
-                value={answer}
-                id={`radio-${item.id}-${answer}`}
-              />
-              <Label
-                htmlFor={`radio-${item.id}-${answer}`}
-                className="py-4 w-full cursor-pointer"
-              >
-                {answer}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
+          {item.question.questionNumber}
+        </p>
+        <p>{item.title}</p>
+        <UpdateButton
+          setIsUpdating={() =>
+            onOpen({
+              type: "editIdentifyingInformationItem",
+              data: { identifyingInformationItem: item },
+            })
+          }
+        />
       </div>
+
+      <RadioGroup
+        onValueChange={handleAnswerSelected}
+        defaultValue={userAnswers[item.question.questionNumber] || ""}
+      >
+        {[
+          IdentifyingInformationAnswer.TRUE,
+          IdentifyingInformationAnswer.FALSE,
+          IdentifyingInformationAnswer.NOT_GIVEN,
+        ].map((answer) => (
+          <div
+            key={answer}
+            className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
+          >
+            <RadioGroupItem value={answer} id={`radio-${item.id}-${answer}`} />
+            <Label
+              htmlFor={`radio-${item.id}-${answer}`}
+              className="py-4 w-full cursor-pointer"
+            >
+              {answer}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
     </div>
   );
 };
