@@ -160,14 +160,12 @@ export const updateNoteCompletion = async ({
         title,
       });
     } else {
-      db.noteCompletion.update({
-        where: {
-          id,
-        },
+      await db.noteCompletion.update({
+        where: {id},
         data: {
-          title,
-        },
-      });
+          title
+        }
+      })
     }
 
     return true;
