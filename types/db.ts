@@ -30,7 +30,7 @@ export type QuestionGroupExtended = QuestionGroup & {
   multipleChoiceArray: MultipleChoiceExtended[];
   summaryCompletion?: SummaryCompletionExtended | null;
   identifyingInformation?: IdentifyingInformationExtended | null;
-  noteCompletion?: NoteCompletionExtended | null
+  noteCompletion?: NoteCompletionExtended | null;
 };
 export type SummaryCompletionItemExtended = SummaryCompletionItem & {
   question: Question;
@@ -46,18 +46,19 @@ export type IdentifyingInformationExtended = IdentifyingInformation & {
 };
 
 export type BlankExtended = Blank & {
-  question: Question
-}
+  question: Question;
+};
 export type NoteCompletionItemExtended = NoteCompletionItem & {
-  blank: BlankExtended | null
-}
+  blank: BlankExtended | null;
+};
 export type NoteCompletionGroupItemExtended = NoteCompletionGroupItem & {
-  noteCompletionItems: NoteCompletionItemExtended[]
-}
+  noteCompletionItems: NoteCompletionItemExtended[];
+  blanks: Blank[];
+};
 export type NoteCompletionExtended = NoteCompletion & {
-  noteCompletionGroupItemArray: NoteCompletionGroupItemExtended[]
-  questionGroup: QuestionGroup
-}
+  noteCompletionGroupItemArray: NoteCompletionGroupItemExtended[];
+  questionGroup: QuestionGroup;
+};
 
 export type AssessmentExtended = Assessment & {
   parts: PartExtended[];

@@ -3,10 +3,6 @@
 import { NoteCompletionExtended } from "@/types/db";
 import { GroupItemRender } from "./group-item";
 import { UpdateButton } from "../../update-button";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
-import { UpdateNoteCompletionForm } from "./update";
-import { useContext, useState } from "react";
-import { EditContext } from "@/global/edit-context";
 import { useEditHook } from "@/global/use-edit-hook";
 
 interface NoteCompletionRenderProps {
@@ -32,13 +28,7 @@ export const NoteCompletionRender = ({
       </div>
 
       {noteCompletion.noteCompletionGroupItemArray.map((groupItem) => {
-        return (
-          <GroupItemRender
-            noteCompletion={noteCompletion}
-            groupItem={groupItem}
-            key={groupItem.id}
-          />
-        );
+        return <GroupItemRender groupItem={groupItem} key={groupItem.id} />;
       })}
     </>
   );

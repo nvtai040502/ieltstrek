@@ -29,41 +29,45 @@ export const PassageSchema = z.object({
   description: z.string().optional(),
 });
 
-export const QuestionGroupSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title for the Question Group is required",
-  }),
-  description: z.string().optional(),
-  titleForQuestions: z.string().optional(),
-  type: z.enum([
-    QuestionType.MULTIPLE_CHOICE,
-    QuestionType.SUMMARY_COMPLETION,
-    QuestionType.IDENTIFYING_INFORMATION,
-    QuestionType.NOTE_COMPLETION
-  ]),
-  startQuestionNumber: z.coerce.number().min(1),
-  endQuestionNumber: z.coerce.number().min(1),
-})
-  .refine((data) => {
-    if (data.endQuestionNumber <= data.startQuestionNumber) {
-      return false;
-    }
+export const QuestionGroupSchema = z
+  .object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    titleForQuestions: z.string().optional(),
+    type: z.enum([
+      QuestionType.MULTIPLE_CHOICE,
+      QuestionType.SUMMARY_COMPLETION,
+      QuestionType.IDENTIFYING_INFORMATION,
+      QuestionType.NOTE_COMPLETION,
+    ]),
+    startQuestionNumber: z.coerce.number().min(1),
+    endQuestionNumber: z.coerce.number().min(1),
+  })
+  .refine(
+    (data) => {
+      if (data.endQuestionNumber <= data.startQuestionNumber) {
+        return false;
+      }
 
-    return true;
-  }, {
-    message: "End question must be larger than start question",
-    path: ["endQuestionNumber"]
-  })
-  .refine((data) => {
-    if ((data.endQuestionNumber - data.startQuestionNumber + 1) > 40) {
-      return false;
+      return true;
+    },
+    {
+      message: "End question must be larger than start question",
+      path: ["endQuestionNumber"],
     }
-    return true;
-  }, {
-    message: "in Reading section The endQuestionNumber must be 40 or fewer.",
-    path: ["endQuestionNumber"]
-  })
- 
+  )
+  .refine(
+    (data) => {
+      if (data.endQuestionNumber - data.startQuestionNumber + 1 > 40) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "in Reading section The endQuestionNumber must be 40 or fewer.",
+      path: ["endQuestionNumber"],
+    }
+  );
 
 export const ChoiceSchema = z.object({
   content: z.string().min(1, {
@@ -83,9 +87,11 @@ export const SummaryCompletionSchema = z.object({
   paragraphWithBlanks: z.string().min(1, {
     message: "ParagraphWithBlanks is required",
   }),
-  expectedAnswers: z.array(z.string().min(1, {
-    message: "Expected answer is required",
-  }))
+  expectedAnswers: z.array(
+    z.string().min(1, {
+      message: "Expected answer is required",
+    })
+  ),
 });
 
 export const IdentifyingInformationItemSchema = z.object({
@@ -95,17 +101,18 @@ export const IdentifyingInformationItemSchema = z.object({
   expectedAnswer: z.enum([
     IdentifyingInformationAnswer.TRUE,
     IdentifyingInformationAnswer.FALSE,
-    IdentifyingInformationAnswer.NOT_GIVEN
+    IdentifyingInformationAnswer.NOT_GIVEN,
   ]),
-  explanation: z.string().optional()
+  explanation: z.string().optional(),
 });
 
 export const NoteCompletionGroupItemSchema = z.object({
   title: z.string().optional(),
-  sentences: z.array(z.string().optional())
+  sentences: z.array(z.string().min(1)),
+  expectedAnswers: z.array(z.string().min(1)),
 });
 
 export const NoteCompletionSchema = z.object({
   title: z.string().min(1),
-  groupItemAmount: z.coerce.number().min(1)
+  groupItemAmount: z.coerce.number().min(1),
 });

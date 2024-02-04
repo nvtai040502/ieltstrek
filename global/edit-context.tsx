@@ -1,10 +1,17 @@
 import { createContext, Dispatch, SetStateAction } from "react";
-import { NoteCompletionExtended } from "@/types/db";
+import {
+  NoteCompletionExtended,
+  NoteCompletionGroupItemExtended,
+} from "@/types/db";
 
-export type EditType = "editNoteCompletion" | null;
+export type EditType =
+  | "editNoteCompletion"
+  | "editNoteCompletionGroupItem"
+  | null;
 
 export interface EditData {
   noteCompletion?: NoteCompletionExtended;
+  noteCompletionGroupItem?: NoteCompletionGroupItemExtended;
 }
 
 interface EditContextProps {

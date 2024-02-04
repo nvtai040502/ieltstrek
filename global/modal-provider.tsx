@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { UpdateNoteCompletionForm } from "../books/question-type/note-completion/update";
+import { UpdateNoteCompletionForm } from "../components/books/question-type/note-completion/update";
+import { UpdateNoteCompletionGroupItemForm } from "@/components/books/question-type/note-completion/group-item-update";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -17,6 +18,7 @@ export function ModalProvider() {
   return (
     <>
       <UpdateNoteCompletionForm />
+      <UpdateNoteCompletionGroupItemForm />
     </>
   )
 }

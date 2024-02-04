@@ -12,166 +12,156 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Fragment, useState, useTransition } from "react";
+import { useContext, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  NoteCompletionGroupItemSchema,
-  NoteCompletionSchema,
-} from "@/lib/validations/books";
-import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
-import {
-  NoteCompletionExtended,
-  NoteCompletionGroupItemExtended,
-} from "@/types/db";
-import { updateSummaryCompletionItem } from "@/actions/books/summary-completion";
+import { NoteCompletionGroupItemSchema } from "@/lib/validations/books";
+import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import { EditContext } from "@/global/edit-context";
+import { useEditHook } from "@/global/use-edit-hook";
 
-export function UpdateGroupItemForm({
-  groupItem,
-  noteCompletion,
-  setIsEditing,
-}: {
-  setIsEditing: (isEditing: boolean) => void;
-  groupItem: NoteCompletionGroupItemExtended;
-  noteCompletion: NoteCompletionExtended;
-}) {
+export function UpdateNoteCompletionGroupItemForm() {
   const [isPending, startTransition] = useTransition();
-  
-  const [sentenceAmount, setSentenceAmount] = useState<{[key: string]: number}>({})
-  const form = useForm<z.infer<typeof NoteCompletionSchema>>({
-    resolver: zodResolver(NoteCompletionSchema),
+  const { isOpen, type, data } = useContext(EditContext);
+  const [sentences, setSentences] = useState<string[]>([]);
+  const { onClose } = useEditHook();
+  const isModalOpen = isOpen && type === "editNoteCompletionGroupItem";
+  const groupItem = data?.noteCompletionGroupItem;
+  const form = useForm<z.infer<typeof NoteCompletionGroupItemSchema>>({
+    resolver: zodResolver(NoteCompletionGroupItemSchema),
     defaultValues: {
-      expectedAnswers: groupItem.noteCompletionItems.map(
-        (item) => item.blank?.expectedAnswer || ""
-      ),
-      groupItems: noteCompletion.noteCompletionGroupItemArray.map((groupItem) => ({
-        title: "",
-        sentences: Array.from({ length: sentenceAmount[groupItem.id] }).map((_) => ""),
-      })),
+      title: "",
+      sentences: [],
+      expectedAnswers: [],
     },
   });
-  const router = useRouter();
-  
-  // const handleAddSentence = () => {
-  //   setSentences((prevSentences) => prevSentences + 1);
-  //   // form.setValue(
-  //   //   "sentences",
-  //   //   Array.from({ length: sentences + 1 }).map(
-  //   //     (_, i) => form.getValues(`sentences.${i}`) || ""
-  //   //   )
-  //   // );
-  // };
-  // const handleDeleteSentence = () => {
-  //   setSentences((prevSentences) => Math.max(0, prevSentences - 1));
-  //   // form.setValue(
-  //   //   "sentences",
-  //   //   Array.from({ length: Math.max(0, sentences - 1) }).map(
-  //   //     (_, i) => form.getValues(`sentences.${i}`) || ""
-  //   //   )
-  //   // );
-  // };
+  useEffect(() => {
+    if (groupItem) {
+      form.setValue("title", groupItem.title || "");
+      form.setValue(
+        "sentences",
+        groupItem.noteCompletionItems.map((item) => item.sentence)
+      );
+      form.setValue(
+        "expectedAnswers",
+        groupItem.blanks.map((blank) => blank.expectedAnswer)
+      );
+      setSentences(() =>
+        groupItem.noteCompletionItems.map((item) => item.sentence)
+      );
+    }
+  }, [form, groupItem]);
 
-  const onSubmit = async (values: z.infer<typeof NoteCompletionSchema>) => {
+  const router = useRouter();
+  if (isModalOpen && !groupItem) {
+    console.log("Missing NoteCompletion Data");
+    return null;
+  }
+  if (!groupItem) return null;
+  const onSubmit = (values: z.infer<typeof NoteCompletionGroupItemSchema>) => {
     console.log(values);
+    // startTransition(async () => {
+    //   if (!groupItem) {
+    //     return;
+    //   }
+    // const successfully = await updateNoteCompletion({
+    //   title: values.title,
+    //   id: noteCompletion.id,
+    //   groupItemAmount: values.groupItemAmount,
+    // });
+    // if (successfully) {
+    //   toast.success("Successfully updated multipleChoice!");
+    //   form.reset();
+    //   router.refresh();
+    // } else {
+    //   toast("Failed to update multipleChoice");
+    // }
+    // onClose();
+    // });
   };
   return (
-    <div className="px-4">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            
-            {noteCompletion.noteCompletionGroupItemArray.map((groupItem) => (
-              <Fragment key={groupItem.id}>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
+      <DialogContentWithScrollArea>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Note Completion Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isPending} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div>
+                {
+                  "Content: You will use `___` to represent blank, and it will auto create expected answer for you to write the correct answer for that blank"
+                }
+              </div>
+              {sentences.map((_, index) => (
                 <FormField
+                  key={index}
                   control={form.control}
-                  name={`groupItems.${groupItem.id}.title`}
+                  name={`sentences[${index}]` as "sentences"}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Group Item Title</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isPending}
-                          placeholder="hello"
-                        />
+                        <Input {...field} disabled={isPending} />
                       </FormControl>
-
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                {/* <div className="flex">
-                  <Button type="button" onClick={handleAddSentence}>
-                    Add Last sentence
-                  </Button>
-                  <Button
-                    type="button"
-                    disabled={sentences === 1}
-                    onClick={handleDeleteSentence}
-                  >
-                    Delete Last sentence
-                  </Button>
-                </div> */}
-
-                {/* {Array.from({ length: sentenceAmount[groupIndex] }).map((_, sentenceIndex) => (
-                  <Fragment key={sentenceIndex}>
-                    <FormField
-                      control={form.control}
-                      name={`groupItems.${groupIndex}.sentences.${sentenceIndex}`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{`Sentence ${sentenceIndex + 1}`}</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              disabled={isPending}
-                              placeholder="content sentence"
-                            />
-                          </FormControl>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </Fragment>
-                ))} */}
-              </Fragment>
+              ))}
+              <Button
+                onClick={() => {
+                  setSentences((prevSentences) => [...prevSentences, ""]);
+                }}
+                className="w-full"
+                type="button"
+              >
+                Add Sentence
+              </Button>
+              <Button
+                onClick={() => {
+                  setSentences((prevSentences) => [
+                    ...prevSentences.slice(0, -1),
+                  ]);
+                }}
+                className="w-full"
+                type="button"
+                disabled={groupItem.noteCompletionItems.length === 0}
+              >
+                Delete Last Sentence
+              </Button>
+            </div>
+            <div>Expected Answers</div>
+            {groupItem.blanks.map((_, index) => (
+              <FormField
+                key={index}
+                control={form.control}
+                name={`expectedAnswers[${index}]` as "expectedAnswers"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input {...field} disabled={isPending} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             ))}
-            {/* {groupItem.noteCompletionItems.map(
-              (item) =>
-                item.blank && (
-                  <Fragment key={item.id}>
-                    <FormField
-                      control={form.control}
-                      name={`expectedAnswers.${
-                        item.blank.question.questionNumber - 1
-                      }`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            {`Expected Answer ${item.blank?.question.questionNumber}`}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              disabled={isPending}
-                              placeholder="Enter expected answer"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </Fragment>
-                )
-            )} */}
-          </div>
-
-          <Button disabled={isPending} type="submit" className="w-full">
-            update
-          </Button>
-        </form>
-      </Form>
-    </div>
+            <Button disabled={isPending} type="submit" className="w-full">
+              update
+            </Button>
+          </form>
+        </Form>
+      </DialogContentWithScrollArea>
+    </Dialog>
   );
 }
