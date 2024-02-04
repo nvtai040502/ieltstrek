@@ -96,8 +96,11 @@ export function QuestionGroupForm({
                       <SelectItem value={QuestionType.SUMMARY_COMPLETION}>
                         Summary Completion
                       </SelectItem>
-                      <SelectItem value={QuestionType.IDENTIFYING_INFOMATION}>
-                        Identifying Infomation
+                      <SelectItem value={QuestionType.IDENTIFYING_INFORMATION}>
+                        Identifying Information
+                      </SelectItem>
+                      <SelectItem value={QuestionType.NOTE_COMPLETION}>
+                        Note Completion
                       </SelectItem>
                     </SelectContent>
                   </Select>

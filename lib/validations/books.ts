@@ -38,7 +38,8 @@ export const QuestionGroupSchema = z.object({
   type: z.enum([
     QuestionType.MULTIPLE_CHOICE,
     QuestionType.SUMMARY_COMPLETION,
-    QuestionType.IDENTIFYING_INFORMATION
+    QuestionType.IDENTIFYING_INFORMATION,
+    QuestionType.NOTE_COMPLETION
   ]),
   startQuestionNumber: z.coerce.number().min(1),
   endQuestionNumber: z.coerce.number().min(1),

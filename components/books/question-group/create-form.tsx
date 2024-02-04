@@ -14,6 +14,7 @@ import { createSummaryCompletion } from "@/actions/books/summary-completion";
 import { PartExtended } from "@/types/db";
 import { error } from "console";
 import { createIdentifyingInformation } from "@/actions/books/identifying-infomation";
+import { createNoteCompletion } from "@/actions/books/note-completion";
 
 export function CreateQuestionGroupForm({
   part,
@@ -71,7 +72,17 @@ export function CreateQuestionGroupForm({
                 partId: part.id,
               });
               break;
-            case "IDENTIFYING_INFOMATION":
+            case "NOTE_COMPLETION":
+              successfully = await createNoteCompletion({
+                questionGroupId: questionGroup.id,
+                startQuestionNumber: questionGroup.startQuestionNumber,
+                endQuestionNumber: questionGroup.endQuestionNumber,
+                assessmentId: part.assessmentId,
+                partId: part.id,
+              });
+              break;
+
+            case "IDENTIFYING_INFORMATION":
               successfully = await createIdentifyingInformation({
                 questionGroupId: questionGroup.id,
                 startQuestionNumber: questionGroup.startQuestionNumber,

@@ -50,6 +50,7 @@ enum QuestionType {
   MULTIPLE_CHOICE
   SUMMARY_COMPLETION
   IDENTIFYING_INFORMATION
+  NOTE_COMPLETION
 }
 model QuestionGroup {
   id Int @id @default(autoincrement())
@@ -67,6 +68,7 @@ model QuestionGroup {
   multipleChoiceArray MultipleChoice[]
   summaryCompletion SummaryCompletion?
   identifyingInformation IdentifyingInformation?
+  noteCompletion NoteCompletion?
 }
 
 model Question {
@@ -79,6 +81,7 @@ model Question {
   multipleChoice MultipleChoice?
   summaryCompletionItem SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
+  blank Blank?
 
   partId Int
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
@@ -88,6 +91,55 @@ model Question {
   
 }
 
+model NoteCompletion {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+
+
+  noteCompletionGroupItemArray NoteCompletionGroupItem[]
+  questionGroupId Int @unique 
+  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
+model Blank {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  expectedAnswer String
+  explanation String?
+
+  questionId Int @unique 
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  noteCompletionItemId Int @unique 
+  noteCompletionItem NoteCompletionItem @relation(fields: [noteCompletionItemId], references: [id], onDelete: Cascade)
+}
+model NoteCompletionGroupItem {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title String?
+
+  noteCompletionId Int
+  noteCompletion NoteCompletion @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
+  noteCompletionItems NoteCompletionItem[]
+}
+model NoteCompletionItem {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  sentence String
+  
+  blank Blank?
+  noteCompletionGroupItemId Int
+  noteCompletionGroupItem NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
+  
+}
 model MultipleChoice {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
