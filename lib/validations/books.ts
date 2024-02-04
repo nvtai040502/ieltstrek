@@ -106,6 +106,6 @@ export const NoteCompletionGroupItemSchema = z.object({
 });
 
 export const NoteCompletionSchema = z.object({
-  groupItems: z.array(NoteCompletionGroupItemSchema),
-  // expectedAnswers: z.array(z.string().optional())
+  title: z.string().min(1),
+  groupItemAmount: z.coerce.number().min(1)
 });

@@ -22,10 +22,12 @@ import { UpdateGroupItemForm } from "./group-item-update";
 
 interface GroupItemRenderProps {
   groupItem: NoteCompletionGroupItemExtended;
+  noteCompletion: NoteCompletionExtended
 }
 
 export const GroupItemRender = ({
   groupItem,
+  noteCompletion,
 }: GroupItemRenderProps) => {
   const [isEditing, setEditing] = useState(false);
 
@@ -39,6 +41,7 @@ export const GroupItemRender = ({
         <DialogContentWithScrollArea>
           <UpdateGroupItemForm
             groupItem={groupItem}
+            noteCompletion={noteCompletion}
             setIsEditing={setEditing}
           />
         </DialogContentWithScrollArea>

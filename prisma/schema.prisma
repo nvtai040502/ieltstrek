@@ -82,7 +82,8 @@ model Question {
   summaryCompletionItem SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
   blank Blank?
-
+  noteCompletionId Int?
+  noteCompletion NoteCompletion? @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
   partId Int
   part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
   assessmentId Int
@@ -98,6 +99,7 @@ model NoteCompletion {
 
   title String
 
+  questions Question[]
   noteCompletionGroupItemArray NoteCompletionGroupItem[]
   questionGroupId Int @unique 
   questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
