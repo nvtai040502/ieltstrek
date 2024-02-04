@@ -1,6 +1,7 @@
 import { currentUser } from "@/actions/auth/user"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
+import { ModalProvider } from "@/components/providers/modal-provider"
 import React from "react"
 
 export default async function RootLayout({ children }: {children: React.ReactNode}) {

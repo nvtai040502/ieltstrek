@@ -1,6 +1,6 @@
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -8,20 +8,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model Assessment {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  bookName String?
+  bookName   String?
   imageCover String?
-  name String
+  name       String
 
   // for now just READING
   sectionType SectionType @default(READING)
-  parts Part[]
-  questions Question[]
+  parts       Part[]
+  questions   Question[]
 }
 
 enum SectionType {
@@ -32,140 +31,142 @@ enum SectionType {
 }
 
 model Part {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
+  title       String
   description String
 
-  assessmentId Int
-  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  assessmentId   Int
+  assessment     Assessment      @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroups QuestionGroup[]
-  passage Passage?
-  questions Question[]
-
+  passage        Passage?
+  questions      Question[]
 }
+
 enum QuestionType {
   MULTIPLE_CHOICE
   SUMMARY_COMPLETION
   IDENTIFYING_INFORMATION
   NOTE_COMPLETION
 }
+
 model QuestionGroup {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
-  description String?
+  title               String
+  description         String?
   startQuestionNumber Int
-  endQuestionNumber Int
-  type QuestionType
+  endQuestionNumber   Int
+  type                QuestionType
 
-  partId Int
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
-  multipleChoiceArray MultipleChoice[]
-  summaryCompletion SummaryCompletion?
+  partId                 Int
+  part                   Part                    @relation(fields: [partId], references: [id], onDelete: Cascade)
+  multipleChoiceArray    MultipleChoice[]
+  summaryCompletion      SummaryCompletion?
   identifyingInformation IdentifyingInformation?
-  noteCompletion NoteCompletion?
+  noteCompletion         NoteCompletion?
 }
 
 model Question {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   questionNumber Int
 
-  multipleChoice MultipleChoice?
-  summaryCompletionItem SummaryCompletionItem?
+  multipleChoice             MultipleChoice?
+  summaryCompletionItem      SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
-  blank Blank?
-  noteCompletionId Int?
-  noteCompletion NoteCompletion? @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
-  partId Int
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
-  assessmentId Int
-  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  blank                      Blank?
+  noteCompletionId           Int?
+  noteCompletion             NoteCompletion?             @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
+  partId                     Int
+  part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
+  assessmentId               Int
+  assessment                 Assessment                  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
   @@unique([questionNumber, assessmentId])
-  
 }
 
 model NoteCompletion {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   title String
 
-  questions Question[]
+  questions                    Question[]
   noteCompletionGroupItemArray NoteCompletionGroupItem[]
-  questionGroupId Int @unique 
-  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  questionGroupId              Int                       @unique
+  questionGroup                QuestionGroup             @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model Blank {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   expectedAnswer String
-  explanation String?
+  explanation    String?
 
-  questionId Int @unique 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int      @unique
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  noteCompletionItemId Int @unique 
-  noteCompletionItem NoteCompletionItem @relation(fields: [noteCompletionItemId], references: [id], onDelete: Cascade)
+  noteCompletionItemId Int                @unique
+  noteCompletionItem   NoteCompletionItem @relation(fields: [noteCompletionItemId], references: [id], onDelete: Cascade)
 }
+
 model NoteCompletionGroupItem {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   title String?
 
-  noteCompletionId Int
-  noteCompletion NoteCompletion @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
+  noteCompletionId    Int
+  noteCompletion      NoteCompletion       @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
   noteCompletionItems NoteCompletionItem[]
 }
+
 model NoteCompletionItem {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   sentence String
-  
-  blank Blank?
+
+  blank                     Blank?
   noteCompletionGroupItemId Int
-  noteCompletionGroupItem NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
-  
+  noteCompletionGroupItem   NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
 }
+
 model MultipleChoice {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   title String
 
-  questionId Int @unique 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int      @unique
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  choices Choice[]
+  choices         Choice[]
   questionGroupId Int
-  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-  
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model IdentifyingInformation {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   identifyingInformationItems IdentifyingInformationItem[]
-  questionGroupId Int @unique 
-  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  questionGroupId             Int                          @unique
+  questionGroup               QuestionGroup                @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 enum IdentifyingInformationAnswer {
@@ -173,118 +174,111 @@ enum IdentifyingInformationAnswer {
   FALSE
   NOT_GIVEN
 }
+
 model IdentifyingInformationItem {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
+  title          String
   expectedAnswer IdentifyingInformationAnswer
-  explanation String?
+  explanation    String?
 
-  questionId Int @unique 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int      @unique
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   identifyingInformationId Int
-  identifyingInformation IdentifyingInformation @relation(fields: [identifyingInformationId], references: [id], onDelete: Cascade)
+  identifyingInformation   IdentifyingInformation @relation(fields: [identifyingInformationId], references: [id], onDelete: Cascade)
 }
 
 model SummaryCompletion {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String?
-  description String?
+  title               String?
+  description         String?
   paragraphWithBlanks String
 
   summaryCompletionItems SummaryCompletionItem[]
-  questionGroupId Int @unique 
-  questionGroup QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  questionGroupId        Int                     @unique
+  questionGroup          QuestionGroup           @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
+
 model SummaryCompletionItem {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   expectedAnswer String
-  explanation String?
-  
-  questionId Int @unique 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  explanation    String?
 
+  questionId Int      @unique
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   summaryCompletionId Int
-  summaryCompletion SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
+  summaryCompletion   SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }
+
 model Choice {
-  id Int @id @default(autoincrement())
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
-
-  content String
-  isCorrect Boolean @default(false)
-  explanation String?
-
-  multipleChoiceId Int
-  multipleChoice MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
-}
-
-model Passage {
-  id Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
-  description String?
-  imageHeader String?
-  content String
+  content     String
+  isCorrect   Boolean @default(false)
+  explanation String?
 
-  partId Int @unique // Ensures that each Part can have only one Passage
-  part Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  multipleChoiceId Int
+  multipleChoice   MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
 }
 
+model Passage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
+  title       String
+  description String?
+  imageHeader String?
+  content     String
 
-
-
-
+  partId Int  @unique // Ensures that each Part can have only one Passage
+  part   Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+}
 
 enum UserRole {
   ADMIN
   USER
 }
 
-
-
-
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          UserRole @default(USER)
-  isTwoFactorEnabled Boolean @default(false)
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String?   @unique
+  emailVerified      DateTime?
+  image              String?
+  password           String?
+  role               UserRole  @default(USER)
+  isTwoFactorEnabled Boolean   @default(false)
 
-  accounts      Account[]
+  accounts              Account[]
   twoFactorConfirmation TwoFactorConfirmation?
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -292,33 +286,36 @@ model Account {
 }
 
 model VerificationToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
   expires DateTime
+
   @@unique([email, token])
 }
 
 model PasswordResetToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
   expires DateTime
+
   @@unique([email, token])
 }
 
 model TwoFactorToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
   expires DateTime
+
   @@unique([email, token])
 }
 
 model TwoFactorConfirmation {
-  id String @id @default(cuid())
+  id     String @id @default(cuid())
   userId String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId])
 }
-

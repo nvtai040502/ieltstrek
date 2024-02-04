@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { GlobalState } from "@/global/global-state";
+import { ModalProvider } from "@/components/providers/modal-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -30,6 +31,8 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <GlobalState>
+      <ModalProvider />
+
               {children}
             </GlobalState>
             <Toaster closeButton />

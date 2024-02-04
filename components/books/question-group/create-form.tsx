@@ -46,7 +46,6 @@ export function CreateQuestionGroupForm({
           startQuestionNumber: values.startQuestionNumber,
           endQuestionNumber: values.endQuestionNumber,
           partId: part.id,
-          assessmentId: part.assessmentId,
         });
 
         if (success && questionGroup) {

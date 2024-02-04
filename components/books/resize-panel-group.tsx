@@ -6,7 +6,14 @@ import {
 } from "../ui/resizable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import React, { startTransition, useContext, useEffect, useRef, useState, useTransition } from "react";
+import React, {
+  startTransition,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { PartExtended } from "@/types/db";
 import { UpdateQuestionGroupForm } from "./question-group/update-form";
 import { Dialog, DialogContent } from "../ui/dialog";
@@ -22,12 +29,8 @@ import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationRender } from "./question-type/identifying-information";
 import { NoteCompletionRender } from "./question-type/note-completion";
 
-const ResizePanelGroup = ({
-  part,
-}: {
-  part: PartExtended;
-}) => {
-  const {questionRefs, setCurrentQuestionIndex}=useContext(ExamContext)
+const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
+  const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
   const [editingQuestionGroup, setEditingQuestionGroup] = useState<{
     [key: string]: boolean;
@@ -37,9 +40,12 @@ const ResizePanelGroup = ({
   }>({});
   useEffect(() => {
     if (questionRefs.length && part.questionGroups.length) {
-      questionRefs[part.questionGroups[0].startQuestionNumber-1].current?.focus()
-      setCurrentQuestionIndex(part.questionGroups[0].startQuestionNumber-1)
-    } 
+      questionRefs[
+        part.questionGroups[0].startQuestionNumber - 1
+      ].current?.focus();
+      setCurrentQuestionIndex(part.questionGroups[0].startQuestionNumber - 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="h-full">
@@ -149,7 +155,6 @@ const ResizePanelGroup = ({
 
                     {questionGroup.type === "MULTIPLE_CHOICE" && (
                       <MultipleChoiceArrayRender
-                        
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
                         // handleMouseDown={handleMouseDown}
                         // handleKeyDown={handleKeyDown}
@@ -162,14 +167,14 @@ const ResizePanelGroup = ({
                     )}
                     {questionGroup.type === "IDENTIFYING_INFORMATION" && (
                       <IdentifyingInformationRender
-                        identifyingInformation={questionGroup.identifyingInformation}
-                        
+                        identifyingInformation={
+                          questionGroup.identifyingInformation
+                        }
                       />
                     )}
                     {questionGroup.type === "NOTE_COMPLETION" && (
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}
-                        
                       />
                     )}
                   </div>

@@ -8,11 +8,9 @@ export const createQuestionGroup = async ({
   startQuestionNumber,
   type,
   endQuestionNumber,
-  assessmentId,
   partId,
 }: {
   title: string;
-  assessmentId: number;
   description?: string;
   startQuestionNumber: number;
   type: QuestionType;
@@ -20,9 +18,18 @@ export const createQuestionGroup = async ({
   partId: number;
 }) => {
   try {
+    const part = await db.part.findUnique({
+      where: {
+        id: partId
+      }
+    })
+    if (!part) {
+      throw new Error ("Part Id not found!")
+    }
+
     const existingQuestionNumbers = await db.question.findMany({
       where: {
-        assessmentId,
+        assessmentId: part.assessmentId,
         questionNumber: {
           gte: startQuestionNumber,
           lte: endQuestionNumber,
