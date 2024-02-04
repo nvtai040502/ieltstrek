@@ -14,11 +14,11 @@ import { PartExtended } from "@/types/db";
 export function UpdateQuestionGroupForm({
   questionGroup,
   part,
-  setIsEditting,
+  setIsEditing,
 }: {
   questionGroup: QuestionGroup;
   part: PartExtended;
-  setIsEditting: (isEditting: boolean) => void;
+  setIsEditing: (isEditing: boolean) => void;
 }) {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof QuestionGroupSchema>>({
@@ -57,7 +57,7 @@ export function UpdateQuestionGroupForm({
         console.error("Error creating question group:", error);
         toast.error("Failed to create question group.");
       } finally {
-        setIsEditting(false);
+        setIsEditing(false);
       }
     });
   };

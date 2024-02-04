@@ -9,18 +9,18 @@ import { Button } from "../ui/button";
 import React, { startTransition, useContext, useEffect, useRef, useState, useTransition } from "react";
 import { PartExtended } from "@/types/db";
 import { UpdateQuestionGroupForm } from "./question-group/update-form";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
 import { PassageRender } from "./passage/render";
 import { CreateQuestionGroupForm } from "./question-group/create-form";
 import { UpdateButton } from "./update-button";
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
 import { SummaryCompletionRender } from "./question-type/summary-completion";
 import { DeleteButton } from "./delete-button";
-import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
+import { AlertDialog } from "../ui/alert-dialog";
 import { DeleteQuestionGroupForm } from "./question-group/delete-form";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationRender } from "./question-type/identifying-information";
+import { NoteCompletionRender } from "./question-type/note-completion";
 
 const ResizePanelGroup = ({
   part,
@@ -29,7 +29,7 @@ const ResizePanelGroup = ({
 }) => {
   const {questionRefs, setCurrentQuestionIndex}=useContext(ExamContext)
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
-  const [edittingQuestionGroup, setEdittingQuestionGroup] = useState<{
+  const [editingQuestionGroup, setEditingQuestionGroup] = useState<{
     [key: string]: boolean;
   }>({});
   const [deletingQuestionGroup, setDeletingQuestionGroup] = useState<{
@@ -80,24 +80,24 @@ const ResizePanelGroup = ({
             </Dialog>
             {part.questionGroups &&
               part.questionGroups.map((questionGroup) => {
-                const isEdittingQuestionGroup =
-                  edittingQuestionGroup[questionGroup.id];
+                const isEditingQuestionGroup =
+                  editingQuestionGroup[questionGroup.id];
                 const isDeletingQuestionGroup =
                   deletingQuestionGroup[questionGroup.id];
                 return (
                   <div key={questionGroup.id} className="flex flex-col gap-2">
                     <Dialog
-                      open={isEdittingQuestionGroup}
+                      open={isEditingQuestionGroup}
                       onOpenChange={() =>
-                        setEdittingQuestionGroup({ [questionGroup.id]: false })
+                        setEditingQuestionGroup({ [questionGroup.id]: false })
                       }
                     >
                       <DialogContent>
                         <UpdateQuestionGroupForm
                           questionGroup={questionGroup}
                           part={part}
-                          setIsEditting={() =>
-                            setEdittingQuestionGroup({
+                          setIsEditing={() =>
+                            setEditingQuestionGroup({
                               [questionGroup.id]: false,
                             })
                           }
@@ -132,7 +132,7 @@ const ResizePanelGroup = ({
                       <div>
                         <UpdateButton
                           setIsUpdating={() =>
-                            setEdittingQuestionGroup({
+                            setEditingQuestionGroup({
                               [questionGroup.id]: true,
                             })
                           }
@@ -160,9 +160,15 @@ const ResizePanelGroup = ({
                         summaryCompletion={questionGroup.summaryCompletion}
                       />
                     )}
-                    {questionGroup.type === "IDENTIFYING_INFOMATION" && (
+                    {questionGroup.type === "IDENTIFYING_INFORMATION" && (
                       <IdentifyingInformationRender
                         identifyingInformation={questionGroup.identifyingInformation}
+                        
+                      />
+                    )}
+                    {questionGroup.type === "NOTE_COMPLETION" && (
+                      <NoteCompletionRender
+                        noteCompletion={questionGroup.noteCompletion}
                         
                       />
                     )}

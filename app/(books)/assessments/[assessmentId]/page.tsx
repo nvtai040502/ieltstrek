@@ -42,6 +42,31 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
                   question: { questionNumber: "asc" },
                 },
               },
+              noteCompletion: {
+                include: {
+                  noteCompletionGroupItemArray: {
+                    include: {
+                      noteCompletionItems: {
+                        orderBy: {
+                          blank: {
+                            question: {
+                              questionNumber: "asc"
+                            }
+                          }
+                        },
+                        include: {
+                          blank: {
+                            include: {
+                              question: true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                
+              },
               identifyingInformation: {
                 include: {
                   identifyingInformationItems: {
