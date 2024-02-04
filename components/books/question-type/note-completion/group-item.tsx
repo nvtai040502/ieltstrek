@@ -3,7 +3,7 @@ import Link from "next/link";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Fragment, useContext, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { UpdateButton } from "../../update-button";
 import {
   IdentifyingInformationItemExtended,
@@ -13,13 +13,14 @@ import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationAnswer } from "@prisma/client";
 import BlankRender from "../../blank-render";
+import { UpdateGroupItemForm } from "./group-item-update";
 
 interface GroupItemRenderProps {
   groupItem: NoteCompletionGroupItemExtended;
 }
 
 export const GroupItemRender = ({ groupItem }: GroupItemRenderProps) => {
-  const [isEditingMultipleChoice, setEditingMultipleChoice] = useState(false);
+  const [isEditing, setEditing] = useState(false);
 
   if (!groupItem) {
     return null;
@@ -28,19 +29,23 @@ export const GroupItemRender = ({ groupItem }: GroupItemRenderProps) => {
   return (
     <div>
       <Dialog
-        open={isEditingMultipleChoice}
-        onOpenChange={() => setEditingMultipleChoice(!isEditingMultipleChoice)}
+        open={isEditing}
+        onOpenChange={() => setEditing(!isEditing)}
       >
-        <DialogContent>
-          {/* <UpdateIdentifyingInformationForm
-            identifyingInformationItem={item}
-            setIsEditing={setEditingMultipleChoice}
-          /> */}
-        </DialogContent>
+        <DialogContentWithScrollArea>
+          <UpdateGroupItemForm
+            groupItem={groupItem}
+            setIsEditing={setEditing}
+          />
+        </DialogContentWithScrollArea>
       </Dialog>
 
       <div>
-        {groupItem.title && <p className=" font-bold"> {groupItem.title} </p>}
+        <div className="flex gap-2 items-center">
+          {groupItem.title && <p className=" font-bold"> {groupItem.title} </p>}
+          <UpdateButton setIsUpdating={() => setEditing(true)} />
+
+        </div>
         {groupItem.noteCompletionItems.map((item) => (
           <div key={item.id} className="py-4 px-8 flex items-center">
             {item.sentence.split(" ").map((word, index) => (

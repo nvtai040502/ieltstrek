@@ -99,3 +99,11 @@ export const IdentifyingInformationItemSchema = z.object({
   ]),
   explanation: z.string().optional()
 });
+
+export const NoteCompletionGroupItemSchema = z.object({
+  title: z.string().optional(),
+  sentences: z.array(z.string().optional()),
+  // expectedAnswers: z.array(z.string().min(1, {
+  //   message: "Expected answer is required",
+  // }))
+});

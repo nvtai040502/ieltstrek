@@ -23,10 +23,9 @@ export const createNoteCompletion = async ({
     const noteCompletion = await db.noteCompletion.create({
       data: {
         questionGroupId,
+        title: "Hello",
         noteCompletionGroupItemArray: {
-          create: {
-            title: "Hello",
-          },
+          create: {},
         },
       },
       include: {
