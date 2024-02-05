@@ -3,10 +3,10 @@ import React, { useCallback, useState } from "react";
 // Import the Slate editor factory.
 import { Editor, createEditor } from "slate";
 import { BaseEditor, Descendant } from "slate";
-import { ReactEditor } from "slate-react";
+import { ReactEditor, RenderLeafProps } from "slate-react";
 
 type CustomElement = { type: "paragraph"; children: CustomText[] };
-type CustomText = { text: string };
+type CustomText = { text: string, bold?: boolean };
 
 declare module "slate" {
   interface CustomTypes {
@@ -20,9 +20,26 @@ import { Slate, Editable, withReact } from "slate-react";
 
 export default function TextEditor() {
   const [editor] = useState(() => withReact(createEditor()));
-  const renderLeaf = useCallback((props) => {
+  const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
   }, []);
+  const CustomEditor = {
+    isBoldMarkActive(editor: BaseEditor & ReactEditor) {
+      const marks = Editor.marks(editor)
+      return marks ? marks.bold === true : false
+    },
+
+    toggleBoldMark(editor: BaseEditor & ReactEditor ) {
+      const isActive = CustomEditor.isBoldMarkActive(editor)
+      if (isActive) {
+        Editor.removeMark(editor, 'bold')
+      } else {
+        Editor.addMark(editor, 'bold', true)
+      }
+    },
+  
+    
+  }
   const initialValue: CustomElement[] = [
     {
       type: "paragraph",
@@ -42,7 +59,7 @@ export default function TextEditor() {
           switch (event.key) {
             case "b": {
               event.preventDefault();
-              Editor.addMark(editor, "bold", true);
+              CustomEditor.toggleBoldMark(editor)
               break;
             }
           }
@@ -52,7 +69,7 @@ export default function TextEditor() {
   );
 }
 
-const Leaf = (props) => {
+const Leaf = (props: RenderLeafProps) => {
   return (
     <span
       {...props.attributes}
