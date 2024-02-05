@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { createQuestion } from "./question";
 import { IdentifyingInformationAnswer } from "@prisma/client";
 import { error } from "console";
+import { number } from "zod";
 
 interface CreateNoteCompletionProps {
   questionGroupId: number;
@@ -28,53 +29,50 @@ export const createNoteCompletion = async ({
       data: {
         questionGroupId,
         title: title || "Title Note Completion",
-        noteCompletionGroupItemArray: {
-          createMany: {
-            data: Array.from({ length: numberGroupItemToCreate }).map(() => ({
-              title: "title for note completion group item",
-            })),
-          },
-        },
-      },
-      include: {
-        noteCompletionGroupItemArray: {
-          orderBy: { id: "asc" },
-        },
       },
     });
-    if (
-      !noteCompletion ||
-      !noteCompletion.noteCompletionGroupItemArray.length
-    ) {
+    if (!noteCompletion) {
       throw new Error("Failed to create note completion");
     }
-    const groupIdArray = noteCompletion.noteCompletionGroupItemArray.map(
-      (groupItem) => groupItem.id
-    );
 
     const remainingQuestion =
       (endQuestionNumber - startQuestionNumber) % numberGroupItemToCreate;
     const questionPerGroup = Math.floor(
       (endQuestionNumber - startQuestionNumber) / numberGroupItemToCreate
     );
-    groupIdArray.map((groupId, i) => {
+    Array.from({ length: numberGroupItemToCreate }).map(async(_, i) => {
+      const startQuestionGroupNumber =
+        startQuestionNumber + i * questionPerGroup;
+      const endQuestionGroupNumber =
+        i === numberGroupItemToCreate - 1
+          ? questionPerGroup + remainingQuestion + 1
+          : questionPerGroup;
+
+      const groupItem = await db.noteCompletionGroupItem.create({
+        data: {
+          title: "Title For Group Item",
+          startQuestionNumber: startQuestionGroupNumber,
+          endQuestionNumber: endQuestionGroupNumber,
+          noteCompletionId: noteCompletion.id
+        }
+      })
+      if (!groupItem) {
+        throw new Error ("Cannot create group item")
+      }
       Array.from({
-        length:
-          i === numberGroupItemToCreate - 1
-            ? questionPerGroup + remainingQuestion + 1
-            : questionPerGroup,
+        length: endQuestionGroupNumber,
       }).map(async (_, j) => {
-        const questionNumber = startQuestionNumber + j + i * questionPerGroup;
+        const questionNumber = startQuestionGroupNumber + j;
 
         await db.noteCompletionItem.create({
           data: {
             sentence: "Hello, What is ___ name?",
-            noteCompletionGroupItemId: groupId,
+            noteCompletionGroupItemId: groupItem.id,
             blank: {
               create: {
                 noteCompletionGroupItem: {
                   connect: {
-                    id: groupId,
+                    id: groupItem.id,
                   },
                 },
                 expectedAnswer: "your",
@@ -99,7 +97,34 @@ export const createNoteCompletion = async ({
     return false;
   }
 };
-
+export const updateNoteCompletionGroupItem = async ({
+  id,
+  title,
+  sentences,
+  expectedAnswers,
+}: {
+  id: number;
+  title?: string;
+  sentences: string[];
+  expectedAnswers: string[];
+}) => {
+  try {
+    const groupItem = await db.noteCompletionGroupItem.findUnique({
+      where: { id },
+      include: {
+        blanks: true,
+      },
+    });
+    if (!groupItem) {
+      throw new Error("Id not found");
+    }
+    if (expectedAnswers.length !== groupItem.blanks.length) {
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
 export const updateNoteCompletion = async ({
   id,
   title,

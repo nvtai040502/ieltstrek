@@ -116,10 +116,10 @@ model Blank {
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  noteCompletionGroupItemId  Int
-  noteCompletionGroupItem NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
-  noteCompletionItemId       Int                     @unique
-  noteCompletionItem         NoteCompletionItem      @relation(fields: [noteCompletionItemId], references: [id], onDelete: Cascade)
+  noteCompletionGroupItemId Int
+  noteCompletionGroupItem   NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
+  noteCompletionItemId      Int                     @unique
+  noteCompletionItem        NoteCompletionItem      @relation(fields: [noteCompletionItemId], references: [id], onDelete: Cascade)
 }
 
 model NoteCompletionGroupItem {
@@ -127,9 +127,11 @@ model NoteCompletionGroupItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String?
-
+  title               String?
+  startQuestionNumber Int
+  endQuestionNumber   Int
   noteCompletionId    Int
+  
   noteCompletion      NoteCompletion       @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
   noteCompletionItems NoteCompletionItem[]
   blanks              Blank[]

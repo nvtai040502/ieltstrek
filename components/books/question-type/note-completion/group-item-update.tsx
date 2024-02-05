@@ -19,6 +19,7 @@ import { NoteCompletionGroupItemSchema } from "@/lib/validations/books";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { EditContext } from "@/global/edit-context";
 import { useEditHook } from "@/global/use-edit-hook";
+import { updateNoteCompletionGroupItem } from "@/actions/books/note-completion";
 
 export function UpdateNoteCompletionGroupItemForm() {
   const [isPending, startTransition] = useTransition();
@@ -59,7 +60,7 @@ export function UpdateNoteCompletionGroupItemForm() {
     updatedSentences[index] = value;
 
     setSentences(updatedSentences);
-    form.setValue(`sentences.${index}`, value); // Update the form value as well
+    form.setValue(`sentences.${index}`, value); 
 
     setTotalBlanks(
       updatedSentences.reduce(
@@ -68,33 +69,32 @@ export function UpdateNoteCompletionGroupItemForm() {
       )
     );
   };
-
+  
+  
   const onSubmit = (values: z.infer<typeof NoteCompletionGroupItemSchema>) => {
     console.log(values);
-    // startTransition(async () => {
-    //   if (!groupItem) {
-    //     return;
-    //   }
-    // const successfully = await updateNoteCompletion({
-    //   title: values.title,
-    //   id: noteCompletion.id,
-    //   groupItemAmount: values.groupItemAmount,
-    // });
-    // if (successfully) {
-    //   toast.success("Successfully updated multipleChoice!");
-    //   form.reset();
-    //   router.refresh();
-    // } else {
-    //   toast("Failed to update multipleChoice");
-    // }
-    // onClose();
-    // });
+    startTransition(async () => {
+      if (!groupItem) return;
+    const successfully = await updateNoteCompletionGroupItem({
+      title: values.title,
+      id: groupItem.id,
+      sentences: values.sentences,
+      expectedAnswers: values.expectedAnswers
+    });
+    if (successfully) {
+      toast.success("Successfully updated multipleChoice!");
+      form.reset();
+      router.refresh();
+    } else {
+      toast("Failed to update multipleChoice");
+    }
+    onClose();
+    });
   };
   if (isModalOpen && !groupItem) {
     console.log("Missing NoteCompletion Data");
     return null;
   }
-  if (!groupItem) return null;
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContentWithScrollArea>
@@ -157,7 +157,7 @@ export function UpdateNoteCompletionGroupItemForm() {
                 }}
                 className="w-full"
                 type="button"
-                disabled={groupItem.noteCompletionItems.length === 0}
+                disabled={sentences.length === 0}
               >
                 Delete Last Sentence
               </Button>
@@ -167,7 +167,7 @@ export function UpdateNoteCompletionGroupItemForm() {
               <FormField
                 key={index}
                 control={form.control}
-                name={`expectedAnswers[${index}]` as "expectedAnswers"}
+                name={`expectedAnswers.${index}`}
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
