@@ -20,6 +20,7 @@ import { Slate, Editable, withReact } from "slate-react";
 
 export default function TextEditor() {
   const [editor] = useState(() => withReact(createEditor()));
+  const [isToolbarVisible, setToolbarVisibility] = useState(false);
   const renderLeaf = useCallback((props: RenderLeafProps) => {
     return <Leaf {...props} />;
   }, []);
@@ -49,6 +50,7 @@ export default function TextEditor() {
 
   return (
     <Slate editor={editor} initialValue={initialValue}>
+      <Toolbar isVisible={isToolbarVisible} editor={editor} />
       <Editable
         renderLeaf={renderLeaf}
         onKeyDown={(event) => {
@@ -78,4 +80,16 @@ const Leaf = (props: RenderLeafProps) => {
       {props.children}
     </span>
   );
+};
+const Toolbar: React.FC<{ isVisible: boolean; editor: BaseEditor & ReactEditor }> = ({ isVisible, editor }) => {
+  // const handleBoldClick = () => {
+  //   CustomEditor.toggleBoldMark(editor);
+  // };
+
+  return isVisible ? (
+    <div style={{ position: "absolute", top: "0", left: "0" }}>
+      <button>Bold</button>
+      {/* Add more toolbar options as needed */}
+    </div>
+  ) : null;
 };
