@@ -22,7 +22,6 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { NoteCompletionSchema } from "@/lib/validations/books";
-import { updateNoteCompletion } from "@/actions/books/note-completion";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { EditContext } from "@/global/edit-context";
 import { useEditHook } from "@/global/use-edit-hook";

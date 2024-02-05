@@ -1,26 +1,34 @@
 "use client";
+import React, { useState } from "react";
+// Import the Slate editor factory.
+import { createEditor } from "slate";
+import { BaseEditor, Descendant } from "slate";
+import { ReactEditor } from "slate-react";
 
-import dynamic from "next/dynamic";
-import { useMemo } from "react";
+type CustomElement = { type: "paragraph"; children: CustomText[] };
+type CustomText = { text: string };
 
-import "react-quill/dist/quill.snow.css";
+declare module "slate" {
+  interface CustomTypes {
+    Editor: BaseEditor & ReactEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
+// Import the Slate components and React plugin.
+import { Slate, Editable, withReact } from "slate-react";
 
-interface EditorProps {
-  onChange: (value: string) => void;
-  value: string;
-};
-
-export const Editor = ({
-  onChange,
-  value,
-}: EditorProps) => {
-  const ReactQuill = useMemo(() => dynamic(() => import("react-quill"), { ssr: false }), []);
+export default function TextEditor() {
+  const [editor] = useState(() => withReact(createEditor()));
+  const initialValue: CustomElement[] = [
+    {
+      type: "paragraph",
+      children: [{ text: "A line of text in a paragraph." }],
+    },
+  ];
   return (
-    <div className="bg-white dark:text-black">
-      <ReactQuill 
-        theme="snow" 
-        value={value} 
-        onChange={onChange}  />
-    </div>
+    <Slate editor={editor} initialValue={initialValue}>
+      <Editable />
+    </Slate>
   );
-};
+}
