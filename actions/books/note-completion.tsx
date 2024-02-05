@@ -40,27 +40,28 @@ export const createNoteCompletion = async ({
     const questionPerGroup = Math.floor(
       (endQuestionNumber - startQuestionNumber) / numberGroupItemToCreate
     );
-    Array.from({ length: numberGroupItemToCreate }).map(async(_, i) => {
+    Array.from({ length: numberGroupItemToCreate }).map(async (_, i) => {
       const startQuestionGroupNumber =
         startQuestionNumber + i * questionPerGroup;
-      const endQuestionGroupNumber =
+      const diff =
         i === numberGroupItemToCreate - 1
           ? questionPerGroup + remainingQuestion + 1
           : questionPerGroup;
+      const endQuestionGroupNumber = startQuestionGroupNumber + diff;
 
       const groupItem = await db.noteCompletionGroupItem.create({
         data: {
           title: "Title For Group Item",
           startQuestionNumber: startQuestionGroupNumber,
           endQuestionNumber: endQuestionGroupNumber,
-          noteCompletionId: noteCompletion.id
-        }
-      })
+          noteCompletionId: noteCompletion.id,
+        },
+      });
       if (!groupItem) {
-        throw new Error ("Cannot create group item")
+        throw new Error("Cannot create group item");
       }
       Array.from({
-        length: endQuestionGroupNumber,
+        length: diff,
       }).map(async (_, j) => {
         const questionNumber = startQuestionGroupNumber + j;
 
@@ -112,12 +113,34 @@ export const updateNoteCompletionGroupItem = async ({
     const groupItem = await db.noteCompletionGroupItem.findUnique({
       where: { id },
       include: {
-        blanks: true,
+        noteCompletionItems: true,
+        blanks: {
+          include: {
+            question: {
+              select: {
+                questionNumber: true
+              }
+            }
+          }
+        },
       },
     });
     if (!groupItem) {
       throw new Error("Id not found");
     }
+    const a = await db.question.findMany({
+      where: {
+        noteCompletionId: groupItem.noteCompletionId,
+        questionNumber: {
+          gte: groupItem.startQuestionNumber,
+          lte: groupItem.startQuestionNumber + expectedAnswers.length - 1
+        }
+      },
+      orderBy: {
+        questionNumber: "asc"
+      }
+    })
+    console.log(a)
     if (expectedAnswers.length !== groupItem.blanks.length) {
     }
     return true;

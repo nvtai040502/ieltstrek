@@ -1,59 +1,31 @@
 "use client";
-import { InputGap } from '@/components/ui/input';
-import { useState } from 'react';
+import React, { useRef } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
 
-const NoteCompletionForm = () => {
-  const [sentence, setSentence] = useState('');
-  const [blanks, setBlanks] = useState<string[]>([]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setSentence(e.target.value);
-  };
-
-  const handleSubmit = () => {
-    // Parse the sentence to identify blanks
-    const blankIndices: string[] = [];
-    const modifiedSentence = sentence.replace(/___/g, (_, index) => {
-      blankIndices.push(index.toString());
-      return '___';
-    });
-
-    // Set blanks state with the indices of blanks
-    setBlanks(blankIndices);
-
-    console.log('Modified Sentence:', modifiedSentence);
-    // You can now store or process the modified sentence as needed
-  };
-
-  const handleBlankChange = (index: string, value: string) => {
-    // Update the sentence with the user's input for the blank
-    const updatedSentence = sentence.slice(0, +index) + value + sentence.slice(+index + 3);
-    setSentence(updatedSentence);
-  };
-
+export default function App() {
+  
   return (
-    <div>
-      <h1>Create Note Completion Question</h1>
-      <textarea
-        rows={4}
-        cols={50}
-        placeholder="Enter the sentence with '___' for blanks, e.g., 'The capital of France is ___.'"
-        value={sentence}
-        onChange={handleInputChange}
-      ></textarea>
-      <br />
-      <button onClick={handleSubmit}>Submit</button>
-
-      {blanks.map((index) => (
-        <InputGap
-          key={index}
-          type="text"
-          value={sentence.slice(+index, +index + 3)}
-          onChange={(e) => handleBlankChange(index, e.target.value)}
-        />
-      ))}
-    </div>
+    <>
+      <Editor
+        // onInit={(evt, editor) => editorRef.current = editor}
+        initialValue="<p>This is the initial content of the editor.</p>"
+        init={{
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist autolink lists link image charmap print preview anchor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+          ],
+          toolbar: 'undo redo | formatselect | ' +
+          'bold italic backcolor | alignleft aligncenter ' +
+          'alignright alignjustify | bullist numlist outdent indent | ' +
+          'removeformat | help',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        }}
+      />
+      {/* <button onClick={log}>Log editor content</button> */}
+    </>
   );
-};
+}
 
-export default NoteCompletionForm;

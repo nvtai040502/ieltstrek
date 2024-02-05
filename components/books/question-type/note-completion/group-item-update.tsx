@@ -72,7 +72,6 @@ export function UpdateNoteCompletionGroupItemForm() {
   
   
   const onSubmit = (values: z.infer<typeof NoteCompletionGroupItemSchema>) => {
-    console.log(values);
     startTransition(async () => {
       if (!groupItem) return;
     const successfully = await updateNoteCompletionGroupItem({

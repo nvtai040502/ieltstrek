@@ -26,6 +26,7 @@ import { updateNoteCompletion } from "@/actions/books/note-completion";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { EditContext } from "@/global/edit-context";
 import { useEditHook } from "@/global/use-edit-hook";
+import { Editor } from "@/components/text-editor/editor";
 
 export function UpdateNoteCompletionForm() {
   const [isPending, startTransition] = useTransition();
@@ -87,9 +88,10 @@ export function UpdateNoteCompletionForm() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Note Completion Title</FormLabel>
+                    {/* <FormLabel>Note Completion Title</FormLabel> */}
                     <FormControl>
-                      <Input {...field} disabled={isPending} />
+                      {/* <Input {...field} disabled={isPending} /> */}
+                      <Editor {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
