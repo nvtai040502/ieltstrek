@@ -24,6 +24,7 @@ export function UpdateNoteCompletionGroupItemForm() {
   const [isPending, startTransition] = useTransition();
   const { isOpen, type, data } = useContext(EditContext);
   const [sentences, setSentences] = useState<string[]>([]);
+  const [totalBlanks, setTotalBlanks] = useState<number>(0);
   const { onClose } = useEditHook();
   const isModalOpen = isOpen && type === "editNoteCompletionGroupItem";
   const groupItem = data?.noteCompletionGroupItem;
@@ -31,33 +32,43 @@ export function UpdateNoteCompletionGroupItemForm() {
     resolver: zodResolver(NoteCompletionGroupItemSchema),
     defaultValues: {
       title: "",
-      sentences: [],
-      expectedAnswers: [],
+      sentences: [""],
+      expectedAnswers: [""],
     },
   });
   useEffect(() => {
     if (groupItem) {
-      form.setValue("title", groupItem.title || "");
-      form.setValue(
-        "sentences",
-        groupItem.noteCompletionItems.map((item) => item.sentence)
+      const itemSentences = groupItem.noteCompletionItems.map(
+        (item) => item.sentence
       );
+      form.setValue("title", groupItem.title || "");
+      form.setValue("sentences", itemSentences);
       form.setValue(
         "expectedAnswers",
         groupItem.blanks.map((blank) => blank.expectedAnswer)
       );
-      setSentences(() =>
-        groupItem.noteCompletionItems.map((item) => item.sentence)
-      );
+      setSentences(itemSentences);
+      setTotalBlanks(groupItem.blanks.length);
     }
   }, [form, groupItem]);
 
   const router = useRouter();
-  if (isModalOpen && !groupItem) {
-    console.log("Missing NoteCompletion Data");
-    return null;
-  }
-  if (!groupItem) return null;
+
+  const handleSentenceChange = (index: number, value: string) => {
+    const updatedSentences = [...sentences];
+    updatedSentences[index] = value;
+
+    setSentences(updatedSentences);
+    form.setValue(`sentences.${index}`, value); // Update the form value as well
+
+    setTotalBlanks(
+      updatedSentences.reduce(
+        (count, sentence) => count + (sentence.split(" ___ ").length - 1),
+        0
+      )
+    );
+  };
+
   const onSubmit = (values: z.infer<typeof NoteCompletionGroupItemSchema>) => {
     console.log(values);
     // startTransition(async () => {
@@ -79,6 +90,11 @@ export function UpdateNoteCompletionGroupItemForm() {
     // onClose();
     // });
   };
+  if (isModalOpen && !groupItem) {
+    console.log("Missing NoteCompletion Data");
+    return null;
+  }
+  if (!groupItem) return null;
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContentWithScrollArea>
@@ -105,13 +121,19 @@ export function UpdateNoteCompletionGroupItemForm() {
               </div>
               {sentences.map((_, index) => (
                 <FormField
-                  key={index}
+                  key={`sentence-${index}`}
                   control={form.control}
-                  name={`sentences[${index}]` as "sentences"}
+                  name={`sentences.${index}`}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input {...field} disabled={isPending} />
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          onChange={(e) =>
+                            handleSentenceChange(index, e.target.value)
+                          }
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -141,7 +163,7 @@ export function UpdateNoteCompletionGroupItemForm() {
               </Button>
             </div>
             <div>Expected Answers</div>
-            {groupItem.blanks.map((_, index) => (
+            {Array.from({ length: totalBlanks }).map((_, index) => (
               <FormField
                 key={index}
                 control={form.control}
