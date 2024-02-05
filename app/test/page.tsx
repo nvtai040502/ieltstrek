@@ -5,7 +5,7 @@ import TextEditor from "@/components/text-editor/editor";
 export default function Home() {
   return (
     <div>
-      test
+      
       <TextEditor />
     </div>
   );

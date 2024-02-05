@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 // Import the Slate editor factory.
-import { createEditor } from "slate";
+import { Editor, createEditor } from "slate";
 import { BaseEditor, Descendant } from "slate";
 import { ReactEditor } from "slate-react";
 
@@ -20,15 +20,45 @@ import { Slate, Editable, withReact } from "slate-react";
 
 export default function TextEditor() {
   const [editor] = useState(() => withReact(createEditor()));
+  const renderLeaf = useCallback((props) => {
+    return <Leaf {...props} />;
+  }, []);
   const initialValue: CustomElement[] = [
     {
       type: "paragraph",
       children: [{ text: "A line of text in a paragraph." }],
     },
   ];
+
   return (
     <Slate editor={editor} initialValue={initialValue}>
-      <Editable />
+      <Editable
+        renderLeaf={renderLeaf}
+        onKeyDown={(event) => {
+          if (!event.ctrlKey) {
+            return;
+          }
+
+          switch (event.key) {
+            case "b": {
+              event.preventDefault();
+              Editor.addMark(editor, "bold", true);
+              break;
+            }
+          }
+        }}
+      />
     </Slate>
   );
 }
+
+const Leaf = (props) => {
+  return (
+    <span
+      {...props.attributes}
+      style={{ fontWeight: props.leaf.bold ? "bold" : "normal" }}
+    >
+      {props.children}
+    </span>
+  );
+};
