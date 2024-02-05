@@ -1,28 +1,37 @@
-"use server"
+"use server";
 
 import { db } from "@/lib/db";
 
 export const createQuestion = async ({
   partId,
-  assessmentId,
-  questionNumber
+  questionNumber,
 }: {
   questionNumber: number;
-  assessmentId: number;
   partId: number;
 }) => {
   try {
+    const part = await db.part.findUnique({
+      where: {
+        id: partId,
+      },
+      select: {
+        assessmentId: true,
+      },
+    });
+    if (!part) {
+      throw new Error("");
+    }
     const question = await db.question.create({
       data: {
         partId,
-        assessmentId,
-        questionNumber
-      }
-    })
-    
-    return question
+        assessmentId: part.assessmentId,
+        questionNumber,
+      },
+    });
+
+    return question;
   } catch (error) {
-    console.error("Error creating questionGroup:", error);
-    return undefined
+    console.error("Error creating question:", error);
+    return undefined;
   }
 };

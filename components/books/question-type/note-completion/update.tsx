@@ -101,7 +101,6 @@ export function UpdateNoteCompletionForm() {
                 name="paragraph"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>Paragraph</FormLabel> */}
                     <FormControl>
                       <Editor onChange={(e) => console.log(e)} value={field.value} />
                     </FormControl>

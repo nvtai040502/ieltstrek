@@ -65,6 +65,7 @@ model QuestionGroup {
 
   partId                 Int
   part                   Part                    @relation(fields: [partId], references: [id], onDelete: Cascade)
+  questions              Question[]
   multipleChoiceArray    MultipleChoice[]
   summaryCompletion      SummaryCompletion?
   identifyingInformation IdentifyingInformation?
@@ -86,6 +87,8 @@ model Question {
   part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
   assessmentId               Int
   assessment                 Assessment                  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  questionGroupId            Int
+  questionGroup              QuestionGroup               @relation(fields: [questionGroupId], references: [id])
 
   @@unique([questionNumber, assessmentId])
 }
@@ -98,9 +101,9 @@ model NoteCompletion {
   title     String
   paragraph String
 
-  blanks                       Blank[]
-  questionGroupId              Int                       @unique
-  questionGroup                QuestionGroup             @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  blanks          Blank[]
+  questionGroupId Int           @unique
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model Blank {
@@ -114,12 +117,9 @@ model Blank {
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  NoteCompletion            NoteCompletion?         @relation(fields: [noteCompletionId], references: [id])
-  noteCompletionId          Int?
+  NoteCompletion   NoteCompletion? @relation(fields: [noteCompletionId], references: [id])
+  noteCompletionId Int?
 }
-
-
-
 
 model MultipleChoice {
   id        Int      @id @default(autoincrement())

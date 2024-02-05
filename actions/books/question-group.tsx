@@ -21,6 +21,9 @@ export const createQuestionGroup = async ({
     const part = await db.part.findUnique({
       where: {
         id: partId
+      },
+      select: {
+        assessmentId: true
       }
     })
     if (!part) {
@@ -59,6 +62,15 @@ export const createQuestionGroup = async ({
         type,
         endQuestionNumber,
         partId,
+        questions: {
+          createMany: {
+            data: Array.from({ length: endQuestionNumber - startQuestionNumber + 1 }).map((_, i) => ({
+              questionNumber: startQuestionNumber + i,
+              partId,
+              assessmentId: part.assessmentId
+            })),
+          },
+        },
       },
     });
 
