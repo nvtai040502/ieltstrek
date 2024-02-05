@@ -82,8 +82,6 @@ model Question {
   summaryCompletionItem      SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
   blank                      Blank?
-  noteCompletionId           Int?
-  noteCompletion             NoteCompletion?             @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
   partId                     Int
   part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
   assessmentId               Int
@@ -97,10 +95,10 @@ model NoteCompletion {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
+  title     String
+  paragraph String
 
-  questions                    Question[]
-  noteCompletionGroupItemArray NoteCompletionGroupItem[]
+  blanks                       Blank[]
   questionGroupId              Int                       @unique
   questionGroup                QuestionGroup             @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
@@ -116,38 +114,12 @@ model Blank {
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  noteCompletionGroupItemId Int
-  noteCompletionGroupItem   NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
-  noteCompletionItemId      Int                     @unique
-  noteCompletionItem        NoteCompletionItem      @relation(fields: [noteCompletionItemId], references: [id], onDelete: Cascade)
+  NoteCompletion            NoteCompletion?         @relation(fields: [noteCompletionId], references: [id])
+  noteCompletionId          Int?
 }
 
-model NoteCompletionGroupItem {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 
-  title               String?
-  startQuestionNumber Int
-  endQuestionNumber   Int
-  noteCompletionId    Int
-  
-  noteCompletion      NoteCompletion       @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
-  noteCompletionItems NoteCompletionItem[]
-  blanks              Blank[]
-}
 
-model NoteCompletionItem {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  sentence String
-
-  blank                     Blank?
-  noteCompletionGroupItemId Int
-  noteCompletionGroupItem   NoteCompletionGroupItem @relation(fields: [noteCompletionGroupItemId], references: [id], onDelete: Cascade)
-}
 
 model MultipleChoice {
   id        Int      @id @default(autoincrement())

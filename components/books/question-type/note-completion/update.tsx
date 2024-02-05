@@ -38,16 +38,16 @@ export function UpdateNoteCompletionForm() {
     resolver: zodResolver(NoteCompletionSchema),
     defaultValues: {
       title: "",
-      groupItemAmount: 1,
+      paragraph: "",
     },
   });
   useEffect(() => {
     if (noteCompletion) {
       form.setValue("title", noteCompletion.title);
-      form.setValue(
-        "groupItemAmount",
-        noteCompletion.noteCompletionGroupItemArray.length
-      );
+      // form.setValue(
+      //   "groupItemAmount",
+      //   noteCompletion.noteCompletionGroupItemArray.length
+      // );
     }
   }, [form, noteCompletion]);
 
@@ -58,24 +58,24 @@ export function UpdateNoteCompletionForm() {
   }
 
   const onSubmit = (values: z.infer<typeof NoteCompletionSchema>) => {
-    startTransition(async () => {
-      if (!noteCompletion) {
-        return;
-      }
-      const successfully = await updateNoteCompletion({
-        title: values.title,
-        id: noteCompletion.id,
-        groupItemAmount: values.groupItemAmount,
-      });
-      if (successfully) {
-        toast.success("Successfully updated multipleChoice!");
-        form.reset();
-        router.refresh();
-      } else {
-        toast("Failed to update multipleChoice");
-      }
-      onClose();
-    });
+    // startTransition(async () => {
+    //   if (!noteCompletion) {
+    //     return;
+    //   }
+    //   const successfully = await updateNoteCompletion({
+    //     title: values.title,
+    //     id: noteCompletion.id,
+    //     groupItemAmount: values.groupItemAmount,
+    //   });
+    //   if (successfully) {
+    //     toast.success("Successfully updated multipleChoice!");
+    //     form.reset();
+    //     router.refresh();
+    //   } else {
+    //     toast("Failed to update multipleChoice");
+    //   }
+    //   onClose();
+    // });
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -88,10 +88,9 @@ export function UpdateNoteCompletionForm() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel>Note Completion Title</FormLabel> */}
+                    <FormLabel>Note Completion Title</FormLabel>
                     <FormControl>
-                      {/* <Input {...field} disabled={isPending} /> */}
-                      <Editor {...field} />
+                      <Input {...field} disabled={isPending} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -99,17 +98,12 @@ export function UpdateNoteCompletionForm() {
               />
               <FormField
                 control={form.control}
-                name="groupItemAmount"
+                name="paragraph"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>groupItemAmount</FormLabel>
+                    {/* <FormLabel>Paragraph</FormLabel> */}
                     <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        type="number"
-                        min={1}
-                      />
+                      <Editor onChange={(e) => console.log(e)} value={field.value} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

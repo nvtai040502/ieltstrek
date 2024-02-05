@@ -6,8 +6,6 @@ import {
   IdentifyingInformationItem,
   MultipleChoice,
   NoteCompletion,
-  NoteCompletionGroupItem,
-  NoteCompletionItem,
   Part,
   Passage,
   Question,
@@ -48,15 +46,9 @@ export type IdentifyingInformationExtended = IdentifyingInformation & {
 export type BlankExtended = Blank & {
   question: Question;
 };
-export type NoteCompletionItemExtended = NoteCompletionItem & {
-  blank: BlankExtended | null;
-};
-export type NoteCompletionGroupItemExtended = NoteCompletionGroupItem & {
-  noteCompletionItems: NoteCompletionItemExtended[];
-  blanks: Blank[];
-};
+
 export type NoteCompletionExtended = NoteCompletion & {
-  noteCompletionGroupItemArray: NoteCompletionGroupItemExtended[];
+  blanks: BlankExtended[];
   questionGroup: QuestionGroup;
 };
 

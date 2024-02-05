@@ -106,13 +106,8 @@ export const IdentifyingInformationItemSchema = z.object({
   explanation: z.string().optional(),
 });
 
-export const NoteCompletionGroupItemSchema = z.object({
-  title: z.string().optional(),
-  sentences: z.array(z.string().min(1)),
-  expectedAnswers: z.array(z.string().min(1)),
-});
 
 export const NoteCompletionSchema = z.object({
   title: z.string().min(1),
-  groupItemAmount: z.coerce.number().min(1),
+  paragraph: z.string()
 });

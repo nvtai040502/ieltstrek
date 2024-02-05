@@ -1,7 +1,6 @@
 "use client";
 
 import { NoteCompletionExtended } from "@/types/db";
-import { GroupItemRender } from "./group-item";
 import { UpdateButton } from "../../update-button";
 import { useEditHook } from "@/global/use-edit-hook";
 
@@ -26,10 +25,6 @@ export const NoteCompletionRender = ({
           }}
         />
       </div>
-
-      {noteCompletion.noteCompletionGroupItemArray.map((groupItem) => {
-        return <GroupItemRender groupItem={groupItem} key={groupItem.id} />;
-      })}
     </>
   );
 };
