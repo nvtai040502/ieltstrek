@@ -25,7 +25,6 @@ import { NoteCompletionSchema } from "@/lib/validations/books";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { EditContext } from "@/global/edit-context";
 import { useEditHook } from "@/global/use-edit-hook";
-import { Editor } from "@/components/text-editor/editor";
 
 export function UpdateNoteCompletionForm() {
   const [isPending, startTransition] = useTransition();
@@ -101,7 +100,7 @@ export function UpdateNoteCompletionForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Editor onChange={(e) => console.log(e)} value={field.value} />
+                      {/* <Editor onChange={(e) => console.log(e)} value={field.value} /> */}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
