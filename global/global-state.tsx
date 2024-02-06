@@ -18,7 +18,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   >([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
-
+  const [textNoteCompletion, setTextNoteCompletion] = useState("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [type, setType] = useState<EditType>(null);
   const [data, setData] = useState<EditData | undefined>(undefined);
@@ -53,6 +53,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
       <EditContext.Provider
         value={{
           isOpen,
+          textNoteCompletion,
+          setTextNoteCompletion,
           setData,
           setIsOpen,
           setType,

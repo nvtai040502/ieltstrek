@@ -1,4 +1,5 @@
 "use server";
+import { noteCompletionInitial } from "@/config/template/note-completion";
 import { db } from "@/lib/db";
 
 export const createNoteCompletion = async ({
@@ -24,8 +25,7 @@ export const createNoteCompletion = async ({
     await db.noteCompletion.create({
       data: {
         questionGroupId,
-        paragraph: "Hello, what ___ you name?",
-        title: title || "Hello",
+        paragraph: JSON.stringify(noteCompletionInitial),
         blanks: {
           createMany: {
             data: questionGroup.questions.map((question) => ({

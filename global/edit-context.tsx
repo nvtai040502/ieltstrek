@@ -23,10 +23,14 @@ interface EditContextProps {
   setData: Dispatch<SetStateAction<EditData | undefined>>;
   type: EditType;
   setType: Dispatch<SetStateAction<EditType>>;
+  textNoteCompletion: string;
+  setTextNoteCompletion: Dispatch<SetStateAction<string>>;
 }
 
 export const EditContext = createContext<EditContextProps>({
   isOpen: false,
+  textNoteCompletion: "",
+  setTextNoteCompletion: () => {},
   setIsOpen: () => {},
   data: undefined,
   setData: () => {},

@@ -98,7 +98,6 @@ model NoteCompletion {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title     String
   paragraph String
 
   blanks          Blank[]

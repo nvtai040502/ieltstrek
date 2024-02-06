@@ -1,8 +1,12 @@
+import { useEditHook } from "@/global/use-edit-hook";
 import { RenderElementProps } from "slate-react";
+import BlankRender from "../books/blank-render";
+import { Input } from "../ui/input";
+import { useEffect } from "react";
 
 export const ElementRender = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
-  console.log(element.type)
+
   switch (element.type) {
     case "blockquote":
       return (
@@ -52,13 +56,27 @@ export const ElementRender = ({ attributes, children, element }) => {
   }
 };
 
-export const LeafRender = ({ attributes, children, leaf }) => {
+export const LeafRender = ({
+  attributes,
+  children,
+  leaf,
+}: {
+  leaf: any,
+  children: any,
+  attributes: any
+}) => {
+  const { onClose, data, isOpen, type } = useEditHook();
+  const isEdit = isOpen && type === "editNoteCompletion";
   if (leaf.bold) {
     children = <strong>{children}</strong>;
   }
 
   if (leaf.code) {
-    children = <code className="bg-red-500">{children}</code>;
+    children = isEdit ? (
+      <code className="bg-red-500">{children}</code>
+    ) : (
+      <Input/>
+    );
   }
 
   if (leaf.italic) {
