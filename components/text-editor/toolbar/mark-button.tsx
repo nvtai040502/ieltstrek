@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { EditType } from "@/global/edit-context";
-import { EditorType } from "@/types/text-editor";
+
 import { Editor } from "slate";
 import { useSlate } from "slate-react";
 

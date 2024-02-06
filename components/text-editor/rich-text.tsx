@@ -11,8 +11,34 @@ import {
 } from "slate";
 import { withHistory } from "slate-history";
 import { Button } from "@/components/ui/button";
-import { Bold, Code, Italic, Plus, PlusCircle, Underline } from "lucide-react";
+import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  Code,
+  Heading1,
+  Heading2,
+  Italic,
+  List,
+  ListOrdered,
+  Plus,
+  PlusCircle,
+  Quote,
+  Underline,
+} from "lucide-react";
 import { MarkButton } from "./toolbar/mark-button";
+import BlockButton from "./toolbar/block-button";
+import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
+
+declare module "slate" {
+  interface CustomTypes {
+    Editor: CustomEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -21,9 +47,6 @@ const HOTKEYS = {
   "mod+`": "code",
 };
 
-const LIST_TYPES = ["numbered-list", "bulleted-list"];
-const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
-
 const RichTextExample = () => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
@@ -31,19 +54,20 @@ const RichTextExample = () => {
 
   return (
     <Slate editor={editor} initialValue={initialValue}>
-      <MarkButton format="bold" icon={<Bold/>} />
-      <MarkButton format="italic" icon={<Italic/>} />
+      <MarkButton format="bold" icon={<Bold />} />
+      <MarkButton format="italic" icon={<Italic />} />
       <MarkButton format="underline" icon={<Underline />} />
       <MarkButton format="code" icon={<Code />} />
-      <BlockButton format="heading-one" icon="looks_one" />
-      <BlockButton format="heading-two" icon="looks_two" />
-      <BlockButton format="block-quote" icon="format_quote" />
-      <BlockButton format="numbered-list" icon="format_list_numbered" />
-      <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-      <BlockButton format="left" icon="format_align_left" />
-      <BlockButton format="center" icon="format_align_center" />
-      <BlockButton format="right" icon="format_align_right" />
-      <BlockButton format="justify" icon="format_align_justify" />
+      <BlockButton format="heading-one" icon={<Heading1 />} />
+      <BlockButton format="heading-two" icon={<Heading2 />} />
+      <BlockButton format="block-quote" icon={<Quote />} />
+      <BlockButton format="bulleted-list" icon={<List />} />
+      <BlockButton format="numbered-list" icon={<ListOrdered />} />
+      <BlockButton format="left" icon={<AlignLeft />} />
+      <BlockButton format="center" icon={<AlignCenter />} />
+      <BlockButton format="right" icon={<AlignRight />} />
+      <BlockButton format="justify" icon={<AlignJustify />} />
+
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -54,8 +78,6 @@ const RichTextExample = () => {
           for (const hotkey in HOTKEYS) {
             if (isHotkey(hotkey, event as any)) {
               event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
             }
           }
         }}
@@ -63,60 +85,6 @@ const RichTextExample = () => {
     </Slate>
   );
 };
-
-const toggleBlock = (editor, format) => {
-  const isActive = isBlockActive(
-    editor,
-    format,
-    TEXT_ALIGN_TYPES.includes(format) ? "align" : "type"
-  );
-  const isList = LIST_TYPES.includes(format);
-
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      LIST_TYPES.includes(n.type) &&
-      !TEXT_ALIGN_TYPES.includes(format),
-    split: true,
-  });
-  let newProperties: Partial<SlateElement>;
-  if (TEXT_ALIGN_TYPES.includes(format)) {
-    newProperties = {
-      align: isActive ? undefined : format,
-    };
-  } else {
-    newProperties = {
-      type: isActive ? "paragraph" : isList ? "list-item" : format,
-    };
-  }
-  Transforms.setNodes<SlateElement>(editor, newProperties);
-
-  if (!isActive && isList) {
-    const block = { type: format, children: [] };
-    Transforms.wrapNodes(editor, block);
-  }
-};
-
-
-const isBlockActive = (editor, format, blockType = "type") => {
-  const { selection } = editor;
-  if (!selection) return false;
-
-  const [match] = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.unhangRange(editor, selection),
-      match: (n) =>
-        !Editor.isEditor(n) &&
-        SlateElement.isElement(n) &&
-        n[blockType] === format,
-    })
-  );
-
-  return !!match;
-};
-
-
 
 const Element = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
@@ -187,26 +155,6 @@ const Leaf = ({ attributes, children, leaf }) => {
   }
 
   return <span {...attributes}>{children}</span>;
-};
-
-const BlockButton = ({ format, icon }) => {
-  const editor = useSlate();
-  return (
-    <Button
-      // active={isBlockActive(
-      //   editor,
-      //   format,
-      //   TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type'
-      // )}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        toggleBlock(editor, format);
-      }}
-    >
-      {/* <Icon>{icon}</Icon> */}
-      <Plus />
-    </Button>
-  );
 };
 
 const initialValue: Descendant[] = [
