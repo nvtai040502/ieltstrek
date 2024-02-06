@@ -1,23 +1,34 @@
-import { BaseEditor, Descendant } from 'slate'
-import { ReactEditor } from 'slate-react'
+import { BaseEditor, Descendant } from "slate";
+import { ReactEditor } from "slate-react";
 
-export type CustomEditor = BaseEditor & ReactEditor
-export type AlignType = "center" | "left" | "right" | "bottom"
+export type CustomEditor = BaseEditor & ReactEditor;
+export type TextAlignType = "center" | "left" | "right" | "justify";
 export type ParagraphElement = {
-  type: 'paragraph'
-  align: AlignType
-  children: CustomText[]
-}
+  type: "paragraph";
+  align?: TextAlignType;
+  children: CustomText[];
+};
 
 export type HeadingElement = {
-  type: 'heading'
-  level: number
-  children: CustomText[]
-}
+  type: "heading";
+  level: number;
+  children: CustomText[];
+};
+export type BlockQuoteElement = {
+  type: "blockquote";
+  children: CustomText[];
+};
 
-export type CustomElement = ParagraphElement | HeadingElement
+export type CustomElement =
+  | ParagraphElement
+  | HeadingElement
+  | BlockQuoteElement;
 
-export type FormattedText = { text: string; bold?: true }
+export type FormattedText = {
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  code?: boolean;
+};
 
-export type CustomText = FormattedText
-
+export type CustomText = FormattedText;

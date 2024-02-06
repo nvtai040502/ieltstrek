@@ -1,16 +1,19 @@
 "use client";
 import React, { useCallback, useMemo } from "react";
 import isHotkey from "is-hotkey";
-import { Editable, withReact, useSlate, Slate } from "slate-react";
 import {
-  Editor,
-  Transforms,
+  Editable,
+  withReact,
+  useSlate,
+  Slate,
+  RenderElementProps,
+  RenderLeafProps,
+} from "slate-react";
+import {
   createEditor,
   Descendant,
-  Element as SlateElement,
 } from "slate";
 import { withHistory } from "slate-history";
-import { Button } from "@/components/ui/button";
 import {
   AlignCenter,
   AlignJustify,
@@ -31,6 +34,7 @@ import {
 import { MarkButton } from "./toolbar/mark-button";
 import BlockButton from "./toolbar/block-button";
 import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
+import { ElementRender, LeafRender } from "./text-render";
 
 declare module "slate" {
   interface CustomTypes {
@@ -47,9 +51,15 @@ const HOTKEYS = {
   "mod+`": "code",
 };
 
-const RichTextExample = () => {
-  const renderElement = useCallback((props) => <Element {...props} />, []);
-  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+const RichText = () => {
+  const renderElement = useCallback(
+    (props: RenderElementProps) => <ElementRender {...props} />,
+    []
+  );
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => <LeafRender {...props} />,
+    []
+  );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
@@ -60,7 +70,7 @@ const RichTextExample = () => {
       <MarkButton format="code" icon={<Code />} />
       <BlockButton format="heading-one" icon={<Heading1 />} />
       <BlockButton format="heading-two" icon={<Heading2 />} />
-      <BlockButton format="block-quote" icon={<Quote />} />
+      <BlockButton format="blockquote" icon={<Quote />} />
       <BlockButton format="bulleted-list" icon={<List />} />
       <BlockButton format="numbered-list" icon={<ListOrdered />} />
       <BlockButton format="left" icon={<AlignLeft />} />
@@ -84,77 +94,6 @@ const RichTextExample = () => {
       />
     </Slate>
   );
-};
-
-const Element = ({ attributes, children, element }) => {
-  const style = { textAlign: element.align };
-  switch (element.type) {
-    case "block-quote":
-      return (
-        <blockquote className="mt-6 border-l-2 pl-6 italic" {...attributes}>
-          {children}
-        </blockquote>
-      );
-    case "bulleted-list":
-      return (
-        <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...attributes}>
-          {children}
-        </ul>
-      );
-    case "heading-one":
-      return (
-        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          {children}
-        </h1>
-      );
-    case "heading-two":
-      return (
-        <h2
-          className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
-          {...attributes}
-        >
-          {children}
-        </h2>
-      );
-    case "list-item":
-      return (
-        <li style={style} {...attributes}>
-          {children}
-        </li>
-      );
-    case "numbered-list":
-      return (
-        <ol style={style} {...attributes}>
-          {children}
-        </ol>
-      );
-    default:
-      return (
-        <p style={style} {...attributes}>
-          {children}
-        </p>
-      );
-  }
-};
-
-const Leaf = ({ attributes, children, leaf }) => {
-  if (leaf.bold) {
-    children = <strong>{children}</strong>;
-  }
-
-  if (leaf.code) {
-    children = <code className="bg-red-500">{children}</code>;
-  }
-
-  if (leaf.italic) {
-    children = <em>{children}</em>;
-  }
-
-  if (leaf.underline) {
-    children = <u>{children}</u>;
-  }
-
-  return <span {...attributes}>{children}</span>;
 };
 
 const initialValue: Descendant[] = [
@@ -183,8 +122,8 @@ const initialValue: Descendant[] = [
     ],
   },
   {
-    type: "block-quote",
-    children: [{ text: "A wise quote." }],
+    type: "blockquote",
+    children: [{ text: "A wise quote." }, { text: "A wise quote." }],
   },
   {
     type: "paragraph",
@@ -193,4 +132,4 @@ const initialValue: Descendant[] = [
   },
 ];
 
-export default RichTextExample;
+export default RichText;
