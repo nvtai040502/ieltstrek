@@ -1,13 +1,7 @@
+"use client";
 import React, { useCallback, useMemo } from "react";
 import isHotkey from "is-hotkey";
-import {
-  Editable,
-  withReact,
-  useSlate,
-  Slate,
-  RenderElementProps,
-  RenderLeafProps,
-} from "slate-react";
+import { Editable, withReact, useSlate, Slate } from "slate-react";
 import {
   Editor,
   Transforms,
@@ -16,62 +10,55 @@ import {
   Element as SlateElement,
 } from "slate";
 import { withHistory } from "slate-history";
-import { Button } from "../ui/button";
-import { Plus, PlusCircle } from "lucide-react";
-import { Input } from "../ui/input";
+import { Button } from "@/components/ui/button";
+import { Bold, Code, Italic, Plus, PlusCircle, Underline } from "lucide-react";
+import { MarkButton } from "./toolbar/mark-button";
+
+const HOTKEYS = {
+  "mod+b": "bold",
+  "mod+i": "italic",
+  "mod+u": "underline",
+  "mod+`": "code",
+};
 
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
 const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];
+
 const RichTextExample = () => {
-  const renderElement = useCallback(
-    (props: RenderElementProps) => <Element {...props} />,
-    []
-  );
-  const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <Leaf {...props} />,
-    []
-  );
+  const renderElement = useCallback((props) => <Element {...props} />, []);
+  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
-    <Slate
-      editor={editor}
-      initialValue={initialValue}
-      onValueChange={(value) => {
-        console.log(value);
-      }}
-    >
-      <div>
-        <MarkButton format="bold" icon="format_bold" />
-        <MarkButton format="italic" icon="format_italic" />
-        <MarkButton format="underline" icon="format_underlined" />
-        <MarkButton format="code" icon="code" />
-        <BlockButton format="heading-one" icon="looks_one" />
-        <BlockButton format="heading-two" icon="looks_two" />
-        <BlockButton format="block-quote" icon="format_quote" />
-        <BlockButton format="numbered-list" icon="format_list_numbered" />
-        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-        <BlockButton format="left" icon="format_align_left" />
-        <BlockButton format="center" icon="format_align_center" />
-        <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" />
-      </div>
+    <Slate editor={editor} initialValue={initialValue}>
+      <MarkButton format="bold" icon={<Bold/>} />
+      <MarkButton format="italic" icon={<Italic/>} />
+      <MarkButton format="underline" icon={<Underline />} />
+      <MarkButton format="code" icon={<Code />} />
+      <BlockButton format="heading-one" icon="looks_one" />
+      <BlockButton format="heading-two" icon="looks_two" />
+      <BlockButton format="block-quote" icon="format_quote" />
+      <BlockButton format="numbered-list" icon="format_list_numbered" />
+      <BlockButton format="bulleted-list" icon="format_list_bulleted" />
+      <BlockButton format="left" icon="format_align_left" />
+      <BlockButton format="center" icon="format_align_center" />
+      <BlockButton format="right" icon="format_align_right" />
+      <BlockButton format="justify" icon="format_align_justify" />
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Enter some rich text…"
         spellCheck
         autoFocus
-        readOnly
-        // onKeyDown={(event) => {
-        //   for (const hotkey in HOTKEYS) {
-        //     if (isHotkey(hotkey, event as any)) {
-        //       event.preventDefault();
-        //       // const mark = HOTKEYS[hotkey]
-        //       // toggleMark(editor, mark)
-        //     }
-        //   }
-        // }}
+        onKeyDown={(event) => {
+          for (const hotkey in HOTKEYS) {
+            if (isHotkey(hotkey, event as any)) {
+              event.preventDefault();
+              const mark = HOTKEYS[hotkey];
+              toggleMark(editor, mark);
+            }
+          }
+        }}
       />
     </Slate>
   );
@@ -111,15 +98,6 @@ const toggleBlock = (editor, format) => {
   }
 };
 
-const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
 
 const isBlockActive = (editor, format, blockType = "type") => {
   const { selection } = editor;
@@ -138,35 +116,35 @@ const isBlockActive = (editor, format, blockType = "type") => {
   return !!match;
 };
 
-const isMarkActive = (editor, format) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
+
 
 const Element = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
   switch (element.type) {
     case "block-quote":
       return (
-        <blockquote style={style} {...attributes}>
+        <blockquote className="mt-6 border-l-2 pl-6 italic" {...attributes}>
           {children}
         </blockquote>
       );
     case "bulleted-list":
       return (
-        <ul style={style} {...attributes}>
+        <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...attributes}>
           {children}
         </ul>
       );
     case "heading-one":
       return (
-        <h1 style={style} {...attributes}>
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           {children}
         </h1>
       );
     case "heading-two":
       return (
-        <h2 style={style} {...attributes}>
+        <h2
+          className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
+          {...attributes}
+        >
           {children}
         </h2>
       );
@@ -197,7 +175,7 @@ const Leaf = ({ attributes, children, leaf }) => {
   }
 
   if (leaf.code) {
-    children = <Input />
+    children = <code className="bg-red-500">{children}</code>;
   }
 
   if (leaf.italic) {
@@ -225,21 +203,7 @@ const BlockButton = ({ format, icon }) => {
         toggleBlock(editor, format);
       }}
     >
-      <PlusCircle />
-    </Button>
-  );
-};
-
-const MarkButton = ({ format, icon }) => {
-  const editor = useSlate();
-  return (
-    <Button
-      // active={isMarkActive(editor, format)}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        toggleMark(editor, format);
-      }}
-    >
+      {/* <Icon>{icon}</Icon> */}
       <Plus />
     </Button>
   );

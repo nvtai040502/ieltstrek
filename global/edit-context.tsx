@@ -2,7 +2,6 @@ import { createContext, Dispatch, SetStateAction } from "react";
 import {
   IdentifyingInformationItemExtended,
   NoteCompletionExtended,
-  NoteCompletionGroupItemExtended,
 } from "@/types/db";
 import { IdentifyingInformation } from "@prisma/client";
 
@@ -14,7 +13,6 @@ export type EditType =
 
 export interface EditData {
   noteCompletion?: NoteCompletionExtended;
-  noteCompletionGroupItem?: NoteCompletionGroupItemExtended;
   identifyingInformationItem?: IdentifyingInformationItemExtended
 }
 

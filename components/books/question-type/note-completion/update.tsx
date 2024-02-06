@@ -25,9 +25,11 @@ import { NoteCompletionSchema } from "@/lib/validations/books";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { EditContext } from "@/global/edit-context";
 import { useEditHook } from "@/global/use-edit-hook";
+import RichTextExample from "@/components/text-editor/rich-text";
 
 export function UpdateNoteCompletionForm() {
   const [isPending, startTransition] = useTransition();
+  const [ a, setA] = useState<[]>([])
   const { isOpen, type, data } = useContext(EditContext);
   const { onClose } = useEditHook();
   const isModalOpen = isOpen && type === "editNoteCompletion";
@@ -36,16 +38,12 @@ export function UpdateNoteCompletionForm() {
     resolver: zodResolver(NoteCompletionSchema),
     defaultValues: {
       title: "",
-      paragraph: "",
     },
   });
   useEffect(() => {
     if (noteCompletion) {
       form.setValue("title", noteCompletion.title);
-      // form.setValue(
-      //   "groupItemAmount",
-      //   noteCompletion.noteCompletionGroupItemArray.length
-      // );
+      
     }
   }, [form, noteCompletion]);
 
@@ -56,6 +54,7 @@ export function UpdateNoteCompletionForm() {
   }
 
   const onSubmit = (values: z.infer<typeof NoteCompletionSchema>) => {
+    console.log(values)
     // startTransition(async () => {
     //   if (!noteCompletion) {
     //     return;
@@ -78,41 +77,7 @@ export function UpdateNoteCompletionForm() {
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContentWithScrollArea>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Note Completion Title</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={isPending} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="paragraph"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      {/* <Editor onChange={(e) => console.log(e)} value={field.value} /> */}
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <Button disabled={isPending} type="submit" className="w-full">
-              update
-            </Button>
-          </form>
-        </Form>
+        <RichTextExample />
       </DialogContentWithScrollArea>
     </Dialog>
   );
