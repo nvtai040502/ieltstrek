@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { MultipleChoiceExtended } from "@/types/db";
 import { create } from "domain";
 import { createQuestion } from "./question";
-export const createMultipleChoiceArray = async ({
+export const createMultiMoreAnswersArray = async ({
   questionGroupId,
 }: {
   questionGroupId: number;
@@ -29,6 +29,7 @@ export const createMultipleChoiceArray = async ({
         data: {
           questionGroupId,
           title: "example",
+          type: "MORE_ANSWERS",
           questionId: question.id,
           choices: {
             create: [
