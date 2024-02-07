@@ -18,11 +18,7 @@ export const NoteCompletionRender = ({
   }
   return (
     <>
-      <UpdateButton
-        setIsUpdating={() =>
-          onOpen({ type: "editNoteCompletion", data: {noteCompletion} })
-        }
-      />
+      
       <RichText noteCompletion={noteCompletion} />
     </>
   );

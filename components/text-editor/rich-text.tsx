@@ -45,6 +45,7 @@ import { useEditHook } from "@/global/use-edit-hook";
 import { toast } from "sonner";
 import { updateNoteCompletion } from "@/actions/books/note-completion";
 import { Input } from "../ui/input";
+import { CloseButton, UpdateButton } from "../books/update-button";
 
 declare module "slate" {
   interface CustomTypes {
@@ -78,7 +79,8 @@ const RichText = ({
   const isEdit = isOpen && type === "editNoteCompletion";
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const note = noteCompletion || data?.noteCompletion;
-
+  
+  
   if (!note) {
     return null;
   }
@@ -96,10 +98,10 @@ const RichText = ({
       paragraph: JSON.stringify(editor.children),
     });
     if (success) {
-      toast.success("Update Success");
-      onClose();
+      toast.success("Update Success")
+      onClose()
     } else {
-      toast.error("Error");
+      toast.error("Error")
     }
   };
   const countCodeOccurrences = () => {
@@ -110,8 +112,7 @@ const RichText = ({
       node.children.forEach((element) => {
         // if (element.text && element.code) {
         if (element.text && element.code) {
-          element.questionNumber =
-            note.questionGroup.startQuestionNumber + codeCount;
+          element.questionNumber = note.questionGroup.startQuestionNumber + codeCount
           codeCount++;
         }
         // }
@@ -121,7 +122,9 @@ const RichText = ({
   };
   return (
     <Slate editor={editor} initialValue={JSON.parse(note.paragraph)}>
-      {isEdit && (
+      {isEdit ? (
+        <>
+        <CloseButton />
         <div className="flex flex-wrap">
           <MarkButton format="bold" icon={<Bold />} />
           <MarkButton format="italic" icon={<Italic />} />
@@ -137,6 +140,9 @@ const RichText = ({
           <BlockButton format="right" icon={<AlignRight />} />
           <BlockButton format="justify" icon={<AlignJustify />} />
         </div>
+        </>
+      ): (
+        <UpdateButton type="editNoteCompletion" data={{noteCompletion: note}}/>
       )}
 
       <Editable
