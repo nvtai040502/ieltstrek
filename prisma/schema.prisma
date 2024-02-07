@@ -125,7 +125,9 @@ model MultipleChoice {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
+  title          String
+  expectedAnswer String
+  explanation    String?
 
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)

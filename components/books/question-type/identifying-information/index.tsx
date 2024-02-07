@@ -10,7 +10,7 @@ export const IdentifyingInformationRender = ({
   identifyingInformation,
   
 }: IdentifyingInformationRenderProps) => {
-  if (identifyingInformation === undefined || identifyingInformation === null) {
+  if (!identifyingInformation) {
     return null;
   }
   return (

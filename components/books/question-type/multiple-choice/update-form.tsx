@@ -20,6 +20,7 @@ import { updateMultipleChoice } from "@/actions/books/multiple-choice";
 import { MultipleChoice } from "@prisma/client";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { useEditHook } from "@/global/use-edit-hook";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function UpdateMultipleChoiceForm() {
   const [isPending, startTransition] = useTransition();
@@ -30,25 +31,25 @@ export function UpdateMultipleChoiceForm() {
     resolver: zodResolver(MultipleChoiceSchema),
     defaultValues: {
       title: "",
+      expectedAnswer: "",
     },
   });
   const router = useRouter();
   useEffect(() => {
     if (multipleChoice) {
       form.setValue("title", multipleChoice.title);
+      form.setValue("expectedAnswer", multipleChoice.expectedAnswer)
     }
   }, [form, multipleChoice]);
-  if (!isModalOpen && !multipleChoice) {
+  if (!multipleChoice) {
     return null;
   }
   const onSubmit = (values: z.infer<typeof MultipleChoiceSchema>) => {
-    if (!multipleChoice) {
-      return;
-    }
     startTransition(async () => {
       const multipleChoiceUpdated = await updateMultipleChoice({
         title: values.title,
         id: multipleChoice.id,
+        expectedAnswer: values.expectedAnswer
       });
       if (multipleChoiceUpdated) {
         toast.success("Successfully updated multipleChoice!");
@@ -71,13 +72,44 @@ export function UpdateMultipleChoiceForm() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Passage Title</FormLabel>
+                    <FormLabel>Multiple Choice Title</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         disabled={isPending}
                         placeholder="Hello"
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="expectedAnswer"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Expected Answer</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {multipleChoice.choices.map((choice) => (
+                          <FormItem
+                            key={choice.id}
+                            className="flex items-center px-2 space-x-2 space-y-0 w-full hover:bg-secondary"
+                          >
+                            <FormControl>
+                              <RadioGroupItem value={choice.content} />
+                            </FormControl>
+                            <FormLabel className=" w-full cursor-pointer py-2 ">
+                              {choice.content}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

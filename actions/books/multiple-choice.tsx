@@ -11,24 +11,25 @@ export const createMultipleChoiceArray = async ({
   try {
     const questionGroup = await db.questionGroup.findUnique({
       where: {
-        id: questionGroupId
+        id: questionGroupId,
       },
       select: {
         questions: {
           select: {
-            id: true
-          }
-        }
-      }
-    })
+            id: true,
+          },
+        },
+      },
+    });
     if (!questionGroup) {
-      throw new Error("QUestion Group Id not found")
+      throw new Error("QUestion Group Id not found");
     }
     questionGroup.questions.map(async (question) => {
       await db.multipleChoice.create({
         data: {
           questionGroupId,
           title: "example",
+          expectedAnswer: "Option 2",
           questionId: question.id,
           choices: {
             createMany: {
@@ -42,7 +43,7 @@ export const createMultipleChoiceArray = async ({
           },
         },
       });
-    }) 
+    });
     return true;
   } catch (error) {
     console.error("Error creating multiple choice array:", error);
@@ -50,12 +51,13 @@ export const createMultipleChoiceArray = async ({
   }
 };
 
-
 export const updateMultipleChoice = async ({
   title,
+  expectedAnswer,
   id,
 }: {
   title: string;
+  expectedAnswer: string;
   id: number;
 }) => {
   try {
@@ -65,6 +67,7 @@ export const updateMultipleChoice = async ({
       },
       data: {
         title,
+        expectedAnswer,
       },
     });
 

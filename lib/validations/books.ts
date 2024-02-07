@@ -80,6 +80,8 @@ export const MultipleChoiceSchema = z.object({
   title: z.string().min(1, {
     message: "Title Multiple Choice is required",
   }),
+  expectedAnswer: z.string().min(1),
+  explanation: z.string().optional()
 });
 export const SummaryCompletionSchema = z.object({
   title: z.string().optional(),
