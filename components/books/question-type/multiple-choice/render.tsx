@@ -2,10 +2,10 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
-import { UpdateButton } from "../../books/update-button";
 import { MultipleChoiceExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
+import { UpdateButton } from "../../update-button";
 
 interface MultipleChoiceRenderProps {
   multipleChoice: MultipleChoiceExtended;

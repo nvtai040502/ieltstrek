@@ -20,21 +20,19 @@ import { Dialog, DialogContent } from "../ui/dialog";
 import { PassageRender } from "./passage/render";
 import { CreateQuestionGroupForm } from "./question-group/create-form";
 import { UpdateButton } from "./update-button";
-import { MultipleChoiceArrayRender } from "../question-type/multiple-choice";
-import { SummaryCompletionRender } from "../question-type/summary-completion";
 import { DeleteButton } from "./delete-button";
 import { AlertDialog } from "../ui/alert-dialog";
 import { DeleteQuestionGroupForm } from "./question-group/delete-form";
 import { ExamContext } from "@/global/exam-context";
-import { IdentifyingInformationRender } from "../question-type/identifying-information";
-import { NoteCompletionRender } from "../question-type/note-completion";
+import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
+import { SummaryCompletionRender } from "./question-type/summary-completion";
+import { IdentifyingInformationRender } from "./question-type/identifying-information";
+import { NoteCompletionRender } from "./question-type/note-completion";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
-  const [editingQuestionGroup, setEditingQuestionGroup] = useState<{
-    [key: string]: boolean;
-  }>({});
+  
   const [deletingQuestionGroup, setDeletingQuestionGroup] = useState<{
     [key: string]: boolean;
   }>({});
@@ -86,30 +84,12 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
             </Dialog>
             {part.questionGroups &&
               part.questionGroups.map((questionGroup) => {
-                const isEditingQuestionGroup =
-                  editingQuestionGroup[questionGroup.id];
+               
                 const isDeletingQuestionGroup =
                   deletingQuestionGroup[questionGroup.id];
                 return (
                   <div key={questionGroup.id} className="flex flex-col gap-2">
-                    <Dialog
-                      open={isEditingQuestionGroup}
-                      onOpenChange={() =>
-                        setEditingQuestionGroup({ [questionGroup.id]: false })
-                      }
-                    >
-                      <DialogContent>
-                        <UpdateQuestionGroupForm
-                          questionGroup={questionGroup}
-                          part={part}
-                          setIsEditing={() =>
-                            setEditingQuestionGroup({
-                              [questionGroup.id]: false,
-                            })
-                          }
-                        />
-                      </DialogContent>
-                    </Dialog>
+                    
                     <AlertDialog
                       open={isDeletingQuestionGroup}
                       onOpenChange={() =>
@@ -137,11 +117,8 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       </div>
                       <div>
                         <UpdateButton
-                          setIsUpdating={() =>
-                            setEditingQuestionGroup({
-                              [questionGroup.id]: true,
-                            })
-                          }
+                          type="editQuestionGroup"
+                          data={{questionGroup}}
                         />
                         <DeleteButton
                           setIsUpdating={() =>
@@ -156,22 +133,20 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                     {questionGroup.type === "MULTIPLE_CHOICE" && (
                       <MultipleChoiceArrayRender
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
-                        // handleMouseDown={handleMouseDown}
-                        // handleKeyDown={handleKeyDown}
                       />
                     )}
-                    {questionGroup.type === "SUMMARY_COMPLETION" && (
+                    {/* {questionGroup.type === "SUMMARY_COMPLETION" && (
                       <SummaryCompletionRender
                         summaryCompletion={questionGroup.summaryCompletion}
                       />
-                    )}
-                    {questionGroup.type === "IDENTIFYING_INFORMATION" && (
+                    )} */}
+                    {/* {questionGroup.type === "IDENTIFYING_INFORMATION" && (
                       <IdentifyingInformationRender
                         identifyingInformation={
                           questionGroup.identifyingInformation
                         }
                       />
-                    )}
+                    )} */}
                     {questionGroup.type === "NOTE_COMPLETION" && (
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}

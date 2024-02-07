@@ -3,37 +3,59 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionGroup } from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
 import { updateQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
 import { PartExtended } from "@/types/db";
+import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
+import { Button } from "@/components/ui/button";
+import { useEditHook } from "@/global/use-edit-hook";
+import { Input } from "@/components/ui/input";
 
-export function UpdateQuestionGroupForm({
-  questionGroup,
-  part,
-  setIsEditing,
-}: {
-  questionGroup: QuestionGroup;
-  part: PartExtended;
-  setIsEditing: (isEditing: boolean) => void;
-}) {
+export function UpdateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
+  const { onClose, isOpen, type, data } = useEditHook();
+  const isModalOpen = isOpen && type === "editQuestionGroup";
+  const questionGroup = data?.questionGroup;
   const form = useForm<z.infer<typeof QuestionGroupSchema>>({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
-      title: questionGroup.title,
-      type: questionGroup.type,
-      startQuestionNumber: questionGroup.startQuestionNumber,
-      endQuestionNumber: questionGroup.endQuestionNumber,
-      description: questionGroup.description || "",
+      title: "",
+      type: "MULTIPLE_CHOICE",
+      startQuestionNumber: 1,
+      endQuestionNumber: 2,
+      description: "",
     },
   });
   const router = useRouter();
-
+  useEffect(() => {
+    if (questionGroup) {
+      form.setValue("title", questionGroup.title);
+      form.setValue("description", questionGroup.description || "");
+      form.setValue("type", questionGroup.type);
+      form.setValue("startQuestionNumber", questionGroup.startQuestionNumber);
+      form.setValue("endQuestionNumber", questionGroup.endQuestionNumber);
+    }
+  }, [form, questionGroup]);
+  if (!isModalOpen && !questionGroup) {
+    return null;
+  }
   const onSubmit = async (values: z.infer<typeof QuestionGroupSchema>) => {
+    if (!questionGroup) {
+      return;
+    }
     startTransition(async () => {
       try {
         const { data, success, error } = await updateQuestionGroup({
@@ -57,11 +79,59 @@ export function UpdateQuestionGroupForm({
         console.error("Error creating question group:", error);
         toast.error("Failed to create question group.");
       } finally {
-        setIsEditing(false);
+        onClose();
       }
     });
   };
   return (
-    <QuestionGroupForm isPending={isPending} form={form} onSubmit={onSubmit} />
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
+      <DialogContentWithScrollArea>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Question Group Title</FormLabel>
+                    <FormControl>
+                      <AutosizeTextarea
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Hello"
+                        
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Question Group Description</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="write a number in here"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <Button disabled={isPending} type="submit" className="w-full">
+              Update
+            </Button>
+          </form>
+        </Form>
+      </DialogContentWithScrollArea>
+    </Dialog>
   );
 }

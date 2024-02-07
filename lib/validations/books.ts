@@ -31,9 +31,8 @@ export const PassageSchema = z.object({
 
 export const QuestionGroupSchema = z
   .object({
-    title: z.string().optional(),
+    title: z.string().min(1),
     description: z.string().optional(),
-    titleForQuestions: z.string().optional(),
     type: z.enum([
       QuestionType.MULTIPLE_CHOICE,
       QuestionType.SUMMARY_COMPLETION,

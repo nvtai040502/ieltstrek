@@ -3,6 +3,7 @@ import {
   IdentifyingInformationItemExtended,
   MultipleChoiceExtended,
   NoteCompletionExtended,
+  QuestionGroupExtended,
 } from "@/types/db";
 import { Choice, IdentifyingInformation, MultipleChoice } from "@prisma/client";
 
@@ -12,6 +13,7 @@ export type EditType =
   | "editIdentifyingInformationItem"
   | "editChoice"
   | "editMultipleChoice"
+  | "editQuestionGroup"
   | null;
 
 export interface EditData {
@@ -19,6 +21,7 @@ export interface EditData {
   identifyingInformationItem?: IdentifyingInformationItemExtended;
   choice?: Choice;
   multipleChoice?: MultipleChoiceExtended;
+  questionGroup?: QuestionGroupExtended
 }
 
 interface EditContextProps {
