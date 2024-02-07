@@ -131,6 +131,7 @@ export const updateQuestionGroup = async ({
     return { error: "Failed to update questionGroup." };
   }
 };
+
 export const deleteQuestionGroup = async ({ id }: { id: number }) => {
   try {
     const questionGroup = await db.questionGroup.findUnique({

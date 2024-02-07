@@ -6,36 +6,20 @@ import {
 } from "../ui/resizable";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import React, {
-  startTransition,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { PartExtended } from "@/types/db";
-import { UpdateQuestionGroupForm } from "./question-group/update-form";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { PassageRender } from "./passage/render";
 import { CreateQuestionGroupForm } from "./question-group/create-form";
-import { UpdateButton } from "./update-button";
-import { DeleteButton } from "./delete-button";
-import { AlertDialog } from "../ui/alert-dialog";
-import { DeleteQuestionGroupForm } from "./question-group/delete-form";
+import { DeleteButton, UpdateButton } from "./update-button";
 import { ExamContext } from "@/global/exam-context";
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
-import { SummaryCompletionRender } from "./question-type/summary-completion";
-import { IdentifyingInformationRender } from "./question-type/identifying-information";
 import { NoteCompletionRender } from "./question-type/note-completion";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
   const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
-  
-  const [deletingQuestionGroup, setDeletingQuestionGroup] = useState<{
-    [key: string]: boolean;
-  }>({});
+
   useEffect(() => {
     if (questionRefs.length && part.questionGroups.length) {
       questionRefs[
@@ -84,27 +68,8 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
             </Dialog>
             {part.questionGroups &&
               part.questionGroups.map((questionGroup) => {
-               
-                const isDeletingQuestionGroup =
-                  deletingQuestionGroup[questionGroup.id];
                 return (
                   <div key={questionGroup.id} className="flex flex-col gap-2">
-                    
-                    <AlertDialog
-                      open={isDeletingQuestionGroup}
-                      onOpenChange={() =>
-                        setDeletingQuestionGroup({ [questionGroup.id]: false })
-                      }
-                    >
-                      <DeleteQuestionGroupForm
-                        questionGroup={questionGroup}
-                        setIsCUD={() =>
-                          setDeletingQuestionGroup({
-                            [questionGroup.id]: false,
-                          })
-                        }
-                      />
-                    </AlertDialog>
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-bold">
@@ -118,14 +83,11 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       <div>
                         <UpdateButton
                           type="editQuestionGroup"
-                          data={{questionGroup}}
+                          data={{ questionGroup }}
                         />
                         <DeleteButton
-                          setIsUpdating={() =>
-                            setDeletingQuestionGroup({
-                              [questionGroup.id]: true,
-                            })
-                          }
+                          type="deleteQuestionGroup"
+                          data={{ questionGroup }}
                         />
                       </div>
                     </div>

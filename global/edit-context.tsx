@@ -14,6 +14,7 @@ export type EditType =
   | "editChoice"
   | "editMultipleChoice"
   | "editQuestionGroup"
+  | "deleteQuestionGroup"
   | null;
 
 export interface EditData {
