@@ -25,10 +25,10 @@ import { useEditHook } from "@/global/use-edit-hook";
 
 export function UpdateChoiceForm() {
   const [isPending, startTransition] = useTransition();
-  const {onClose, isOpen, type, data} = useEditHook()
-  const isModalOpen = isOpen && type === "editChoice"
-  const choice = data?.choice
-  
+  const { onClose, isOpen, type, data } = useEditHook();
+  const isModalOpen = isOpen && type === "editChoice";
+  const choice = data?.choice;
+
   const form = useForm<z.infer<typeof ChoiceSchema>>({
     resolver: zodResolver(ChoiceSchema),
     defaultValues: {
@@ -46,11 +46,11 @@ export function UpdateChoiceForm() {
   }, [form, choice]);
   const router = useRouter();
   if (!isModalOpen && !choice) {
-    return null
+    return null;
   }
   const onSubmit = (values: z.infer<typeof ChoiceSchema>) => {
     if (!choice) {
-      return
+      return;
     }
     startTransition(async () => {
       const choiceUpdated = await updateChoice({
@@ -66,7 +66,7 @@ export function UpdateChoiceForm() {
       } else {
         toast.error("Failed to update choice");
       }
-      onClose()
+      onClose();
     });
   };
   return (

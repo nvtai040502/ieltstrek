@@ -5,18 +5,15 @@ import { MultipleChoiceRender } from "./render";
 
 interface MultipleChoiceArrayRenderProps {
   multipleChoiceArray: MultipleChoiceExtended[];
-  
 }
 export const MultipleChoiceArrayRender = ({
   multipleChoiceArray,
-  
 }: MultipleChoiceArrayRenderProps) => {
   return (
     <>
       {multipleChoiceArray.map((multipleChoice) => {
         return (
           <MultipleChoiceRender
-            
             multipleChoice={multipleChoice}
             key={multipleChoice.id}
           />
