@@ -39,7 +39,6 @@ const RichTextReadOnly = ({
     []
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-
   return (
     <Slate editor={editor} initialValue={JSON.parse(noteCompletion.paragraph)}>
       <Editable

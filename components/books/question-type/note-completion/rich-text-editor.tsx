@@ -56,13 +56,6 @@ declare module "slate" {
   }
 }
 
-const HOTKEYS = {
-  "mod+b": "bold",
-  "mod+i": "italic",
-  "mod+u": "underline",
-  "mod+`": "code",
-};
-
 const RichTextEditor = () => {
   const renderElement = useCallback(
     (props: RenderElementProps) => <ElementRender {...props} />,
@@ -90,7 +83,6 @@ const RichTextEditor = () => {
       );
       return;
     }
-    console.log(JSON.stringify(editor.children))
     startTransition(async () => {
       try {
         const success = await updateNoteCompletion({
@@ -99,8 +91,8 @@ const RichTextEditor = () => {
         });
 
         if (success) {
-          router.refresh();
           toast.success("Update Success");
+          router.refresh();
         } else {
           toast.error("Error");
         }
@@ -108,30 +100,28 @@ const RichTextEditor = () => {
         console.error("Error creating question group:", error);
         toast.error("Failed to create question group.");
       } finally {
+        router.refresh();
         onClose();
       }
     });
   };
   const countCodeOccurrences = () => {
     let codeCount = 0;
-    // Iterate through the children of the editor
     editor.children.forEach((node, nodeIndex) => {
-      // If the node is a leaf and its type is "code", increment codeCount
       node.children.forEach((element, elementIndex) => {
-        // if (element.text && element.code) {
         if (element.text && element.code) {
           const path = [nodeIndex, elementIndex];
-          // Update the leaf node with questionNumber property
           Transforms.setNodes(
             editor,
-            { questionNumber: noteCompletion.questionGroup.startQuestionNumber + codeCount },
+            {
+              questionNumber:
+                noteCompletion.questionGroup.startQuestionNumber + codeCount,
+            },
             { at: path }
           );
-          
-          // console.log(element)
+
           codeCount++;
         }
-        
       });
     });
     return codeCount;
@@ -166,13 +156,6 @@ const RichTextEditor = () => {
             placeholder="Enter some rich text…"
             spellCheck
             autoFocus
-            onKeyDown={(event) => {
-              for (const hotkey in HOTKEYS) {
-                if (isHotkey(hotkey, event as any)) {
-                  event.preventDefault();
-                }
-              }
-            }}
           />
           <Button disabled={isPending} onClick={handleSave}>
             Save

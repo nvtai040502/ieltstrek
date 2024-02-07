@@ -18,8 +18,8 @@ export const NoteCompletionRender = ({
   return (
     <>
       <UpdateButton type="editNoteCompletion" data={{noteCompletion}} />
-      <RichTextEditor/>
-      {/* <RichTextReadOnly noteCompletion={noteCompletion}/> */}
+      
+      <RichTextReadOnly noteCompletion={noteCompletion}/>
     </>
   );
 };
