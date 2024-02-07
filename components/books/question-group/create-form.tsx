@@ -37,69 +37,70 @@ export function CreateQuestionGroupForm({
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof QuestionGroupSchema>) => {
-    startTransition(async () => {
-      try {
-        const { questionGroup, success, error } = await createQuestionGroup({
-          title: values.title || "",
-          description: values.description,
-          type: values.type,
-          startQuestionNumber: values.startQuestionNumber,
-          endQuestionNumber: values.endQuestionNumber,
-          partId: part.id,
-        });
+    console.log(values)
+    // startTransition(async () => {
+    //   try {
+    //     const { questionGroup, success, error } = await createQuestionGroup({
+    //       title: values.title || "",
+    //       description: values.description,
+    //       type: values.type,
+    //       startQuestionNumber: values.startQuestionNumber,
+    //       endQuestionNumber: values.endQuestionNumber,
+    //       partId: part.id,
+    //     });
 
-        if (success && questionGroup) {
-          let successfully = false;
+    //     if (success && questionGroup) {
+    //       let successfully = false;
 
-          switch (questionGroup.type) {
-            case "MULTIPLE_CHOICE":
-              successfully = await createMultipleChoiceArray({
-                questionGroupId: questionGroup.id,
-              });
-              break;
+    //       switch (questionGroup.type) {
+    //         case "MULTIPLE_CHOICE":
+    //           successfully = await createMultipleChoiceArray({
+    //             questionGroupId: questionGroup.id,
+    //           });
+    //           break;
 
-            case "SUMMARY_COMPLETION":
-              successfully = await createSummaryCompletion({
-                questionGroupId: questionGroup.id,
-                startQuestionNumber: questionGroup.startQuestionNumber,
-                endQuestionNumber: questionGroup.endQuestionNumber,
-                assessmentId: part.assessmentId,
-                partId: part.id,
-              });
-              break;
-            case "NOTE_COMPLETION":
-              successfully = await createNoteCompletion({
-                questionGroupId: questionGroup.id,
-              });
-              break;
+    //         case "SUMMARY_COMPLETION":
+    //           successfully = await createSummaryCompletion({
+    //             questionGroupId: questionGroup.id,
+    //             startQuestionNumber: questionGroup.startQuestionNumber,
+    //             endQuestionNumber: questionGroup.endQuestionNumber,
+    //             assessmentId: part.assessmentId,
+    //             partId: part.id,
+    //           });
+    //           break;
+    //         case "NOTE_COMPLETION":
+    //           successfully = await createNoteCompletion({
+    //             questionGroupId: questionGroup.id,
+    //           });
+    //           break;
 
-            case "IDENTIFYING_INFORMATION":
-              successfully = await createIdentifyingInformation({
-                questionGroupId: questionGroup.id,
-              });
-              break;
-            default:
-              console.error(
-                "Unsupported question group type:",
-                questionGroup.type
-              );
-          }
+    //         case "IDENTIFYING_INFORMATION":
+    //           successfully = await createIdentifyingInformation({
+    //             questionGroupId: questionGroup.id,
+    //           });
+    //           break;
+    //         default:
+    //           console.error(
+    //             "Unsupported question group type:",
+    //             questionGroup.type
+    //           );
+    //       }
 
-          if (successfully) {
-            form.reset();
-            router.refresh();
-            toast.success(success);
-          }
-        } else {
-          toast.error(error);
-        }
-      } catch (error) {
-        console.error("Error creating question group:", error);
-        toast.error("Failed to create question group.");
-      } finally {
-        setIsCreating(false);
-      }
-    });
+    //       if (successfully) {
+    //         form.reset();
+    //         router.refresh();
+    //         toast.success(success);
+    //       }
+    //     } else {
+    //       toast.error(error);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error creating question group:", error);
+    //     toast.error("Failed to create question group.");
+    //   } finally {
+    //     setIsCreating(false);
+    //   }
+    // });
   };
 
   return (

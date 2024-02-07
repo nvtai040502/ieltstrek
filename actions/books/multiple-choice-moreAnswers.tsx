@@ -29,7 +29,6 @@ export const createMultipleChoiceArray = async ({
         data: {
           questionGroupId,
           title: "example",
-          type: "ONE_ANSWER",
           questionId: question.id,
           choices: {
             create: [
@@ -40,16 +39,22 @@ export const createMultipleChoiceArray = async ({
             ],
           },
         },
-        include: {choices: true}
+        include: { choices: true },
       });
-      await db.multipleChoiceExpectedAnswer.create({
-        data: {
-          choiceId: multipleChoice.choices[1].id,
-          multipleChoiceId: multipleChoice.id
-        }
-      })
+      await db.multipleChoiceExpectedAnswer.createMany({
+        data: [
+          {
+            choiceId: multipleChoice.choices[1].id,
+            multipleChoiceId: multipleChoice.id,
+          },
+          {
+            choiceId: multipleChoice.choices[2].id,
+            multipleChoiceId: multipleChoice.id,
+          },
+        ],
+      });
     });
-    
+
     return true;
   } catch (error) {
     console.error("Error creating multiple choice array:", error);
@@ -59,11 +64,11 @@ export const createMultipleChoiceArray = async ({
 
 export const updateMultipleChoice = async ({
   title,
-  expectedAnswer,
+  choiceIdArray,
   id,
 }: {
   title: string;
-  expectedAnswer: string;
+  choiceIdArray: number[];
   id: number;
 }) => {
   try {
@@ -75,55 +80,18 @@ export const updateMultipleChoice = async ({
         title,
       },
     });
-    const expectedAnswerRecord = await db.multipleChoiceExpectedAnswer.findFirst({
+
+    await db.multipleChoiceExpectedAnswer.updateMany({
       where: {
         multipleChoiceId: multipleChoice.id,
       },
+      data: choiceIdArray.map((choiceId) => {
+        choiceId;
+      }),
     });
-    
-    if (expectedAnswerRecord) {
-      await db.multipleChoiceExpectedAnswer.update({
-        where: {
-          id: expectedAnswerRecord.id,
-        },
-        data: {
-          choiceId: Number(expectedAnswer),
-        },
-      });
-    }
     return multipleChoice;
   } catch (error) {
     console.error("Error updating multipleChoice:", error);
-    return null;
-  }
-};
-
-export const updateChoice = async ({
-  content,
-  explanation,
-  isCorrect,
-  id,
-}: {
-  content: string;
-  explanation?: string;
-  isCorrect: boolean;
-  id: number;
-}) => {
-  try {
-    const question = await db.choice.update({
-      where: {
-        id,
-      },
-      data: {
-        content,
-        explanation,
-        isCorrect,
-      },
-    });
-
-    return question;
-  } catch (error) {
-    console.error("Error updating choice:", error);
     return null;
   }
 };

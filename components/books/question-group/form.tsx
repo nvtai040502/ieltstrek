@@ -11,7 +11,11 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Input } from "../../ui/input";
-import { QuestionGroup, QuestionType } from "@prisma/client";
+import {
+  MultipleChoiceType,
+  QuestionGroup,
+  QuestionType,
+} from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
 import {
   Select,
@@ -91,7 +95,12 @@ export function QuestionGroupForm({
                     </FormControl>
                     <SelectContent>
                       <SelectItem value={QuestionType.MULTIPLE_CHOICE}>
-                        Multiple Choice
+                        Multiple Choice One Answer
+                      </SelectItem>
+                      <SelectItem
+                        value={QuestionType.MULTIPLE_CHOICE_MORE_ANSWERS}
+                      >
+                        Multiple Choice More Than One Answer
                       </SelectItem>
                       <SelectItem value={QuestionType.SUMMARY_COMPLETION}>
                         Summary Completion

@@ -47,6 +47,7 @@ model Part {
 
 enum QuestionType {
   MULTIPLE_CHOICE
+  MULTIPLE_CHOICE_MORE_ANSWERS
   SUMMARY_COMPLETION
   IDENTIFYING_INFORMATION
   NOTE_COMPLETION
@@ -125,10 +126,15 @@ model MultipleChoiceExpectedAnswer {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  choiceId Int @unique 
+  choiceId Int @unique
 
   multipleChoiceId Int
-  multipleChoice MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
+  multipleChoice   MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
+}
+
+enum MultipleChoiceType {
+  ONE_ANSWER
+  MORE_ANSWERS
 }
 
 model MultipleChoice {
@@ -136,18 +142,19 @@ model MultipleChoice {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title String
-  explanation      String?
-
+  title           String
+  explanation     String?
+  type            MultipleChoiceType
   expectedAnswers MultipleChoiceExpectedAnswer[]
 
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  choices                        Choice[]     
-  questionGroupId                Int
-  questionGroup                  QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  choices         Choice[]
+  questionGroupId Int
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
+
 model Choice {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -158,7 +165,6 @@ model Choice {
   multipleChoiceId Int
   multipleChoice   MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
 }
-
 
 model IdentifyingInformation {
   id        Int      @id @default(autoincrement())

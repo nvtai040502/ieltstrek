@@ -1,4 +1,4 @@
-import { IdentifyingInformationAnswer, QuestionType } from "@prisma/client";
+import { IdentifyingInformationAnswer, MultipleChoiceType, QuestionType } from "@prisma/client";
 import * as z from "zod";
 
 export const AssessmentSchema = z.object({
@@ -35,6 +35,7 @@ export const QuestionGroupSchema = z
     description: z.string().optional(),
     type: z.enum([
       QuestionType.MULTIPLE_CHOICE,
+      QuestionType.MULTIPLE_CHOICE_MORE_ANSWERS,
       QuestionType.SUMMARY_COMPLETION,
       QuestionType.IDENTIFYING_INFORMATION,
       QuestionType.NOTE_COMPLETION,
