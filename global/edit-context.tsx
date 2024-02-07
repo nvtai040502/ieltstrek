@@ -3,17 +3,19 @@ import {
   IdentifyingInformationItemExtended,
   NoteCompletionExtended,
 } from "@/types/db";
-import { IdentifyingInformation } from "@prisma/client";
+import { Choice, IdentifyingInformation } from "@prisma/client";
 
 export type EditType =
   | "editNoteCompletion"
   | "editNoteCompletionGroupItem"
   | "editIdentifyingInformationItem"
+  | "editChoice"
   | null;
 
 export interface EditData {
   noteCompletion?: NoteCompletionExtended;
   identifyingInformationItem?: IdentifyingInformationItemExtended
+  choice?: Choice
 }
 
 interface EditContextProps {

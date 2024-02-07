@@ -3,29 +3,34 @@
 import { db } from "@/lib/db";
 
 export const createQuestion = async ({
-  partId,
+  questionGroupId,
   questionNumber,
 }: {
   questionNumber: number;
-  partId: number;
+  questionGroupId: number;
 }) => {
   try {
-    const part = await db.part.findUnique({
+    const questionGroup = await db.questionGroup.findUnique({
       where: {
-        id: partId,
+        id: questionGroupId,
       },
-      select: {
-        assessmentId: true,
-      },
+      include: {
+        part: {
+          select: {
+            assessmentId: true
+          }
+        }
+      }
     });
-    if (!part) {
-      throw new Error("");
+    if (!questionGroup) {
+      throw new Error("QuestionGroup Id not found");
     }
     const question = await db.question.create({
       data: {
-        partId,
-        assessmentId: part.assessmentId,
+        partId: questionGroup.partId,
+        assessmentId: questionGroup.part.assessmentId,
         questionNumber,
+        questionGroupId: questionGroup.id
       },
     });
 

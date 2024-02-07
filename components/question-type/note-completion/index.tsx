@@ -1,7 +1,7 @@
 "use client";
 
 import { NoteCompletionExtended } from "@/types/db";
-import { UpdateButton } from "../../update-button";
+import { UpdateButton } from "../../books/update-button";
 import { useEditHook } from "@/global/use-edit-hook";
 import RichTextExample from "@/components/text-editor/rich-text";
 import RichText from "@/components/text-editor/rich-text";

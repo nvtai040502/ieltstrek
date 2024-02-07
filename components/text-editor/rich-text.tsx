@@ -112,7 +112,7 @@ const RichText = ({
       node.children.forEach((element) => {
         // if (element.text && element.code) {
         if (element.text && element.code) {
-          element.questionNumber = note.questionGroup.startQuestionNumber + codeCount
+          const newElement = { ...element, questionNumber: note.questionGroup.startQuestionNumber + codeCount };
           codeCount++;
         }
         // }

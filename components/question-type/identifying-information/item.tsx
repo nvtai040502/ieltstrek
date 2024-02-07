@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { UpdateButton } from "../../update-button";
+import { UpdateButton } from "../../books/update-button";
 import { IdentifyingInformationItemExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";

@@ -8,6 +8,7 @@ function BlankRender({ questionNumber }: { questionNumber: number }) {
     useContext(ExamContext);
   return (
     <InputGap
+    className="inline-block"
       onFocus={() => {
         setCurrentQuestionIndex(questionNumber - 1);
       }}

@@ -5,9 +5,9 @@ import {
   DialogContentWithScrollArea,
 } from "@/components/ui/dialog";
 import { SummaryCompletionExtended } from "@/types/db";
-import { UpdateButton } from "../../update-button";
+import { UpdateButton } from "../../books/update-button";
 import { UpdateSummaryCompletionForm } from "./update-form";
-import BlankRender from "../../blank-render";
+import BlankRender from "../../books/blank-render";
 
 interface SummaryCompletionRenderProps {
   summaryCompletion?: SummaryCompletionExtended | null;

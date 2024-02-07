@@ -20,14 +20,14 @@ import { Dialog, DialogContent } from "../ui/dialog";
 import { PassageRender } from "./passage/render";
 import { CreateQuestionGroupForm } from "./question-group/create-form";
 import { UpdateButton } from "./update-button";
-import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
-import { SummaryCompletionRender } from "./question-type/summary-completion";
+import { MultipleChoiceArrayRender } from "../question-type/multiple-choice";
+import { SummaryCompletionRender } from "../question-type/summary-completion";
 import { DeleteButton } from "./delete-button";
 import { AlertDialog } from "../ui/alert-dialog";
 import { DeleteQuestionGroupForm } from "./question-group/delete-form";
 import { ExamContext } from "@/global/exam-context";
-import { IdentifyingInformationRender } from "./question-type/identifying-information";
-import { NoteCompletionRender } from "./question-type/note-completion";
+import { IdentifyingInformationRender } from "../question-type/identifying-information";
+import { NoteCompletionRender } from "../question-type/note-completion";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);

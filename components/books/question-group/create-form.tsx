@@ -55,10 +55,6 @@ export function CreateQuestionGroupForm({
             case "MULTIPLE_CHOICE":
               successfully = await createMultipleChoiceArray({
                 questionGroupId: questionGroup.id,
-                startQuestionNumber: questionGroup.startQuestionNumber,
-                endQuestionNumber: questionGroup.endQuestionNumber,
-                assessmentId: part.assessmentId,
-                partId: part.id,
               });
               break;
 
