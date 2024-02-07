@@ -15,6 +15,7 @@ import { DeleteButton, UpdateButton } from "./update-button";
 import { ExamContext } from "@/global/exam-context";
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
 import { NoteCompletionRender } from "./question-type/note-completion";
+import { IdentifyingInformationRender } from "./question-type/identifying-information";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
@@ -102,13 +103,13 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                         summaryCompletion={questionGroup.summaryCompletion}
                       />
                     )} */}
-                    {/* {questionGroup.type === "IDENTIFYING_INFORMATION" && (
+                    {questionGroup.type === "IDENTIFYING_INFORMATION" && (
                       <IdentifyingInformationRender
                         identifyingInformation={
                           questionGroup.identifyingInformation
                         }
                       />
-                    )} */}
+                    )}
                     {questionGroup.type === "NOTE_COMPLETION" && (
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}

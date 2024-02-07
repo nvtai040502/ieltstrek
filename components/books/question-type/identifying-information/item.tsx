@@ -4,12 +4,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { UpdateButton } from "../../books/update-button";
 import { IdentifyingInformationItemExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationAnswer } from "@prisma/client";
 import { useEditHook } from "@/global/use-edit-hook";
+import { UpdateButton } from "../../update-button";
 
 interface ItemRenderProps {
   item: IdentifyingInformationItemExtended;
@@ -55,12 +55,8 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
         </p>
         <p>{item.title}</p>
         <UpdateButton
-          setIsUpdating={() =>
-            onOpen({
-              type: "editIdentifyingInformationItem",
-              data: { identifyingInformationItem: item },
-            })
-          }
+          type="editIdentifyingInformationItem"
+          data={{ identifyingInformationItem: item }}
         />
       </div>
 

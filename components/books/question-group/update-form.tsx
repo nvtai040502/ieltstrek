@@ -10,7 +10,6 @@ import { QuestionGroupSchema } from "@/lib/validations/books";
 import { updateQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
 import { PartExtended } from "@/types/db";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -23,6 +22,7 @@ import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
 import { Button } from "@/components/ui/button";
 import { useEditHook } from "@/global/use-edit-hook";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogContentWithScrollArea } from "@/components/ui/dialog";
 
 export function UpdateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();

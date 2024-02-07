@@ -1,7 +1,4 @@
 "use client";
-import Link from "next/link";
-
-
 import { ItemRender } from "./item";
 import { IdentifyingInformationExtended } from "@/types/db";
 
@@ -22,7 +19,6 @@ export const IdentifyingInformationRender = ({
         (item) => {
           return (
             <ItemRender
-              
               item={item}
               key={item.id}
             />

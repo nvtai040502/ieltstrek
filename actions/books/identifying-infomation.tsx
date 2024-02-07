@@ -1,49 +1,35 @@
 "use server";
 import { db } from "@/lib/db";
-import { createQuestion } from "./question";
 import { IdentifyingInformationAnswer } from "@prisma/client";
-
-interface CreateIdentifyingInformationProps {
-  questionGroupId: number;
-  startQuestionNumber: number;
-  endQuestionNumber: number;
-  partId: number;
-  assessmentId: number;
-}
 
 export const createIdentifyingInformation = async ({
   questionGroupId,
-  startQuestionNumber,
-  endQuestionNumber,
-  partId,
-  assessmentId,
-}: CreateIdentifyingInformationProps): Promise<boolean> => {
+}: {
+  questionGroupId: number;
+}): Promise<boolean> => {
   try {
-    const questions = await Promise.all(
-      Array.from(
-        { length: endQuestionNumber - startQuestionNumber + 1 },
-        async (_, i) => {
-          const question = await createQuestion({
-            partId,
-            assessmentId,
-            questionNumber: startQuestionNumber + i,
-          });
-
-          if (!question) {
-            throw new Error("Error creating question");
-          }
-
-          return question;
-        }
-      )
-    );
+    const questionGroup = await db.questionGroup.findUnique({
+      where: {
+        id: questionGroupId,
+      },
+      select: {
+        questions: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (!questionGroup) {
+      throw new Error("QUestion Group Id not found");
+    }
 
     await db.identifyingInformation.create({
       data: {
         questionGroupId,
         identifyingInformationItems: {
           createMany: {
-            data: questions.map((question) => ({
+            data: questionGroup.questions.map((question) => ({
               title:
                 "This is an example for creating a True/False/NotGiven question",
               expectedAnswer: "TRUE",
@@ -78,7 +64,7 @@ export const updateIdentifyingInformationItem = async ({
       data: {
         expectedAnswer,
         explanation,
-        title
+        title,
       },
     });
 

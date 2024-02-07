@@ -76,10 +76,6 @@ export function CreateQuestionGroupForm({
             case "IDENTIFYING_INFORMATION":
               successfully = await createIdentifyingInformation({
                 questionGroupId: questionGroup.id,
-                startQuestionNumber: questionGroup.startQuestionNumber,
-                endQuestionNumber: questionGroup.endQuestionNumber,
-                assessmentId: part.assessmentId,
-                partId: part.id,
               });
               break;
             default:
