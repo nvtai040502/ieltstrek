@@ -1,12 +1,12 @@
 "use server";
-import { noteCompletionInitial } from "@/config/template/note-completion";
+// import { noteCompletionInitial } from "@/config/template/note-completion";
 import { db } from "@/lib/db";
+import { Descendant } from "slate";
+
 
 export const createNoteCompletion = async ({
-  title,
   questionGroupId,
 }: {
-  title?: string;
   questionGroupId: number;
 }): Promise<boolean> => {
   try {
@@ -21,7 +21,25 @@ export const createNoteCompletion = async ({
     if (!questionGroup) {
       throw new Error("Id not found");
     }
-
+    const noteCompletionInitial: Descendant[] = Array.from(
+      { length: questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1 },
+      (_, i) => ({
+        type: "paragraph",
+        children: [
+          { text: "This is editable " },
+          { text: "rich", bold: true },
+          { text: " text, " },
+          { text: "much", italic: true },
+          { text: " better than a " },
+          {
+            text: "<textarea>",
+            code: true,
+            questionNumber: questionGroup.startQuestionNumber + i,
+          },
+          { text: "!" },
+        ],
+      })
+    );
     await db.noteCompletion.create({
       data: {
         questionGroupId,
@@ -40,6 +58,29 @@ export const createNoteCompletion = async ({
     return true;
   } catch (error) {
     console.error("Error creating note completion:", error);
+    return false;
+  }
+};
+export const updateNoteCompletion = async ({
+  id,
+  paragraph,
+}: {
+  id: number;
+  paragraph: string;
+}): Promise<boolean> => {
+  try {
+    await db.noteCompletion.update({
+      where: {
+        id,
+      },
+      data: {
+        paragraph,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error updating note completion:", error);
     return false;
   }
 };

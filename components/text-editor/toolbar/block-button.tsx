@@ -11,6 +11,7 @@ function BlockButton({
   format: string;
   icon: React.ReactNode;
 }) {
+  // console.log(format)
   const editor = useSlate();
   const LIST_TYPES = ["numbered-list", "bulleted-list"];
   const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"];

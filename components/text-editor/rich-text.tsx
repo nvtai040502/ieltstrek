@@ -42,6 +42,9 @@ import { Button } from "../ui/button";
 import { EditContext } from "@/global/edit-context";
 import { NoteCompletionExtended } from "@/types/db";
 import { useEditHook } from "@/global/use-edit-hook";
+import { toast } from "sonner";
+import { updateNoteCompletion } from "@/actions/books/note-completion";
+import { Input } from "../ui/input";
 
 declare module "slate" {
   interface CustomTypes {
@@ -75,36 +78,47 @@ const RichText = ({
   const isEdit = isOpen && type === "editNoteCompletion";
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const note = noteCompletion || data?.noteCompletion;
-  const { insertData, insertText, isInline, isElementReadOnly, isSelectable } =
-    editor
-    const countCodeOccurrences = () => {
-      let codeCount = 0;
-      // Iterate through the children of the editor
-      editor.children.forEach(node => {
-        // If the node is a leaf and its type is "code", increment codeCount
-        node.children.forEach(element => {
-          // if (element.text && element.code) {
-            if (element.text && element.code) {
-              console.log(element)
-              codeCount++
-            }
-          // }
-        });
-      });
-      return codeCount;
-    };
-  
-    useEffect(() => {
-      // Ensure the number of "code" leaves matches the length of blanks
-      const codeCount = countCodeOccurrences()
-      console.log(codeCount)
-    }, []);
+
   if (!note) {
     return null;
   }
-  
-  
-  
+
+  const handleSave = async () => {
+    const codeCount = countCodeOccurrences();
+    if (codeCount !== note.blanks.length) {
+      toast.error(
+        "Total Blank must be equal to number question you set in question group"
+      );
+      return;
+    }
+    const success = await updateNoteCompletion({
+      id: note.id,
+      paragraph: JSON.stringify(editor.children),
+    });
+    if (success) {
+      toast.success("Update Success");
+      onClose();
+    } else {
+      toast.error("Error");
+    }
+  };
+  const countCodeOccurrences = () => {
+    let codeCount = 0;
+    // Iterate through the children of the editor
+    editor.children.forEach((node) => {
+      // If the node is a leaf and its type is "code", increment codeCount
+      node.children.forEach((element) => {
+        // if (element.text && element.code) {
+        if (element.text && element.code) {
+          element.questionNumber =
+            note.questionGroup.startQuestionNumber + codeCount;
+          codeCount++;
+        }
+        // }
+      });
+    });
+    return codeCount;
+  };
   return (
     <Slate editor={editor} initialValue={JSON.parse(note.paragraph)}>
       {isEdit && (
@@ -128,7 +142,6 @@ const RichText = ({
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        
         placeholder="Enter some rich text…"
         spellCheck
         autoFocus
@@ -141,17 +154,7 @@ const RichText = ({
           }
         }}
       />
-      {isEdit && (
-        <Button
-          onClick={() => {
-            console.log(JSON.stringify(editor.children));
-            console.log(noteCompletion?.blanks.length)
-
-          }}
-        >
-          Save
-        </Button>
-      )}
+      {isEdit && <Button onClick={handleSave}>Save</Button>}
     </Slate>
   );
 };

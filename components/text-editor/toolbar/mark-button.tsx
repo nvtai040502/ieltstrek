@@ -10,6 +10,7 @@ export const MarkButton = ({
   format: string;
   icon: React.ReactNode;
 }) => {
+  // console.log(format)
   const editor = useSlate();
   const marks = Editor.marks(editor) as Record<string, boolean>;
   const isActive = marks ? marks[format] === true : false;

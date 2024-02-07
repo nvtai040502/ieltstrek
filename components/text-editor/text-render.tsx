@@ -2,7 +2,7 @@ import { useEditHook } from "@/global/use-edit-hook";
 import { RenderElementProps } from "slate-react";
 import BlankRender from "../books/blank-render";
 import { Input } from "../ui/input";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const ElementRender = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
@@ -61,9 +61,9 @@ export const LeafRender = ({
   children,
   leaf,
 }: {
-  leaf: any,
-  children: any,
-  attributes: any
+  leaf: any;
+  children: any;
+  attributes: any;
 }) => {
   const { onClose, data, isOpen, type } = useEditHook();
   const isEdit = isOpen && type === "editNoteCompletion";
@@ -72,11 +72,11 @@ export const LeafRender = ({
   }
 
   if (leaf.code) {
-    children = isEdit ? (
-      <code className="bg-red-500">{children}</code>
-    ) : (
-      <Input/>
-    );
+    if (isEdit) {
+      children = <code className="bg-red-500">{children}</code>;
+    } else {
+      children = <BlankRender questionNumber={leaf.questionNumber} />;
+    }
   }
 
   if (leaf.italic) {
