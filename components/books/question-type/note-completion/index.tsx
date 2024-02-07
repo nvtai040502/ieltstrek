@@ -1,10 +1,10 @@
 "use client";
 
 import { NoteCompletionExtended } from "@/types/db";
-import { UpdateButton } from "../../books/update-button";
 import { useEditHook } from "@/global/use-edit-hook";
-import RichTextExample from "@/components/text-editor/rich-text";
-import RichText from "@/components/text-editor/rich-text";
+import RichTextEditor from "./rich-text-editor";
+import { UpdateButton } from "../../update-button";
+import RichTextReadOnly from "./rich-text-readonly";
 
 interface NoteCompletionRenderProps {
   noteCompletion?: NoteCompletionExtended | null;
@@ -12,14 +12,14 @@ interface NoteCompletionRenderProps {
 export const NoteCompletionRender = ({
   noteCompletion,
 }: NoteCompletionRenderProps) => {
-  const { onOpen } = useEditHook();
   if (!noteCompletion) {
     return null;
   }
   return (
     <>
-      
-      <RichText noteCompletion={noteCompletion} />
+      <UpdateButton type="editNoteCompletion" data={{noteCompletion}} />
+      <RichTextEditor/>
+      {/* <RichTextReadOnly noteCompletion={noteCompletion}/> */}
     </>
   );
 };

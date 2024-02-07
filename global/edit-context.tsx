@@ -4,6 +4,7 @@ import {
   MultipleChoiceExtended,
   NoteCompletionExtended,
   QuestionGroupExtended,
+  SummaryCompletionExtended,
 } from "@/types/db";
 import { Choice, IdentifyingInformation, MultipleChoice } from "@prisma/client";
 
@@ -15,6 +16,7 @@ export type EditType =
   | "editMultipleChoice"
   | "editQuestionGroup"
   | "deleteQuestionGroup"
+  | "editSummaryCompletion"
   | null;
 
 export interface EditData {
@@ -23,6 +25,7 @@ export interface EditData {
   choice?: Choice;
   multipleChoice?: MultipleChoiceExtended;
   questionGroup?: QuestionGroupExtended
+  summaryCompletion?: SummaryCompletionExtended
 }
 
 interface EditContextProps {
