@@ -25,25 +25,30 @@ export const createMultipleChoiceArray = async ({
       throw new Error("QUestion Group Id not found");
     }
     questionGroup.questions.map(async (question) => {
-      await db.multipleChoice.create({
+      const multipleChoice = await db.multipleChoice.create({
         data: {
           questionGroupId,
           title: "example",
-          expectedAnswer: "Option 2",
           questionId: question.id,
           choices: {
-            createMany: {
-              data: [
-                { content: "Option 1", isCorrect: false },
-                { content: "Option 2", isCorrect: false },
-                { content: "Option 3", isCorrect: false },
-                { content: "Option 4", isCorrect: true },
-              ],
-            },
+            create: [
+              { content: "Option 1" },
+              { content: "Option 2" },
+              { content: "Option 3" },
+              { content: "Option 4" },
+            ],
           },
         },
+        include: {choices: true}
       });
+      await db.multipleChoiceExpectedAnswer.create({
+        data: {
+          choiceId: multipleChoice.choices[1].id,
+          multipleChoiceId: multipleChoice.id
+        }
+      })
     });
+    
     return true;
   } catch (error) {
     console.error("Error creating multiple choice array:", error);
@@ -67,10 +72,24 @@ export const updateMultipleChoice = async ({
       },
       data: {
         title,
-        expectedAnswer,
       },
     });
-
+    const expectedAnswerRecord = await db.multipleChoiceExpectedAnswer.findFirst({
+      where: {
+        multipleChoiceId: multipleChoice.id,
+      },
+    });
+    
+    if (expectedAnswerRecord) {
+      await db.multipleChoiceExpectedAnswer.update({
+        where: {
+          id: expectedAnswerRecord.id,
+        },
+        data: {
+          choiceId: Number(expectedAnswer),
+        },
+      });
+    }
     return multipleChoice;
   } catch (error) {
     console.error("Error updating multipleChoice:", error);

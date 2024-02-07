@@ -5,6 +5,7 @@ import {
   IdentifyingInformation,
   IdentifyingInformationItem,
   MultipleChoice,
+  MultipleChoiceExpectedAnswer,
   NoteCompletion,
   Part,
   Passage,
@@ -22,6 +23,7 @@ export type PartExtended = Part & {
 export type MultipleChoiceExtended = MultipleChoice & {
   choices: Choice[];
   question: Question;
+  expectedAnswers: MultipleChoiceExpectedAnswer[]
 };
 
 export type QuestionGroupExtended = QuestionGroup & {

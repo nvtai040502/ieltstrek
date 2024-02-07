@@ -38,10 +38,10 @@ export function UpdateMultipleChoiceForm() {
   useEffect(() => {
     if (multipleChoice) {
       form.setValue("title", multipleChoice.title);
-      form.setValue("expectedAnswer", multipleChoice.expectedAnswer)
+      form.setValue("expectedAnswer", String(multipleChoice.expectedAnswers[0].choiceId))
     }
   }, [form, multipleChoice]);
-  if (!multipleChoice) {
+  if (!multipleChoice || !isModalOpen) {
     return null;
   }
   const onSubmit = (values: z.infer<typeof MultipleChoiceSchema>) => {
@@ -93,7 +93,7 @@ export function UpdateMultipleChoiceForm() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        defaultValue={String(multipleChoice.expectedAnswers[0].choiceId)}
                         className="flex flex-col space-y-1"
                       >
                         {multipleChoice.choices.map((choice) => (
@@ -102,7 +102,7 @@ export function UpdateMultipleChoiceForm() {
                             className="flex items-center px-2 space-x-2 space-y-0 w-full hover:bg-secondary"
                           >
                             <FormControl>
-                              <RadioGroupItem value={choice.content} />
+                              <RadioGroupItem value={String(choice.id)} />
                             </FormControl>
                             <FormLabel className=" w-full cursor-pointer py-2 ">
                               {choice.content}

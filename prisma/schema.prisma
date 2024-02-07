@@ -120,22 +120,45 @@ model Blank {
   noteCompletionId Int?
 }
 
+model MultipleChoiceExpectedAnswer {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  choiceId Int @unique 
+
+  multipleChoiceId Int
+  multipleChoice MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
+}
+
 model MultipleChoice {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title          String
-  expectedAnswer String
-  explanation    String?
+  title String
+  explanation      String?
+
+  expectedAnswers MultipleChoiceExpectedAnswer[]
 
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  choices         Choice[]
-  questionGroupId Int
-  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  choices                        Choice[]     
+  questionGroupId                Int
+  questionGroup                  QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
+model Choice {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  content String
+
+  multipleChoiceId Int
+  multipleChoice   MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
+}
+
 
 model IdentifyingInformation {
   id        Int      @id @default(autoincrement())
@@ -196,19 +219,6 @@ model SummaryCompletionItem {
 
   summaryCompletionId Int
   summaryCompletion   SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
-}
-
-model Choice {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  content     String
-  isCorrect   Boolean @default(false)
-  explanation String?
-
-  multipleChoiceId Int
-  multipleChoice   MultipleChoice @relation(fields: [multipleChoiceId], references: [id], onDelete: Cascade)
 }
 
 model Passage {
