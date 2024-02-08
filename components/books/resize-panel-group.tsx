@@ -16,7 +16,7 @@ import { ExamContext } from "@/global/exam-context";
 import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
 import { NoteCompletionRender } from "./question-type/note-completion";
 import { IdentifyingInformationRender } from "./question-type/identifying-information";
-import { MultiMoreAnswersRender } from "./question-type/multi-more-answers";
+import { MultiMoreAnswersArrayRender } from "./question-type/multi-more-answers";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
@@ -100,7 +100,7 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       />
                     )}
                     {questionGroup.type === "MULTIPLE_CHOICE_MORE_ANSWERS" && (
-                      <MultiMoreAnswersRender
+                      <MultiMoreAnswersArrayRender
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
                       />
                     )}

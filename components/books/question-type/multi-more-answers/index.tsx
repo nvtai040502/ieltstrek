@@ -1,24 +1,25 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { MultipleChoiceExtended } from "@/types/db";
+import { MultiMoreAnswersRender } from "./render";
 
 interface MultipleChoiceArrayRenderProps {
   multipleChoiceArray: MultipleChoiceExtended[];
 }
-export const MultiMoreAnswersRender = ({
+export const MultiMoreAnswersArrayRender = ({
   multipleChoiceArray,
 }: MultipleChoiceArrayRenderProps) => {
   console.log(multipleChoiceArray[0].expectedAnswers);
   return (
     <>
-      {/* {multipleChoiceArray.map((multipleChoice) => {
+      {multipleChoiceArray.map((multipleChoice) => {
         return (
-          <MultipleChoiceRender
+          <MultiMoreAnswersRender
             multipleChoice={multipleChoice}
             key={multipleChoice.id}
           />
         );
-      })} */}
+      })}
     </>
   );
 };
