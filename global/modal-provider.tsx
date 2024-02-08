@@ -10,6 +10,7 @@ import { UpdateChoiceForm } from "@/components/books/question-type/multiple-choi
 import { UpdateMultiMoreForm } from "@/components/books/question-type/multiple-choice/multi-more/update-form";
 import { CreateQuestionGroupForm } from "@/components/books/question-group/create-form";
 import { CreatePassageForm } from "@/components/books/passage/create-form";
+import { UpdatePassageForm } from "@/components/books/passage/update-form";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -38,7 +39,9 @@ export function ModalProvider() {
 
       <RichTextEditor />
 
+      {/* Passage */}
       <CreatePassageForm />
+      <UpdatePassageForm />
     </>
   );
 }
