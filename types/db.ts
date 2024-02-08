@@ -9,6 +9,7 @@ import {
   NoteCompletion,
   Part,
   Passage,
+  PassageMultiHeading,
   Question,
   QuestionGroup,
   SummaryCompletion,
@@ -16,7 +17,7 @@ import {
 } from "@prisma/client";
 
 export type PartExtended = Part & {
-  passage: Passage | null;
+  passage: PassageExtended | null;
   questionGroups: QuestionGroupExtended[];
   questions: Question[];
 };
@@ -27,6 +28,10 @@ export type MultiOneExtended = MultipleChoice & {
 export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
   choices: Choice[];
   question: Question;
+};
+
+export type PassageExtended = Passage & {
+  passageMultiHeadingArray: PassageMultiHeading[];
 };
 
 export type QuestionGroupExtended = QuestionGroup & {

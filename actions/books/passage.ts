@@ -16,7 +16,6 @@ export const createPassageSimple = async ({
         content: "This is example for simple passage",
         partId,
         description: "this is description",
-        // imageHeader: ,
         type: "PASSAGE_SIMPLE",
       },
     });
@@ -81,11 +80,9 @@ export const updatePassage = async ({
   content,
   id,
   description,
-  imageHeader,
 }: {
   title: string;
-  content: string;
-  imageHeader?: string;
+  content?: string;
   description?: string;
   id: number;
 }) => {
@@ -98,7 +95,6 @@ export const updatePassage = async ({
         title,
         content,
         description,
-        imageHeader,
       },
     });
 

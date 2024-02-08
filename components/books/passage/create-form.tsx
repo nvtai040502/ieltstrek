@@ -33,8 +33,6 @@ export function CreatePassageForm() {
     resolver: zodResolver(PassageSchema),
     defaultValues: {
       title: "",
-      description: "",
-      content: "",
     },
   });
   const router = useRouter();
@@ -69,7 +67,9 @@ export function CreatePassageForm() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Passage Title</FormLabel>
+                    <FormLabel>
+                      Passage Title (You can change it Later)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -86,7 +86,7 @@ export function CreatePassageForm() {
                 name="type"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Passage Type</FormLabel>
+                    <FormLabel>Passage Type (Important)</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}

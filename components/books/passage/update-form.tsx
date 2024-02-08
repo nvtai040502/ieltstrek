@@ -38,7 +38,9 @@ export function UpdatePassageForm() {
     if (passage) {
       form.setValue("title", passage.title);
       form.setValue("description", passage.description || "");
-      form.setValue("content", passage.content);
+      form.setValue("type", passage.type);
+      passage.type === "PASSAGE_SIMPLE" &&
+        form.setValue("content", passage.content || "");
     }
   }, [passage, form]);
   const router = useRouter();
@@ -103,24 +105,26 @@ export function UpdatePassageForm() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Passage content</FormLabel>
-                    <FormControl>
-                      <AutosizeTextarea
-                        {...field}
-                        disabled={isPending}
-                        placeholder="Type content passage here."
-                        className="h-full"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {passage.type === "PASSAGE_SIMPLE" && (
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Passage content</FormLabel>
+                      <FormControl>
+                        <AutosizeTextarea
+                          {...field}
+                          disabled={isPending}
+                          placeholder="Type content passage here."
+                          className="h-full"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
             <div>
               <Button disabled={isPending} variant="ghost" onClick={onClose}>
