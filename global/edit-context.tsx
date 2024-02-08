@@ -19,7 +19,7 @@ export type EditType =
   | "editNoteCompletionGroupItem"
   | "editIdentifyingInformationItem"
   | "editChoice"
-  | "editMultipleChoice"
+  | "editMultiOne"
   | "editQuestionGroup"
   | "deleteQuestionGroup"
   | "editSummaryCompletion"
@@ -30,7 +30,7 @@ export interface EditData {
   noteCompletion?: NoteCompletionExtended;
   identifyingInformationItem?: IdentifyingInformationItemExtended;
   choice?: Choice;
-  multipleChoice?: MultiOneExtended;
+  multiOne?: MultiOneExtended;
   questionGroup?: QuestionGroupExtended;
   summaryCompletion?: SummaryCompletionExtended;
   multiMore?: MultiMoreExtended;

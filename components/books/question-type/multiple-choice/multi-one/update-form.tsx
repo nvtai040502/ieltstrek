@@ -16,18 +16,18 @@ import { useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { PassageSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
-import { updateMultipleChoice } from "@/actions/books/multiple-choice";
 import { MultipleChoice } from "@prisma/client";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { useEditHook } from "@/global/use-edit-hook";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { MultiOneSchema } from "@/lib/validations/question-type";
+import { updateMultiOne } from "@/actions/books/multi-one";
 
 export function UpdateMultiOneForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
-  const isModalOpen = isOpen && type === "editMultipleChoice";
-  const multipleChoice = data?.multipleChoice;
+  const isModalOpen = isOpen && type === "editMultiOne";
+  const multiOne = data?.multiOne;
   const form = useForm<z.infer<typeof MultiOneSchema>>({
     resolver: zodResolver(MultiOneSchema),
     defaultValues: {
@@ -37,19 +37,19 @@ export function UpdateMultiOneForm() {
   });
   const router = useRouter();
   useEffect(() => {
-    if (multipleChoice) {
-      form.setValue("title", multipleChoice.title);
-      form.setValue("expectedAnswer", multipleChoice.expectedAnswer);
+    if (multiOne) {
+      form.setValue("title", multiOne.title);
+      form.setValue("expectedAnswer", multiOne.expectedAnswer);
     }
-  }, [form, multipleChoice]);
-  if (!multipleChoice || !isModalOpen) {
+  }, [form, multiOne]);
+  if (!multiOne || !isModalOpen) {
     return null;
   }
   const onSubmit = (values: z.infer<typeof MultiOneSchema>) => {
     startTransition(async () => {
-      const multipleChoiceUpdated = await updateMultipleChoice({
+      const multipleChoiceUpdated = await updateMultiOne({
         title: values.title,
-        id: multipleChoice.id,
+        id: multiOne.id,
         expectedAnswer: values.expectedAnswer,
       });
       if (multipleChoiceUpdated) {
@@ -94,10 +94,10 @@ export function UpdateMultiOneForm() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        defaultValue={multipleChoice.expectedAnswer}
+                        defaultValue={multiOne.expectedAnswer}
                         className="flex flex-col space-y-1"
                       >
-                        {multipleChoice.choices.map((choice) => (
+                        {multiOne.choices.map((choice) => (
                           <FormItem
                             key={choice.id}
                             className="flex items-center px-2 space-x-2 space-y-0 w-full hover:bg-secondary"

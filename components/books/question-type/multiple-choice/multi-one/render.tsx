@@ -5,14 +5,12 @@ import { useContext, useState } from "react";
 import { MultiOneExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
-import { UpdateButton } from "../../update-button";
+import { UpdateButton } from "@/components/books/update-button";
 
 interface MultipleChoiceRenderProps {
-  multipleChoice: MultiOneExtended;
+  multiOne: MultiOneExtended;
 }
-export const MultiOneRender = ({
-  multipleChoice,
-}: MultipleChoiceRenderProps) => {
+export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
   const {
     questionRefs,
     currentQuestionIndex,
@@ -21,43 +19,43 @@ export const MultiOneRender = ({
     userAnswers,
   } = useContext(ExamContext);
 
-  if (!multipleChoice) {
+  if (!multiOne) {
     return null;
   }
   const handleAnswerSelected = (answerSelected: string) => {
-    setCurrentQuestionIndex(multipleChoice.question.questionNumber - 1);
+    setCurrentQuestionIndex(multiOne.question.questionNumber - 1);
     setUserAnswers((prevAnswers) => ({
       ...prevAnswers,
-      [multipleChoice.question.questionNumber]: answerSelected,
+      [multiOne.question.questionNumber]: answerSelected,
     }));
   };
   return (
     <div
       className="space-y-2"
-      ref={questionRefs[multipleChoice.question.questionNumber - 1]}
+      ref={questionRefs[multiOne.question.questionNumber - 1]}
       tabIndex={0}
     >
       <div className="flex items-center gap-2 ">
         <p
           className={cn(
             "px-2 py-1",
-            currentQuestionIndex === multipleChoice.question.questionNumber - 1
+            currentQuestionIndex === multiOne.question.questionNumber - 1
               ? "border border-foreground"
               : "",
           )}
         >
-          {multipleChoice.question.questionNumber}
+          {multiOne.question.questionNumber}
         </p>
-        <p>{multipleChoice.title}</p>
-        <UpdateButton type="editMultipleChoice" data={{ multipleChoice }} />
+        <p>{multiOne.title}</p>
+        <UpdateButton type="editMultiOne" data={{ multiOne }} />
       </div>
       <RadioGroup
         onValueChange={handleAnswerSelected}
         defaultValue={
-          (userAnswers[multipleChoice.question.questionNumber] as string) || ""
+          (userAnswers[multiOne.question.questionNumber] as string) || ""
         }
       >
-        {multipleChoice.choices.map((choice) => {
+        {multiOne.choices.map((choice) => {
           return (
             <div key={choice.id}>
               <div

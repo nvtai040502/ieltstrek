@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { MultiOneExtended } from "@/types/db";
 import { create } from "domain";
 import { createQuestion } from "./question";
-export const createMultipleChoiceArray = async ({
+export const createMultiOneArray = async ({
   questionGroupId,
 }: {
   questionGroupId: number;
@@ -53,7 +53,7 @@ export const createMultipleChoiceArray = async ({
   }
 };
 
-export const updateMultipleChoice = async ({
+export const updateMultiOne = async ({
   title,
   expectedAnswer,
   id,
@@ -76,34 +76,6 @@ export const updateMultipleChoice = async ({
     return multipleChoice;
   } catch (error) {
     console.error("Error updating multipleChoice:", error);
-    return null;
-  }
-};
-
-export const updateChoice = async ({
-  content,
-  explanation,
-  isCorrect,
-  id,
-}: {
-  content: string;
-  explanation?: string;
-  isCorrect: boolean;
-  id: number;
-}) => {
-  try {
-    const question = await db.choice.update({
-      where: {
-        id,
-      },
-      data: {
-        content,
-      },
-    });
-
-    return question;
-  } catch (error) {
-    console.error("Error updating choice:", error);
     return null;
   }
 };

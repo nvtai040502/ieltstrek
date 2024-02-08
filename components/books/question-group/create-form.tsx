@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { QuestionGroupSchema } from "@/lib/validations/books";
 import { createQuestionGroup } from "@/actions/books/question-group";
 import { QuestionGroupForm } from "./form";
-import { createMultipleChoiceArray } from "@/actions/books/multiple-choice";
 import { QuestionType } from "@prisma/client";
 import { createSummaryCompletion } from "@/actions/books/summary-completion";
 import { PartExtended } from "@/types/db";
@@ -16,6 +15,7 @@ import { error } from "console";
 import { createIdentifyingInformation } from "@/actions/books/identifying-infomation";
 import { createNoteCompletion } from "@/actions/books/note-completion";
 import { createMultiMoreArray } from "@/actions/books/multi-more";
+import { createMultiOneArray } from "@/actions/books/multi-one";
 
 export function CreateQuestionGroupForm({
   part,
@@ -54,7 +54,7 @@ export function CreateQuestionGroupForm({
 
           switch (questionGroup.type) {
             case "MULTIPLE_CHOICE":
-              successfully = await createMultipleChoiceArray({
+              successfully = await createMultiOneArray({
                 questionGroupId: questionGroup.id,
               });
               break;

@@ -1,4 +1,9 @@
 import { z } from "zod";
+export const ChoiceSchema = z.object({
+  content: z.string().min(1, {
+    message: "Content Choice is required",
+  }),
+});
 
 export const MultiOneSchema = z.object({
   title: z.string().min(1, {

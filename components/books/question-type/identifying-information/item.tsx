@@ -48,7 +48,7 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
             "px-2 py-1",
             currentQuestionIndex === item.question.questionNumber - 1
               ? "border border-foreground"
-              : ""
+              : "",
           )}
         >
           {item.question.questionNumber}
@@ -62,7 +62,9 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
 
       <RadioGroup
         onValueChange={handleAnswerSelected}
-        defaultValue={userAnswers[item.question.questionNumber] || ""}
+        defaultValue={
+          (userAnswers[item.question.questionNumber] as string) || ""
+        }
       >
         {[
           IdentifyingInformationAnswer.TRUE,

@@ -5,9 +5,9 @@ import { useContext, useState } from "react";
 import { MultiMoreExtended, MultiOneExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
-import { UpdateButton } from "../../update-button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Choice } from "@prisma/client";
+import { UpdateButton } from "@/components/books/update-button";
 
 interface MultiMoreRenderProps {
   multiMore: MultiMoreExtended;

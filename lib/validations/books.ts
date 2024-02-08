@@ -69,14 +69,6 @@ export const QuestionGroupSchema = z
     },
   );
 
-export const ChoiceSchema = z.object({
-  content: z.string().min(1, {
-    message: "Content Choice is required",
-  }),
-  isCorrect: z.boolean(),
-  explanation: z.string().optional(),
-});
-
 export const SummaryCompletionSchema = z.object({
   title: z.string().optional(),
   paragraphWithBlanks: z.string().min(1, {
