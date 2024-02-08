@@ -13,10 +13,10 @@ import { PassageRender } from "./passage/render";
 import { CreateQuestionGroupForm } from "./question-group/create-form";
 import { DeleteButton, UpdateButton } from "./update-button";
 import { ExamContext } from "@/global/exam-context";
-import { MultipleChoiceArrayRender } from "./question-type/multiple-choice";
+import { MultiOneArrayRender } from "./question-type/multi-one";
 import { NoteCompletionRender } from "./question-type/note-completion";
 import { IdentifyingInformationRender } from "./question-type/identifying-information";
-import { MultiMoreAnswersArrayRender } from "./question-type/multi-more-answers";
+import { MultiMoreArrayRender } from "./question-type/multi-more";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
@@ -95,12 +95,12 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                     </div>
 
                     {questionGroup.type === "MULTIPLE_CHOICE" && (
-                      <MultipleChoiceArrayRender
+                      <MultiOneArrayRender
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
                       />
                     )}
                     {questionGroup.type === "MULTIPLE_CHOICE_MORE_ANSWERS" && (
-                      <MultiMoreAnswersArrayRender
+                      <MultiMoreArrayRender
                         multipleChoiceArray={questionGroup.multipleChoiceArray}
                       />
                     )}

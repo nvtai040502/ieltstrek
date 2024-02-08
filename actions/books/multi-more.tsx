@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { MultipleChoiceExtended } from "@/types/db";
 import { create } from "domain";
 import { createQuestion } from "./question";
-export const createMultiMoreAnswersArray = async ({
+export const createMultiMoreArray = async ({
   questionGroupId,
 }: {
   questionGroupId: number;
@@ -25,12 +25,12 @@ export const createMultiMoreAnswersArray = async ({
       throw new Error("QUestion Group Id not found");
     }
     questionGroup.questions.map(async (question) => {
-      const multipleChoice = await db.multipleChoice.create({
+      await db.multipleChoiceMoreAnswers.create({
         data: {
           questionGroupId,
           title: "example",
-          type: "MORE_ANSWERS",
           questionId: question.id,
+          expectedAnswers: ["Option 1", "Option 2"],
           choices: {
             create: [
               { content: "Option 1" },
@@ -40,19 +40,6 @@ export const createMultiMoreAnswersArray = async ({
             ],
           },
         },
-        include: { choices: true },
-      });
-      await db.multipleChoiceExpectedAnswer.createMany({
-        data: [
-          {
-            choiceId: multipleChoice.choices[1].id,
-            multipleChoiceId: multipleChoice.id,
-          },
-          {
-            choiceId: multipleChoice.choices[2].id,
-            multipleChoiceId: multipleChoice.id,
-          },
-        ],
       });
     });
 
@@ -63,34 +50,27 @@ export const createMultiMoreAnswersArray = async ({
   }
 };
 
-export const updateMultipleChoice = async ({
+export const updateMultiMore = async ({
   title,
-  choiceIdArray,
+  expectedAnswers,
   id,
 }: {
   title: string;
-  choiceIdArray: number[];
+  expectedAnswers: string[];
   id: number;
 }) => {
   try {
-    const multipleChoice = await db.multipleChoice.update({
+    const multiMoreAnswers = await db.multipleChoiceMoreAnswers.update({
       where: {
         id,
       },
       data: {
         title,
+        expectedAnswers,
       },
     });
 
-    await db.multipleChoiceExpectedAnswer.updateMany({
-      where: {
-        multipleChoiceId: multipleChoice.id,
-      },
-      data: choiceIdArray.map((choiceId) => {
-        choiceId;
-      }),
-    });
-    return multipleChoice;
+    return multiMoreAnswers;
   } catch (error) {
     console.error("Error updating multipleChoice:", error);
     return null;

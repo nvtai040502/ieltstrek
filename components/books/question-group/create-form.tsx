@@ -15,7 +15,7 @@ import { PartExtended } from "@/types/db";
 import { error } from "console";
 import { createIdentifyingInformation } from "@/actions/books/identifying-infomation";
 import { createNoteCompletion } from "@/actions/books/note-completion";
-import { createMultiMoreAnswersArray } from "@/actions/books/multiple-choice-moreAnswers";
+import { createMultiMoreArray } from "@/actions/books/multi-more";
 
 export function CreateQuestionGroupForm({
   part,
@@ -59,7 +59,7 @@ export function CreateQuestionGroupForm({
               });
               break;
             case "MULTIPLE_CHOICE_MORE_ANSWERS":
-              successfully = await createMultiMoreAnswersArray({
+              successfully = await createMultiMoreArray({
                 questionGroupId: questionGroup.id,
               });
               break;

@@ -6,7 +6,7 @@ import { MultiMoreAnswersRender } from "./render";
 interface MultipleChoiceArrayRenderProps {
   multipleChoiceArray: MultipleChoiceExtended[];
 }
-export const MultiMoreAnswersArrayRender = ({
+export const MultiMoreArrayRender = ({
   multipleChoiceArray,
 }: MultipleChoiceArrayRenderProps) => {
   console.log(multipleChoiceArray[0].expectedAnswers);

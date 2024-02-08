@@ -6,14 +6,13 @@ import { MultipleChoiceExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { UpdateButton } from "../../update-button";
-import { Checkbox } from "@/components/ui/checkbox";
 
-interface MultiMoreAnswersRenderProps {
+interface MultipleChoiceRenderProps {
   multipleChoice: MultipleChoiceExtended;
 }
-export const MultiMoreAnswersRender = ({
+export const MultiOneRender = ({
   multipleChoice,
-}: MultiMoreAnswersRenderProps) => {
+}: MultipleChoiceRenderProps) => {
   const {
     questionRefs,
     currentQuestionIndex,
@@ -52,26 +51,30 @@ export const MultiMoreAnswersRender = ({
         <p>{multipleChoice.title}</p>
         <UpdateButton type="editMultipleChoice" data={{ multipleChoice }} />
       </div>
-
-      {multipleChoice.choices.map((choice) => {
-        return (
-          <div key={choice.id}>
-            <div
-              className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
-              key={choice.id}
-            >
-              <Checkbox value={choice.content} id={String(choice.id)} />
-              <Label
-                htmlFor={String(choice.id)}
-                className="py-4 w-full cursor-pointer"
+      <RadioGroup
+        onValueChange={handleAnswerSelected}
+        defaultValue={userAnswers[multipleChoice.question.questionNumber] || ""}
+      >
+        {multipleChoice.choices.map((choice) => {
+          return (
+            <div key={choice.id}>
+              <div
+                className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
+                key={choice.id}
               >
-                {choice.content}
-              </Label>
-              <UpdateButton type="editChoice" data={{ choice }} />
+                <RadioGroupItem value={choice.content} id={String(choice.id)} />
+                <Label
+                  htmlFor={String(choice.id)}
+                  className="py-4 w-full cursor-pointer"
+                >
+                  {choice.content}
+                </Label>
+                <UpdateButton type="editChoice" data={{ choice }} />
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </RadioGroup>
     </div>
   );
 };

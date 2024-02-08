@@ -1,4 +1,4 @@
-import { IdentifyingInformationAnswer, MultipleChoiceType, QuestionType } from "@prisma/client";
+import { IdentifyingInformationAnswer, QuestionType } from "@prisma/client";
 import * as z from "zod";
 
 export const AssessmentSchema = z.object({
@@ -54,7 +54,7 @@ export const QuestionGroupSchema = z
     {
       message: "End question must be larger than start question",
       path: ["endQuestionNumber"],
-    }
+    },
   )
   .refine(
     (data) => {
@@ -66,7 +66,7 @@ export const QuestionGroupSchema = z
     {
       message: "in Reading section The endQuestionNumber must be 40 or fewer.",
       path: ["endQuestionNumber"],
-    }
+    },
   );
 
 export const ChoiceSchema = z.object({
@@ -77,13 +77,6 @@ export const ChoiceSchema = z.object({
   explanation: z.string().optional(),
 });
 
-export const MultipleChoiceSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title Multiple Choice is required",
-  }),
-  expectedAnswer: z.string().min(1),
-  explanation: z.string().optional()
-});
 export const SummaryCompletionSchema = z.object({
   title: z.string().optional(),
   paragraphWithBlanks: z.string().min(1, {
@@ -92,7 +85,7 @@ export const SummaryCompletionSchema = z.object({
   expectedAnswers: z.array(
     z.string().min(1, {
       message: "Expected answer is required",
-    })
+    }),
   ),
 });
 
@@ -131,5 +124,4 @@ const CenterAlignedParagraphNodeSchema = z.object({
 });
 export const NoteCompletionSchema = z.object({
   title: z.string().min(1),
-  
 });

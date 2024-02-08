@@ -14,21 +14,22 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { MultipleChoiceSchema, PassageSchema } from "@/lib/validations/books";
+import { PassageSchema } from "@/lib/validations/books";
 import { Button } from "@/components/ui/button";
 import { updateMultipleChoice } from "@/actions/books/multiple-choice";
 import { MultipleChoice } from "@prisma/client";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { useEditHook } from "@/global/use-edit-hook";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { MultiOneSchema } from "@/lib/validations/question-type";
 
-export function UpdateMultipleChoiceForm() {
+export function UpdateMultiOneForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === "editMultipleChoice";
   const multipleChoice = data?.multipleChoice;
-  const form = useForm<z.infer<typeof MultipleChoiceSchema>>({
-    resolver: zodResolver(MultipleChoiceSchema),
+  const form = useForm<z.infer<typeof MultiOneSchema>>({
+    resolver: zodResolver(MultiOneSchema),
     defaultValues: {
       title: "",
       expectedAnswer: "",
@@ -38,18 +39,18 @@ export function UpdateMultipleChoiceForm() {
   useEffect(() => {
     if (multipleChoice) {
       form.setValue("title", multipleChoice.title);
-      form.setValue("expectedAnswer", String(multipleChoice.expectedAnswers[0].choiceId))
+      form.setValue("expectedAnswer", multipleChoice.expectedAnswer);
     }
   }, [form, multipleChoice]);
   if (!multipleChoice || !isModalOpen) {
     return null;
   }
-  const onSubmit = (values: z.infer<typeof MultipleChoiceSchema>) => {
+  const onSubmit = (values: z.infer<typeof MultiOneSchema>) => {
     startTransition(async () => {
       const multipleChoiceUpdated = await updateMultipleChoice({
         title: values.title,
         id: multipleChoice.id,
-        expectedAnswer: values.expectedAnswer
+        expectedAnswer: values.expectedAnswer,
       });
       if (multipleChoiceUpdated) {
         toast.success("Successfully updated multipleChoice!");
@@ -93,7 +94,7 @@ export function UpdateMultipleChoiceForm() {
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        defaultValue={String(multipleChoice.expectedAnswers[0].choiceId)}
+                        defaultValue={multipleChoice.expectedAnswer}
                         className="flex flex-col space-y-1"
                       >
                         {multipleChoice.choices.map((choice) => (

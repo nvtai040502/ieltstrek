@@ -36,7 +36,6 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
                     orderBy: { id: "asc" }, // Order choices by id
                   },
                   question: true,
-                  expectedAnswers: true
                 },
                 orderBy: {
                   question: { questionNumber: "asc" },
