@@ -11,24 +11,7 @@ import {
 } from "slate-react";
 import { createEditor, Descendant, Path } from "slate";
 import { withHistory } from "slate-history";
-import {
-  AlignCenter,
-  AlignJustify,
-  AlignLeft,
-  AlignRight,
-  Bold,
-  Code,
-  Heading1,
-  Heading2,
-  Italic,
-  List,
-  ListOrdered,
-  Plus,
-  PlusCircle,
-  Quote,
-  Underline,
-  X,
-} from "lucide-react";
+
 import { MarkButton } from "../../../text-editor/toolbar/mark-button";
 import BlockButton from "../../../text-editor/toolbar/block-button";
 import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
@@ -47,6 +30,7 @@ import { ElementRender } from "@/components/text-editor/text-render/elementRende
 import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
 import { useRouter } from "next/navigation";
 import { Transforms } from "slate";
+import Toolbar from "@/components/text-editor/toolbar";
 
 declare module "slate" {
   interface CustomTypes {
@@ -59,11 +43,11 @@ declare module "slate" {
 const RichTextEditor = () => {
   const renderElement = useCallback(
     (props: RenderElementProps) => <ElementRender {...props} />,
-    []
+    [],
   );
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <LeafEditorRender {...props} />,
-    []
+    [],
   );
   const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
@@ -79,7 +63,7 @@ const RichTextEditor = () => {
     const codeCount = countCodeOccurrences();
     if (codeCount !== noteCompletion.blanks.length) {
       toast.error(
-        "Total Blank must be equal to number question you set in question group"
+        "Total Blank must be equal to number question you set in question group",
       );
       return;
     }
@@ -117,7 +101,7 @@ const RichTextEditor = () => {
               questionNumber:
                 noteCompletion.questionGroup.startQuestionNumber + codeCount,
             },
-            { at: path }
+            { at: path },
           );
 
           codeCount++;
@@ -134,21 +118,7 @@ const RichTextEditor = () => {
           editor={editor}
           initialValue={JSON.parse(noteCompletion.paragraph)}
         >
-          <div className="flex flex-wrap">
-            <MarkButton format="bold" icon={<Bold />} />
-            <MarkButton format="italic" icon={<Italic />} />
-            <MarkButton format="underline" icon={<Underline />} />
-            <MarkButton format="code" icon={<Code />} />
-            <BlockButton format="heading-one" icon={<Heading1 />} />
-            <BlockButton format="heading-two" icon={<Heading2 />} />
-            <BlockButton format="blockquote" icon={<Quote />} />
-            <BlockButton format="bulleted-list" icon={<List />} />
-            <BlockButton format="numbered-list" icon={<ListOrdered />} />
-            <BlockButton format="left" icon={<AlignLeft />} />
-            <BlockButton format="center" icon={<AlignCenter />} />
-            <BlockButton format="right" icon={<AlignRight />} />
-            <BlockButton format="justify" icon={<AlignJustify />} />
-          </div>
+          <Toolbar />
 
           <Editable
             renderElement={renderElement}

@@ -1,11 +1,8 @@
-"use client"
-import { InlinesExample } from "@/components/text-editor/inline";
-import RichTextExample from "@/components/books/question-type/note-completion/rich-text-editor";
+"use client";
+import TablesExample from "@/components/text-editor/tables";
 
 function TestPage() {
-  return ( 
-    <InlinesExample />
-   );
+  return <TablesExample />;
 }
 
 export default TestPage;
