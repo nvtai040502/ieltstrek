@@ -1,3 +1,4 @@
+// @ts-ignore
 export const ElementRender = ({ attributes, children, element }) => {
   const style = { textAlign: element.align };
 
@@ -51,17 +52,9 @@ export const ElementRender = ({ attributes, children, element }) => {
         </h2>
       );
     case "list-item":
-      return (
-        <li style={style} {...attributes}>
-          {children}
-        </li>
-      );
+      return <li {...attributes}>{children}</li>;
     case "numbered-list":
-      return (
-        <ol style={style} {...attributes}>
-          {children}
-        </ol>
-      );
+      return <ol {...attributes}>{children}</ol>;
     default:
       return <p {...attributes}>{children}</p>;
   }

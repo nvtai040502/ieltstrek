@@ -1,24 +1,13 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { QuestionGroupSchema } from "@/lib/validations/books";
-import { createQuestionGroup } from "@/actions/books/question-group";
-import { QuestionGroupForm } from "./form";
-import { QuestionType } from "@prisma/client";
-import { createSummaryCompletion } from "@/actions/books/summary-completion";
-import { PartExtended } from "@/types/db";
-import { error } from "console";
 import { createIdentifyingInformation } from "@/actions/books/identifying-infomation";
-import { createNoteCompletion } from "@/actions/books/note-completion";
 import { createMultiMoreArray } from "@/actions/books/multi-more";
 import { createMultiOneArray } from "@/actions/books/multi-one";
+import { createNoteCompletion } from "@/actions/books/note-completion";
+import { createQuestionGroup } from "@/actions/books/question-group";
 import { createTableComplete } from "@/actions/books/table-complete";
-import { useEditHook } from "@/global/use-edit-hook";
+import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -35,8 +24,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import { useEditHook } from "@/global/use-edit-hook";
+import { QuestionGroupSchema } from "@/lib/validations/books";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { QuestionType } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export function CreateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
@@ -91,15 +87,6 @@ export function CreateQuestionGroupForm() {
             case "MULTIPLE_CHOICE_MORE_ANSWERS":
               successfully = await createMultiMoreArray({
                 questionGroupId: questionGroup.id,
-              });
-              break;
-            case "SUMMARY_COMPLETION":
-              successfully = await createSummaryCompletion({
-                questionGroupId: questionGroup.id,
-                startQuestionNumber: questionGroup.startQuestionNumber,
-                endQuestionNumber: questionGroup.endQuestionNumber,
-                assessmentId: part.assessmentId,
-                partId: part.id,
               });
               break;
             case "NOTE_COMPLETION":

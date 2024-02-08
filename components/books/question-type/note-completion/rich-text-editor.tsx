@@ -1,41 +1,30 @@
 "use client";
-import React, { useCallback, useMemo, useTransition } from "react";
-import isHotkey from "is-hotkey";
+import { useCallback, useMemo, useTransition } from "react";
+import { createEditor } from "slate";
+import { withHistory } from "slate-history";
 import {
   Editable,
-  withReact,
-  useSlate,
-  Slate,
   RenderElementProps,
   RenderLeafProps,
+  Slate,
+  withReact,
 } from "slate-react";
-import { createEditor, Descendant, Path } from "slate";
-import { withHistory } from "slate-history";
 
-import { MarkButton } from "../../../text-editor/toolbar/mark-button";
-import BlockButton from "../../../text-editor/toolbar/block-button";
-import {
-  CustomEditor,
-  CustomElement,
-  CustomText,
-  FormattedText,
-} from "@/types/text-editor";
-import { Button } from "../../../ui/button";
-import { EditContext } from "@/global/edit-context";
-import { NoteCompletionExtended } from "@/types/db";
-import { useEditHook } from "@/global/use-edit-hook";
-import { toast } from "sonner";
 import { updateNoteCompletion } from "@/actions/books/note-completion";
+import { ElementRender } from "@/components/text-editor/text-render/element-render";
+import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
+import Toolbar from "@/components/text-editor/toolbar";
 import {
   Dialog,
   DialogClose,
   DialogContentWithScrollArea,
 } from "@/components/ui/dialog";
-import { ElementRender } from "@/components/text-editor/text-render/element-render";
-import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
+import { useEditHook } from "@/global/use-edit-hook";
+import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
 import { useRouter } from "next/navigation";
 import { Transforms } from "slate";
-import Toolbar from "@/components/text-editor/toolbar";
+import { toast } from "sonner";
+import { Button } from "../../../ui/button";
 
 declare module "slate" {
   interface CustomTypes {
@@ -98,7 +87,11 @@ const RichTextEditor = () => {
   const countCodeOccurrences = () => {
     let codeCount = 0;
 
-    const setQuestionNumber = (editor, path, codeCount) => {
+    const setQuestionNumber = (
+      editor: CustomEditor,
+      path: number[],
+      codeCount: number,
+    ) => {
       Transforms.setNodes(
         editor,
         {
@@ -111,8 +104,8 @@ const RichTextEditor = () => {
 
     const processNode = (node: CustomElement, nodeIndex: number) => {
       if (node.type === "paragraph" || node.type === "table") {
-        const traverseChildren = (children, path: number[]) => {
-          children.forEach((child, childIndex) => {
+        const traverseChildren = (children: any, path: number[]) => {
+          children.forEach((child: any, childIndex: number) => {
             if (child.text && child.code) {
               setQuestionNumber(editor, [...path, childIndex], codeCount++);
             }
@@ -127,7 +120,7 @@ const RichTextEditor = () => {
     };
 
     editor.children.forEach((node, nodeIndex) => {
-      processNode(node, nodeIndex);
+      processNode(node as CustomElement, nodeIndex);
     });
 
     return codeCount;

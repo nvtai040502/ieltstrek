@@ -18,7 +18,7 @@ function BlockButton({
 
   const toggleBlock = () => {
     const isActive = isBlockActive(
-      TEXT_ALIGN_TYPES.includes(format) ? "align" : "type"
+      TEXT_ALIGN_TYPES.includes(format) ? "align" : "type",
     );
     const isList = LIST_TYPES.includes(format);
 
@@ -33,18 +33,18 @@ function BlockButton({
     let newProperties: Partial<Element>;
     if (TEXT_ALIGN_TYPES.includes(format)) {
       newProperties = {
-        align: isActive ? undefined : format as TextAlignType,
+        align: isActive ? undefined : (format as TextAlignType),
       };
     } else {
       newProperties = {
         type: isActive ? "paragraph" : isList ? "list-item" : format,
-      };
+      } as any;
     }
     Transforms.setNodes<Element>(editor, newProperties);
 
     if (!isActive && isList) {
       const block = { type: format, children: [] };
-      Transforms.wrapNodes(editor, block);
+      Transforms.wrapNodes(editor, block as any);
     }
   };
   const isBlockActive = (blockType = "type") => {
@@ -54,21 +54,21 @@ function BlockButton({
     const [match] = Array.from(
       Editor.nodes(editor, {
         at: Editor.unhangRange(editor, selection),
-        match: (n) =>
+        match: (n: any) =>
           !Editor.isEditor(n) &&
-          Element.isElement(n) &&
-          n[blockType] === format,
-      })
+          (Element.isElement(n) as any) &&
+          n[blockType] === (format as any),
+      }),
     );
 
     return !!match;
   };
   const isActive = isBlockActive(
-    TEXT_ALIGN_TYPES.includes(format) ? "align" : "type"
+    TEXT_ALIGN_TYPES.includes(format) ? "align" : "type",
   );
   return (
     <Button
-      variant={isActive?"default":"outline"}
+      variant={isActive ? "default" : "outline"}
       onMouseDown={(event) => {
         event.preventDefault();
         toggleBlock();
