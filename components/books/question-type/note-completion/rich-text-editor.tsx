@@ -14,7 +14,12 @@ import { withHistory } from "slate-history";
 
 import { MarkButton } from "../../../text-editor/toolbar/mark-button";
 import BlockButton from "../../../text-editor/toolbar/block-button";
-import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
+import {
+  CustomEditor,
+  CustomElement,
+  CustomText,
+  FormattedText,
+} from "@/types/text-editor";
 import { Button } from "../../../ui/button";
 import { EditContext } from "@/global/edit-context";
 import { NoteCompletionExtended } from "@/types/db";
@@ -92,64 +97,39 @@ const RichTextEditor = () => {
   };
   const countCodeOccurrences = () => {
     let codeCount = 0;
-    editor.children.forEach((node, nodeIndex) => {
-      if (node.type === "paragraph") {
-        node.children.forEach((element, elementIndex) => {
-          if (element.text && element.code) {
-            const path = [nodeIndex, elementIndex];
-            Transforms.setNodes(
-              editor,
-              {
-                questionNumber:
-                  noteCompletion.questionGroup.startQuestionNumber + codeCount,
-              },
-              { at: path },
-            );
 
-            codeCount++;
-          }
-        });
-      } else if (node.type === "table") {
-        node.children.forEach((tableRow, tableRowIndex) => {
-          tableRow.children.forEach((tableCell, tableCellIndex) => {
-            tableCell.children.forEach((element, elementIndex) => {
-              if (element.text && element.code) {
-                const path = [
-                  nodeIndex,
-                  tableRowIndex,
-                  tableCellIndex,
-                  elementIndex,
-                ];
-                Transforms.setNodes(
-                  editor,
-                  {
-                    questionNumber:
-                      noteCompletion.questionGroup.startQuestionNumber +
-                      codeCount,
-                  },
-                  { at: path },
-                );
+    const setQuestionNumber = (editor, path, codeCount) => {
+      Transforms.setNodes(
+        editor,
+        {
+          questionNumber:
+            noteCompletion.questionGroup.startQuestionNumber + codeCount,
+        },
+        { at: path },
+      );
+    };
 
-                codeCount++;
-              }
-            });
+    const processNode = (node: CustomElement, nodeIndex: number) => {
+      if (node.type === "paragraph" || node.type === "table") {
+        const traverseChildren = (children, path: number[]) => {
+          children.forEach((child, childIndex) => {
+            if (child.text && child.code) {
+              setQuestionNumber(editor, [...path, childIndex], codeCount++);
+            }
+            if (child.children) {
+              traverseChildren(child.children, [...path, childIndex]);
+            }
           });
-          // if (element.text && element.code) {
-          //   const path = [nodeIndex, elementIndex];
-          //   Transforms.setNodes(
-          //     editor,
-          //     {
-          //       questionNumber:
-          //         noteCompletion.questionGroup.startQuestionNumber + codeCount,
-          //     },
-          //     { at: path },
-          //   );
+        };
 
-          //   codeCount++;
-          // }
-        });
+        traverseChildren(node.children, [nodeIndex]);
       }
+    };
+
+    editor.children.forEach((node, nodeIndex) => {
+      processNode(node, nodeIndex);
     });
+
     return codeCount;
   };
 

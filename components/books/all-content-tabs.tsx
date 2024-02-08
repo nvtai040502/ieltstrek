@@ -1,16 +1,16 @@
 "use client";
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, Send } from "lucide-react";
-import { AssessmentExtended, PartExtended } from "@/types/db";
+import { ExamContext } from "@/global/exam-context";
+import { useExamHandler } from "@/global/exam-hook";
+import { cn } from "@/lib/utils";
+import { AssessmentExtended } from "@/types/db";
+import { Check, Send } from "lucide-react";
+import { Fragment, useContext, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList } from "../ui/tabs";
-import { cn } from "@/lib/utils";
-import ResizePanelGroup from "./resize-panel-group";
-import { PartRender } from "./part/part-render";
-import { ExamContext } from "@/global/exam-context";
-import { useExamHandler } from "@/global/exam-hook";
 import ButtonNavigateQuestions from "./button-nav-questions";
+import { PartRender } from "./part/part-render";
+import ResizePanelGroup from "./resize-panel-group";
 
 export const AllContentTabs = ({
   assessment,
@@ -83,14 +83,16 @@ export const AllContentTabs = ({
                       key={question.id}
                       role="button"
                       className="hover:border hover:border-secondary-foreground"
-                      onClick={() => handleMoveToDiv(question.questionNumber - 1)}
+                      onClick={() =>
+                        handleMoveToDiv(question.questionNumber - 1)
+                      }
                     >
                       <p
                         className={cn(
                           "px-2",
                           currentQuestionIndex === question.questionNumber - 1
                             ? "border border-secondary-foreground"
-                            : ""
+                            : "",
                         )}
                       >
                         {question.questionNumber}

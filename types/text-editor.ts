@@ -10,22 +10,21 @@ export type ParagraphElement = {
   align?: TextAlignType;
   children: CustomText[];
 };
+export type TableElement = {
+  type: "table";
+  children: TableRow[];
+};
+export type TableRow = {
+  type: "table-row";
+  children: TableCell[];
+};
 
-export type HeadingElement = {
-  type: "heading";
-  level: number;
+export type TableCell = {
+  type: "table-cell";
   children: CustomText[];
 };
 
-export type BlockQuoteElement = {
-  type: "blockquote";
-  children: CustomText[];
-};
-
-export type CustomElement =
-  | ParagraphElement
-  | HeadingElement
-  | BlockQuoteElement;
+export type CustomElement = ParagraphElement | TableElement;
 
 export type FormattedText = {
   text: string;

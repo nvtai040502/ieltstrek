@@ -23,6 +23,7 @@ export type EditType =
   | "editMultiOne"
   | "editSummaryCompletion"
   | "editMultiMore"
+  | "createPassage"
   // Question Group
   | "editQuestionGroup"
   | "deleteQuestionGroup"

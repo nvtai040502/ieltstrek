@@ -1,17 +1,9 @@
 "use client";
-import { Part, Passage } from "@prisma/client";
-import { Button } from "../../ui/button";
+import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { PartExtended } from "@/types/db";
-import {
-  Dialog,
-  DialogContent,
-  DialogContentWithScrollArea,
-} from "@/components/ui/dialog";
 import { useState } from "react";
-import { UpdatePassageForm } from "./update-form";
-import { CreatePassageForm } from "./create-form";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { ActionButton } from "../action-button";
+import { UpdatePassageForm } from "./update-form";
 
 export function PassageRender({ part }: { part: PartExtended }) {
   const [isEdittingPassage, setIsEdittingPassage] = useState(false);
@@ -39,15 +31,11 @@ export function PassageRender({ part }: { part: PartExtended }) {
         </div>
       ) : (
         <>
-          <Button onClick={() => setIsEdittingPassage(true)}>Create</Button>
-          <Dialog onOpenChange={setIsEdittingPassage} open={isEdittingPassage}>
-            <DialogContentWithScrollArea>
-              <CreatePassageForm
-                partId={part.id}
-                setIsEditting={setIsEdittingPassage}
-              />
-            </DialogContentWithScrollArea>
-          </Dialog>
+          <ActionButton
+            actionType="create"
+            editType="createPassage"
+            data={{ part }}
+          />
         </>
       )}
     </div>
