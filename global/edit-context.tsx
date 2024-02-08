@@ -4,6 +4,7 @@ import {
   MultiMoreExtended,
   MultiOneExtended,
   NoteCompletionExtended,
+  PartExtended,
   QuestionGroupExtended,
   SummaryCompletionExtended,
 } from "@/types/db";
@@ -20,10 +21,12 @@ export type EditType =
   | "editIdentifyingInformationItem"
   | "editChoice"
   | "editMultiOne"
-  | "editQuestionGroup"
-  | "deleteQuestionGroup"
   | "editSummaryCompletion"
   | "editMultiMore"
+  // Question Group
+  | "editQuestionGroup"
+  | "deleteQuestionGroup"
+  | "createQuestionGroup"
   | null;
 
 export interface EditData {
@@ -34,6 +37,7 @@ export interface EditData {
   questionGroup?: QuestionGroupExtended;
   summaryCompletion?: SummaryCompletionExtended;
   multiMore?: MultiMoreExtended;
+  part?: PartExtended;
 }
 
 interface EditContextProps {

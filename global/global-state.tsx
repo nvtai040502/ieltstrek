@@ -17,7 +17,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     RefObject<HTMLDivElement | HTMLInputElement>[]
   >([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
+  const [userAnswers, setUserAnswers] = useState<{
+    [key: string]: string | string[];
+  }>({});
   const [textNoteCompletion, setTextNoteCompletion] = useState("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [type, setType] = useState<EditType>(null);
@@ -30,8 +32,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
       Array.from({ length: selectedAssessment.questions.length }, (_, index) =>
         index < prevRefs.length
           ? prevRefs[index]
-          : createRef<HTMLDivElement | HTMLInputElement>()
-      )
+          : createRef<HTMLDivElement | HTMLInputElement>(),
+      ),
     );
     setActiveTab(String(selectedAssessment.parts[0].id));
   }, [selectedAssessment]);

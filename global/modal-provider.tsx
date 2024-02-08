@@ -8,6 +8,7 @@ import RichTextEditor from "@/components/books/question-type/note-completion/ric
 import { UpdateMultiOneForm } from "@/components/books/question-type/multiple-choice/multi-one/update-form";
 import { UpdateChoiceForm } from "@/components/books/question-type/multiple-choice/choice/choice-update-form";
 import { UpdateMultiMoreForm } from "@/components/books/question-type/multiple-choice/multi-more/update-form";
+import { CreateQuestionGroupForm } from "@/components/books/question-group/create-form";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -32,6 +33,7 @@ export function ModalProvider() {
       {/* Question Group */}
       <UpdateQuestionGroupForm />
       <DeleteQuestionGroupForm />
+      <CreateQuestionGroupForm />
 
       <RichTextEditor />
     </>

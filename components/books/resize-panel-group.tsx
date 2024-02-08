@@ -11,7 +11,7 @@ import { PartExtended } from "@/types/db";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { PassageRender } from "./passage/render";
 import { CreateQuestionGroupForm } from "./question-group/create-form";
-import { DeleteButton, UpdateButton } from "./update-button";
+import { CreateButton, DeleteButton, UpdateButton } from "./update-button";
 import { ExamContext } from "@/global/exam-context";
 import { NoteCompletionRender } from "./question-type/note-completion";
 import { IdentifyingInformationRender } from "./question-type/identifying-information";
@@ -53,21 +53,9 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
             className="w-full h-full overflow-auto pl-4 pr-8"
           >
             <div className="flex justify-end">
-              <Button onClick={() => setIsCreatingQuestion(true)}>
-                Create
-              </Button>
+              <CreateButton type="createQuestionGroup" data={{ part }} />
             </div>
-            <Dialog
-              onOpenChange={setIsCreatingQuestion}
-              open={isCreatingQuestion}
-            >
-              <DialogContent>
-                <CreateQuestionGroupForm
-                  part={part}
-                  setIsCreating={setIsCreatingQuestion}
-                />
-              </DialogContent>
-            </Dialog>
+
             {part.questionGroups &&
               part.questionGroups.map((questionGroup) => {
                 return (
