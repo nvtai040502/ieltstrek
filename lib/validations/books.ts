@@ -1,4 +1,8 @@
-import { IdentifyingInformationAnswer, QuestionType } from "@prisma/client";
+import {
+  IdentifyingInformationAnswer,
+  PassageType,
+  QuestionType,
+} from "@prisma/client";
 import * as z from "zod";
 
 export const AssessmentSchema = z.object({
@@ -22,11 +26,10 @@ export const PassageSchema = z.object({
   title: z.string().min(1, {
     message: "Title Passage is required",
   }),
-  content: z.string().min(1, {
-    message: "Content Passage is required",
-  }),
-  imageHeader: z.string().optional(),
+  content: z.string().optional(),
+  image: z.string().optional(),
   description: z.string().optional(),
+  type: z.enum([PassageType.PASSAGE_SIMPLE, PassageType.PASSAGE_MULTI_HEADING]),
 });
 
 export const QuestionGroupSchema = z

@@ -1,21 +1,17 @@
-import type { FooterItem, MainNavItem } from "@/types"
+import type { FooterItem, MainNavItem } from "@/types";
 
-export type SiteConfig = typeof siteConfig
+export type SiteConfig = typeof siteConfig;
 
 const links = {
-  twitter: "https://twitter.com/sadmann17",
-  github: "https://github.com/sadmann7/skateshop",
-  githubAccount: "https://github.com/sadmann7",
-  discord: "https://discord.com/users/sadmann7",
-  calDotCom: "https://cal.com/sadmann7",
-}
+  twitter: "https://twitter.com/NVTai0452",
+  github: "https://github.com/nvtai040502/ieltstrek",
+  githubAccount: "https://github.com/nvtai040502",
+};
 
 export const siteConfig = {
-  name: "Skateshop",
-  description:
-    "An open source e-commerce skateshop build with everything new in Next.js.",
-  url: "https://skateshop.sadmn.com",
-  ogImage: "https://skateshop.sadmn.com/opengraph-image.png",
+  name: "Ielts Trek",
+  description: "An open source Ielts Exam Online Test",
+  url: "https://ieltstrek.vercel.app/",
   links,
   mainNav: [
     {
@@ -121,16 +117,6 @@ export const siteConfig = {
           href: links.githubAccount,
           external: true,
         },
-        {
-          title: "Discord",
-          href: links.discord,
-          external: true,
-        },
-        {
-          title: "cal.com",
-          href: links.calDotCom,
-          external: true,
-        },
       ],
     },
     {
@@ -159,4 +145,4 @@ export const siteConfig = {
       ],
     },
   ] satisfies FooterItem[],
-}
+};

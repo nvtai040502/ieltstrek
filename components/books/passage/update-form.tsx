@@ -1,5 +1,5 @@
 "use client";
-import { updatePassage } from "@/actions/books/passages";
+import { updatePassage } from "@/actions/books/passage";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import { useEditHook } from "@/global/use-edit-hook";
 import { PassageSchema } from "@/lib/validations/books";

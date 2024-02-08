@@ -1,11 +1,11 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { Shell } from "@/components/shells/shell"
-import { Icons } from "../ui/icons"
-import { siteConfig } from "@/config/routes/root-route"
-import { ThemeToggle } from "../theme-toggle"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { Shell } from "@/components/shells/shell";
+import { Icons } from "../ui/icons";
+import { siteConfig } from "@/config/routes/root-route";
+import { ThemeToggle } from "../theme-toggle";
 
 export function SiteFooter() {
   return (
@@ -70,13 +70,13 @@ export function SiteFooter() {
           <div className="flex-1 text-left text-sm leading-loose text-muted-foreground">
             Built by{" "}
             <Link
-              href="https://twitter.com/sadmann17"
+              href={siteConfig.links.githubAccount}
               target="_blank"
               rel="noreferrer"
               className="font-semibold transition-colors hover:text-foreground"
             >
-              Sadman
-              <span className="sr-only">Twitter</span>
+              Nvtai
+              <span className="sr-only">Github</span>
             </Link>
             .
           </div>
@@ -89,16 +89,16 @@ export function SiteFooter() {
                 buttonVariants({
                   size: "icon",
                   variant: "ghost",
-                })
+                }),
               )}
             >
               <Icons.gitHub className="h-4 w-4" aria-hidden="true" />
               <span className="sr-only">GitHub</span>
             </Link>
-            <ThemeToggle/>
+            <ThemeToggle />
           </div>
         </section>
       </Shell>
     </footer>
-  )
+  );
 }

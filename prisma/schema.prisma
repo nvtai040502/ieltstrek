@@ -233,6 +233,23 @@ model SummaryCompletionItem {
   summaryCompletion   SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }
 
+enum PassageType {
+  PASSAGE_SIMPLE
+  PASSAGE_MULTI_HEADING
+}
+
+model PassageMultiHeading {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title   String
+  content String
+
+  passageId Int
+  passage   Passage @relation(fields: [passageId], references: [id], onDelete: Cascade)
+}
+
 model Passage {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -240,11 +257,13 @@ model Passage {
 
   title       String
   description String?
-  imageHeader String?
-  content     String
+  image       String?
+  type        PassageType
+  content     String?
 
-  partId Int  @unique // Ensures that each Part can have only one Passage
-  part   Part @relation(fields: [partId], references: [id], onDelete: Cascade)
+  passageMultiHeadingArray PassageMultiHeading[]
+  partId                   Int                   @unique // Ensures that each Part can have only one Passage
+  part                     Part                  @relation(fields: [partId], references: [id], onDelete: Cascade)
 }
 
 enum UserRole {

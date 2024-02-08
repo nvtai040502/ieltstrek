@@ -15,12 +15,14 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createPassage, updatePassage } from "@/actions/books/passages";
+import { createPassage, updatePassage } from "@/actions/books/passage";
 import { PassageSchema } from "@/lib/validations/books";
 import { AutosizeTextarea } from "../../ui/autosize-text-area";
 import { useEditHook } from "@/global/use-edit-hook";
 import { PartRender } from "../part/part-render";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { PassageType } from "@prisma/client";
 
 export function CreatePassageForm() {
   const [isPending, startTransition] = useTransition();
@@ -43,9 +45,8 @@ export function CreatePassageForm() {
     startTransition(async () => {
       const passage = await createPassage({
         title: values.title,
-        description: values.description,
-        content: values.content,
         partId: part.id,
+        type: values.type,
       });
       if (passage) {
         toast.success("Successfully create passage!");
@@ -82,34 +83,33 @@ export function CreatePassageForm() {
               />
               <FormField
                 control={form.control}
-                name="description"
+                name="type"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Passage description</FormLabel>
+                  <FormItem className="space-y-3">
+                    <FormLabel>Passage Type</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        placeholder="Read the text and answer questions"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Passage content</FormLabel>
-                    <FormControl>
-                      <AutosizeTextarea
-                        {...field}
-                        disabled={isPending}
-                        placeholder="Type content passage here."
-                        className="h-full"
-                      />
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {[
+                          PassageType.PASSAGE_SIMPLE,
+                          PassageType.PASSAGE_MULTI_HEADING,
+                        ].map((answer) => (
+                          <FormItem
+                            key={answer}
+                            className="flex items-center px-2 space-x-2 space-y-0 w-full hover:bg-secondary"
+                          >
+                            <FormControl>
+                              <RadioGroupItem value={answer} />
+                            </FormControl>
+                            <FormLabel className=" w-full cursor-pointer py-2 ">
+                              {answer}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
