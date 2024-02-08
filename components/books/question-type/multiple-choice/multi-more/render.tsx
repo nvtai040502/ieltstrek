@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Choice } from "@prisma/client";
-import { UpdateButton } from "@/components/books/update-button";
+import { ActionButton } from "@/components/books/action-button";
 
 interface MultiMoreRenderProps {
   multiMore: MultiMoreExtended;
@@ -66,7 +66,11 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
           {multiMore.question.questionNumber}
         </p>
         <p>{multiMore.title}</p>
-        <UpdateButton type="editMultiMore" data={{ multiMore }} />
+        <ActionButton
+          actionType="update"
+          editType="editMultiMore"
+          data={{ multiMore }}
+        />
       </div>
 
       {multiMore.choices.map((choice) => {
@@ -93,7 +97,11 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
               >
                 {choice.content}
               </Label>
-              <UpdateButton type="editChoice" data={{ choice }} />
+              <ActionButton
+                actionType="update"
+                editType="editChoice"
+                data={{ choice }}
+              />
             </div>
           </div>
         );

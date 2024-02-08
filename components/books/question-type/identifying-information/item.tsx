@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { IdentifyingInformationAnswer } from "@prisma/client";
 import { useEditHook } from "@/global/use-edit-hook";
-import { UpdateButton } from "../../update-button";
+import { ActionButton } from "../../action-button";
 
 interface ItemRenderProps {
   item: IdentifyingInformationItemExtended;
@@ -54,8 +54,9 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
           {item.question.questionNumber}
         </p>
         <p>{item.title}</p>
-        <UpdateButton
-          type="editIdentifyingInformationItem"
+        <ActionButton
+          actionType="update"
+          editType="editIdentifyingInformationItem"
           data={{ identifyingInformationItem: item }}
         />
       </div>

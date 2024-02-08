@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import { MultiOneExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
-import { UpdateButton } from "@/components/books/update-button";
+import { ActionButton } from "@/components/books/action-button";
 
 interface MultipleChoiceRenderProps {
   multiOne: MultiOneExtended;
@@ -47,7 +47,11 @@ export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
           {multiOne.question.questionNumber}
         </p>
         <p>{multiOne.title}</p>
-        <UpdateButton type="editMultiOne" data={{ multiOne }} />
+        <ActionButton
+          actionType="update"
+          editType="editMultiOne"
+          data={{ multiOne }}
+        />
       </div>
       <RadioGroup
         onValueChange={handleAnswerSelected}
@@ -69,7 +73,11 @@ export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
                 >
                   {choice.content}
                 </Label>
-                <UpdateButton type="editChoice" data={{ choice }} />
+                <ActionButton
+                  actionType="update"
+                  editType="editChoice"
+                  data={{ choice }}
+                />
               </div>
             </div>
           );
