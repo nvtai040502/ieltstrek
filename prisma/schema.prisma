@@ -64,14 +64,14 @@ model QuestionGroup {
   endQuestionNumber   Int
   type                QuestionType
 
-  partId                         Int
-  part                           Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
-  questions                      Question[]
-  multipleChoiceArray            MultipleChoice[]
-  multipleChoiceMoreAnswersArray MultipleChoiceMoreAnswers[]
-  summaryCompletion              SummaryCompletion?
-  identifyingInformation         IdentifyingInformation?
-  noteCompletion                 NoteCompletion?
+  partId                 Int
+  part                   Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
+  questions              Question[]
+  multipleChoiceArray    MultipleChoice[]
+  multiMoreArray         MultipleChoiceMoreAnswers[]
+  summaryCompletion      SummaryCompletion?
+  identifyingInformation IdentifyingInformation?
+  noteCompletion         NoteCompletion?
 }
 
 model Question {

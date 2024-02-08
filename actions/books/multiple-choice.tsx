@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
-import { MultipleChoiceExtended } from "@/types/db";
+import { MultiOneExtended } from "@/types/db";
 import { create } from "domain";
 import { createQuestion } from "./question";
 export const createMultipleChoiceArray = async ({

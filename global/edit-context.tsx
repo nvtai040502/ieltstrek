@@ -1,12 +1,18 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 import {
   IdentifyingInformationItemExtended,
-  MultipleChoiceExtended,
+  MultiMoreExtended,
+  MultiOneExtended,
   NoteCompletionExtended,
   QuestionGroupExtended,
   SummaryCompletionExtended,
 } from "@/types/db";
-import { Choice, IdentifyingInformation, MultipleChoice } from "@prisma/client";
+import {
+  Choice,
+  IdentifyingInformation,
+  MultipleChoice,
+  MultipleChoiceMoreAnswers,
+} from "@prisma/client";
 
 export type EditType =
   | "editNoteCompletion"
@@ -17,15 +23,17 @@ export type EditType =
   | "editQuestionGroup"
   | "deleteQuestionGroup"
   | "editSummaryCompletion"
+  | "editMultiMore"
   | null;
 
 export interface EditData {
   noteCompletion?: NoteCompletionExtended;
   identifyingInformationItem?: IdentifyingInformationItemExtended;
   choice?: Choice;
-  multipleChoice?: MultipleChoiceExtended;
-  questionGroup?: QuestionGroupExtended
-  summaryCompletion?: SummaryCompletionExtended
+  multipleChoice?: MultiOneExtended;
+  questionGroup?: QuestionGroupExtended;
+  summaryCompletion?: SummaryCompletionExtended;
+  multiMore?: MultiMoreExtended;
 }
 
 interface EditContextProps {

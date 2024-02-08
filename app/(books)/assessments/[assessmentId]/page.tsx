@@ -30,6 +30,17 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
           questionGroups: {
             orderBy: { startQuestionNumber: "asc" },
             include: {
+              multiMoreArray: {
+                include: {
+                  choices: {
+                    orderBy: { id: "asc" }, // Order choices by id
+                  },
+                  question: true,
+                },
+                orderBy: {
+                  question: { questionNumber: "asc" },
+                },
+              },
               multipleChoiceArray: {
                 include: {
                   choices: {

@@ -5,6 +5,7 @@ import {
   IdentifyingInformation,
   IdentifyingInformationItem,
   MultipleChoice,
+  MultipleChoiceMoreAnswers,
   NoteCompletion,
   Part,
   Passage,
@@ -19,16 +20,21 @@ export type PartExtended = Part & {
   questionGroups: QuestionGroupExtended[];
   questions: Question[];
 };
-export type MultipleChoiceExtended = MultipleChoice & {
+export type MultiOneExtended = MultipleChoice & {
+  choices: Choice[];
+  question: Question;
+};
+export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
   choices: Choice[];
   question: Question;
 };
 
 export type QuestionGroupExtended = QuestionGroup & {
-  multipleChoiceArray: MultipleChoiceExtended[];
+  multipleChoiceArray: MultiOneExtended[];
   summaryCompletion?: SummaryCompletionExtended | null;
   identifyingInformation?: IdentifyingInformationExtended | null;
   noteCompletion?: NoteCompletionExtended | null;
+  multiMoreArray: MultiMoreExtended[];
 };
 export type SummaryCompletionItemExtended = SummaryCompletionItem & {
   question: Question;

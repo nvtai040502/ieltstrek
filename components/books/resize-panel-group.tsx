@@ -101,7 +101,7 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                     )}
                     {questionGroup.type === "MULTIPLE_CHOICE_MORE_ANSWERS" && (
                       <MultiMoreArrayRender
-                        multipleChoiceArray={questionGroup.multipleChoiceArray}
+                        multiMoreArray={questionGroup.multiMoreArray}
                       />
                     )}
                     {/* {questionGroup.type === "SUMMARY_COMPLETION" && (

@@ -7,6 +7,7 @@ import { UpdateMultiOneForm } from "@/components/books/question-type/multi-one/u
 import { UpdateChoiceForm } from "@/components/books/question-type/multi-one/choice/choice-update-form";
 import { DeleteQuestionGroupForm } from "@/components/books/question-group/delete-form";
 import RichTextEditor from "@/components/books/question-type/note-completion/rich-text-editor";
+import { UpdateMultiMoreForm } from "@/components/books/question-type/multi-more/update-form";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -30,6 +31,8 @@ export function ModalProvider() {
       <DeleteQuestionGroupForm />
 
       <RichTextEditor />
+
+      <UpdateMultiMoreForm />
     </>
   );
 }
