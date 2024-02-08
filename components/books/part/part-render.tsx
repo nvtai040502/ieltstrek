@@ -1,11 +1,8 @@
 "use client";
-import { Part } from "@prisma/client";
-import { Button } from "../../ui/button";
-import { PartExtended } from "@/types/db";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { PartExtended } from "@/types/db";
 import { useState } from "react";
 import { UpdatePartForm } from "./update-form";
-import { ActionButton } from "../action-button";
 
 export function PartRender({ part }: { part: PartExtended }) {
   const [isEdittingPassage, setIsEdittingPassage] = useState(false);

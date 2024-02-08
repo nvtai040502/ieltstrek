@@ -63,7 +63,8 @@ const RichTextEditor = () => {
     const codeCount = countCodeOccurrences();
     if (codeCount !== noteCompletion.blanks.length) {
       toast.error(
-        "Total Blank must be equal to number question you set in question group",
+        `Total Blank must be equal to number question you set in question group
+        Total Blank: ${codeCount}, Total Questions: ${noteCompletion.blanks.length} `,
       );
       return;
     }
@@ -92,28 +93,69 @@ const RichTextEditor = () => {
   const countCodeOccurrences = () => {
     let codeCount = 0;
     editor.children.forEach((node, nodeIndex) => {
-      node.children.forEach((element, elementIndex) => {
-        if (element.text && element.code) {
-          const path = [nodeIndex, elementIndex];
-          Transforms.setNodes(
-            editor,
-            {
-              questionNumber:
-                noteCompletion.questionGroup.startQuestionNumber + codeCount,
-            },
-            { at: path },
-          );
+      if (node.type === "paragraph") {
+        node.children.forEach((element, elementIndex) => {
+          if (element.text && element.code) {
+            const path = [nodeIndex, elementIndex];
+            Transforms.setNodes(
+              editor,
+              {
+                questionNumber:
+                  noteCompletion.questionGroup.startQuestionNumber + codeCount,
+              },
+              { at: path },
+            );
 
-          codeCount++;
-        }
-      });
+            codeCount++;
+          }
+        });
+      } else if (node.type === "table") {
+        node.children.forEach((tableRow, tableRowIndex) => {
+          tableRow.children.forEach((tableCell, tableCellIndex) => {
+            tableCell.children.forEach((element, elementIndex) => {
+              if (element.text && element.code) {
+                const path = [
+                  nodeIndex,
+                  tableRowIndex,
+                  tableCellIndex,
+                  elementIndex,
+                ];
+                Transforms.setNodes(
+                  editor,
+                  {
+                    questionNumber:
+                      noteCompletion.questionGroup.startQuestionNumber +
+                      codeCount,
+                  },
+                  { at: path },
+                );
+
+                codeCount++;
+              }
+            });
+          });
+          // if (element.text && element.code) {
+          //   const path = [nodeIndex, elementIndex];
+          //   Transforms.setNodes(
+          //     editor,
+          //     {
+          //       questionNumber:
+          //         noteCompletion.questionGroup.startQuestionNumber + codeCount,
+          //     },
+          //     { at: path },
+          //   );
+
+          //   codeCount++;
+          // }
+        });
+      }
     });
     return codeCount;
   };
 
   return (
     <Dialog open={isEdit}>
-      <DialogContentWithScrollArea className="max-w-7xl top-0">
+      <DialogContentWithScrollArea className="max-w-7xl">
         <Slate
           editor={editor}
           initialValue={JSON.parse(noteCompletion.paragraph)}
