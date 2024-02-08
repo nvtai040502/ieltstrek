@@ -39,7 +39,10 @@ export const QuestionGroupSchema = z
       QuestionType.SUMMARY_COMPLETION,
       QuestionType.IDENTIFYING_INFORMATION,
       QuestionType.NOTE_COMPLETION,
+      QuestionType.TABLE_COMPLETION,
     ]),
+    numberColumns: z.coerce.number().optional(),
+    numberRows: z.coerce.number().optional(),
     startQuestionNumber: z.coerce.number().min(1),
     endQuestionNumber: z.coerce.number().min(1),
   })

@@ -26,7 +26,7 @@ import {
   DialogClose,
   DialogContentWithScrollArea,
 } from "@/components/ui/dialog";
-import { ElementRender } from "@/components/text-editor/text-render/elementRender";
+import { ElementRender } from "@/components/text-editor/text-render/element-render";
 import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
 import { useRouter } from "next/navigation";
 import { Transforms } from "slate";

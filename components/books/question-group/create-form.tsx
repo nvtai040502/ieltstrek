@@ -16,6 +16,7 @@ import { createIdentifyingInformation } from "@/actions/books/identifying-infoma
 import { createNoteCompletion } from "@/actions/books/note-completion";
 import { createMultiMoreArray } from "@/actions/books/multi-more";
 import { createMultiOneArray } from "@/actions/books/multi-one";
+import { createTableComplete } from "@/actions/books/table-complete";
 
 export function CreateQuestionGroupForm({
   part,
@@ -56,6 +57,13 @@ export function CreateQuestionGroupForm({
             case "MULTIPLE_CHOICE":
               successfully = await createMultiOneArray({
                 questionGroupId: questionGroup.id,
+              });
+              break;
+            case "TABLE_COMPLETION":
+              successfully = await createTableComplete({
+                questionGroupId: questionGroup.id,
+                numberColumns: 4,
+                numberRows: 4,
               });
               break;
             case "MULTIPLE_CHOICE_MORE_ANSWERS":

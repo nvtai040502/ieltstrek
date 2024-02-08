@@ -109,6 +109,11 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                         summaryCompletion={questionGroup.summaryCompletion}
                       />
                     )} */}
+                    {questionGroup.type === "TABLE_COMPLETION" && (
+                      <NoteCompletionRender
+                        noteCompletion={questionGroup.noteCompletion}
+                      />
+                    )}
                     {questionGroup.type === "IDENTIFYING_INFORMATION" && (
                       <IdentifyingInformationRender
                         identifyingInformation={

@@ -66,7 +66,7 @@ export const createTableComplete = async ({
     await db.noteCompletion.create({
       data: {
         questionGroupId,
-        paragraph: JSON.stringify(noteCompletionInitial),
+        paragraph: JSON.stringify(tableCompleteInitial),
         blanks: {
           createMany: {
             data: questionGroup.questions.map((question) => ({
@@ -84,26 +84,26 @@ export const createTableComplete = async ({
     return false;
   }
 };
-export const updateNoteCompletion = async ({
-  id,
-  paragraph,
-}: {
-  id: number;
-  paragraph: string;
-}): Promise<boolean> => {
-  try {
-    await db.noteCompletion.update({
-      where: {
-        id,
-      },
-      data: {
-        paragraph,
-      },
-    });
+// export const updateNoteCompletion = async ({
+//   id,
+//   paragraph,
+// }: {
+//   id: number;
+//   paragraph: string;
+// }): Promise<boolean> => {
+//   try {
+//     await db.noteCompletion.update({
+//       where: {
+//         id,
+//       },
+//       data: {
+//         paragraph,
+//       },
+//     });
 
-    return true;
-  } catch (error) {
-    console.error("Error updating note completion:", error);
-    return false;
-  }
-};
+//     return true;
+//   } catch (error) {
+//     console.error("Error updating note completion:", error);
+//     return false;
+//   }
+// };

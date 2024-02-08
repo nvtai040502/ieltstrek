@@ -11,11 +11,7 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Input } from "../../ui/input";
-import {
-  MultipleChoiceType,
-  QuestionGroup,
-  QuestionType,
-} from "@prisma/client";
+import { QuestionGroup, QuestionType } from "@prisma/client";
 import { QuestionGroupSchema } from "@/lib/validations/books";
 import {
   Select,
@@ -26,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
 import { UseFormReturn } from "react-hook-form";
+import { useState } from "react";
 
 export function QuestionGroupForm({
   isPending,
@@ -36,6 +33,13 @@ export function QuestionGroupForm({
   form: UseFormReturn<z.infer<typeof QuestionGroupSchema>>;
   onSubmit: (values: z.infer<typeof QuestionGroupSchema>) => void;
 }) {
+  const [selectedType, setSelectedType] = useState<QuestionType>(
+    form.getValues().type,
+  );
+
+  const handleTypeChange = (value: QuestionType) => {
+    setSelectedType(value);
+  };
   return (
     <div className="px-4">
       <Form {...form}>
@@ -85,7 +89,10 @@ export function QuestionGroupForm({
                   <FormLabel>Question Group Type</FormLabel>
                   <Select
                     disabled={isPending}
-                    onValueChange={field.onChange}
+                    onValueChange={(value: QuestionType) => {
+                      handleTypeChange(value);
+                      field.onChange(value);
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -105,6 +112,9 @@ export function QuestionGroupForm({
                       <SelectItem value={QuestionType.SUMMARY_COMPLETION}>
                         Summary Completion
                       </SelectItem>
+                      <SelectItem value={QuestionType.TABLE_COMPLETION}>
+                        Table Completion
+                      </SelectItem>
                       <SelectItem value={QuestionType.IDENTIFYING_INFORMATION}>
                         Identifying Information
                       </SelectItem>
@@ -117,6 +127,49 @@ export function QuestionGroupForm({
                 </FormItem>
               )}
             />
+            {/* Additional form fields for Table Completion */}
+            {selectedType === QuestionType.TABLE_COMPLETION && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="numberColumns"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Columns</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="Enter number of columns"
+                          type="number"
+                          min="1"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="numberRows"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of Rows</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isPending}
+                          placeholder="Enter number of rows"
+                          type="number"
+                          min="1"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
             <div className="flex">
               <FormField
                 control={form.control}

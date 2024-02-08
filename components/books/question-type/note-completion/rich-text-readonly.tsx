@@ -14,7 +14,7 @@ import { withHistory } from "slate-history";
 
 import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
 import { NoteCompletionExtended } from "@/types/db";
-import { ElementRender } from "@/components/text-editor/text-render/elementRender";
+import { ElementRender } from "@/components/text-editor/text-render/element-render";
 import { LeafReadOnlyRender } from "@/components/text-editor/text-render/leaf-render";
 
 declare module "slate" {
@@ -32,11 +32,11 @@ const RichTextReadOnly = ({
 }) => {
   const renderElement = useCallback(
     (props: RenderElementProps) => <ElementRender {...props} />,
-    []
+    [],
   );
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <LeafReadOnlyRender {...props} />,
-    []
+    [],
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   return (
