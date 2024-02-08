@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { UpdateButton } from "../../update-button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Choice } from "@prisma/client";
 
 interface MultiMoreRenderProps {
   multiMore: MultiMoreExtended;
@@ -23,12 +24,29 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
   if (!multiMore) {
     return null;
   }
-  const handleAnswerSelected = (answerSelected: string) => {
+  const handleAnswerSelected = ({
+    checked,
+    choice,
+  }: {
+    checked: boolean;
+    choice: Choice;
+  }) => {
     setCurrentQuestionIndex(multiMore.question.questionNumber - 1);
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [multiMore.question.questionNumber]: answerSelected,
-    }));
+    setUserAnswers((prevAnswers) => {
+      const prevContent = prevAnswers[multiMore.question.questionNumber] || [];
+      const updatedAnswers = Array.isArray(prevContent)
+        ? prevContent // Use prevContent directly if it's already an array
+        : [prevContent]; // Otherwise, convert prevContent to an array
+
+      const newAnswers = checked
+        ? [...updatedAnswers, choice.content]
+        : updatedAnswers.filter((value) => value !== choice.content);
+
+      return {
+        ...prevAnswers,
+        [multiMore.question.questionNumber]: newAnswers,
+      };
+    });
   };
   return (
     <div
@@ -55,7 +73,20 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
         return (
           <div key={choice.id}>
             <div className="flex items-center space-x-2 px-4 w-full hover:bg-secondary">
-              <Checkbox value={choice.content} id={String(choice.id)} />
+              <Checkbox
+                defaultChecked={
+                  userAnswers[multiMore.question.questionNumber]
+                    ? userAnswers[multiMore.question.questionNumber].includes(
+                        choice.content,
+                      )
+                    : false
+                }
+                onCheckedChange={(checked: boolean) =>
+                  handleAnswerSelected({ checked, choice })
+                }
+                value={choice.content}
+                id={String(choice.id)}
+              />
               <Label
                 htmlFor={String(choice.id)}
                 className="py-4 w-full cursor-pointer"

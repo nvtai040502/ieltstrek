@@ -53,7 +53,9 @@ export const MultiOneRender = ({
       </div>
       <RadioGroup
         onValueChange={handleAnswerSelected}
-        defaultValue={userAnswers[multipleChoice.question.questionNumber] || ""}
+        defaultValue={
+          (userAnswers[multipleChoice.question.questionNumber] as string) || ""
+        }
       >
         {multipleChoice.choices.map((choice) => {
           return (

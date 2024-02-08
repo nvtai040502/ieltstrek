@@ -13,8 +13,10 @@ interface ExamContextProps {
   >;
   setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>;
   setActiveTab: Dispatch<SetStateAction<string>>;
-  userAnswers: { [key: string]: string };
-  setUserAnswers: Dispatch<SetStateAction<{ [key: string]: string }>>;
+  userAnswers: { [key: string]: string | string[] };
+  setUserAnswers: Dispatch<
+    SetStateAction<{ [key: string]: string | string[] }>
+  >;
 }
 
 export const ExamContext = createContext<ExamContextProps>({

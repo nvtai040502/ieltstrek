@@ -123,8 +123,7 @@ export function UpdateMultiMoreForm() {
                                         ])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) =>
-                                              value !== String(choice.content),
+                                            (value) => value !== choice.content,
                                           ),
                                         );
                                   }}
