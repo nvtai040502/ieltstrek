@@ -23,7 +23,9 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
         include: {
           passage: {
             include: {
-              passageMultiHeadingArray: true,
+              passageMultiHeadingArray: {
+                orderBy: { id: "asc" },
+              },
             },
           },
           questions: {

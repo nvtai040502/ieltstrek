@@ -75,6 +75,33 @@ export const createPassage = async ({
   }
 };
 
+export const updatePassageMultiHeading = async ({
+  title,
+  content,
+  id,
+}: {
+  title: string;
+  content: string;
+  id: number;
+}) => {
+  try {
+    const passageMultiHeading = await db.passageMultiHeading.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        content,
+      },
+    });
+
+    return passageMultiHeading;
+  } catch (error) {
+    console.error("Error updating Passage:", error);
+    return null;
+  }
+};
+
 export const updatePassage = async ({
   title,
   content,

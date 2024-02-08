@@ -14,6 +14,7 @@ import {
   MultipleChoice,
   MultipleChoiceMoreAnswers,
   Passage,
+  PassageMultiHeading,
 } from "@prisma/client";
 
 export type EditType =
@@ -27,6 +28,7 @@ export type EditType =
   // Passage
   | "editPassage"
   | "createPassage"
+  | "editPassageMultiHeading"
   // Question Group
   | "editQuestionGroup"
   | "deleteQuestionGroup"
@@ -43,6 +45,7 @@ export interface EditData {
   multiMore?: MultiMoreExtended;
   part?: PartExtended;
   passage?: Passage;
+  passageMultiHeading?: PassageMultiHeading;
 }
 
 interface EditContextProps {

@@ -27,7 +27,14 @@ export function PassageRender({ part }: { part: PartExtended }) {
             passage.passageMultiHeadingArray.map((item) => {
               return (
                 <div key={item.id}>
-                  <p className="font-bold"> {item.title}</p>
+                  <div className="flex justify-between">
+                    <p className="font-bold"> {item.title}</p>
+                    <ActionButton
+                      actionType="update"
+                      editType="editPassageMultiHeading"
+                      data={{ passageMultiHeading: item }}
+                    />
+                  </div>
                   <p className=" whitespace-pre-line ">{item.content}</p>
                 </div>
               );

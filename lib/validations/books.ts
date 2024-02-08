@@ -31,6 +31,10 @@ export const PassageSchema = z.object({
   description: z.string().optional(),
   type: z.enum([PassageType.PASSAGE_SIMPLE, PassageType.PASSAGE_MULTI_HEADING]),
 });
+export const PassageMultiHeadingSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+});
 
 export const QuestionGroupSchema = z
   .object({
