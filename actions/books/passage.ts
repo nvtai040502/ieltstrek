@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { Passage, PassageType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 export const createPassageSimple = async ({
   title,
   partId,
@@ -84,22 +85,38 @@ export const updatePassageMultiHeading = async ({
   content: string;
   id: number;
 }) => {
-  try {
-    const passageMultiHeading = await db.passageMultiHeading.update({
-      where: {
-        id,
+  const passageMultiHeading = await db.passageMultiHeading.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      passage: {
+        select: {
+          part: {
+            select: {
+              assessmentId: true,
+            },
+          },
+        },
       },
-      data: {
-        title,
-        content,
-      },
-    });
-
-    return passageMultiHeading;
-  } catch (error) {
-    console.error("Error updating Passage:", error);
-    return null;
+    },
+  });
+  if (!passageMultiHeading) {
+    throw new Error("Id not found, please try again.");
   }
+  await db.passageMultiHeading.update({
+    where: {
+      id,
+    },
+    data: {
+      title,
+      content,
+    },
+  });
+  revalidatePath(
+    `/assessments/${passageMultiHeading.passage.part.assessmentId}`,
+  );
+  return;
 };
 
 export const updatePassage = async ({

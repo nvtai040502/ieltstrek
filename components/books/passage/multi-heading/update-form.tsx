@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEditHook } from "@/global/use-edit-hook";
+import { catchError } from "@/lib/utils";
 import {
   PassageMultiHeadingSchema,
   PassageSchema,
@@ -45,25 +46,22 @@ export function UpdatePassageMultiHeadingForm() {
       form.setValue("content", multiHeading.content);
     }
   }, [multiHeading, form]);
-  const router = useRouter();
   if (!multiHeading || !isModalOpen) {
     return null;
   }
   const onSubmit = (values: z.infer<typeof PassageMultiHeadingSchema>) => {
     startTransition(async () => {
-      const multiHeadingUpdated = await updatePassageMultiHeading({
-        title: values.title,
-        content: values.content,
-        id: multiHeading.id,
-      });
-      if (multiHeadingUpdated) {
-        toast.success("Successfully updated Passage!");
-        form.reset();
-        router.refresh();
-      } else {
-        toast("Failed to create passage");
+      try {
+        await updatePassageMultiHeading({
+          title: values.title,
+          content: values.content,
+          id: multiHeading.id,
+        });
+        toast.success("Updated");
+        onClose();
+      } catch (err) {
+        catchError(err);
       }
-      onClose();
     });
   };
   return (
