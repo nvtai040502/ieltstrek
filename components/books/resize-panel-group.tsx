@@ -16,6 +16,7 @@ import { MultiOneArrayRender } from "./question-type/multiple-choice/multi-one";
 import { MultiMoreArrayRender } from "./question-type/multiple-choice/multi-more";
 import { ActionButton } from "./action-button";
 import { MatchingHeadingRender } from "./question-type/matching-heading";
+import { PassageDragAndDropRender } from "./passage/dnd-render";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);

@@ -15,32 +15,30 @@ export const MatchingHeadingRender = ({
 
   return (
     <>
-      <DragDropContext onDragEnd={() => {}}>
-        <Droppable droppableId="matching-heading" direction="vertical">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {matchingHeading.matchingHeadingItemArray.map((item) => (
-                <Draggable
-                  draggableId={`item ${item.id}`}
-                  index={item.id}
-                  key={item.id}
-                >
-                  {(provided) => (
-                    <div
-                      {...provided.draggableProps}
-                      ref={provided.innerRef}
-                      className=" border-4 p-4"
-                    >
-                      <div {...provided.dragHandleProps}>{item.content}</div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <Droppable droppableId="matching-heading" direction="vertical">
+        {(provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            {matchingHeading.matchingHeadingItemArray.map((item) => (
+              <Draggable
+                draggableId={`item ${item.id}`}
+                index={item.id}
+                key={item.id}
+              >
+                {(provided) => (
+                  <div
+                    {...provided.draggableProps}
+                    ref={provided.innerRef}
+                    className=" border-4 p-4"
+                  >
+                    <div {...provided.dragHandleProps}>{item.content}</div>
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </>
   );
 };

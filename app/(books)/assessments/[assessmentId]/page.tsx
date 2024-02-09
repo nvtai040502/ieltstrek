@@ -2,7 +2,7 @@ import { AssessmentSiteHeader } from "@/components/books/assessment-side-header"
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { AssessmentExtended } from "@/types/db";
-import { AllContentTabs } from "@/components/books/all-content-tabs";
+import { TabRender } from "@/components/books/tab-render";
 
 interface AssessmentIdPageProps {
   params: {
@@ -113,7 +113,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
   return (
     <div className="max-h-screen h-screen flex flex-col">
       <AssessmentSiteHeader />
-      <AllContentTabs assessment={assessment} />
+      <TabRender assessment={assessment} />
     </div>
   );
 };

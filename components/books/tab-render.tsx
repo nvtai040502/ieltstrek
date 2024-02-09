@@ -9,10 +9,10 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Tabs, TabsContent, TabsList } from "../ui/tabs";
 import ButtonNavigateQuestions from "./button-nav-questions";
-import { PartRender } from "./part/part-render";
 import ResizePanelGroup from "./resize-panel-group";
+import ResizePanelGroupDragAndDrop from "./resize-panel-group-dnd";
 
-export const AllContentTabs = ({
+export const TabRender = ({
   assessment,
 }: {
   assessment: AssessmentExtended;
@@ -49,10 +49,21 @@ export const AllContentTabs = ({
           value={String(part.id)}
           className="overflow-hidden flex flex-col"
         >
-          <PartRender part={part} />
+          <div className="p-4">
+            <div className="px-4 py-2 border-foreground rounded-md border items-center">
+              <div className="flex gap-2 justify-between items-center">
+                <div>
+                  <p className=" font-bold">{part.title} </p>
+                  <p> {part.description} </p>
+                </div>
+                {/* <ActionButton setIsUpdating={() => setIsEdittingPassage(true)} /> */}
+              </div>
+            </div>
+          </div>
           <ButtonNavigateQuestions part={part} partIndex={i} />
           <div className="overflow-y-auto">
-            <ResizePanelGroup part={part} />
+            {/* <ResizePanelGroup part={part} /> */}
+            <ResizePanelGroupDragAndDrop part={part} />
           </div>
         </TabsContent>
       ))}
