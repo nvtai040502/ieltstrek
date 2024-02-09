@@ -52,6 +52,7 @@ enum QuestionType {
   SUMMARY_COMPLETION
   NOTE_COMPLETION
   TABLE_COMPLETION
+  MATCHING_HEADING
 }
 
 model QuestionGroup {
@@ -72,6 +73,7 @@ model QuestionGroup {
   multiMoreArray         MultipleChoiceMoreAnswers[]
   summaryCompletion      SummaryCompletion?
   identifyingInformation IdentifyingInformation?
+  matchingHeading        MatchingHeading?
   noteCompletion         NoteCompletion?
 }
 
@@ -107,6 +109,31 @@ model NoteCompletion {
   blanks          Blank[]
   questionGroupId Int           @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
+model MatchingHeading {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  matchingHeadingItemArray MatchingHeadingItem[]
+
+  questionGroupId Int           @unique
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
+model MatchingHeadingItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  content String
+
+  passageMultiHeadingId Int?                 @unique
+  passageMultiHeading   PassageMultiHeading? @relation(fields: [passageMultiHeadingId], references: [id], onDelete: Cascade)
+
+  matchingHeadingId Int
+  matchingHeading   MatchingHeading @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
 }
 
 model Blank {
@@ -245,6 +272,8 @@ model PassageMultiHeading {
 
   title   String
   content String
+
+  matchingHeadingItem MatchingHeadingItem?
 
   passageId Int
   passage   Passage @relation(fields: [passageId], references: [id], onDelete: Cascade)

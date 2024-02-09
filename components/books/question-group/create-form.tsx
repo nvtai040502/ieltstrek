@@ -4,6 +4,7 @@ import { createMultiMoreArray } from "@/actions/books/multi-more";
 import { createMultiOneArray } from "@/actions/books/multi-one";
 import { createNoteCompletion } from "@/actions/books/note-completion";
 import { createQuestionGroup } from "@/actions/books/question-group";
+import { createMatchingHeading } from "@/actions/books/question-type/matching-heading";
 import { createTableComplete } from "@/actions/books/table-complete";
 import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEditHook } from "@/global/use-edit-hook";
-import { QuestionGroupSchema } from "@/lib/validations/books";
+import { QuestionGroupSchema } from "@/lib/validations/question-group";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { QuestionType } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -74,6 +75,11 @@ export function CreateQuestionGroupForm() {
           switch (questionGroup.type) {
             case "MULTIPLE_CHOICE":
               successfully = await createMultiOneArray({
+                questionGroupId: questionGroup.id,
+              });
+              break;
+            case "MATCHING_HEADING":
+              successfully = await createMatchingHeading({
                 questionGroupId: questionGroup.id,
               });
               break;
