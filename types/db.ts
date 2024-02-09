@@ -4,6 +4,8 @@ import {
   Choice,
   IdentifyingInformation,
   IdentifyingInformationItem,
+  MatchingHeading,
+  MatchingHeadingItem,
   MultipleChoice,
   MultipleChoiceMoreAnswers,
   NoteCompletion,
@@ -29,9 +31,14 @@ export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
   choices: Choice[];
   question: Question;
 };
-
+export type MatchingHeadingExtended = MatchingHeading & {
+  matchingHeadingItemArray: MatchingHeadingItem[];
+};
+export type PassageMultiHeadingExtended = PassageMultiHeading & {
+  matchingHeadingItem?: MatchingHeadingItem;
+};
 export type PassageExtended = Passage & {
-  passageMultiHeadingArray: PassageMultiHeading[];
+  passageMultiHeadingArray: PassageMultiHeadingExtended[];
 };
 
 export type QuestionGroupExtended = QuestionGroup & {
@@ -40,6 +47,7 @@ export type QuestionGroupExtended = QuestionGroup & {
   identifyingInformation?: IdentifyingInformationExtended | null;
   noteCompletion?: NoteCompletionExtended | null;
   multiMoreArray: MultiMoreExtended[];
+  matchingHeading?: MatchingHeadingExtended | null;
 };
 export type SummaryCompletionItemExtended = SummaryCompletionItem & {
   question: Question;

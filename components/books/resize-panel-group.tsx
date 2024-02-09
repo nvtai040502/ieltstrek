@@ -15,6 +15,7 @@ import { IdentifyingInformationRender } from "./question-type/identifying-inform
 import { MultiOneArrayRender } from "./question-type/multiple-choice/multi-one";
 import { MultiMoreArrayRender } from "./question-type/multiple-choice/multi-more";
 import { ActionButton } from "./action-button";
+import { MatchingHeadingRender } from "./question-type/matching-heading";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
@@ -96,11 +97,12 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                         multiMoreArray={questionGroup.multiMoreArray}
                       />
                     )}
-                    {/* {questionGroup.type === "SUMMARY_COMPLETION" && (
-                      <SummaryCompletionRender
-                        summaryCompletion={questionGroup.summaryCompletion}
+
+                    {questionGroup.type === "MATCHING_HEADING" && (
+                      <MatchingHeadingRender
+                        matchingHeading={questionGroup.matchingHeading}
                       />
-                    )} */}
+                    )}
                     {questionGroup.type === "TABLE_COMPLETION" && (
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}
