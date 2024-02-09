@@ -2,6 +2,7 @@
 import { PartExtended } from "@/types/db";
 import { ActionButton } from "../action-button";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { cn } from "@/lib/utils";
 
 export function PassageDragAndDropRender({ part }: { part: PartExtended }) {
   const passage = part.passage;
@@ -24,39 +25,39 @@ export function PassageDragAndDropRender({ part }: { part: PartExtended }) {
             <p className="whitespace-pre-line"> {passage.content} </p>
           )}
 
-          {passage.type === "PASSAGE_MULTI_HEADING" && (
-            <Droppable droppableId="passage-heading" direction="vertical">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {passage.passageMultiHeadingArray.map((item) => (
-                    <Draggable
-                      draggableId={`passageHeading ${item.id}`}
-                      index={item.id}
-                      key={item.id}
-                    >
-                      {(provided) => (
-                        <div>
-                          <div
-                            {...provided.draggableProps}
-                            ref={provided.innerRef}
-                            className=" border-4 p-4"
-                          >
-                            <div {...provided.dragHandleProps}>
-                              {item.title}
-                            </div>
-                          </div>
-                          <p className=" whitespace-pre-line ">
-                            {item.content}
-                          </p>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          )}
+          {passage.type === "PASSAGE_MULTI_HEADING" &&
+            passage.passageMultiHeadingArray.map((item) => (
+              <div key={item.id}>
+                {item.questionId ? (
+                  <Droppable
+                    // isCombineEnabled
+                    ignoreContainerClipping={true}
+                    droppableId={`passageHeading ${item.id}`}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        className={cn(
+                          "",
+                          snapshot.isDraggingOver ? "bg-red-500" : "",
+                        )}
+                        {...provided.droppableProps}
+                      >
+                        {!snapshot.isDraggingOver && (
+                          <p className="bg-red-500 w-full p-4"></p>
+                        )}
+
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                ) : (
+                  <h2>{item.title}</h2>
+                )}
+
+                <p className=" whitespace-pre-line ">{item.content}</p>
+              </div>
+            ))}
         </div>
       ) : (
         <>

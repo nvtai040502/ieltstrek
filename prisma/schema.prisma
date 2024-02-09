@@ -89,6 +89,7 @@ model Question {
   summaryCompletionItem      SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
   blank                      Blank?
+  passageMultiHeading        PassageMultiHeading?
   partId                     Int
   part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
   assessmentId               Int
@@ -273,6 +274,8 @@ model PassageMultiHeading {
   title   String
   content String
 
+  questionId          Int?                 @unique
+  question            Question?            @relation(fields: [questionId], references: [id], onDelete: Cascade)
   matchingHeadingItem MatchingHeadingItem?
 
   passageId Int

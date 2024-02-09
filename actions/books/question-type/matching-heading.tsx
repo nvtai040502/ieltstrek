@@ -46,19 +46,33 @@ export const createMatchingHeading = async ({
       "The total number of headings in the passage is currently smaller than the total number of questions you want to create!",
     );
   }
-
-  const matchingHeadingItems = Array.from({ length: totalListHeading }).map(
-    (_, i) => ({
-      content: i < totalQuestions ? passageHeadings[i].content : "a",
-      passageMultiHeadingId: i < totalQuestions ? passageHeadings[i].id : null,
-    }),
-  );
-
+  {
+    questionGroup.questions.map(async (question, i) => {
+      await db.passageMultiHeading.update({
+        where: {
+          id: passageHeadings[i].id,
+        },
+        data: {
+          questionId: question.id,
+        },
+      });
+    });
+  }
   await db.matchingHeading.create({
     data: {
       questionGroupId: questionGroup.id,
       matchingHeadingItemArray: {
-        createMany: { data: matchingHeadingItems },
+        create: Array.from({ length: totalListHeading }).map((_, i) => ({
+          content: i < totalQuestions ? passageHeadings[i].content : "a",
+          passageMultiHeadingId:
+            i < totalQuestions ? passageHeadings[i].id : null,
+          // passageMultiHeading: {
+          //   connect: {
+          //     questionId:
+          //       i < totalQuestions ? questionGroup.questions[i].id : null,
+          //   },
+          // },
+        })),
       },
     },
   });
