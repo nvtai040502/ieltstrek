@@ -29,7 +29,7 @@ import { z } from "zod";
 
 export function UpdateMatchingHeadingForm() {
   const [isPending, startTransition] = useTransition();
-  const [selectedFake, setSelectedFake] = useState<
+  const [selectedFakeArray, setSelectedFakeArray] = useState<
     { [key: string]: boolean }[]
   >([]);
   const [customValue, setCustomValue] = useState("");
@@ -47,9 +47,20 @@ export function UpdateMatchingHeadingForm() {
   useEffect(() => {
     if (matchingHeading) {
       form.setValue("title", matchingHeading.title);
-      form.setValue(
-        "headingItems",
-        matchingHeading.matchingHeadingItemArray.map((item) => item.content),
+      matchingHeading.matchingHeadingItemArray.forEach((item, index) => {
+        form.setValue(
+          `headingItems.${index}`,
+          item.passageMultiHeadingId !== null
+            ? String(item.passageMultiHeadingId)
+            : item.content,
+        );
+      });
+      setSelectedFakeArray(() =>
+        matchingHeading.matchingHeadingItemArray.map((item) =>
+          item.passageMultiHeadingId === null
+            ? { [String(item.id)]: true }
+            : {},
+        ),
       );
     }
   }, [form, matchingHeading]);
@@ -57,13 +68,13 @@ export function UpdateMatchingHeadingForm() {
     return null;
   }
   const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
-    const selectedContent = values.headingItems.map((itemId: string) => {
-      const item = matchingHeading.passageHeadingArray.find(
-        (passageHeading) => String(passageHeading.id) === itemId,
-      );
-      return item ? item.content : itemId;
-    });
-    console.log(selectedContent);
+    // const selectedContent = values.headingItems.map((itemId: string) => {
+    //   const item = matchingHeading.passageHeadingArray.find(
+    //     (passageHeading) => String(passageHeading.id) === itemId,
+    //   );
+    //   return item ? item.content : itemId;
+    // });
+    console.log(values);
     // startTransition(async () => {
     //   try {
     //     await updateMatchingHeading({
@@ -109,23 +120,28 @@ export function UpdateMatchingHeadingForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Question Group Type</FormLabel>
+
                       <Select
                         disabled={isPending}
                         onValueChange={(value) => {
                           if (value === "fake") {
-                            setSelectedFake((prev) => ({
+                            setSelectedFakeArray((prev) => ({
                               ...prev,
                               [String(item.id)]: true,
                             }));
                           } else {
-                            setSelectedFake((prev) => ({
+                            setSelectedFakeArray((prev) => ({
                               ...prev,
                               [String(item.id)]: false,
                             }));
                             field.onChange(value);
                           }
                         }}
-                        // defaultValue={field.value}
+                        defaultValue={
+                          item.passageMultiHeadingId !== null
+                            ? String(item.passageMultiHeadingId)
+                            : "fake"
+                        }
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -146,12 +162,18 @@ export function UpdateMatchingHeadingForm() {
                           <SelectItem value="fake">Fake</SelectItem>
                         </SelectContent>
                       </Select>
-                      {selectedFake[item.id] && (
-                        <Input
-                          // value={field.value}
-                          onChange={field.onChange}
-                        />
-                      )}
+                      {selectedFakeArray.length &&
+                        selectedFakeArray.find(
+                          (selectedItem) =>
+                            selectedItem.hasOwnProperty(String(item.id)) &&
+                            selectedItem[String(item.id)],
+                        ) && (
+                          <Input
+                            defaultValue={field.value}
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
+                        )}
 
                       <FormMessage />
                     </FormItem>
