@@ -11,17 +11,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useEditHook } from "@/global/use-edit-hook";
 import { catchError } from "@/lib/utils";
 import { MatchingHeadingSchema } from "@/lib/validations/question-type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 export function UpdateMatchingHeadingForm() {
   const [isPending, startTransition] = useTransition();
+  const [customValue, setCustomValue] = useState("");
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === "editMatchingHeading";
   const matchingHeading = data?.matchingHeading;
@@ -46,19 +54,26 @@ export function UpdateMatchingHeadingForm() {
     return null;
   }
   const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
-    startTransition(async () => {
-      try {
-        await updateMatchingHeading({
-          title: values.title,
-          headingItems: values.headingItems,
-          id: matchingHeading.id,
-        });
-        toast.success("Updated");
-        onClose();
-      } catch (err) {
-        catchError(err);
-      }
+    const selectedContent = values.headingItems.map((itemId: string) => {
+      const item = matchingHeading.passageHeadingArray.find(
+        (passageHeading) => String(passageHeading.id) === itemId,
+      );
+      return item ? item.content : "";
     });
+    console.log(selectedContent);
+    // startTransition(async () => {
+    //   try {
+    //     await updateMatchingHeading({
+    //       title: values.title,
+    //       headingItems: values.headingItems,
+    //       id: matchingHeading.id,
+    //     });
+    //     toast.success("Updated");
+    //     onClose();
+    //   } catch (err) {
+    //     catchError(err);
+    //   }
+    // });
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -85,18 +100,36 @@ export function UpdateMatchingHeadingForm() {
               />
               {matchingHeading.matchingHeadingItemArray.map((item, i) => (
                 <FormField
-                  control={form.control}
                   key={item.id}
+                  control={form.control}
                   name={`headingItems.${i}`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isPending}
-                          value={field.value || ""}
-                        />
-                      </FormControl>
+                      <FormLabel>Question Group Type</FormLabel>
+                      <Select
+                        disabled={isPending}
+                        onValueChange={field.onChange}
+                        // defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a type for question" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {matchingHeading.passageHeadingArray.map(
+                            (passageHeading) => (
+                              <SelectItem
+                                key={passageHeading.id}
+                                value={String(passageHeading.id)}
+                              >
+                                {passageHeading.content}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+
                       <FormMessage />
                     </FormItem>
                   )}

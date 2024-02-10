@@ -62,6 +62,11 @@ export const createMatchingHeading = async ({
     data: {
       questionGroupId: questionGroup.id,
       title: "List of headings",
+      passageHeadingArray: {
+        connect: passageHeadings.map((passageHeading) => ({
+          id: passageHeading.id,
+        })),
+      },
       matchingHeadingItemArray: {
         create: Array.from({ length: totalListHeading }).map((_, i) => ({
           content:
@@ -70,12 +75,6 @@ export const createMatchingHeading = async ({
               : `a ${i}`,
           passageMultiHeadingId:
             i < totalQuestions ? passageHeadings[i].id : null,
-          // passageMultiHeading: {
-          //   connect: {
-          //     questionId:
-          //       i < totalQuestions ? questionGroup.questions[i].id : null,
-          //   },
-          // },
         })),
       },
     },

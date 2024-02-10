@@ -33,6 +33,7 @@ export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
 };
 export type MatchingHeadingExtended = MatchingHeading & {
   matchingHeadingItemArray: MatchingHeadingItem[];
+  passageHeadingArray: PassageMultiHeadingExtended[];
 };
 export type PassageMultiHeadingExtended = PassageMultiHeading & {
   matchingHeadingItem?: MatchingHeadingItem;

@@ -119,6 +119,7 @@ model MatchingHeading {
 
   title                    String
   matchingHeadingItemArray MatchingHeadingItem[]
+  passageHeadingArray      PassageMultiHeading[]
 
   questionGroupId Int           @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
@@ -278,6 +279,8 @@ model PassageMultiHeading {
   questionId          Int?                 @unique
   question            Question?            @relation(fields: [questionId], references: [id], onDelete: Cascade)
   matchingHeadingItem MatchingHeadingItem?
+  matchingHeadingId   Int?
+  matchingHeading     MatchingHeading?     @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
 
   passageId Int
   passage   Passage @relation(fields: [passageId], references: [id], onDelete: Cascade)

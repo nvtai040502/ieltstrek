@@ -41,6 +41,9 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
             include: {
               matchingHeading: {
                 include: {
+                  passageHeadingArray: {
+                    orderBy: { id: "asc" },
+                  },
                   matchingHeadingItemArray: {
                     orderBy: { id: "asc" },
                   },
