@@ -29,6 +29,9 @@ import { z } from "zod";
 
 export function UpdateMatchingHeadingForm() {
   const [isPending, startTransition] = useTransition();
+  const [selectedFake, setSelectedFake] = useState<
+    { [key: string]: boolean }[]
+  >([]);
   const [customValue, setCustomValue] = useState("");
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === "editMatchingHeading";
@@ -58,7 +61,7 @@ export function UpdateMatchingHeadingForm() {
       const item = matchingHeading.passageHeadingArray.find(
         (passageHeading) => String(passageHeading.id) === itemId,
       );
-      return item ? item.content : "";
+      return item ? item.content : itemId;
     });
     console.log(selectedContent);
     // startTransition(async () => {
@@ -108,7 +111,20 @@ export function UpdateMatchingHeadingForm() {
                       <FormLabel>Question Group Type</FormLabel>
                       <Select
                         disabled={isPending}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          if (value === "fake") {
+                            setSelectedFake((prev) => ({
+                              ...prev,
+                              [String(item.id)]: true,
+                            }));
+                          } else {
+                            setSelectedFake((prev) => ({
+                              ...prev,
+                              [String(item.id)]: false,
+                            }));
+                            field.onChange(value);
+                          }
+                        }}
                         // defaultValue={field.value}
                       >
                         <FormControl>
@@ -127,8 +143,15 @@ export function UpdateMatchingHeadingForm() {
                               </SelectItem>
                             ),
                           )}
+                          <SelectItem value="fake">Fake</SelectItem>
                         </SelectContent>
                       </Select>
+                      {selectedFake[item.id] && (
+                        <Input
+                          // value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
 
                       <FormMessage />
                     </FormItem>
