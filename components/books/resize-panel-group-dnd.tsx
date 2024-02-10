@@ -43,6 +43,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source, type } = result;
     console.log("🚀 ~ onDragEnd ~ result:", result);
+
     if (
       !destination ||
       (destination.droppableId === source.droppableId &&
@@ -55,18 +56,27 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
       const questionNumber = Number(destination.droppableId);
       const itemToRemove = listHeading[source.index];
       console.log("🚀 ~ onDragEnd ~ itemToRemove:", itemToRemove);
-      // const updatedListHeading = listHeading.filter(
-      //   (item) => item.id !== source.index,
-      // );
-      // setListHeading(updatedListHeading);
-      // if (!userAnswers[questionNumber]) {
-      //   setUserAnswers((prev) => {
-      //     const updatedAnswers = { ...prev };
-      //     updatedAnswers[questionNumber] = itemToRemove!.content;
-      //     return updatedAnswers;
-      //   });
-      // } else {
-      // }
+
+      // Remove the dragged item from listHeading
+      const updatedListHeading = listHeading.filter(
+        (_, index) => index !== source.index,
+      );
+      setListHeading(updatedListHeading);
+
+      // Update userAnswers with the dragged item
+      setUserAnswers((prev) => {
+        const updatedAnswers = { ...prev };
+        updatedAnswers[questionNumber] = itemToRemove;
+        return updatedAnswers;
+      });
+
+      // Update listHeading with the content of the userAnswers at the dragged item's index
+      if (userAnswers[questionNumber]) {
+        setListHeading((prev) => [
+          ...prev,
+          userAnswers[questionNumber] as string,
+        ]);
+      }
     }
   };
   return (
