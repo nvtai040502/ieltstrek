@@ -32,7 +32,6 @@ export function UpdateMatchingHeadingForm() {
   const [selectedFakeArray, setSelectedFakeArray] = useState<
     { [key: string]: boolean }[]
   >([]);
-  const [customValue, setCustomValue] = useState("");
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === "editMatchingHeading";
   const matchingHeading = data?.matchingHeading;
@@ -59,7 +58,7 @@ export function UpdateMatchingHeadingForm() {
         matchingHeading.matchingHeadingItemArray.map((item) =>
           item.passageMultiHeadingId === null
             ? { [String(item.id)]: true }
-            : {},
+            : { [String(item.id)]: false },
         ),
       );
     }
@@ -68,13 +67,14 @@ export function UpdateMatchingHeadingForm() {
     return null;
   }
   const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
-    // const selectedContent = values.headingItems.map((itemId: string) => {
-    //   const item = matchingHeading.passageHeadingArray.find(
-    //     (passageHeading) => String(passageHeading.id) === itemId,
-    //   );
-    //   return item ? item.content : itemId;
-    // });
-    console.log(values);
+    const selectedContent = values.headingItems.map((itemId: string) => {
+      const item = matchingHeading.passageHeadingArray.find(
+        (passageHeading) => String(passageHeading.id) === itemId,
+      );
+      return item ? item.content : itemId;
+    });
+    // console.log(selectedContent);
+    // console.log(selectedFakeArray);
     // startTransition(async () => {
     //   try {
     //     await updateMatchingHeading({
@@ -124,18 +124,23 @@ export function UpdateMatchingHeadingForm() {
                       <Select
                         disabled={isPending}
                         onValueChange={(value) => {
-                          if (value === "fake") {
-                            setSelectedFakeArray((prev) => ({
-                              ...prev,
-                              [String(item.id)]: true,
-                            }));
-                          } else {
-                            setSelectedFakeArray((prev) => ({
-                              ...prev,
-                              [String(item.id)]: false,
-                            }));
-                            field.onChange(value);
-                          }
+                          setSelectedFakeArray((prev) => {
+                            const updatedState = [...prev];
+                            const id = String(item.id);
+                            const index = updatedState.findIndex((obj) =>
+                              obj.hasOwnProperty(id),
+                            );
+                            if (index !== -1) {
+                              if (value === "fake") {
+                                updatedState[index][String(item.id)] = true;
+                              } else {
+                                updatedState[index][String(item.id)] = false;
+                                field.onChange(value);
+                              }
+                            }
+
+                            return updatedState;
+                          });
                         }}
                         defaultValue={
                           item.passageMultiHeadingId !== null
