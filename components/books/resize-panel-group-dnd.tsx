@@ -19,7 +19,6 @@ import { MatchingHeadingRender } from "./question-type/matching-heading";
 import { PassageDragAndDropRender } from "./passage/dnd-render";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { QuestionType } from "@prisma/client";
-import { previous } from "slate";
 
 const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
   const {
@@ -55,22 +54,18 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
     if (type === QuestionType.MATCHING_HEADING) {
       const questionNumber = Number(destination.droppableId);
       const itemToRemove = listHeading[source.index];
-      console.log("🚀 ~ onDragEnd ~ itemToRemove:", itemToRemove);
 
-      // Remove the dragged item from listHeading
       const updatedListHeading = listHeading.filter(
         (_, index) => index !== source.index,
       );
       setListHeading(updatedListHeading);
 
-      // Update userAnswers with the dragged item
       setUserAnswers((prev) => {
         const updatedAnswers = { ...prev };
         updatedAnswers[questionNumber] = itemToRemove;
         return updatedAnswers;
       });
 
-      // Update listHeading with the content of the userAnswers at the dragged item's index
       if (userAnswers[questionNumber]) {
         setListHeading((prev) => [
           ...prev,

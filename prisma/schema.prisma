@@ -117,6 +117,7 @@ model MatchingHeading {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  title                    String
   matchingHeadingItemArray MatchingHeadingItem[]
 
   questionGroupId Int           @unique

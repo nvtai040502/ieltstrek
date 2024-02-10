@@ -24,3 +24,10 @@ export const MultiMoreSchema = z.object({
     }),
   explanation: z.string().optional(),
 });
+
+export const MatchingHeadingSchema = z.object({
+  title: z.string().min(1, {
+    message: "Title Multiple Choice is required",
+  }),
+  headingItems: z.array(z.string().min(1)),
+});

@@ -61,9 +61,13 @@ export const createMatchingHeading = async ({
   await db.matchingHeading.create({
     data: {
       questionGroupId: questionGroup.id,
+      title: "List of headings",
       matchingHeadingItemArray: {
         create: Array.from({ length: totalListHeading }).map((_, i) => ({
-          content: i < totalQuestions ? passageHeadings[i].content : "a",
+          content:
+            i < totalQuestions
+              ? `${passageHeadings[i].content} ${i}`
+              : `a ${i}`,
           passageMultiHeadingId:
             i < totalQuestions ? passageHeadings[i].id : null,
           // passageMultiHeading: {
@@ -78,5 +82,69 @@ export const createMatchingHeading = async ({
   });
 
   revalidatePath(`/assessments/${questionGroup.part.assessmentId}`);
+  return true;
+};
+
+export const updateMatchingHeading = async ({
+  id,
+  headingItems,
+  title,
+}: {
+  id: number;
+  headingItems: string[];
+  title: string;
+}) => {
+  const matchingHeading = await db.matchingHeading.findUnique({
+    where: { id },
+    select: {
+      questionGroup: {
+        select: {
+          part: {
+            select: {
+              assessmentId: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!matchingHeading) {
+    throw new Error("Matching Heading Id not found");
+  }
+  const items = await db.matchingHeadingItem.findMany({
+    where: {
+      matchingHeadingId: id,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+
+  if (items.length !== headingItems.length) {
+    throw new Error(
+      "Number of items doesn't match the number of heading items",
+    );
+  }
+
+  await Promise.all(
+    items.map(async (item, i) => {
+      await db.matchingHeadingItem.update({
+        where: { id: item.id },
+        data: { content: headingItems[i] },
+      });
+    }),
+  );
+
+  await db.matchingHeading.update({
+    where: { id },
+    data: {
+      title,
+    },
+  });
+
+  revalidatePath(
+    `/assessments/${matchingHeading.questionGroup.part.assessmentId}`,
+  );
   return true;
 };

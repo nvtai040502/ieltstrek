@@ -62,7 +62,7 @@ export function PassageDragAndDropRender({ part }: { part: PartExtended }) {
                           (userAnswers[item.question!.questionNumber] ? (
                             <p>{userAnswers[item.question!.questionNumber]}</p>
                           ) : (
-                            <p className="bg-red-500 w-full p-4"></p>
+                            <p className="border border-secondary-foreground w-full p-4"></p>
                           ))}
 
                         {provided.placeholder}

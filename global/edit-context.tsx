@@ -1,6 +1,7 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 import {
   IdentifyingInformationItemExtended,
+  MatchingHeadingExtended,
   MultiMoreExtended,
   MultiOneExtended,
   NoteCompletionExtended,
@@ -33,6 +34,7 @@ export type EditType =
   | "editQuestionGroup"
   | "deleteQuestionGroup"
   | "createQuestionGroup"
+  | "editMatchingHeading"
   | null;
 
 export interface EditData {
@@ -46,6 +48,7 @@ export interface EditData {
   part?: PartExtended;
   passage?: Passage;
   passageMultiHeading?: PassageMultiHeading;
+  matchingHeading?: MatchingHeadingExtended;
 }
 
 interface EditContextProps {
