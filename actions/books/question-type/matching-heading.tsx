@@ -96,8 +96,14 @@ export const updateMatchingHeading = async ({
   const matchingHeading = await db.matchingHeading.findUnique({
     where: { id },
     select: {
+      passageHeadingArray: {
+        orderBy: { id: "asc" },
+      },
       questionGroup: {
         select: {
+          questions: {
+            orderBy: { questionNumber: "asc" },
+          },
           part: {
             select: {
               assessmentId: true,
@@ -111,7 +117,7 @@ export const updateMatchingHeading = async ({
   if (!matchingHeading) {
     throw new Error("Matching Heading Id not found");
   }
-  const items = await db.matchingHeadingItem.findMany({
+  const matchingHeadingItems = await db.matchingHeadingItem.findMany({
     where: {
       matchingHeadingId: id,
     },
@@ -120,17 +126,56 @@ export const updateMatchingHeading = async ({
     },
   });
 
-  if (items.length !== headingItems.length) {
+  if (matchingHeadingItems.length !== headingItems.length) {
     throw new Error(
       "Number of items doesn't match the number of heading items",
     );
   }
 
+  matchingHeading.passageHeadingArray.map(async (passageHeading) => {
+    await db.passageMultiHeading.update({
+      where: {
+        id: passageHeading.id,
+      },
+      data: {
+        questionId: null,
+      },
+    });
+  });
+
+  const passageHeadingIdArray = headingItems.map((content: string) => {
+    const item = matchingHeading.passageHeadingArray.find(
+      (passageHeading) => String(passageHeading.id) === content,
+    );
+    if (item) {
+      return item.id;
+    }
+  });
+
+  const filteredPassageHeadingIdArray = passageHeadingIdArray.filter(
+    (id) => id !== undefined,
+  );
+
+  matchingHeading.questionGroup.questions.map(async (question, i) => {
+    await db.passageMultiHeading.update({
+      where: { id: filteredPassageHeadingIdArray[i] },
+      data: { questionId: question.id },
+    });
+  });
+  const selectedContent = headingItems.map((itemId: string) => {
+    const item = matchingHeading.passageHeadingArray.find(
+      (passageHeading) => String(passageHeading.id) === itemId,
+    );
+    return item ? item.content : itemId;
+  });
   await Promise.all(
-    items.map(async (item, i) => {
+    matchingHeadingItems.map(async (item, i) => {
       await db.matchingHeadingItem.update({
         where: { id: item.id },
-        data: { content: headingItems[i] },
+        data: {
+          content: selectedContent[i],
+          passageMultiHeadingId: passageHeadingIdArray[i],
+        },
       });
     }),
   );

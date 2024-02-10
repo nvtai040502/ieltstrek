@@ -66,28 +66,28 @@ export function UpdateMatchingHeadingForm() {
   if (!isModalOpen || !matchingHeading) {
     return null;
   }
+
   const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
-    const selectedContent = values.headingItems.map((itemId: string) => {
-      const item = matchingHeading.passageHeadingArray.find(
-        (passageHeading) => String(passageHeading.id) === itemId,
-      );
-      return item ? item.content : itemId;
-    });
-    // console.log(selectedContent);
-    // console.log(selectedFakeArray);
-    // startTransition(async () => {
-    //   try {
-    //     await updateMatchingHeading({
-    //       title: values.title,
-    //       headingItems: values.headingItems,
-    //       id: matchingHeading.id,
-    //     });
-    //     toast.success("Updated");
-    //     onClose();
-    //   } catch (err) {
-    //     catchError(err);
-    //   }
+    // const selectedContent = values.headingItems.map((itemId: string) => {
+    //   const item = matchingHeading.passageHeadingArray.find(
+    //     (passageHeading) => String(passageHeading.id) === itemId,
+    //   );
+    //   return item ? item.content : itemId;
     // });
+    // console.log(selectedContent);
+    startTransition(async () => {
+      try {
+        await updateMatchingHeading({
+          title: values.title,
+          headingItems: values.headingItems,
+          id: matchingHeading.id,
+        });
+        toast.success("Updated");
+        onClose();
+      } catch (err) {
+        catchError(err);
+      }
+    });
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -112,79 +112,88 @@ export function UpdateMatchingHeadingForm() {
                   </FormItem>
                 )}
               />
-              {matchingHeading.matchingHeadingItemArray.map((item, i) => (
-                <FormField
-                  key={item.id}
-                  control={form.control}
-                  name={`headingItems.${i}`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Question Group Type</FormLabel>
+              {matchingHeading.matchingHeadingItemArray.map(
+                (matchingHeadingItem, i) => (
+                  <FormField
+                    key={matchingHeadingItem.id}
+                    control={form.control}
+                    name={`headingItems.${i}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Question Group Type</FormLabel>
 
-                      <Select
-                        disabled={isPending}
-                        onValueChange={(value) => {
-                          setSelectedFakeArray((prev) => {
-                            const updatedState = [...prev];
-                            const id = String(item.id);
-                            const index = updatedState.findIndex((obj) =>
-                              obj.hasOwnProperty(id),
-                            );
-                            if (index !== -1) {
-                              if (value === "fake") {
-                                updatedState[index][String(item.id)] = true;
-                              } else {
-                                updatedState[index][String(item.id)] = false;
-                                field.onChange(value);
+                        <Select
+                          disabled={isPending}
+                          onValueChange={(value) => {
+                            setSelectedFakeArray((prev) => {
+                              const updatedState = [...prev];
+                              const id = String(matchingHeadingItem.id);
+                              const index = updatedState.findIndex((obj) =>
+                                obj.hasOwnProperty(id),
+                              );
+                              if (index !== -1) {
+                                if (value === "fake") {
+                                  updatedState[index][
+                                    String(matchingHeadingItem.id)
+                                  ] = true;
+                                } else {
+                                  updatedState[index][
+                                    String(matchingHeadingItem.id)
+                                  ] = false;
+                                  field.onChange(value);
+                                }
                               }
-                            }
 
-                            return updatedState;
-                          });
-                        }}
-                        defaultValue={
-                          item.passageMultiHeadingId !== null
-                            ? String(item.passageMultiHeadingId)
-                            : "fake"
-                        }
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a type for question" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {matchingHeading.passageHeadingArray.map(
-                            (passageHeading) => (
-                              <SelectItem
-                                key={passageHeading.id}
-                                value={String(passageHeading.id)}
-                              >
-                                {passageHeading.content}
-                              </SelectItem>
-                            ),
+                              return updatedState;
+                            });
+                          }}
+                          defaultValue={
+                            matchingHeadingItem.passageMultiHeadingId !== null
+                              ? String(
+                                  matchingHeadingItem.passageMultiHeadingId,
+                                )
+                              : "fake"
+                          }
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a type for question" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {matchingHeading.passageHeadingArray.map(
+                              (passageHeading) => (
+                                <SelectItem
+                                  key={passageHeading.id}
+                                  value={String(passageHeading.id)}
+                                >
+                                  {passageHeading.content}
+                                </SelectItem>
+                              ),
+                            )}
+                            <SelectItem value="fake">Fake</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {selectedFakeArray.length &&
+                          selectedFakeArray.find(
+                            (selectedItem) =>
+                              selectedItem.hasOwnProperty(
+                                String(matchingHeadingItem.id),
+                              ) && selectedItem[String(matchingHeadingItem.id)],
+                          ) && (
+                            <Input
+                              defaultValue={field.value}
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
                           )}
-                          <SelectItem value="fake">Fake</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {selectedFakeArray.length &&
-                        selectedFakeArray.find(
-                          (selectedItem) =>
-                            selectedItem.hasOwnProperty(String(item.id)) &&
-                            selectedItem[String(item.id)],
-                        ) && (
-                          <Input
-                            defaultValue={field.value}
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        )}
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ),
+              )}
             </div>
 
             <Button disabled={isPending} type="submit" className="w-full">
