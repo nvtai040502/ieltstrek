@@ -17,11 +17,19 @@ import { MultiMoreArrayRender } from "./question-type/multiple-choice/multi-more
 import { ActionButton } from "./action-button";
 import { MatchingHeadingRender } from "./question-type/matching-heading";
 import { PassageDragAndDropRender } from "./passage/dnd-render";
-import { DragDropContext } from "@hello-pangea/dnd";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { QuestionType } from "@prisma/client";
+import { previous } from "slate";
 
 const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
-  const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
-  const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
+  const {
+    questionRefs,
+    setCurrentQuestionIndex,
+    setUserAnswers,
+    listHeading,
+    userAnswers,
+    setListHeading,
+  } = useContext(ExamContext);
 
   useEffect(() => {
     if (questionRefs.length && part.questionGroups.length) {
@@ -32,9 +40,38 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, type } = result;
+    console.log("🚀 ~ onDragEnd ~ result:", result);
+    if (
+      !destination ||
+      (destination.droppableId === source.droppableId &&
+        destination.index === source.index)
+    ) {
+      return;
+    }
+
+    if (type === QuestionType.MATCHING_HEADING) {
+      const questionNumber = Number(destination.droppableId);
+      const itemToRemove = listHeading[source.index];
+      console.log("🚀 ~ onDragEnd ~ itemToRemove:", itemToRemove);
+      // const updatedListHeading = listHeading.filter(
+      //   (item) => item.id !== source.index,
+      // );
+      // setListHeading(updatedListHeading);
+      // if (!userAnswers[questionNumber]) {
+      //   setUserAnswers((prev) => {
+      //     const updatedAnswers = { ...prev };
+      //     updatedAnswers[questionNumber] = itemToRemove!.content;
+      //     return updatedAnswers;
+      //   });
+      // } else {
+      // }
+    }
+  };
   return (
     <div className="h-full">
-      <DragDropContext onDragEnd={() => {}}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <ResizablePanelGroup
           direction="horizontal"
           className="rounded-lg flex-grow"

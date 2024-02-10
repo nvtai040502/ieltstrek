@@ -1,5 +1,5 @@
 import { AssessmentExtended } from "@/types/db";
-import { Assessment } from "@prisma/client";
+import { MatchingHeadingItem } from "@prisma/client";
 import { Dispatch, RefObject, SetStateAction, createContext } from "react";
 
 interface ExamContextProps {
@@ -13,6 +13,8 @@ interface ExamContextProps {
   >;
   setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>;
   setActiveTab: Dispatch<SetStateAction<string>>;
+  listHeading: string[];
+  setListHeading: Dispatch<SetStateAction<string[]>>;
   userAnswers: { [key: string]: string | string[] };
   setUserAnswers: Dispatch<
     SetStateAction<{ [key: string]: string | string[] }>
@@ -24,6 +26,8 @@ export const ExamContext = createContext<ExamContextProps>({
   selectedAssessment: null,
   questionRefs: [],
   userAnswers: {},
+  listHeading: [],
+  setListHeading: () => {},
   setUserAnswers: () => {},
   currentQuestionIndex: 0,
   setCurrentQuestionIndex: () => {},

@@ -36,6 +36,7 @@ export type MatchingHeadingExtended = MatchingHeading & {
 };
 export type PassageMultiHeadingExtended = PassageMultiHeading & {
   matchingHeadingItem?: MatchingHeadingItem;
+  question?: Question | null;
 };
 export type PassageExtended = Passage & {
   passageMultiHeadingArray: PassageMultiHeadingExtended[];

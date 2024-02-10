@@ -3,9 +3,20 @@ import { PartExtended } from "@/types/db";
 import { ActionButton } from "../action-button";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
+import { useContext } from "react";
+import { ExamContext } from "@/global/exam-context";
+import { QuestionType } from "@prisma/client";
 
 export function PassageDragAndDropRender({ part }: { part: PartExtended }) {
   const passage = part.passage;
+  const {
+    questionRefs,
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    setUserAnswers,
+    userAnswers,
+  } = useContext(ExamContext);
+
   return (
     <div>
       {passage ? (
@@ -28,24 +39,31 @@ export function PassageDragAndDropRender({ part }: { part: PartExtended }) {
           {passage.type === "PASSAGE_MULTI_HEADING" &&
             passage.passageMultiHeadingArray.map((item) => (
               <div key={item.id}>
-                {item.questionId ? (
+                {item.question ? (
                   <Droppable
-                    // isCombineEnabled
-                    ignoreContainerClipping={true}
-                    droppableId={`passageHeading ${item.id}`}
+                    isCombineEnabled
+                    type={QuestionType.MATCHING_HEADING}
+                    // ignoreContainerClipping={true}
+                    droppableId={String(item.question.questionNumber)}
                   >
                     {(provided, snapshot) => (
                       <div
-                        ref={provided.innerRef}
+                        ref={
+                          questionRefs[item.question!.questionNumber - 1] &&
+                          provided.innerRef
+                        }
                         className={cn(
                           "",
                           snapshot.isDraggingOver ? "bg-red-500" : "",
                         )}
                         {...provided.droppableProps}
                       >
-                        {!snapshot.isDraggingOver && (
-                          <p className="bg-red-500 w-full p-4"></p>
-                        )}
+                        {!snapshot.isDraggingOver &&
+                          (userAnswers[item.question!.questionNumber] ? (
+                            <p>{userAnswers[item.question!.questionNumber]}</p>
+                          ) : (
+                            <p className="bg-red-500 w-full p-4"></p>
+                          ))}
 
                         {provided.placeholder}
                       </div>
