@@ -84,23 +84,38 @@ model MatchingSentence {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  title                 String
-  matchingSentenceItems MatchingSentenceItem[]
+  paragraph String
+
+  listMatchingChoices ListMatchingChoices?
 
   questionGroupId Int           @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
-model MatchingSentenceItem {
+model ListMatchingChoices {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title String?
+
+  matchingSentenceId Int?              @unique
+  matchingSentence   MatchingSentence? @relation(fields: [matchingSentenceId], references: [id], onDelete: Cascade)
+
+  matchingChoices MatchingChoice[]
+}
+
+model MatchingChoice {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   content String
-  blank   Blank?
 
-  matchingSentenceId Int
-  matchingSentence   MatchingSentence @relation(fields: [matchingSentenceId], references: [id], onDelete: Cascade)
+  questionId            Int?                @unique
+  question              Question?           @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  listMatchingChoicesId Int
+  listMatchingChoices   ListMatchingChoices @relation(fields: [listMatchingChoicesId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -116,6 +131,7 @@ model Question {
   identifyingInformationItem IdentifyingInformationItem?
   blank                      Blank?
   passageMultiHeading        PassageMultiHeading?
+  matchingChoice             MatchingChoice?
   partId                     Int
   part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
   assessmentId               Int
@@ -176,10 +192,8 @@ model Blank {
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  matchingSentenceItemId Int?                  @unique
-  matchingSentenceItem   MatchingSentenceItem? @relation(fields: [matchingSentenceItemId], references: [id])
-  NoteCompletion         NoteCompletion?       @relation(fields: [noteCompletionId], references: [id])
-  noteCompletionId       Int?
+  NoteCompletion   NoteCompletion? @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
+  noteCompletionId Int?
 }
 
 model MultipleChoiceMoreAnswers {

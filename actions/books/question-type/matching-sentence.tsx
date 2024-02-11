@@ -1,12 +1,13 @@
 "use server";
+// import { noteCompletionInitial } from "@/config/template/note-completion";
 import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { Descendant } from "slate";
 
 export const createMatchingSentence = async ({
   questionGroupId,
 }: {
   questionGroupId: number;
-}) => {
+}): Promise<boolean> => {
   const questionGroup = await db.questionGroup.findUnique({
     where: { id: questionGroupId },
     include: {
@@ -26,26 +27,79 @@ export const createMatchingSentence = async ({
     throw new Error("Question Group Id not found");
   }
 
-  const haveBlank = "this is example of sentence with";
-
+  const matchingSentenceInitial: Descendant[] = Array.from(
+    {
+      length:
+        questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1,
+    },
+    (_, i) => ({
+      type: "paragraph",
+      children: [
+        { text: "This is matching sentence example" },
+        { text: "rich", bold: true },
+        { text: " text, " },
+        { text: "much", italic: true },
+        { text: " better than a " },
+        {
+          text: "<textarea>",
+          code: true,
+          questionNumber: questionGroup.startQuestionNumber + i,
+        },
+        { text: "!" },
+      ],
+    }),
+  );
   await db.matchingSentence.create({
     data: {
-      title: "hello",
       questionGroupId,
-      matchingSentenceItems: {
-        create: questionGroup.questions.map((question) => ({
-          content: haveBlank,
-          blank: {
-            create: {
-              expectedAnswer: "blank",
-              questionId: question.id,
+      paragraph: JSON.stringify(matchingSentenceInitial),
+      listMatchingChoices: {
+        create: {
+          title: "List of Heading",
+          matchingChoices: {
+            createMany: {
+              data: questionGroup.questions.map((question) => ({
+                content:
+                  "This is a sentence example for heading choice so that can drag and drop to the answer",
+                questionId: question.id,
+              })),
             },
           },
-        })),
+        },
       },
+      // blanks: {
+      //   createMany: {
+      // data: questionGroup.questions.map((question) => ({
+      //   expectedAnswer: "is",
+      //   questionId: question.id,
+      // })),
+      //   },
+      // },
     },
   });
 
-  revalidatePath(`/assessments/${questionGroup.part.assessmentId}`);
   return true;
+};
+export const updateNoteCompletion = async ({
+  id,
+  paragraph,
+}: {
+  id: number;
+  paragraph: string;
+}): Promise<boolean> => {
+  try {
+    await db.noteCompletion.update({
+      where: {
+        id,
+      },
+      data: {
+        paragraph,
+      },
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error updating note completion:", error);
+    return false;
+  }
 };

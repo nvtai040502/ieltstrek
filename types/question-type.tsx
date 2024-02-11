@@ -1,9 +1,16 @@
-import { Blank, MatchingSentence, MatchingSentenceItem } from "@prisma/client";
-import { BlankExtended } from "./db";
+import {
+  Blank,
+  ListMatchingChoices,
+  MatchingSentence,
+  Question,
+  QuestionGroup,
+} from "@prisma/client";
+import { BlankExtended, QuestionGroupExtended } from "./db";
 
 export type MatchingSentenceExtended = MatchingSentence & {
-  matchingSentenceItems: MatchingSentenceItemExtended[];
+  listMatchingChoices?: ListMatchingChoicesExtended | null;
+  questionGroup: QuestionGroup;
 };
-export type MatchingSentenceItemExtended = MatchingSentenceItem & {
-  blank?: BlankExtended | null;
+export type ListMatchingChoicesExtended = ListMatchingChoices & {
+  question?: Question;
 };
