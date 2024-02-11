@@ -1,6 +1,7 @@
 import {
   Blank,
   ListMatchingChoices,
+  MatchingChoice,
   MatchingSentence,
   Question,
   QuestionGroup,
@@ -13,4 +14,5 @@ export type MatchingSentenceExtended = MatchingSentence & {
 };
 export type ListMatchingChoicesExtended = ListMatchingChoices & {
   question?: Question;
+  matchingChoices: MatchingChoice[];
 };
