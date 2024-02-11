@@ -68,13 +68,6 @@ export function UpdateMatchingHeadingForm() {
   }
 
   const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
-    // const selectedContent = values.headingItems.map((itemId: string) => {
-    //   const item = matchingHeading.passageHeadingArray.find(
-    //     (passageHeading) => String(passageHeading.id) === itemId,
-    //   );
-    //   return item ? item.content : itemId;
-    // });
-    // console.log(selectedContent);
     startTransition(async () => {
       try {
         await updateMatchingHeading({

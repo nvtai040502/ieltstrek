@@ -39,6 +39,13 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
           questionGroups: {
             orderBy: { startQuestionNumber: "asc" },
             include: {
+              matchingSentence: {
+                include: {
+                  matchingSentenceItems: {
+                    orderBy: { id: "asc" },
+                  },
+                },
+              },
               matchingHeading: {
                 include: {
                   passageHeadingArray: {

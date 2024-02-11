@@ -5,6 +5,7 @@ import { createMultiOneArray } from "@/actions/books/multi-one";
 import { createNoteCompletion } from "@/actions/books/note-completion";
 import { createQuestionGroup } from "@/actions/books/question-group";
 import { createMatchingHeading } from "@/actions/books/question-type/matching-heading";
+import { createMatchingSentence } from "@/actions/books/question-type/matching-sentence";
 import { createTableComplete } from "@/actions/books/table-complete";
 import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
 import { Button } from "@/components/ui/button";
@@ -80,6 +81,11 @@ export function CreateQuestionGroupForm() {
               break;
             case "MATCHING_HEADING":
               successfully = await createMatchingHeading({
+                questionGroupId: questionGroup.id,
+              });
+              break;
+            case "MATCHING_SENTENCE":
+              successfully = await createMatchingSentence({
                 questionGroupId: questionGroup.id,
               });
               break;
@@ -188,7 +194,7 @@ export function CreateQuestionGroupForm() {
                           <SelectValue placeholder="Select a type for question" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="">
                         {Object.values(QuestionType).map((type) => (
                           <SelectItem key={type} value={type}>
                             {type.replace(/_/g, " ")}{" "}

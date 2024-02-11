@@ -62,8 +62,8 @@ export const TabRender = ({
           </div>
           <ButtonNavigateQuestions part={part} partIndex={i} />
           <div className="overflow-y-auto">
-            {/* <ResizePanelGroup part={part} /> */}
-            <ResizePanelGroupDragAndDrop part={part} />
+            <ResizePanelGroup part={part} />
+            {/* <ResizePanelGroupDragAndDrop part={part} /> */}
           </div>
         </TabsContent>
       ))}

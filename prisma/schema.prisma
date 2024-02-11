@@ -53,6 +53,7 @@ enum QuestionType {
   NOTE_COMPLETION
   TABLE_COMPLETION
   MATCHING_HEADING
+  MATCHING_SENTENCE
 }
 
 model QuestionGroup {
@@ -75,6 +76,31 @@ model QuestionGroup {
   identifyingInformation IdentifyingInformation?
   matchingHeading        MatchingHeading?
   noteCompletion         NoteCompletion?
+  matchingSentence       MatchingSentence?
+}
+
+model MatchingSentence {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title                 String
+  matchingSentenceItems MatchingSentenceItem[]
+
+  questionGroupId Int           @unique
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
+model MatchingSentenceItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  content String
+  blank   Blank?
+
+  matchingSentenceId Int
+  matchingSentence   MatchingSentence @relation(fields: [matchingSentenceId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -150,8 +176,10 @@ model Blank {
   questionId Int      @unique
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
-  NoteCompletion   NoteCompletion? @relation(fields: [noteCompletionId], references: [id])
-  noteCompletionId Int?
+  matchingSentenceItemId Int?                  @unique
+  matchingSentenceItem   MatchingSentenceItem? @relation(fields: [matchingSentenceItemId], references: [id])
+  NoteCompletion         NoteCompletion?       @relation(fields: [noteCompletionId], references: [id])
+  noteCompletionId       Int?
 }
 
 model MultipleChoiceMoreAnswers {

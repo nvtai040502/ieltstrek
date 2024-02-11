@@ -17,10 +17,10 @@ import { MultiMoreArrayRender } from "./question-type/multiple-choice/multi-more
 import { ActionButton } from "./action-button";
 import { MatchingHeadingRender } from "./question-type/matching-heading";
 import { PassageDragAndDropRender } from "./passage/dnd-render";
+import { MatchingSentenceRender } from "./question-type/matching-sentence";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
-  const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
 
   useEffect(() => {
     if (questionRefs.length && part.questionGroups.length) {
@@ -119,6 +119,11 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                     {questionGroup.type === "NOTE_COMPLETION" && (
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}
+                      />
+                    )}
+                    {questionGroup.type === "MATCHING_SENTENCE" && (
+                      <MatchingSentenceRender
+                        matchingSentence={questionGroup.matchingSentence}
                       />
                     )}
                   </div>
