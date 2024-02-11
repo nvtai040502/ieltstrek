@@ -31,3 +31,8 @@ export const MatchingHeadingSchema = z.object({
   }),
   headingItems: z.array(z.string().min(1)),
 });
+
+export const ListMatchingChoicesSchema = z.object({
+  title: z.string().optional(),
+  matchingChoices: z.array(z.string().min(1)),
+});

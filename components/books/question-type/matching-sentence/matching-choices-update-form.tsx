@@ -14,7 +14,10 @@ import { Input } from "@/components/ui/input";
 
 import { useEditHook } from "@/global/use-edit-hook";
 import { catchError } from "@/lib/utils";
-import { MatchingHeadingSchema } from "@/lib/validations/question-type";
+import {
+  ListMatchingChoicesSchema,
+  MatchingHeadingSchema,
+} from "@/lib/validations/question-type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -23,43 +26,45 @@ import { z } from "zod";
 
 export function UpdateListMatchingChoicesForm() {
   const [isPending, startTransition] = useTransition();
-
+  const [listMatchingChoicesDynamic, setListMatchingChoicesDynamic] = useState<
+    string[]
+  >([]);
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === "editListMatchingChoices";
   const listMatchingChoices = data?.listMatchingChoices;
 
-  const form = useForm<z.infer<typeof MatchingHeadingSchema>>({
-    resolver: zodResolver(MatchingHeadingSchema),
+  const form = useForm<z.infer<typeof ListMatchingChoicesSchema>>({
+    resolver: zodResolver(ListMatchingChoicesSchema),
     defaultValues: {
       title: "",
-      headingItems: [],
+      matchingChoices: [],
     },
   });
   useEffect(() => {
     if (listMatchingChoices) {
-      // form.setValue("title", matchingSentence.title);
-      // matchingSentence.matchingHeadingItemArray.forEach((item, index) => {
-      //   form.setValue(
-      //     `headingItems.${index}`,
-      //     item.passageMultiHeadingId !== null
-      //       ? String(item.passageMultiHeadingId)
-      //       : item.content,
-      //   );
-      // });
-      // setSelectedFakeArray(() =>
-      //   matchingSentence.matchingHeadingItemArray.map((item) =>
-      //     item.passageMultiHeadingId === null
-      //       ? { [String(item.id)]: true }
-      //       : { [String(item.id)]: false },
-      //   ),
-      // );
+      form.setValue("title", listMatchingChoices.title || "");
+      setListMatchingChoicesDynamic(
+        listMatchingChoices.matchingChoices.map((item) => item.content),
+      );
     }
   }, [form, listMatchingChoices]);
+
+  useEffect(() => {
+    if (
+      listMatchingChoicesDynamic.length <
+      form.getValues().matchingChoices.length
+    ) {
+      form.resetField("matchingChoices");
+    }
+    listMatchingChoicesDynamic.forEach((content, index) => {
+      form.setValue(`matchingChoices.${index}`, content);
+    });
+  }, [form, listMatchingChoicesDynamic]);
   if (!isModalOpen || !listMatchingChoices) {
     return null;
   }
 
-  const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
+  const onSubmit = (values: z.infer<typeof ListMatchingChoicesSchema>) => {
     console.log(values);
     // startTransition(async () => {
     //   try {
@@ -74,6 +79,17 @@ export function UpdateListMatchingChoicesForm() {
     //     catchError(err);
     //   }
     // });
+  };
+  const handleAddChoice = () => {
+    setListMatchingChoicesDynamic((prev) => [...prev, ""]);
+  };
+
+  const handleDeleteChoice = (index: number) => {
+    setListMatchingChoicesDynamic((prev) => {
+      const updatedChoices = [...prev];
+      updatedChoices.splice(index, 1);
+      return updatedChoices;
+    });
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -98,21 +114,43 @@ export function UpdateListMatchingChoicesForm() {
                   </FormItem>
                 )}
               />
-              {listMatchingChoices.matchingChoices.map((matchingChoice, i) => (
+              {listMatchingChoicesDynamic.map((_, i) => (
                 <FormField
                   control={form.control}
-                  key={matchingChoice.id}
-                  name={`headingItems.${i}`}
+                  key={i}
+                  name={`matchingChoices.${i}`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        {matchingChoice.question
-                          ? `Question: ${matchingChoice.question.questionNumber}`
-                          : "Fake choice"}
-                      </FormLabel>
+                      {listMatchingChoices.matchingChoices[i] &&
+                      listMatchingChoices.matchingChoices[i].question ? (
+                        <FormLabel>{`Question ${listMatchingChoices.matchingChoices[i].question?.questionNumber}`}</FormLabel>
+                      ) : (
+                        <>
+                          <FormLabel>Fake Choice</FormLabel>
+                          <span>
+                            <Button
+                              size="sm"
+                              type="button"
+                              onClick={() => handleDeleteChoice(i)}
+                              variant="outline"
+                            >
+                              Delete
+                            </Button>
+                          </span>
+                        </>
+                      )}
+
                       <FormControl>
                         <Input
-                          {...field}
+                          value={field.value || ""}
+                          onChange={(e) => {
+                            setListMatchingChoicesDynamic((prev) => {
+                              const updatedChoices = [...prev];
+                              updatedChoices[i] = e.target.value;
+                              return updatedChoices;
+                            });
+                            field.onChange(e);
+                          }}
                           disabled={isPending}
                           placeholder="Hello"
                         />
@@ -123,10 +161,19 @@ export function UpdateListMatchingChoicesForm() {
                 />
               ))}
             </div>
-
-            <Button disabled={isPending} type="submit" className="w-full">
-              update
-            </Button>
+            <div className="flex">
+              <Button
+                disabled={isPending}
+                onClick={handleAddChoice}
+                type="button"
+                className="w-full"
+              >
+                add Fake Choice
+              </Button>
+              <Button disabled={isPending} type="submit" className="w-full">
+                update
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContentWithScrollArea>
