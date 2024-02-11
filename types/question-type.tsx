@@ -13,6 +13,8 @@ export type MatchingSentenceExtended = MatchingSentence & {
   questionGroup: QuestionGroup;
 };
 export type ListMatchingChoicesExtended = ListMatchingChoices & {
-  question?: Question;
-  matchingChoices: MatchingChoice[];
+  matchingChoices: MatchingChoiceExtended[];
+};
+export type MatchingChoiceExtended = MatchingChoice & {
+  question?: Question | null;
 };

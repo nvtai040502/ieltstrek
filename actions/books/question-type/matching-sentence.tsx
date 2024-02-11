@@ -15,9 +15,6 @@ export const createMatchingSentence = async ({
       part: {
         select: {
           assessmentId: true,
-          passage: {
-            include: { passageMultiHeadingArray: true },
-          },
         },
       },
     },
@@ -49,6 +46,11 @@ export const createMatchingSentence = async ({
       ],
     }),
   );
+
+  const totalQuestions = questionGroup.questions.length;
+  const totalFakeChoices = 3;
+  const totalChoicesCreated = totalFakeChoices + totalQuestions;
+
   await db.matchingSentence.create({
     data: {
       questionGroupId,
@@ -58,23 +60,16 @@ export const createMatchingSentence = async ({
           title: "List of Heading",
           matchingChoices: {
             createMany: {
-              data: questionGroup.questions.map((question) => ({
+              data: Array.from({ length: totalChoicesCreated }).map((_, i) => ({
                 content:
                   "This is a sentence example for heading choice so that can drag and drop to the answer",
-                questionId: question.id,
+                questionId:
+                  i < totalQuestions - 1 ? questionGroup.questions[i].id : null,
               })),
             },
           },
         },
       },
-      // blanks: {
-      //   createMany: {
-      // data: questionGroup.questions.map((question) => ({
-      //   expectedAnswer: "is",
-      //   questionId: question.id,
-      // })),
-      //   },
-      // },
     },
   });
 

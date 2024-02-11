@@ -8,7 +8,10 @@ import {
   QuestionGroupExtended,
   SummaryCompletionExtended,
 } from "@/types/db";
-import { MatchingSentenceExtended } from "@/types/question-type";
+import {
+  ListMatchingChoicesExtended,
+  MatchingSentenceExtended,
+} from "@/types/question-type";
 import { Choice, Passage, PassageMultiHeading } from "@prisma/client";
 import { createContext, Dispatch, SetStateAction } from "react";
 
@@ -31,6 +34,7 @@ export type EditType =
   | "deleteQuestionGroup"
   | "createQuestionGroup"
   | "editMatchingHeading"
+  | "editListMatchingChoices"
   | null;
 
 export interface EditData {
@@ -46,6 +50,7 @@ export interface EditData {
   passageMultiHeading?: PassageMultiHeading;
   matchingHeading?: MatchingHeadingExtended;
   matchingSentence?: MatchingSentenceExtended;
+  listMatchingChoices?: ListMatchingChoicesExtended;
 }
 
 interface EditContextProps {

@@ -26,6 +26,16 @@ export const MatchingSentenceRender = ({
       />
       <DragDropContext onDragEnd={() => {}}>
         <RichTextReadOnly matchingSentence={matchingSentence} />
+        <div className="flex justify-between items-center">
+          <p className="font-bold">
+            {matchingSentence.listMatchingChoices.title}
+          </p>
+          <ActionButton
+            editType="editListMatchingChoices"
+            actionType="update"
+            data={{ listMatchingChoices: matchingSentence.listMatchingChoices }}
+          />
+        </div>
         <Droppable
           type={QuestionType.MATCHING_SENTENCE}
           droppableId="matching-sentence"
