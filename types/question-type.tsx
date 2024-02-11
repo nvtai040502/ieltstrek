@@ -2,8 +2,8 @@ import { Blank, MatchingSentence, MatchingSentenceItem } from "@prisma/client";
 import { BlankExtended } from "./db";
 
 export type MatchingSentenceExtended = MatchingSentence & {
-  matchingSentenceItems: MatchingSentenceItem[];
+  matchingSentenceItems: MatchingSentenceItemExtended[];
 };
 export type MatchingSentenceItemExtended = MatchingSentenceItem & {
-  blank?: BlankExtended;
+  blank?: BlankExtended | null;
 };

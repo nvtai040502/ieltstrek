@@ -7,6 +7,7 @@ import { QuestionType } from "@prisma/client";
 import { useContext, useEffect } from "react";
 import { ActionButton } from "../../action-button";
 import { MatchingSentenceExtended } from "@/types/question-type";
+import { cn } from "@/lib/utils";
 
 interface MatchingSentenceRenderProps {
   matchingSentence?: MatchingSentenceExtended | null;
@@ -17,7 +18,6 @@ export const MatchingSentenceRender = ({
   // const { listHeading, setListHeading } = useContext(ExamContext);
   useEffect(() => {
     if (matchingSentence) {
-      console.log("🚀 ~ useEffect ~ matchingSentence:", matchingSentence);
       // const firstMatchingHeadingContent =
       //   matchingSentence.matchingHeadingItemArray.map((item) => item.content);
       // setListHeading(firstMatchingHeadingContent);
@@ -27,41 +27,67 @@ export const MatchingSentenceRender = ({
   // if (!matchingSentence || !listHeading) {
   //   return null;
   // }
+  if (!matchingSentence) {
+    return null;
+  }
   return (
-    <>
-      {/* <div className="flex justify-between items-center">
-        <p className="font-bold">{matchingSentence.title}</p>
-        <ActionButton
-          editType="editMatchingHeading"
-          actionType="update"
-          data={{ matchingHeading: matchingSentence }}
-        />
-      </div>
-      <Droppable
-        type={QuestionType.MATCHING_HEADING}
-        droppableId="matching-heading"
-        direction="vertical"
-        isDropDisabled
-      >
-        {(provided) => (
+    <DragDropContext onDragEnd={() => {}}>
+      <div className="font-bold">{matchingSentence.title}</div>
+      {matchingSentence.matchingSentenceItems.map((matchingSentenceItem) => (
+        <div key={matchingSentenceItem.id} className="flex flex-wrap">
+          <p>{matchingSentenceItem.content}</p>
+          {matchingSentenceItem.blank && (
+            <Droppable
+              droppableId={String(
+                matchingSentenceItem.blank.question.questionNumber,
+              )}
+            >
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  className={cn(
+                    "",
+                    snapshot.isDraggingOver ? "bg-red-500" : "",
+                  )}
+                  {...provided.droppableProps}
+                >
+                  <p className="bg-red-500 w-40 p-4"></p>
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          )}
+        </div>
+      ))}
+      <Droppable droppableId="matching-sentence">
+        {(provided, snapshot) => (
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            {listHeading.map((content, i) => (
-              <Draggable draggableId={`item ${i}`} index={i} key={i}>
-                {(provided) => (
-                  <div
-                    {...provided.draggableProps}
-                    ref={provided.innerRef}
-                    className=" border-4 p-4"
+            {matchingSentence.matchingSentenceItems.map(
+              (matchingSentenceItem) =>
+                matchingSentenceItem.blank && (
+                  <Draggable
+                    draggableId={String(matchingSentenceItem.id)}
+                    index={matchingSentenceItem.id}
+                    key={matchingSentenceItem.id}
                   >
-                    <div {...provided.dragHandleProps}>{content}</div>
-                  </div>
-                )}
-              </Draggable>
-            ))}
+                    {(provided) => (
+                      <div
+                        {...provided.draggableProps}
+                        ref={provided.innerRef}
+                        className=" border-4 p-4"
+                      >
+                        <div {...provided.dragHandleProps}>
+                          {matchingSentenceItem.blank!.expectedAnswer}
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ),
+            )}
             {provided.placeholder}
           </div>
         )}
-      </Droppable> */}
-    </>
+      </Droppable>
+    </DragDropContext>
   );
 };
