@@ -1,10 +1,10 @@
-import { ActionButton } from "@/components/books/action-button";
+import { ActionButton } from "@/components/test-exam/action-button";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import Link from "next/link";
 const RootPage = async () => {
@@ -18,10 +18,12 @@ const RootPage = async () => {
           apps. Accessible. Customizable. Open Source.
         </PageHeaderDescription>
       </PageHeader>
-      <ActionButton actionType="create" editType="createAssessment" data={{}} />
+      <ActionButton actionType="create" editType="createAssessment" data={{}}>
+        <div className={buttonVariants()}>Create Assessment</div>
+      </ActionButton>
       {assessments.map((assessment) => (
         <Link key={assessment.id} href={`assessments/${assessment.id}`}>
-          <Button>{assessment.name}</Button>
+          <Button variant="secondary">{assessment.name}</Button>
         </Link>
       ))}
     </div>

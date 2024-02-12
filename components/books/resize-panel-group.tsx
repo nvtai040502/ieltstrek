@@ -10,7 +10,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { PartExtended } from "@/types/db";
 import { PassageRender } from "./passage/render";
 import { ExamContext } from "@/global/exam-context";
-import { ActionButton } from "./action-button";
+import { ActionButton } from "../test-exam/action-button";
 import { PassageDragAndDropRender } from "./passage/dnd-render";
 import { MultiOneArrayRender } from "../question-type/multiple-choice/multi-one";
 import { MultiMoreArrayRender } from "../question-type/multiple-choice/multi-more";

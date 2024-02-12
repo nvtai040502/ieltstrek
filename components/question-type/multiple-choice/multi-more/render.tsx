@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Choice } from "@prisma/client";
-import { ActionButton } from "@/components/books/action-button";
+import { ActionButton } from "@/components/test-exam/action-button";
 
 interface MultiMoreRenderProps {
   multiMore: MultiMoreExtended;

@@ -1,6 +1,6 @@
 "use client";
 import { PartExtended } from "@/types/db";
-import { ActionButton } from "../action-button";
+import { ActionButton } from "../../test-exam/action-button";
 
 export function PassageRender({ part }: { part: PartExtended }) {
   const passage = part.passage;

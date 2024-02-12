@@ -1,6 +1,6 @@
 "use client";
 
-import { ActionButton } from "@/components/books/action-button";
+import { ActionButton } from "@/components/test-exam/action-button";
 import { NoteCompletionExtended, QuestionGroupExtended } from "@/types/db";
 import { MatchingSentenceExtended } from "@/types/question-type";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";

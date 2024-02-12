@@ -41,7 +41,6 @@ export function CreateAssessmentForm() {
         onClose();
       } catch (err) {
         catchError(err);
-      } finally {
       }
     });
   };

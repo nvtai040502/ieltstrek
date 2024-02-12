@@ -1,6 +1,6 @@
 "use client";
 import { PartExtended } from "@/types/db";
-import { ActionButton } from "../action-button";
+import { ActionButton } from "../../test-exam/action-button";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { useContext } from "react";

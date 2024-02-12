@@ -5,7 +5,7 @@ import { useContext, useState } from "react";
 import { MultiOneExtended } from "@/types/db";
 import { cn } from "@/lib/utils";
 import { ExamContext } from "@/global/exam-context";
-import { ActionButton } from "@/components/books/action-button";
+import { ActionButton } from "@/components/test-exam/action-button";
 
 interface MultipleChoiceRenderProps {
   multiOne: MultiOneExtended;
