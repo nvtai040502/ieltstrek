@@ -1,5 +1,4 @@
 "use server";
-// import { noteCompletionInitial } from "@/config/template/note-completion";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { Descendant } from "slate";
@@ -74,4 +73,33 @@ export const createMatchingSentence = async ({
   });
   revalidatePath(`/assessments/${questionGroup.part.assessmentId}`);
   return true;
+};
+
+export const updateMatchingSentence = async ({
+  id,
+  paragraph,
+}: {
+  id: number;
+  paragraph: string;
+}) => {
+  const matchingSentence = await db.matchingSentence.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!matchingSentence) {
+    throw new Error("Id not found");
+  }
+
+  await db.matchingSentence.update({
+    where: {
+      id,
+    },
+    data: {
+      paragraph,
+    },
+  });
+
+  // revalidatePath(`/assessments/${questionGroup.part.assessmentId}`);
+  return;
 };

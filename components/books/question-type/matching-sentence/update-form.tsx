@@ -10,6 +10,7 @@ import {
   withReact,
 } from "slate-react";
 
+import { updateMatchingSentence } from "@/actions/books/question-type/matching-sentence";
 import { ElementRender } from "@/components/text-editor/text-render/element-render";
 import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
 import Toolbar from "@/components/text-editor/toolbar";
@@ -19,12 +20,11 @@ import {
   DialogContentWithScrollArea,
 } from "@/components/ui/dialog";
 import { useEditHook } from "@/global/use-edit-hook";
-import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
-import { useRouter } from "next/navigation";
-import { Transforms } from "slate";
-import { Button } from "../../../ui/button";
-import { toast } from "sonner";
 import { catchError } from "@/lib/utils";
+import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
+import { Transforms } from "slate";
+import { toast } from "sonner";
+import { Button } from "../../../ui/button";
 
 declare module "slate" {
   interface CustomTypes {
@@ -52,7 +52,6 @@ const UpdateMatchingSentenceForm = () => {
     () => withInlines(withHistory(withReact(createEditor()))),
     [],
   );
-  const router = useRouter();
   if (!questionGroup || !matchingSentence || !isModalOpen) {
     return null;
   }
@@ -87,19 +86,18 @@ const UpdateMatchingSentenceForm = () => {
       );
       return;
     }
-    // startTransition(async () => {
-    //   try {
-    //     await updateMatchingS({
-    //       title: values.title,
-    //       content: values.content,
-    //       id: multiHeading.id,
-    //     });
-    //     toast.success("Updated");
-    //     onClose();
-    //   } catch (err) {
-    //     catchError(err);
-    //   }
-    // });
+    startTransition(async () => {
+      try {
+        await updateMatchingSentence({
+          id: matchingSentence.id,
+          paragraph: JSON.stringify(editor.children),
+        });
+        toast.success("Updated");
+        onClose();
+      } catch (err) {
+        catchError(err);
+      }
+    });
   };
 
   return (
