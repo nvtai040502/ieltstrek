@@ -10,7 +10,6 @@ import { BlankExtended, QuestionGroupExtended } from "./db";
 
 export type MatchingSentenceExtended = MatchingSentence & {
   listMatchingChoices?: ListMatchingChoicesExtended | null;
-  questionGroup: QuestionGroup;
 };
 export type ListMatchingChoicesExtended = ListMatchingChoices & {
   matchingChoices: MatchingChoiceExtended[];

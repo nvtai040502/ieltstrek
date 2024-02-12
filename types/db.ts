@@ -18,7 +18,10 @@ import {
   SummaryCompletion,
   SummaryCompletionItem,
 } from "@prisma/client";
-import { MatchingSentenceExtended } from "./question-type";
+import {
+  ListMatchingChoicesExtended,
+  MatchingSentenceExtended,
+} from "./question-type";
 
 export type PartExtended = Part & {
   passage: PassageExtended | null;
@@ -52,6 +55,7 @@ export type QuestionGroupExtended = QuestionGroup & {
   noteCompletion?: NoteCompletionExtended | null;
   multiMoreArray: MultiMoreExtended[];
   matchingHeading?: MatchingHeadingExtended | null;
+  listMatchingChoices?: ListMatchingChoicesExtended | null;
   matchingSentence?: MatchingSentenceExtended | null;
 };
 

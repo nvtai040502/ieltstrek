@@ -1,6 +1,7 @@
 "use server";
 // import { noteCompletionInitial } from "@/config/template/note-completion";
 import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 import { Descendant } from "slate";
 
 export const createMatchingSentence = async ({
@@ -58,6 +59,7 @@ export const createMatchingSentence = async ({
       listMatchingChoices: {
         create: {
           title: "List of Heading",
+          questionGroupId,
           matchingChoices: {
             createMany: {
               data: Array.from({ length: totalChoicesCreated }).map((_, i) => ({
@@ -72,29 +74,6 @@ export const createMatchingSentence = async ({
       },
     },
   });
-
+  revalidatePath(`/assessments/${questionGroup.part.assessmentId}`);
   return true;
-};
-export const updateNoteCompletion = async ({
-  id,
-  paragraph,
-}: {
-  id: number;
-  paragraph: string;
-}): Promise<boolean> => {
-  try {
-    await db.noteCompletion.update({
-      where: {
-        id,
-      },
-      data: {
-        paragraph,
-      },
-    });
-
-    return true;
-  } catch (error) {
-    console.error("Error updating note completion:", error);
-    return false;
-  }
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import { updateListMatchingChoices } from "@/actions/books/list-match-choices";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
 import {
@@ -66,19 +67,19 @@ export function UpdateListMatchingChoicesForm() {
 
   const onSubmit = (values: z.infer<typeof ListMatchingChoicesSchema>) => {
     console.log(values);
-    // startTransition(async () => {
-    //   try {
-    //     await updateMatchingHeading({
-    //       title: values.title,
-    //       headingItems: values.headingItems,
-    //       id: listMatchingChoices.id,
-    //     });
-    //     toast.success("Updated");
-    //     onClose();
-    //   } catch (err) {
-    //     catchError(err);
-    //   }
-    // });
+    startTransition(async () => {
+      try {
+        await updateListMatchingChoices({
+          title: values.title || "",
+          matchingChoices: values.matchingChoices,
+          id: listMatchingChoices.id,
+        });
+        toast.success("Updated");
+        onClose();
+      } catch (err) {
+        catchError(err);
+      }
+    });
   };
   const handleAddChoice = () => {
     setListMatchingChoicesDynamic((prev) => [...prev, ""]);

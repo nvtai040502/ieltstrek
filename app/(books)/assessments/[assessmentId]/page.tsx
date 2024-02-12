@@ -41,11 +41,14 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
             include: {
               matchingSentence: {
                 include: {
-                  questionGroup: true,
                   listMatchingChoices: {
                     include: {
                       matchingChoices: {
-                        orderBy: { id: "asc" },
+                        orderBy: {
+                          question: {
+                            questionNumber: "asc",
+                          },
+                        },
                         include: {
                           question: true,
                         },
