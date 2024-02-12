@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { AssessmentExtended } from "@/types/db";
 import { TextExamHeaderRender } from "@/components/test-exam/render/header";
-import { TabContentRender } from "@/components/test-exam/render/tab-content";
+import { TestExamContentRender } from "@/components/test-exam/render/content";
 
 interface AssessmentIdPageProps {
   params: {
@@ -28,7 +28,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
   return (
     <div className="max-h-screen h-screen flex flex-col">
       <TextExamHeaderRender />
-      <TabContentRender assessment={assessment} />
+      <TestExamContentRender assessment={assessment} />
     </div>
   );
 };
