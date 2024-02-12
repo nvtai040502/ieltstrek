@@ -1,18 +1,16 @@
 "use client";
+import ButtonNavigateQuestions from "@/components/books/button-nav-questions";
+import ResizePanelGroup from "@/components/books/resize-panel-group";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ExamContext } from "@/global/exam-context";
 import { useExamHandler } from "@/global/exam-hook";
-import { cn } from "@/lib/utils";
 import { AssessmentExtended } from "@/types/db";
 import { Check, Send } from "lucide-react";
 import { Fragment, useContext, useEffect } from "react";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import { Tabs, TabsContent, TabsList } from "../ui/tabs";
-import ButtonNavigateQuestions from "./button-nav-questions";
-import ResizePanelGroup from "./resize-panel-group";
-import ResizePanelGroupDragAndDrop from "./resize-panel-group-dnd";
 
-export const TabRender = ({
+export const TabContentRender = ({
   assessment,
 }: {
   assessment: AssessmentExtended;
@@ -29,8 +27,7 @@ export const TabRender = ({
 
   useEffect(() => {
     setSelectedAssessment(assessment);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [assessment, setSelectedAssessment]);
 
   const { handleSubmit } = useExamHandler();
   const handleMoveToDiv = (questionIndex: number) => {
@@ -43,7 +40,7 @@ export const TabRender = ({
   }
   return (
     <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
-      {assessment.parts.map((part, i) => (
+      {selectedAssessment.parts.map((part, i) => (
         <TabsContent
           key={part.id}
           value={String(part.id)}
@@ -60,9 +57,9 @@ export const TabRender = ({
               </div>
             </div>
           </div>
-          <ButtonNavigateQuestions part={part} partIndex={i} />
+          {/* <ButtonNavigateQuestions part={part} partIndex={i} /> */}
           <div className="overflow-y-auto">
-            <ResizePanelGroup part={part} />
+            {/* <ResizePanelGroup part={part} /> */}
             {/* <ResizePanelGroupDragAndDrop part={part} /> */}
           </div>
         </TabsContent>
@@ -80,7 +77,7 @@ export const TabRender = ({
         <Separator className="hidden xl:block mt-20" />
       </TabsContent>
       <TabsList className="flex justify-between items-center h-40">
-        {assessment.parts.map((part) => (
+        {/* {assessment.parts.map((part) => (
           <Fragment key={part.id}>
             {activeTab === String(part.id) ? (
               <div
@@ -122,7 +119,7 @@ export const TabRender = ({
               </Button>
             )}
           </Fragment>
-        ))}
+        ))} */}
         <Button variant="secondary" onClick={() => setActiveTab("delivering")}>
           <Check className="h-4 w-4" />
         </Button>

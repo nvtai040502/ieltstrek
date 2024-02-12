@@ -9,7 +9,7 @@ generator client {
 }
 
 model Assessment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -31,14 +31,15 @@ enum SectionType {
 }
 
 model Part {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   title       String
   description String
+  order       Int
 
-  assessmentId   Int
+  assessmentId   String
   assessment     Assessment      @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroups QuestionGroup[]
   passage        Passage?
@@ -66,7 +67,7 @@ model QuestionGroup {
   endQuestionNumber   Int
   type                QuestionType
 
-  partId                 Int
+  partId                 String
   part                   Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
   questions              Question[]
   multipleChoiceArray    MultipleChoice[]
@@ -336,7 +337,7 @@ model Passage {
   content     String?
 
   passageMultiHeadingArray PassageMultiHeading[]
-  partId                   Int                   @unique // Ensures that each Part can have only one Passage
+  partId                   String                @unique // Ensures that each Part can have only one Passage
   part                     Part                  @relation(fields: [partId], references: [id], onDelete: Cascade)
 }
 

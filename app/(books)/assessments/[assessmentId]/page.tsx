@@ -1,8 +1,8 @@
-import { AssessmentSiteHeader } from "@/components/books/assessment-side-header";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { AssessmentExtended } from "@/types/db";
-import { TabRender } from "@/components/books/tab-render";
+import { TextExamHeaderRender } from "@/components/test-exam/render/header";
+import { TabContentRender } from "@/components/test-exam/render/tab-content";
 
 interface AssessmentIdPageProps {
   params: {
@@ -12,7 +12,14 @@ interface AssessmentIdPageProps {
 const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
   const assessment = await db.assessment.findUnique({
     where: {
-      id: Number(params.assessmentId),
+      id: params.assessmentId,
+    },
+    include: {
+      parts: {
+        orderBy: {
+          order: "asc",
+        },
+      },
     },
   });
   if (!assessment) {
@@ -20,8 +27,8 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
   }
   return (
     <div className="max-h-screen h-screen flex flex-col">
-      <AssessmentSiteHeader />
-      {/* <TabRender assessment={assessment} /> */}
+      <TextExamHeaderRender />
+      <TabContentRender assessment={assessment} />
     </div>
   );
 };

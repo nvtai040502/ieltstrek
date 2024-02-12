@@ -30,22 +30,22 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     if (!selectedAssessment) {
       return;
     }
-    setQuestionRefs((prevRefs) =>
-      Array.from({ length: selectedAssessment.questions.length }, (_, index) =>
-        index < prevRefs.length
-          ? prevRefs[index]
-          : createRef<HTMLDivElement | HTMLInputElement>(),
-      ),
-    );
+    // setQuestionRefs((prevRefs) =>
+    //   Array.from({ length: selectedAssessment.questions.length }, (_, index) =>
+    //     index < prevRefs.length
+    //       ? prevRefs[index]
+    //       : createRef<HTMLDivElement | HTMLInputElement>(),
+    //   ),
+    // );
     setActiveTab(String(selectedAssessment.parts[0].id));
-    selectedAssessment.parts.map((part) => {
-      if (part.passage) {
-        part.passage.passageMultiHeadingArray.map((heading) => {
-          if (heading.question) {
-          }
-        });
-      }
-    });
+    // selectedAssessment.parts.map((part) => {
+    //   if (part.passage) {
+    //     part.passage.passageMultiHeadingArray.map((heading) => {
+    //       if (heading.question) {
+    //       }
+    //     });
+    //   }
+    // });
   }, [selectedAssessment]);
   return (
     <ExamContext.Provider

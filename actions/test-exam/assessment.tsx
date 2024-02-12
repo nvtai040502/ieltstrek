@@ -9,6 +9,13 @@ export const createAssessment = async ({ name }: { name: string }) => {
     data: {
       name,
       totalQuestions: 40,
+      parts: {
+        create: Array.from({ length: 3 }).map((_, i) => ({
+          title: "Part Title",
+          description: "Part Description",
+          order: i,
+        })),
+      },
     },
   });
   redirect(`/assessments/${assessment.id}`);

@@ -82,6 +82,6 @@ export type NoteCompletionExtended = NoteCompletion & {
 };
 
 export type AssessmentExtended = Assessment & {
-  parts: PartExtended[];
-  questions: Question[];
+  parts: Part[];
+  // questions: Question[];
 };
