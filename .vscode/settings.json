@@ -1,5 +1,6 @@
 {
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  // "plugins": ["prettier-plugin-tailwindcss"],
   "editor.formatOnType": false, // required
   "editor.formatOnPaste": true, // optional
   "editor.formatOnSave": true, // optional
@@ -7,4 +8,3 @@
   "files.autoSave": "onFocusChange", // optional but recommended
   "vs-code-prettier-eslint.prettierLast": false // set as "true" to run 'prettier' last not first
 }
-

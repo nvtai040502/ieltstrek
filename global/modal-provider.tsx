@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateAssessmentForm } from "@/components/test-exam/assessment/create-form";
 import { CreatePassageForm } from "@/components/books/passage/create-form";
 import { UpdatePassageMultiHeadingForm } from "@/components/books/passage/multi-heading/update-form";
 import { UpdatePassageForm } from "@/components/books/passage/update-form";
@@ -28,6 +29,7 @@ export function ModalProvider() {
 
   return (
     <>
+      <CreateAssessmentForm />
       {/* <UpdateIdentifyingInformationItemForm />
 
       <UpdateMultiOneForm />

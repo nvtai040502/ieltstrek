@@ -1,3 +1,4 @@
+"use client";
 import { Delete, Edit, Plus, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEditHook } from "@/global/use-edit-hook";

@@ -35,6 +35,7 @@ export type EditType =
   | "createQuestionGroup"
   | "editMatchingHeading"
   | "editListMatchingChoices"
+  | "createAssessment"
   | null;
 
 export interface EditData {

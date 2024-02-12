@@ -6,11 +6,10 @@ import {
 import * as z from "zod";
 
 export const AssessmentSchema = z.object({
-  bookName: z.string().optional(),
-  imageCover: z.string().optional(),
   name: z.string().min(1, {
     message: "Assessment Name is required",
   }),
+  // totalQuestions: z.coerce.number().min(10),
 });
 
 export const PartSchema = z.object({

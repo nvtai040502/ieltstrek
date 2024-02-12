@@ -13,14 +13,14 @@ model Assessment {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  bookName   String?
-  imageCover String?
-  name       String
+  bookName       String?
+  imageCover     String?
+  name           String
+  totalQuestions Int
 
   // for now just READING
   sectionType SectionType @default(READING)
   parts       Part[]
-  questions   Question[]
 }
 
 enum SectionType {
@@ -42,7 +42,6 @@ model Part {
   assessment     Assessment      @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroups QuestionGroup[]
   passage        Passage?
-  questions      Question[]
 }
 
 enum QuestionType {
@@ -135,14 +134,8 @@ model Question {
   blank                      Blank?
   passageMultiHeading        PassageMultiHeading?
   matchingChoice             MatchingChoice?
-  partId                     Int
-  part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
-  assessmentId               Int
-  assessment                 Assessment                  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroupId            Int
   questionGroup              QuestionGroup               @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-
-  @@unique([questionNumber, assessmentId])
 }
 
 model NoteCompletion {

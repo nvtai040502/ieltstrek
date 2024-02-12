@@ -1,10 +1,14 @@
-import { CreateAssessmentButton } from "@/components/books/assessment/create-assessment-button"
-import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header"
-import { Button } from "@/components/ui/button"
-import { db } from "@/lib/db"
-import Link from "next/link"
+import { ActionButton } from "@/components/books/action-button";
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import Link from "next/link";
 const RootPage = async () => {
-  const assessments = await db.assessment.findMany()
+  const assessments = await db.assessment.findMany();
   return (
     <div className="container relative">
       <PageHeader>
@@ -14,21 +18,13 @@ const RootPage = async () => {
           apps. Accessible. Customizable. Open Source.
         </PageHeaderDescription>
       </PageHeader>
-      <CreateAssessmentButton asChild mode="modal">
-        <Button> Create Assessment</Button>
-      </CreateAssessmentButton>
+      <ActionButton actionType="create" editType="createAssessment" data={{}} />
       {assessments.map((assessment) => (
-          <Link 
-            key={assessment.id} 
-            href={`assessments/${assessment.id}`}
-          >
-            <Button>
-              {assessment.name}
-            </Button>
-
-          </Link>
+        <Link key={assessment.id} href={`assessments/${assessment.id}`}>
+          <Button>{assessment.name}</Button>
+        </Link>
       ))}
     </div>
-  )
-}
-export default RootPage
+  );
+};
+export default RootPage;
