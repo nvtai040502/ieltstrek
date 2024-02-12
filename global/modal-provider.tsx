@@ -13,8 +13,8 @@ import { CreatePassageForm } from "@/components/books/passage/create-form";
 import { UpdatePassageForm } from "@/components/books/passage/update-form";
 import { UpdatePassageMultiHeadingForm } from "@/components/books/passage/multi-heading/update-form";
 import { UpdateMatchingHeadingForm } from "@/components/books/question-type/matching-heading/update-form";
-import { UpdateMatchingSentenceForm } from "@/components/books/question-type/matching-sentence/update-form";
 import { UpdateListMatchingChoicesForm } from "@/components/books/question-type/matching-sentence/matching-choices-update-form";
+import UpdateMatchingSentenceForm from "@/components/books/question-type/matching-sentence/update-form";
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);

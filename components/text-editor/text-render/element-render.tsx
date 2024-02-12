@@ -1,8 +1,13 @@
 // @ts-ignore
-export const ElementRender = ({ attributes, children, element }) => {
-  const style = { textAlign: element.align };
+import { BlankButton } from "../toolbar/blank-button";
 
+export const ElementRender = ({ props }) => {
+  const { attributes, children, element } = props;
+  const style = { textAlign: element.align };
   switch (element.type) {
+    case "blank":
+      return <BlankButton {...props} />;
+
     case "table":
       return (
         <table className="w-full">

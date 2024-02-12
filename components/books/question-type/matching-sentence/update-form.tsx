@@ -1,152 +1,164 @@
 "use client";
-import { updateMatchingHeading } from "@/actions/books/question-type/matching-heading";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import { useCallback, useMemo, useTransition } from "react";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  Editor,
+  createEditor,
+  Element as SlateElement,
+  Range as RangeSlate,
+} from "slate";
+import { withHistory } from "slate-history";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Editable,
+  RenderElementProps,
+  RenderLeafProps,
+  Slate,
+  useSlate,
+  withReact,
+} from "slate-react";
+
+import { updateNoteCompletion } from "@/actions/books/note-completion";
+import { ElementRender } from "@/components/text-editor/text-render/element-render";
+import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
+import Toolbar from "@/components/text-editor/toolbar";
+import {
+  Dialog,
+  DialogClose,
+  DialogContentWithScrollArea,
+} from "@/components/ui/dialog";
 import { useEditHook } from "@/global/use-edit-hook";
-import { catchError } from "@/lib/utils";
-import { MatchingHeadingSchema } from "@/lib/validations/question-type";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
+import { useRouter } from "next/navigation";
+import { Transforms } from "slate";
 import { toast } from "sonner";
-import { z } from "zod";
+import { Button } from "../../../ui/button";
+import { Plus } from "lucide-react";
+import { css } from "@emotion/css";
 
-export function UpdateMatchingSentenceForm() {
+declare module "slate" {
+  interface CustomTypes {
+    Editor: CustomEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
+
+const UpdateMatchingSentenceForm = () => {
+  const renderElement = useCallback(
+    (props: RenderElementProps) => <ElementRender props={props} />,
+    [],
+  );
+  const renderLeaf = useCallback(
+    (props: RenderLeafProps) => <LeafEditorRender {...props} />,
+    [],
+  );
+  const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
-  const [selectedFakeArray, setSelectedFakeArray] = useState<
-    { [key: string]: boolean }[]
-  >([]);
-  const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === "editMatchingSentence";
-  const matchingSentence = data?.matchingSentence;
-
-  const form = useForm<z.infer<typeof MatchingHeadingSchema>>({
-    resolver: zodResolver(MatchingHeadingSchema),
-    defaultValues: {
-      title: "",
-      headingItems: [],
-    },
-  });
-  useEffect(() => {
-    if (matchingSentence) {
-      // form.setValue("title", matchingSentence.title);
-      // matchingSentence.matchingHeadingItemArray.forEach((item, index) => {
-      //   form.setValue(
-      //     `headingItems.${index}`,
-      //     item.passageMultiHeadingId !== null
-      //       ? String(item.passageMultiHeadingId)
-      //       : item.content,
-      //   );
-      // });
-      // setSelectedFakeArray(() =>
-      //   matchingSentence.matchingHeadingItemArray.map((item) =>
-      //     item.passageMultiHeadingId === null
-      //       ? { [String(item.id)]: true }
-      //       : { [String(item.id)]: false },
-      //   ),
-      // );
-    }
-  }, [form, matchingSentence]);
-  if (!isModalOpen || !matchingSentence) {
+  const matchingSentence = data?.questionGroup?.matchingSentence;
+  const editor = useMemo(
+    () => withInlines(withHistory(withReact(createEditor()))),
+    [],
+  );
+  const router = useRouter();
+  if (!matchingSentence || !isModalOpen) {
     return null;
   }
 
-  const onSubmit = (values: z.infer<typeof MatchingHeadingSchema>) => {
-    startTransition(async () => {
-      try {
-        await updateMatchingHeading({
-          title: values.title,
-          headingItems: values.headingItems,
-          id: matchingSentence.id,
-        });
-        toast.success("Updated");
-        onClose();
-      } catch (err) {
-        catchError(err);
-      }
-    });
-  };
+  const handleSave = async () => {};
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContentWithScrollArea>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={isPending}
-                        placeholder="Hello"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {matchingSentence.matchingSentenceItems.map(
-                (matchingSentenceItem, i) => (
-                  <FormField
-                    key={matchingSentenceItem.id}
-                    control={form.control}
-                    name={`headingItems.${i}`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Question Group Type</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            disabled={isPending}
-                            placeholder="Hello"
-                          />
-                        </FormControl>
-
-                        <Select disabled={isPending}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a type for question" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="yes">Yes</SelectItem>
-                            <SelectItem value="no">No</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ),
-              )}
-            </div>
-
-            <Button disabled={isPending} type="submit" className="w-full">
-              update
-            </Button>
-          </form>
-        </Form>
+      <DialogContentWithScrollArea className="max-w-7xl">
+        <Slate
+          editor={editor}
+          initialValue={JSON.parse(matchingSentence.paragraph)}
+        >
+          {/* <Toolbar /> */}
+          <ToggleEditableButtonButton />
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            placeholder="Enter some rich text…"
+            spellCheck
+            autoFocus
+          />
+          <Button disabled={isPending} onClick={handleSave}>
+            Save
+          </Button>
+        </Slate>
+        <DialogClose onClick={onClose} />
       </DialogContentWithScrollArea>
     </Dialog>
   );
-}
+};
+
+export default UpdateMatchingSentenceForm;
+
+const withInlines = (editor) => {
+  const { isInline } = editor;
+
+  editor.isInline = (element) =>
+    ["blank"].includes(element.type) || isInline(element);
+
+  return editor;
+};
+
+const unwrapBlank = (editor) => {
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "blank",
+  });
+};
+
+const wrapButton = (editor) => {
+  if (isBlankActive(editor)) {
+    unwrapBlank(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && RangeSlate.isCollapsed(selection);
+  const blank = {
+    type: "blank",
+    children: isCollapsed ? [{ text: "Edit me!" }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, blank);
+  } else {
+    Transforms.wrapNodes(editor, blank, { split: true });
+    Transforms.collapse(editor, { edge: "end" });
+  }
+};
+
+const ToggleEditableButtonButton = () => {
+  const editor = useSlate();
+  return (
+    <Button
+      // active
+      onMouseDown={(event) => {
+        event.preventDefault();
+        if (isBlankActive(editor)) {
+          unwrapBlank(editor);
+        } else {
+          insertBlank(editor);
+        }
+      }}
+    >
+      <Plus />
+    </Button>
+  );
+};
+
+const insertBlank = (editor) => {
+  if (editor.selection) {
+    wrapButton(editor);
+  }
+};
+
+const isBlankActive = (editor) => {
+  const [blank] = Editor.nodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "blank",
+  });
+  return !!blank;
+};

@@ -34,16 +34,14 @@ export const createMatchingSentence = async ({
       type: "paragraph",
       children: [
         { text: "This is matching sentence example" },
+        {
+          type: "blank",
+          children: [{ text: "editable button" }],
+        },
         { text: "rich", bold: true },
         { text: " text, " },
         { text: "much", italic: true },
-        { text: " better than a " },
-        {
-          text: "<textarea>",
-          code: true,
-          questionNumber: questionGroup.startQuestionNumber + i,
-        },
-        { text: "!" },
+        { text: " better than a!" },
       ],
     }),
   );

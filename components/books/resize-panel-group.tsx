@@ -122,9 +122,7 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       />
                     )}
                     {questionGroup.type === "MATCHING_SENTENCE" && (
-                      <MatchingSentenceRender
-                        matchingSentence={questionGroup.matchingSentence}
-                      />
+                      <MatchingSentenceRender questionGroup={questionGroup} />
                     )}
                   </div>
                 );
