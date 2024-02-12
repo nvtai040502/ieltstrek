@@ -10,14 +10,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { PartExtended } from "@/types/db";
 import { PassageRender } from "./passage/render";
 import { ExamContext } from "@/global/exam-context";
-import { NoteCompletionRender } from "./question-type/note-completion";
-import { IdentifyingInformationRender } from "./question-type/identifying-information";
-import { MultiOneArrayRender } from "./question-type/multiple-choice/multi-one";
-import { MultiMoreArrayRender } from "./question-type/multiple-choice/multi-more";
 import { ActionButton } from "./action-button";
-import { MatchingHeadingRender } from "./question-type/matching-heading";
 import { PassageDragAndDropRender } from "./passage/dnd-render";
-import { MatchingSentenceRender } from "./question-type/matching-sentence";
+import { MultiOneArrayRender } from "../question-type/multiple-choice/multi-one";
+import { MultiMoreArrayRender } from "../question-type/multiple-choice/multi-more";
+import { MatchingHeadingRender } from "../question-type/matching-heading";
+import { NoteCompletionRender } from "../question-type/note-completion";
+import { IdentifyingInformationRender } from "../question-type/identifying-information";
+import { MatchingSentenceRender } from "../question-type/matching-sentence";
 
 const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
   const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
@@ -88,7 +88,7 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       </div>
                     </div>
 
-                    {questionGroup.type === "MULTIPLE_CHOICE" && (
+                    {/* {questionGroup.type === "MULTIPLE_CHOICE" && (
                       <MultiOneArrayRender
                         multiOneArray={questionGroup.multipleChoiceArray}
                       />
@@ -97,9 +97,9 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       <MultiMoreArrayRender
                         multiMoreArray={questionGroup.multiMoreArray}
                       />
-                    )}
+                    )} */}
 
-                    {questionGroup.type === "MATCHING_HEADING" && (
+                    {/* {questionGroup.type === "MATCHING_HEADING" && (
                       <MatchingHeadingRender
                         matchingHeading={questionGroup.matchingHeading}
                       />
@@ -108,19 +108,19 @@ const ResizePanelGroup = ({ part }: { part: PartExtended }) => {
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}
                       />
-                    )}
-                    {questionGroup.type === "IDENTIFYING_INFORMATION" && (
+                    )} */}
+                    {/* {questionGroup.type === "IDENTIFYING_INFORMATION" && (
                       <IdentifyingInformationRender
                         identifyingInformation={
                           questionGroup.identifyingInformation
                         }
                       />
-                    )}
-                    {questionGroup.type === "NOTE_COMPLETION" && (
+                    )} */}
+                    {/* {questionGroup.type === "NOTE_COMPLETION" && (
                       <NoteCompletionRender
                         noteCompletion={questionGroup.noteCompletion}
                       />
-                    )}
+                    )} */}
                     {questionGroup.type === "MATCHING_SENTENCE" && (
                       <MatchingSentenceRender questionGroup={questionGroup} />
                     )}

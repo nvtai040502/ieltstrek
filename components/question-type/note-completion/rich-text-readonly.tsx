@@ -14,12 +14,8 @@ import { withHistory } from "slate-history";
 
 import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
 import { NoteCompletionExtended } from "@/types/db";
-import { ElementRender } from "@/components/text-editor/text-render/element-render";
-import {
-  LeafReadOnlyMatchingRender,
-  LeafReadOnlyRender,
-} from "@/components/text-editor/text-render/leaf-render";
-import { MatchingSentenceExtended } from "@/types/question-type";
+import { EditElementRender } from "@/components/text-editor/text-render/element-render";
+import { LeafReadOnlyRender } from "@/components/text-editor/text-render/leaf-render";
 
 declare module "slate" {
   interface CustomTypes {
@@ -30,24 +26,21 @@ declare module "slate" {
 }
 
 const RichTextReadOnly = ({
-  matchingSentence,
+  noteCompletion,
 }: {
-  matchingSentence: MatchingSentenceExtended;
+  noteCompletion: NoteCompletionExtended;
 }) => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <ElementRender {...props} />,
+    (props: RenderElementProps) => <EditElementRender {...props} />,
     [],
   );
   const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <LeafReadOnlyMatchingRender {...props} />,
+    (props: RenderLeafProps) => <LeafReadOnlyRender {...props} />,
     [],
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   return (
-    <Slate
-      editor={editor}
-      initialValue={JSON.parse(matchingSentence.paragraph)}
-    >
+    <Slate editor={editor} initialValue={JSON.parse(noteCompletion.paragraph)}>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}

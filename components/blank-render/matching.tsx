@@ -1,4 +1,32 @@
 import { css } from "@emotion/css";
+import { Droppable } from "@hello-pangea/dnd";
+import { QuestionType } from "@prisma/client";
+export function ReadMatchingBlankRender({
+  questionNumber,
+}: {
+  questionNumber: number;
+}) {
+  return (
+    <Droppable
+      type={QuestionType.MATCHING_SENTENCE}
+      droppableId={String(questionNumber)}
+    >
+      {(provided, snapshot) => (
+        <div
+          ref={
+            // questionRefs[item.question!.questionNumber - 1] &&
+            provided.innerRef
+          }
+          {...provided.droppableProps}
+          className="border border-secondary-foreground w-full p-4"
+        >
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  );
+}
+
 const InlineChromiumBugfix = () => (
   <span
     contentEditable={false}
@@ -10,7 +38,7 @@ const InlineChromiumBugfix = () => (
   </span>
 );
 
-export const BlankRender = ({ attributes, children }) => {
+export const EditMatchingBlankRender = ({ attributes, children }) => {
   return (
     /*
       Note that this is not a true button, but a span with button-like CSS.

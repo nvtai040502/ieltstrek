@@ -10,15 +10,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { PartExtended } from "@/types/db";
 import { PassageRender } from "./passage/render";
 import { ExamContext } from "@/global/exam-context";
-import { NoteCompletionRender } from "./question-type/note-completion";
-import { IdentifyingInformationRender } from "./question-type/identifying-information";
-import { MultiOneArrayRender } from "./question-type/multiple-choice/multi-one";
-import { MultiMoreArrayRender } from "./question-type/multiple-choice/multi-more";
 import { ActionButton } from "./action-button";
-import { MatchingHeadingRender } from "./question-type/matching-heading";
 import { PassageDragAndDropRender } from "./passage/dnd-render";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { QuestionType } from "@prisma/client";
+import { MultiOneArrayRender } from "../question-type/multiple-choice/multi-one";
+import { MultiMoreArrayRender } from "../question-type/multiple-choice/multi-more";
+import { MatchingHeadingRender } from "../question-type/matching-heading";
+import { NoteCompletionRender } from "../question-type/note-completion";
+import { IdentifyingInformationRender } from "../question-type/identifying-information";
 
 const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
   const {

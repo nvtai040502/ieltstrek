@@ -42,10 +42,6 @@ export const LeafReadOnlyMatchingRender = ({
     children = <strong>{children}</strong>;
   }
 
-  if (leaf.code) {
-    children = <PlaceHolderDragAndDrop questionNumber={leaf.questionNumber} />;
-  }
-
   if (leaf.italic) {
     children = <em>{children}</em>;
   }

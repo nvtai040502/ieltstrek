@@ -1,11 +1,11 @@
 "use client";
 
+import { ActionButton } from "@/components/books/action-button";
 import { NoteCompletionExtended, QuestionGroupExtended } from "@/types/db";
-import RichTextReadOnly from "./rich-text-readonly";
-import { ActionButton } from "../../action-button";
 import { MatchingSentenceExtended } from "@/types/question-type";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { QuestionType } from "@prisma/client";
+import MatchingSentenceParagraphRender from "./paragraph-render";
 
 interface MatchingSentenceRenderProps {
   questionGroup: QuestionGroupExtended;
@@ -26,7 +26,7 @@ export const MatchingSentenceRender = ({
         data={{ questionGroup }}
       />
       <DragDropContext onDragEnd={() => {}}>
-        {/* <RichTextReadOnly matchingSentence={matchingSentence} /> */}
+        <MatchingSentenceParagraphRender matchingSentence={matchingSentence} />
         <div className="flex justify-between items-center">
           <p className="font-bold">
             {matchingSentence.listMatchingChoices.title}

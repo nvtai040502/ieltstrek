@@ -11,7 +11,7 @@ import {
 } from "slate-react";
 
 import { updateNoteCompletion } from "@/actions/books/note-completion";
-import { ElementRender } from "@/components/text-editor/text-render/element-render";
+import { EditElementRender } from "@/components/text-editor/text-render/element-render";
 import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
 import Toolbar from "@/components/text-editor/toolbar";
 import {
@@ -36,7 +36,7 @@ declare module "slate" {
 
 const RichTextEditor = () => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <ElementRender {...props} />,
+    (props: RenderElementProps) => <EditElementRender {...props} />,
     [],
   );
   const renderLeaf = useCallback(

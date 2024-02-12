@@ -11,7 +11,7 @@ import {
 } from "slate-react";
 
 import { updateMatchingSentence } from "@/actions/books/question-type/matching-sentence";
-import { ElementRender } from "@/components/text-editor/text-render/element-render";
+import { EditElementRender } from "@/components/text-editor/text-render/element-render";
 import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
 import Toolbar from "@/components/text-editor/toolbar";
 import {
@@ -24,7 +24,7 @@ import { catchError } from "@/lib/utils";
 import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
 import { Transforms } from "slate";
 import { toast } from "sonner";
-import { Button } from "../../../ui/button";
+import { Button } from "@/components/ui/button";
 
 declare module "slate" {
   interface CustomTypes {
@@ -36,7 +36,7 @@ declare module "slate" {
 
 const UpdateMatchingSentenceForm = () => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <ElementRender props={props} />,
+    (props: RenderElementProps) => <EditElementRender props={props} />,
     [],
   );
   const renderLeaf = useCallback(
