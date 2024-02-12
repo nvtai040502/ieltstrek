@@ -1,22 +1,15 @@
 "use client";
 import { useCallback, useMemo, useTransition } from "react";
-import {
-  Editor,
-  createEditor,
-  Element as SlateElement,
-  Range as RangeSlate,
-} from "slate";
+import { Editor, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import {
   Editable,
   RenderElementProps,
   RenderLeafProps,
   Slate,
-  useSlate,
   withReact,
 } from "slate-react";
 
-import { updateNoteCompletion } from "@/actions/books/note-completion";
 import { ElementRender } from "@/components/text-editor/text-render/element-render";
 import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
 import Toolbar from "@/components/text-editor/toolbar";
@@ -29,10 +22,9 @@ import { useEditHook } from "@/global/use-edit-hook";
 import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
 import { useRouter } from "next/navigation";
 import { Transforms } from "slate";
-import { toast } from "sonner";
 import { Button } from "../../../ui/button";
-import { Plus } from "lucide-react";
-import { css } from "@emotion/css";
+import { toast } from "sonner";
+import { catchError } from "@/lib/utils";
 
 declare module "slate" {
   interface CustomTypes {
@@ -54,17 +46,61 @@ const UpdateMatchingSentenceForm = () => {
   const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
   const isModalOpen = isOpen && type === "editMatchingSentence";
+  const questionGroup = data?.questionGroup;
   const matchingSentence = data?.questionGroup?.matchingSentence;
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
     [],
   );
   const router = useRouter();
-  if (!matchingSentence || !isModalOpen) {
+  if (!questionGroup || !matchingSentence || !isModalOpen) {
     return null;
   }
 
-  const handleSave = async () => {};
+  const countBlankOccurrences = () => {
+    let blankCount = 0;
+
+    for (const [node, path] of Editor.nodes(editor, {
+      at: [],
+      match: (n) => n.type === "blank",
+    })) {
+      const { type, ...props } = node;
+
+      const newNode = {
+        ...props,
+        type,
+        questionNumber: questionGroup.startQuestionNumber + blankCount,
+      };
+      blankCount++;
+      Transforms.setNodes(editor, { ...newNode }, { at: path });
+    }
+    return blankCount;
+  };
+  const handleSave = async () => {
+    const blankCount = countBlankOccurrences();
+    const totalQuestions =
+      questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1;
+    if (blankCount !== totalQuestions) {
+      toast.error(
+        `Total Blank must be equal to number question you set in question group
+        Total Blank: ${blankCount}, Total Questions: ${totalQuestions} `,
+      );
+      return;
+    }
+    // startTransition(async () => {
+    //   try {
+    //     await updateMatchingS({
+    //       title: values.title,
+    //       content: values.content,
+    //       id: multiHeading.id,
+    //     });
+    //     toast.success("Updated");
+    //     onClose();
+    //   } catch (err) {
+    //     catchError(err);
+    //   }
+    // });
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -73,8 +109,8 @@ const UpdateMatchingSentenceForm = () => {
           editor={editor}
           initialValue={JSON.parse(matchingSentence.paragraph)}
         >
-          {/* <Toolbar /> */}
-          <ToggleEditableButtonButton />
+          <Toolbar />
+
           <Editable
             renderElement={renderElement}
             renderLeaf={renderLeaf}
@@ -101,64 +137,4 @@ const withInlines = (editor) => {
     ["blank"].includes(element.type) || isInline(element);
 
   return editor;
-};
-
-const unwrapBlank = (editor) => {
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "blank",
-  });
-};
-
-const wrapButton = (editor) => {
-  if (isBlankActive(editor)) {
-    unwrapBlank(editor);
-  }
-
-  const { selection } = editor;
-  const isCollapsed = selection && RangeSlate.isCollapsed(selection);
-  const blank = {
-    type: "blank",
-    children: isCollapsed ? [{ text: "Edit me!" }] : [],
-  };
-
-  if (isCollapsed) {
-    Transforms.insertNodes(editor, blank);
-  } else {
-    Transforms.wrapNodes(editor, blank, { split: true });
-    Transforms.collapse(editor, { edge: "end" });
-  }
-};
-
-const ToggleEditableButtonButton = () => {
-  const editor = useSlate();
-  return (
-    <Button
-      // active
-      onMouseDown={(event) => {
-        event.preventDefault();
-        if (isBlankActive(editor)) {
-          unwrapBlank(editor);
-        } else {
-          insertBlank(editor);
-        }
-      }}
-    >
-      <Plus />
-    </Button>
-  );
-};
-
-const insertBlank = (editor) => {
-  if (editor.selection) {
-    wrapButton(editor);
-  }
-};
-
-const isBlankActive = (editor) => {
-  const [blank] = Editor.nodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "blank",
-  });
-  return !!blank;
 };

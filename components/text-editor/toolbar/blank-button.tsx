@@ -1,43 +1,64 @@
-import { css } from "@emotion/css";
-const InlineChromiumBugfix = () => (
-  <span
-    contentEditable={false}
-    className={css`
-      font-size: 0;
-    `}
-  >
-    {String.fromCodePoint(160) /* Non-breaking space */}
-  </span>
-);
+import { Button } from "@/components/ui/button";
+import { Editor, Element, Transforms, Range as RangeSlate } from "slate";
+import { useSlate } from "slate-react";
 
-export const BlankButton = ({ attributes, children }) => {
+const unwrapBlank = (editor) => {
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "blank",
+  });
+};
+
+const wrapButton = (editor) => {
+  if (isBlankActive(editor)) {
+    unwrapBlank(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && RangeSlate.isCollapsed(selection);
+  const blank = {
+    type: "blank",
+    children: isCollapsed ? [{ text: "Edit me!" }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, blank);
+  } else {
+    Transforms.wrapNodes(editor, blank, { split: true });
+    Transforms.collapse(editor, { edge: "end" });
+  }
+};
+
+export const BlankButton = ({ icon }: { icon: React.ReactNode }) => {
+  const editor = useSlate();
+  const isActive = isBlankActive(editor);
   return (
-    /*
-      Note that this is not a true button, but a span with button-like CSS.
-      True buttons are display:inline-block, but Chrome and Safari
-      have a bad bug with display:inline-block inside contenteditable:
-      - https://bugs.webkit.org/show_bug.cgi?id=105898
-      - https://bugs.chromium.org/p/chromium/issues/detail?id=1088403
-      Worse, one cannot override the display property: https://github.com/w3c/csswg-drafts/issues/3226
-      The only current workaround is to emulate the appearance of a display:inline button using CSS.
-    */
-    <span
-      {...attributes}
-      onClick={(ev) => ev.preventDefault()}
-      // Margin is necessary to clearly show the cursor adjacent to the button
-      className={css`
-        margin: 0 0.1em;
-
-        background-color: #efefef;
-        padding: 2px 6px;
-        border: 1px solid #767676;
-        border-radius: 2px;
-        font-size: 0.9em;
-      `}
+    <Button
+      variant={isActive ? "default" : "outline"}
+      onMouseDown={(event) => {
+        event.preventDefault();
+        if (isBlankActive(editor)) {
+          unwrapBlank(editor);
+        } else {
+          insertBlank(editor);
+        }
+      }}
     >
-      <InlineChromiumBugfix />
-      {children}
-      <InlineChromiumBugfix />
-    </span>
+      {icon}
+    </Button>
   );
+};
+
+const insertBlank = (editor) => {
+  if (editor.selection) {
+    wrapButton(editor);
+  }
+};
+
+const isBlankActive = (editor) => {
+  const [blank] = Editor.nodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && Element.isElement(n) && n.type === "blank",
+  });
+  return !!blank;
 };

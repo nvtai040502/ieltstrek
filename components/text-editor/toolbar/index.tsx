@@ -1,3 +1,4 @@
+import { BlankButton } from "./blank-button";
 import BlockButton from "./block-button";
 import { MarkButton } from "./mark-button";
 import {
@@ -22,7 +23,7 @@ function Toolbar() {
       <MarkButton format="bold" icon={<Bold />} />
       <MarkButton format="italic" icon={<Italic />} />
       <MarkButton format="underline" icon={<Underline />} />
-      <MarkButton format="code" icon={<Code />} />
+      <BlankButton icon={<Code />} />
       <BlockButton format="heading-one" icon={<Heading1 />} />
       <BlockButton format="heading-two" icon={<Heading2 />} />
       <BlockButton format="blockquote" icon={<Quote />} />
