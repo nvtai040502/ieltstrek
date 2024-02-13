@@ -1,20 +1,18 @@
-"use client";
+'use client';
 
-import { ActionButton } from "@/components/test-exam/action-button";
-import { NoteCompletionExtended, QuestionGroupExtended } from "@/types/db";
-import { MatchingSentenceExtended } from "@/types/question-type";
-import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { QuestionType } from "@prisma/client";
-import MatchingSentenceParagraphRender from "./paragraph-render";
+import MatchingSentenceParagraphRender from './paragraph-render';
+import { ActionButton } from '@/components/test-exam/action-button';
+import { QuestionGroupExtended } from '@/types/test-exam';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import { QuestionType } from '@prisma/client';
 
-interface MatchingSentenceRenderProps {
+export const MatchingRender = ({
+  questionGroup
+}: {
   questionGroup: QuestionGroupExtended;
-}
-export const MatchingSentenceRender = ({
-  questionGroup,
-}: MatchingSentenceRenderProps) => {
-  const matchingSentence = questionGroup.matchingSentence;
-  if (!matchingSentence || !matchingSentence.listMatchingChoices) {
+}) => {
+  const matching = questionGroup.matching;
+  if (!matching || !matching.matchingChoiceGroup) {
     return null;
   }
 
@@ -26,26 +24,24 @@ export const MatchingSentenceRender = ({
         data={{ questionGroup }}
       />
       <DragDropContext onDragEnd={() => {}}>
-        <MatchingSentenceParagraphRender matchingSentence={matchingSentence} />
+        <MatchingSentenceParagraphRender matchingSentence={matching} />
         <div className="flex justify-between items-center">
-          <p className="font-bold">
-            {matchingSentence.listMatchingChoices.title}
-          </p>
+          <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
           <ActionButton
             editType="editListMatchingChoices"
             actionType="update"
-            data={{ listMatchingChoices: matchingSentence.listMatchingChoices }}
+            data={{ listMatchingChoices: matching.matchingChoiceGroup }}
           />
         </div>
         <Droppable
-          type={QuestionType.MATCHING_SENTENCE}
+          type={QuestionType.MATCHING}
           droppableId="matching-sentence"
           direction="vertical"
           isDropDisabled
         >
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {matchingSentence.listMatchingChoices!.matchingChoices.map(
+              {matching.matchingChoiceGroup.matchingChoiceList.map(
                 (matchingChoice, i) => (
                   <Draggable
                     draggableId={String(matchingChoice.id)}
@@ -64,7 +60,7 @@ export const MatchingSentenceRender = ({
                       </div>
                     )}
                   </Draggable>
-                ),
+                )
               )}
               {provided.placeholder}
             </div>

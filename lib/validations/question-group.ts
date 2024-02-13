@@ -13,7 +13,7 @@ export const QuestionGroupSchema = z
       QuestionType.NOTE_COMPLETION,
       QuestionType.TABLE_COMPLETION,
       QuestionType.MATCHING_HEADING,
-      QuestionType.MATCHING_SENTENCE
+      QuestionType.MATCHING
     ]),
     numberColumns: z.coerce.number().optional(),
     numberRows: z.coerce.number().optional(),

@@ -27,6 +27,24 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               startQuestionNumber: 'asc'
             },
             include: {
+              matching: {
+                include: {
+                  matchingChoiceGroup: {
+                    include: {
+                      matchingChoiceList: {
+                        orderBy: {
+                          question: {
+                            questionNumber: 'asc'
+                          }
+                        },
+                        include: {
+                          question: true
+                        }
+                      }
+                    }
+                  }
+                }
+              },
               completion: {
                 include: {
                   blanks: {

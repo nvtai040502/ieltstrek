@@ -54,8 +54,8 @@ enum QuestionType {
   SUMMARY_COMPLETION
   NOTE_COMPLETION
   TABLE_COMPLETION
+  MATCHING
   MATCHING_HEADING
-  MATCHING_SENTENCE
 }
 
 model QuestionGroup {
@@ -73,14 +73,14 @@ model QuestionGroup {
   part      Part       @relation(fields: [partId], references: [id], onDelete: Cascade)
   questions Question[]
 
-  multiOneList  MultipleChoiceOneAnswer[]
-  multiMoreList MultipleChoiceMoreAnswers[]
-  completion    Completion?
+  multiOneList        MultipleChoiceOneAnswer[]
+  multiMoreList       MultipleChoiceMoreAnswers[]
+  completion          Completion?
+  matching            Matching?
+  matchingChoiceGroup MatchingChoiceGroup?
 
   identifyingInformation IdentifyingInformation?
   matchingHeading        MatchingHeading?
-  matchingSentence       MatchingSentence?
-  listMatchingChoices    ListMatchingChoices?
 }
 
 model Question {
@@ -97,13 +97,13 @@ model Question {
   assessmentId    String
   assessment      Assessment    @relation(fields: [assessmentId], references: [id])
 
-  multiOne  MultipleChoiceOneAnswer?
-  multiMore MultipleChoiceMoreAnswers?
-  blank     Blank?
+  multiOne       MultipleChoiceOneAnswer?
+  multiMore      MultipleChoiceMoreAnswers?
+  blank          Blank?
+  matchingChoice MatchingChoice?
 
   identifyingInformationItem IdentifyingInformationItem?
   passageMultiHeading        PassageMultiHeading?
-  matchingChoice             MatchingChoice?
 }
 
 model MultipleChoiceOneAnswer {
@@ -178,36 +178,34 @@ model Blank {
   completion   Completion @relation(fields: [completionId], references: [id], onDelete: Cascade)
 }
 
-model MatchingSentence {
-  id        Int      @id @default(autoincrement())
+model Matching {
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   paragraph String
 
-  listMatchingChoices ListMatchingChoices?
-
-  questionGroupId String        @unique
-  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  questionGroupId       String              @unique
+  questionGroup         QuestionGroup       @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  matchingChoiceGroupId String              @unique
+  matchingChoiceGroup   MatchingChoiceGroup @relation(fields: [matchingChoiceGroupId], references: [id], onDelete: Cascade)
 }
 
-model ListMatchingChoices {
-  id        Int      @id @default(autoincrement())
+model MatchingChoiceGroup {
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   title String?
 
-  matchingSentenceId Int?              @unique
-  matchingSentence   MatchingSentence? @relation(fields: [matchingSentenceId], references: [id], onDelete: Cascade)
-
-  matchingChoices MatchingChoice[]
-  questionGroupId String           @unique
-  questionGroup   QuestionGroup    @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  matching           Matching?
+  matchingChoiceList MatchingChoice[]
+  questionGroupId    String           @unique
+  questionGroup      QuestionGroup    @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model MatchingChoice {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -215,8 +213,8 @@ model MatchingChoice {
 
   questionId            String?             @unique
   question              Question?           @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  listMatchingChoicesId Int
-  listMatchingChoices   ListMatchingChoices @relation(fields: [listMatchingChoicesId], references: [id], onDelete: Cascade)
+  matchingChoiceGroupId String
+  matchingChoiceGroup   MatchingChoiceGroup @relation(fields: [matchingChoiceGroupId], references: [id], onDelete: Cascade)
 }
 
 model MatchingHeading {

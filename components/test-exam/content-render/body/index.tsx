@@ -3,6 +3,7 @@
 import { useContext } from 'react';
 import { PassageRender } from '../../passage/render';
 import { CompletionRender } from '@/components/question-type/completion';
+import { MatchingRender } from '@/components/question-type/matching';
 import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
 import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
 import { ActionButton } from '@/components/test-exam/action-button';
@@ -101,6 +102,9 @@ const PartBodyContentRender = () => {
                     questionGroup.type === 'TABLE_COMPLETION') && (
                     <CompletionRender completion={questionGroup.completion} />
                   )}
+                  {questionGroup.type === 'MATCHING' && (
+                    <MatchingRender questionGroup={questionGroup} />
+                  )}
                   {/* {questionGroup.type === 'MATCHING_HEADING' && (
                     <MatchingHeadingRender
                       matchingHeading={questionGroup.matchingHeading}
@@ -112,10 +116,6 @@ const PartBodyContentRender = () => {
                         questionGroup.identifyingInformation
                       }
                     />
-                  )}
-                  
-                  {questionGroup.type === 'MATCHING_SENTENCE' && (
-                    <MatchingSentenceRender questionGroup={questionGroup} />
                   )} */}
                 </div>
               );

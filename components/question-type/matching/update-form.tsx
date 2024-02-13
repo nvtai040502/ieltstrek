@@ -1,32 +1,32 @@
-"use client";
-import { useCallback, useMemo, useTransition } from "react";
-import { Editor, createEditor } from "slate";
-import { withHistory } from "slate-history";
+'use client';
+
+import { useCallback, useMemo, useTransition } from 'react';
+import { updateMatchingSentence } from '@/actions/question-type/matching-sentence';
+import { EditElementRender } from '@/components/text-editor/text-render/element-render';
+import { LeafEditorRender } from '@/components/text-editor/text-render/leaf-render';
+import Toolbar from '@/components/text-editor/toolbar';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContentWithScrollArea
+} from '@/components/ui/dialog';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
+import { Editor, createEditor } from 'slate';
+import { Transforms } from 'slate';
+import { withHistory } from 'slate-history';
 import {
   Editable,
   RenderElementProps,
   RenderLeafProps,
   Slate,
-  withReact,
-} from "slate-react";
+  withReact
+} from 'slate-react';
+import { toast } from 'sonner';
 
-import { updateMatchingSentence } from "@/actions/books/question-type/matching-sentence";
-import { EditElementRender } from "@/components/text-editor/text-render/element-render";
-import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
-import Toolbar from "@/components/text-editor/toolbar";
-import {
-  Dialog,
-  DialogClose,
-  DialogContentWithScrollArea,
-} from "@/components/ui/dialog";
-import { useEditHook } from "@/global/use-edit-hook";
-import { catchError } from "@/lib/utils";
-import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
-import { Transforms } from "slate";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-
-declare module "slate" {
+declare module 'slate' {
   interface CustomTypes {
     Editor: CustomEditor;
     Element: CustomElement;
@@ -37,20 +37,20 @@ declare module "slate" {
 const UpdateMatchingSentenceForm = () => {
   const renderElement = useCallback(
     (props: RenderElementProps) => <EditElementRender props={props} />,
-    [],
+    []
   );
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <LeafEditorRender {...props} />,
-    [],
+    []
   );
   const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
-  const isModalOpen = isOpen && type === "editMatchingSentence";
+  const isModalOpen = isOpen && type === 'editMatchingSentence';
   const questionGroup = data?.questionGroup;
   const matchingSentence = data?.questionGroup?.matchingSentence;
   const editor = useMemo(
     () => withInlines(withHistory(withReact(createEditor()))),
-    [],
+    []
   );
   if (!questionGroup || !matchingSentence || !isModalOpen) {
     return null;
@@ -61,14 +61,14 @@ const UpdateMatchingSentenceForm = () => {
 
     for (const [node, path] of Editor.nodes(editor, {
       at: [],
-      match: (n) => n.type === "blank",
+      match: (n) => n.type === 'blank'
     })) {
       const { type, ...props } = node;
 
       const newNode = {
         ...props,
         type,
-        questionNumber: questionGroup.startQuestionNumber + blankCount,
+        questionNumber: questionGroup.startQuestionNumber + blankCount
       };
       blankCount++;
       Transforms.setNodes(editor, { ...newNode }, { at: path });
@@ -82,7 +82,7 @@ const UpdateMatchingSentenceForm = () => {
     if (blankCount !== totalQuestions) {
       toast.error(
         `Total Blank must be equal to number question you set in question group
-        Total Blank: ${blankCount}, Total Questions: ${totalQuestions} `,
+        Total Blank: ${blankCount}, Total Questions: ${totalQuestions} `
       );
       return;
     }
@@ -90,9 +90,9 @@ const UpdateMatchingSentenceForm = () => {
       try {
         await updateMatchingSentence({
           id: matchingSentence.id,
-          paragraph: JSON.stringify(editor.children),
+          paragraph: JSON.stringify(editor.children)
         });
-        toast.success("Updated");
+        toast.success('Updated');
         onClose();
       } catch (err) {
         catchError(err);
@@ -132,7 +132,7 @@ const withInlines = (editor) => {
   const { isInline } = editor;
 
   editor.isInline = (element) =>
-    ["blank"].includes(element.type) || isInline(element);
+    ['blank'].includes(element.type) || isInline(element);
 
   return editor;
 };

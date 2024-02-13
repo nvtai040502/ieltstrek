@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { createMatching } from '../question-type/matching';
 import { createMultiMoreList } from '../question-type/multi-more';
 import { createMultiOneList } from '../question-type/multi-one';
 import { createNoteCompletion } from '../question-type/note-completion';
@@ -95,6 +96,11 @@ export const createQuestionGroup = async ({
         questionGroupId: questionGroup.id,
         numberColumns: numberColumns!,
         numberRows: numberRows!
+      });
+      break;
+    case 'MATCHING':
+      await createMatching({
+        questionGroupId: questionGroup.id
       });
       break;
     default:
