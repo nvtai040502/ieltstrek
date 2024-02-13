@@ -36,7 +36,7 @@ export function CreateAssessmentForm() {
     startTransition(async () => {
       try {
         await createAssessment({
-          name: values.name
+          formData: values
         });
         toast.success('Created');
         onClose();

@@ -1,13 +1,19 @@
-'use server'
+'use server';
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { db } from '@/lib/db'
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { db } from '@/lib/db';
+import { AssessmentSchema } from '@/lib/validations/text-exam';
+import { z } from 'zod';
 
-export const createAssessment = async ({ name }: { name: string }) => {
+export const createAssessment = async ({
+  formData
+}: {
+  formData: z.infer<typeof AssessmentSchema>;
+}) => {
   const assessment = await db.assessment.create({
     data: {
-      name,
+      ...formData,
       totalQuestions: 40,
       parts: {
         create: Array.from({ length: 3 }).map((_, i) => ({
@@ -17,6 +23,6 @@ export const createAssessment = async ({ name }: { name: string }) => {
         }))
       }
     }
-  })
-  redirect(`/assessments/${assessment.id}`)
-}
+  });
+  redirect(`/assessments/${assessment.id}`);
+};

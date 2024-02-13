@@ -2,15 +2,14 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
-import { Part } from '@prisma/client';
+import { PartSchema } from '@/lib/validations/text-exam';
+import { z } from 'zod';
 
 export const updatePart = async ({
-  title,
-  description,
+  formData,
   id
 }: {
-  title: string;
-  description: string;
+  formData: z.infer<typeof PartSchema>;
   id: string;
 }) => {
   const part = await db.part.findUnique({
@@ -29,8 +28,7 @@ export const updatePart = async ({
       id
     },
     data: {
-      title,
-      description
+      ...formData
     }
   });
   revalidatePath(`/assessments/${part.assessmentId}`);

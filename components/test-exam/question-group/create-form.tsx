@@ -58,12 +58,8 @@ export function CreateQuestionGroupForm() {
     startTransition(async () => {
       try {
         await createQuestionGroup({
-          title: values.title,
-          description: values.description,
-          partId: selectedPart.id,
-          startQuestionNumber: values.startQuestionNumber,
-          endQuestionNumber: values.endQuestionNumber,
-          type: values.type
+          formData: values,
+          partId: selectedPart.id
         });
 
         toast.success('Created');

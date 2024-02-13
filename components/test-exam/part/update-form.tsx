@@ -51,8 +51,7 @@ export function UpdatePartForm() {
     startTransition(async () => {
       try {
         await updatePart({
-          title: values.title,
-          description: values.description,
+          formData: values,
           id: part.id
         });
         toast.success('Updated');

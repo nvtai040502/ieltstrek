@@ -3,23 +3,17 @@
 import { revalidatePath } from 'next/cache';
 import { createMultiOneArray } from '../books/multi-one';
 import { db } from '@/lib/db';
-import { Passage, QuestionType } from '@prisma/client';
+import { QuestionGroupSchema } from '@/lib/validations/question-group';
+import { z } from 'zod';
 
 export const createQuestionGroup = async ({
-  title,
-  description,
-  startQuestionNumber,
-  type,
-  endQuestionNumber,
+  formData,
   partId
 }: {
-  title: string;
-  description?: string;
-  startQuestionNumber: number;
-  type: QuestionType;
-  endQuestionNumber: number;
+  formData: z.infer<typeof QuestionGroupSchema>;
   partId: string;
 }) => {
+  const { startQuestionNumber, endQuestionNumber, type } = formData;
   const part = await db.part.findUnique({
     where: {
       id: partId
@@ -56,11 +50,7 @@ export const createQuestionGroup = async ({
 
   const questionGroup = await db.questionGroup.create({
     data: {
-      title,
-      description,
-      startQuestionNumber,
-      type,
-      endQuestionNumber,
+      ...formData,
       partId,
       questions: {
         createMany: {
