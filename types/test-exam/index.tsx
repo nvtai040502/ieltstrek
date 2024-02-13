@@ -14,7 +14,7 @@ export type PassageExtended = Passage & {
 };
 
 export type PartExtended = Part & {
-  // passage: PassageExtended | null
+  passage: PassageExtended | null;
   questionGroups: QuestionGroupExtended[];
   questions: Question[];
 };

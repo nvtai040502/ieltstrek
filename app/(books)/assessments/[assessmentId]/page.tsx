@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation';
-import { TestExamContentRender } from '@/components/test-exam/render/content';
-import { TextExamHeaderRender } from '@/components/test-exam/render/header';
+import { TestExamContentRender } from '@/components/test-exam/content-render';
+import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/ui/icons';
 import { db } from '@/lib/db';
 import { AssessmentExtended } from '@/types/test-exam';
+import { AlignJustify, Bell, Wifi } from 'lucide-react';
 
 interface AssessmentIdPageProps {
   params: {
@@ -21,6 +23,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
         },
         include: {
           questionGroups: true,
+          passage: true,
           questions: {
             orderBy: {
               questionNumber: 'asc'
@@ -35,7 +38,29 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
   }
   return (
     <div className="max-h-screen h-screen flex flex-col">
-      <TextExamHeaderRender />
+      {/* Text Exam Header */}
+      <div className="px-4 py-2 flex items-center ">
+        <div className="gap-6 flex items-center">
+          <Icons.logo className="h-6 w-6" aria-hidden="true" />
+          <div className="">
+            <p className=" font-bold">Title</p>
+            <p>Description</p>
+          </div>
+        </div>
+        <div className="flex flex-1 items-center justify-end m">
+          <nav className="flex items-center">
+            <div className="p-4">
+              <Wifi />
+            </div>
+            <Button variant="ghost">
+              <Bell />
+            </Button>
+            <Button variant="ghost">
+              <AlignJustify />
+            </Button>
+          </nav>
+        </div>
+      </div>
       <TestExamContentRender assessment={assessment} />
     </div>
   );

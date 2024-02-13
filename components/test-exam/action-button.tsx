@@ -1,32 +1,33 @@
-"use client";
-import { Delete, Edit, Plus, XCircle } from "lucide-react";
-import { Button } from "../ui/button";
-import { useEditHook } from "@/global/use-edit-hook";
-import { EditData, EditType } from "@/global/edit-context";
-import React from "react";
+'use client';
+
+import React from 'react';
+import { Button } from '../ui/button';
+import { EditData, EditType } from '@/global/edit-context';
+import { useEditHook } from '@/global/use-edit-hook';
+import { Delete, Edit, Plus, XCircle } from 'lucide-react';
 
 export const ActionButton = ({
   actionType,
   editType,
   data,
-  children,
+  children
 }: {
-  actionType: "create" | "update" | "delete" | "close";
+  actionType: 'create' | 'update' | 'delete' | 'close';
   editType: EditType;
-  data: EditData;
+  data?: EditData;
   children?: React.ReactNode;
 }) => {
   const { onOpen, onClose } = useEditHook();
 
   const renderIcon = () => {
     switch (actionType) {
-      case "create":
+      case 'create':
         return children || <Plus />;
-      case "update":
+      case 'update':
         return children || <Edit />;
-      case "delete":
+      case 'delete':
         return children || <Delete />;
-      case "close":
+      case 'close':
         return children || <XCircle />;
       default:
         return null;
@@ -38,7 +39,7 @@ export const ActionButton = ({
       variant="ghost"
       size="xs"
       onClick={() =>
-        actionType === "close" ? onClose() : onOpen({ type: editType, data })
+        actionType === 'close' ? onClose() : onOpen({ type: editType, data })
       }
     >
       {renderIcon()}

@@ -1,7 +1,7 @@
 'use client';
 
-import { useContext, useEffect } from 'react';
-import { PassageRender } from '@/components/books/passage/render';
+import { useContext } from 'react';
+import { PassageRender } from '../../passage/render';
 import { ActionButton } from '@/components/test-exam/action-button';
 import {
   ResizableHandle,
@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/resizable';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { ExamContext } from '@/global/exam-context';
-import { PartExtended } from '@/types/test-exam';
 
 const PartBodyContentRender = () => {
   const { questionRefs, setCurrentQuestionIndex, selectedPart } =
@@ -38,7 +37,7 @@ const PartBodyContentRender = () => {
             type="always"
             className="w-full h-full overflow-auto pl-4 pr-8"
           >
-            {/* <PassageRender part={part} /> */}
+            <PassageRender />
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>

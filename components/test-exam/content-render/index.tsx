@@ -1,8 +1,8 @@
 'use client';
 
 import { Fragment, useContext, useEffect } from 'react';
-import { ActionButton } from '../../action-button';
-import ButtonNavigationQuestion from '../../button-nav-question';
+import { ActionButton } from '../action-button';
+import ButtonNavigationQuestion from '../button-nav-question';
 import PartBodyContentRender from './body';
 import FooterContentRender from './footer';
 import { Button } from '@/components/ui/button';

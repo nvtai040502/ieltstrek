@@ -26,3 +26,20 @@ export const createAssessment = async ({
   });
   redirect(`/assessments/${assessment.id}`);
 };
+
+export async function getAssessmentIdByPartId(partId: string) {
+  const part = await db.part.findUnique({
+    where: {
+      id: partId
+    },
+    select: {
+      assessmentId: true
+    }
+  });
+
+  if (!part) {
+    throw new Error('Part Id Not found');
+  }
+
+  return part.assessmentId;
+}
