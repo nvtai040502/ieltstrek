@@ -2,7 +2,6 @@
 
 import { useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { updateMultiMore } from '@/actions/test-exam/multi-more';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';

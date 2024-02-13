@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { PassageRender } from '../../passage/render';
 import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
 import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
+import { NoteCompletionRender } from '@/components/question-type/note-completion';
 import { ActionButton } from '@/components/test-exam/action-button';
 import {
   ResizableHandle,
@@ -96,31 +97,31 @@ const PartBodyContentRender = () => {
                       />
                     ))}
 
+                  {questionGroup.type === 'NOTE_COMPLETION' && (
+                    <NoteCompletionRender
+                      noteCompletion={questionGroup.completion}
+                    />
+                  )}
                   {/* {questionGroup.type === 'MATCHING_HEADING' && (
-                      <MatchingHeadingRender
-                        matchingHeading={questionGroup.matchingHeading}
-                      />
-                    )}
-                    {questionGroup.type === 'TABLE_COMPLETION' && (
-                      <NoteCompletionRender
-                        noteCompletion={questionGroup.noteCompletion}
-                      />
-                    )}
-                    {questionGroup.type === 'IDENTIFYING_INFORMATION' && (
-                      <IdentifyingInformationRender
-                        identifyingInformation={
-                          questionGroup.identifyingInformation
-                        }
-                      />
-                    )}
-                    {questionGroup.type === 'NOTE_COMPLETION' && (
-                      <NoteCompletionRender
-                        noteCompletion={questionGroup.noteCompletion}
-                      />
-                    )}
-                    {questionGroup.type === 'MATCHING_SENTENCE' && (
-                      <MatchingSentenceRender questionGroup={questionGroup} />
-                    )} */}
+                    <MatchingHeadingRender
+                      matchingHeading={questionGroup.matchingHeading}
+                    />
+                  )}
+                  {questionGroup.type === 'IDENTIFYING_INFORMATION' && (
+                    <IdentifyingInformationRender
+                      identifyingInformation={
+                        questionGroup.identifyingInformation
+                      }
+                    />
+                  )}
+                  {questionGroup.type === 'NOTE_COMPLETION' && (
+                    <NoteCompletionRender
+                      noteCompletion={questionGroup.noteCompletion}
+                    />
+                  )}
+                  {questionGroup.type === 'MATCHING_SENTENCE' && (
+                    <MatchingSentenceRender questionGroup={questionGroup} />
+                  )} */}
                 </div>
               );
             })}

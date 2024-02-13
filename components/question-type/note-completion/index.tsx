@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { NoteCompletionExtended } from "@/types/db";
-import RichTextReadOnly from "./rich-text-readonly";
-import { ActionButton } from "../../action-button";
+import { CompletionExtended } from '@/types/test-exam';
+import ParagraphRender from './paragraph-render';
+import { ActionButton } from '@/components/test-exam/action-button';
 
 interface NoteCompletionRenderProps {
-  noteCompletion?: NoteCompletionExtended | null;
+  noteCompletion?: CompletionExtended | null;
 }
 export const NoteCompletionRender = ({
-  noteCompletion,
+  noteCompletion
 }: NoteCompletionRenderProps) => {
   if (!noteCompletion) {
     return null;
@@ -22,7 +22,7 @@ export const NoteCompletionRender = ({
         data={{ noteCompletion }}
       />
 
-      <RichTextReadOnly noteCompletion={noteCompletion} />
+      <ParagraphRender noteCompletion={noteCompletion} />
     </>
   );
 };

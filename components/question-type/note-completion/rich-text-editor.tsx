@@ -1,32 +1,30 @@
-"use client";
-import { useCallback, useMemo, useTransition } from "react";
-import { createEditor } from "slate";
-import { withHistory } from "slate-history";
+'use client';
+
+import { useCallback, useMemo, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { EditElementRender } from '@/components/text-editor/text-render/element-render';
+import { LeafEditorRender } from '@/components/text-editor/text-render/leaf-render';
+import Toolbar from '@/components/text-editor/toolbar';
+import {
+  Dialog,
+  DialogClose,
+  DialogContentWithScrollArea
+} from '@/components/ui/dialog';
+import { useEditHook } from '@/global/use-edit-hook';
+import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
+import { createEditor } from 'slate';
+import { Transforms } from 'slate';
+import { withHistory } from 'slate-history';
 import {
   Editable,
   RenderElementProps,
   RenderLeafProps,
   Slate,
-  withReact,
-} from "slate-react";
+  withReact
+} from 'slate-react';
+import { toast } from 'sonner';
 
-import { updateNoteCompletion } from "@/actions/books/note-completion";
-import { EditElementRender } from "@/components/text-editor/text-render/element-render";
-import { LeafEditorRender } from "@/components/text-editor/text-render/leaf-render";
-import Toolbar from "@/components/text-editor/toolbar";
-import {
-  Dialog,
-  DialogClose,
-  DialogContentWithScrollArea,
-} from "@/components/ui/dialog";
-import { useEditHook } from "@/global/use-edit-hook";
-import { CustomEditor, CustomElement, CustomText } from "@/types/text-editor";
-import { useRouter } from "next/navigation";
-import { Transforms } from "slate";
-import { toast } from "sonner";
-import { Button } from "../../../ui/button";
-
-declare module "slate" {
+declare module 'slate' {
   interface CustomTypes {
     Editor: CustomEditor;
     Element: CustomElement;
@@ -37,15 +35,15 @@ declare module "slate" {
 const RichTextEditor = () => {
   const renderElement = useCallback(
     (props: RenderElementProps) => <EditElementRender {...props} />,
-    [],
+    []
   );
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <LeafEditorRender {...props} />,
-    [],
+    []
   );
   const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
-  const isEdit = isOpen && type === "editNoteCompletion";
+  const isEdit = isOpen && type === 'editNoteCompletion';
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const noteCompletion = data?.noteCompletion;
   const router = useRouter();
@@ -58,7 +56,7 @@ const RichTextEditor = () => {
     if (codeCount !== noteCompletion.blanks.length) {
       toast.error(
         `Total Blank must be equal to number question you set in question group
-        Total Blank: ${codeCount}, Total Questions: ${noteCompletion.blanks.length} `,
+        Total Blank: ${codeCount}, Total Questions: ${noteCompletion.blanks.length} `
       );
       return;
     }
@@ -66,18 +64,18 @@ const RichTextEditor = () => {
       try {
         const success = await updateNoteCompletion({
           id: noteCompletion.id,
-          paragraph: JSON.stringify(editor.children),
+          paragraph: JSON.stringify(editor.children)
         });
 
         if (success) {
-          toast.success("Update Success");
+          toast.success('Update Success');
           router.refresh();
         } else {
-          toast.error("Error");
+          toast.error('Error');
         }
       } catch (error) {
-        console.error("Error creating question group:", error);
-        toast.error("Failed to create question group.");
+        console.error('Error creating question group:', error);
+        toast.error('Failed to create question group.');
       } finally {
         router.refresh();
         onClose();
@@ -90,20 +88,20 @@ const RichTextEditor = () => {
     const setQuestionNumber = (
       editor: CustomEditor,
       path: number[],
-      codeCount: number,
+      codeCount: number
     ) => {
       Transforms.setNodes(
         editor,
         {
           questionNumber:
-            noteCompletion.questionGroup.startQuestionNumber + codeCount,
+            noteCompletion.questionGroup.startQuestionNumber + codeCount
         },
-        { at: path },
+        { at: path }
       );
     };
 
     const processNode = (node: CustomElement, nodeIndex: number) => {
-      if (node.type === "paragraph" || node.type === "table") {
+      if (node.type === 'paragraph' || node.type === 'table') {
         const traverseChildren = (children: any, path: number[]) => {
           children.forEach((child: any, childIndex: number) => {
             if (child.text && child.code) {

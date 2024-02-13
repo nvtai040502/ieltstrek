@@ -43,6 +43,7 @@ export function CreateQuestionGroupForm() {
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
       title: '',
+      // type: '',
       startQuestionNumber: 1,
       endQuestionNumber: 4,
       description: ''

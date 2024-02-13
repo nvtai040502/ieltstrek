@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createMultiMoreList } from '../question-type/multi-more';
 import { createMultiOneList } from '../question-type/multi-one';
+import { createNoteCompletion } from '../question-type/note-completion';
 import { db } from '@/lib/db';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
 import { z } from 'zod';
@@ -77,7 +78,11 @@ export const createQuestionGroup = async ({
         questionGroupId: questionGroup.id
       });
       break;
-
+    case 'NOTE_COMPLETION':
+      await createNoteCompletion({
+        questionGroupId: questionGroup.id
+      });
+      break;
     default:
       throw new Error(`Unsupported question group type: ${type}`);
   }

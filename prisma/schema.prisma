@@ -75,11 +75,10 @@ model QuestionGroup {
 
   multiOneList  MultipleChoiceOneAnswer[]
   multiMoreList MultipleChoiceMoreAnswers[]
+  completion    Completion?
 
-  summaryCompletion      SummaryCompletion?
   identifyingInformation IdentifyingInformation?
   matchingHeading        MatchingHeading?
-  noteCompletion         NoteCompletion?
   matchingSentence       MatchingSentence?
   listMatchingChoices    ListMatchingChoices?
 }
@@ -100,10 +99,9 @@ model Question {
 
   multiOne  MultipleChoiceOneAnswer?
   multiMore MultipleChoiceMoreAnswers?
+  blank     Blank?
 
-  summaryCompletionItem      SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
-  blank                      Blank?
   passageMultiHeading        PassageMultiHeading?
   matchingChoice             MatchingChoice?
 }
@@ -154,6 +152,32 @@ model Choice {
   multiMore   MultipleChoiceMoreAnswers? @relation(fields: [multiMoreId], references: [id], onDelete: Cascade)
 }
 
+model Completion {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  paragraph String
+
+  blanks          Blank[]
+  questionGroupId String        @unique
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
+model Blank {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  expectedAnswer String
+  explanation    String?
+
+  questionId   String     @unique
+  question     Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  completionId String
+  completion   Completion @relation(fields: [completionId], references: [id], onDelete: Cascade)
+}
+
 model MatchingSentence {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -195,18 +219,6 @@ model MatchingChoice {
   listMatchingChoices   ListMatchingChoices @relation(fields: [listMatchingChoicesId], references: [id], onDelete: Cascade)
 }
 
-model NoteCompletion {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  paragraph String
-
-  blanks          Blank[]
-  questionGroupId String        @unique
-  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-}
-
 model MatchingHeading {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -232,21 +244,6 @@ model MatchingHeadingItem {
 
   matchingHeadingId Int
   matchingHeading   MatchingHeading @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
-}
-
-model Blank {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  expectedAnswer String
-  explanation    String?
-
-  questionId String   @unique
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  NoteCompletion   NoteCompletion? @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
-  noteCompletionId Int?
 }
 
 model IdentifyingInformation {
@@ -279,35 +276,6 @@ model IdentifyingInformationItem {
 
   identifyingInformationId Int
   identifyingInformation   IdentifyingInformation @relation(fields: [identifyingInformationId], references: [id], onDelete: Cascade)
-}
-
-model SummaryCompletion {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  title               String?
-  description         String?
-  paragraphWithBlanks String
-
-  summaryCompletionItems SummaryCompletionItem[]
-  questionGroupId        String                  @unique
-  questionGroup          QuestionGroup           @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-}
-
-model SummaryCompletionItem {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  expectedAnswer String
-  explanation    String?
-
-  questionId String   @unique
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  summaryCompletionId Int
-  summaryCompletion   SummaryCompletion @relation(fields: [summaryCompletionId], references: [id], onDelete: Cascade)
 }
 
 enum PassageType {

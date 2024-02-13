@@ -45,11 +45,4 @@ export type IdentifyingInformationExtended = IdentifyingInformation & {
   identifyingInformationItems: IdentifyingInformationItemExtended[];
 };
 
-export type BlankExtended = Blank & {
-  question: Question;
-};
 
-export type NoteCompletionExtended = NoteCompletion & {
-  blanks: BlankExtended[];
-  questionGroup: QuestionGroup;
-};

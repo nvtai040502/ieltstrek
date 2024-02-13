@@ -1,6 +1,8 @@
 import {
   Assessment,
+  Blank,
   Choice,
+  Completion,
   MultipleChoiceMoreAnswers,
   MultipleChoiceOneAnswer,
   Part,
@@ -25,10 +27,9 @@ export type PartExtended = Part & {
 export type QuestionGroupExtended = QuestionGroup & {
   multiOneList: MultiOneExtended[];
   multiMoreList: MultiMoreExtended[];
+  completion?: CompletionExtended | null;
 
-  // summaryCompletion?: SummaryCompletionExtended | null
   // identifyingInformation?: IdentifyingInformationExtended | null
-  // noteCompletion?: NoteCompletionExtended | null
   // matchingHeading?: MatchingHeadingExtended | null
   // listMatchingChoices?: ListMatchingChoicesExtended | null
   // matchingSentence?: MatchingSentenceExtended | null
@@ -39,5 +40,12 @@ export type MultiOneExtended = MultipleChoiceOneAnswer & {
 };
 export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
   choices: Choice[];
+  question: Question;
+};
+
+export type CompletionExtended = Completion & {
+  blanks: BlankExtended[];
+};
+export type BlankExtended = Blank & {
   question: Question;
 };
