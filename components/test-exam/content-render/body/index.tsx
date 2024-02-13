@@ -88,13 +88,15 @@ const PartBodyContentRender = () => {
                     questionGroup.multiOneList.map((multiOne) => (
                       <MultiOneRender multiOne={multiOne} key={multiOne.id} />
                     ))}
-                  {/* {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' && (
-                      <MultiMoreArrayRender
-                        multiMoreArray={questionGroup.multiMoreArray}
+                  {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' &&
+                    questionGroup.multiMoreList.map((multiMore) => (
+                      <MultiMoreRender
+                        multiMore={multiMore}
+                        key={multiMore.id}
                       />
-                    )}
+                    ))}
 
-                    {questionGroup.type === 'MATCHING_HEADING' && (
+                  {/* {questionGroup.type === 'MATCHING_HEADING' && (
                       <MatchingHeadingRender
                         matchingHeading={questionGroup.matchingHeading}
                       />

@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { createMultiMoreList } from '../question-type/multi-more';
 import { createMultiOneList } from '../question-type/multi-one';
 import { db } from '@/lib/db';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
@@ -68,6 +69,11 @@ export const createQuestionGroup = async ({
   switch (questionGroup.type) {
     case 'MULTIPLE_CHOICE_ONE_ANSWER':
       await createMultiOneList({
+        questionGroupId: questionGroup.id
+      });
+      break;
+    case 'MULTIPLE_CHOICE_MORE_ANSWERS':
+      await createMultiMoreList({
         questionGroupId: questionGroup.id
       });
       break;

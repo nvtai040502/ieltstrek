@@ -1,24 +1,26 @@
-"use client";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useContext, useState } from "react";
-import { MultiMoreExtended, MultiOneExtended } from "@/types/db";
-import { cn } from "@/lib/utils";
-import { ExamContext } from "@/global/exam-context";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Choice } from "@prisma/client";
-import { ActionButton } from "@/components/test-exam/action-button";
+'use client';
 
-interface MultiMoreRenderProps {
+import { useContext, useState } from 'react';
+import { ActionButton } from '@/components/test-exam/action-button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ExamContext } from '@/global/exam-context';
+import { cn } from '@/lib/utils';
+import { MultiMoreExtended } from '@/types/test-exam';
+import { Choice } from '@prisma/client';
+
+export const MultiMoreRender = ({
+  multiMore
+}: {
   multiMore: MultiMoreExtended;
-}
-export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
+}) => {
   const {
     questionRefs,
     currentQuestionIndex,
     setCurrentQuestionIndex,
     setUserAnswers,
-    userAnswers,
+    userAnswers
   } = useContext(ExamContext);
 
   if (!multiMore) {
@@ -26,7 +28,7 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
   }
   const handleAnswerSelected = ({
     checked,
-    choice,
+    choice
   }: {
     checked: boolean;
     choice: Choice;
@@ -44,7 +46,7 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
 
       return {
         ...prevAnswers,
-        [multiMore.question.questionNumber]: newAnswers,
+        [multiMore.question.questionNumber]: newAnswers
       };
     });
   };
@@ -57,10 +59,10 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
       <div className="flex items-center gap-2 ">
         <p
           className={cn(
-            "px-2 py-1",
+            'px-2 py-1',
             currentQuestionIndex === multiMore.question.questionNumber - 1
-              ? "border border-foreground"
-              : "",
+              ? 'border border-foreground'
+              : ''
           )}
         >
           {multiMore.question.questionNumber}
@@ -81,7 +83,7 @@ export const MultiMoreRender = ({ multiMore }: MultiMoreRenderProps) => {
                 defaultChecked={
                   userAnswers[multiMore.question.questionNumber]
                     ? userAnswers[multiMore.question.questionNumber].includes(
-                        choice.content,
+                        choice.content
                       )
                     : false
                 }

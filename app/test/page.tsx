@@ -1,18 +1,33 @@
-'use client'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
-import React from 'react'
-import { Button } from '@/components/ui/button'
+const TestPage = () => {
+  const finalSpaceCharacters = [
+    {
+      id: 'gary',
+      name: 'Gary Goodspeed'
+    },
+    {
+      id: '2asd',
+      name: 'Gary d'
+    }
+  ];
 
-const App = () => {
-  const a = '1'
   return (
-    <div>
-      <div className="h-20 w-20 whitespace-normal bg-red-500 p-0">Hello</div>
-      <Button></Button>
+    <DragDropContext onDragEnd={() => {}}>
+      <Droppable droppableId="characters">
+        {(provided) => (
+          <ul {...provided.droppableProps} ref={provided.innerRef}>
+            {finalSpaceCharacters.map(({ id, name }, index) => (
+              <li key={id}>
+                <p>{name}</p>
+              </li>
+            ))}
+            {provided.placeholder}
+          </ul>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+};
 
-      <div>{'deed'}</div>
-    </div>
-  )
-}
-
-export default App
+export default TestPage;

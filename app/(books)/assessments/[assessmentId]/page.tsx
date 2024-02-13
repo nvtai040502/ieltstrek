@@ -27,6 +27,17 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               startQuestionNumber: 'asc'
             },
             include: {
+              multiMoreList: {
+                include: {
+                  choices: true,
+                  question: true
+                },
+                orderBy: {
+                  question: {
+                    questionNumber: 'asc'
+                  }
+                }
+              },
               multiOneList: {
                 include: {
                   choices: true,

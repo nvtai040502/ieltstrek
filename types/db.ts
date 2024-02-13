@@ -23,10 +23,6 @@ import {
   SummaryCompletionItem
 } from '@prisma/client';
 
-export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
-  choices: Choice[];
-  question: Question;
-};
 export type MatchingHeadingExtended = MatchingHeading & {
   matchingHeadingItemArray: MatchingHeadingItem[];
   passageHeadingArray: PassageMultiHeadingExtended[];

@@ -73,9 +73,9 @@ model QuestionGroup {
   part      Part       @relation(fields: [partId], references: [id], onDelete: Cascade)
   questions Question[]
 
-  multiOneList MultipleChoiceOneAnswer[]
+  multiOneList  MultipleChoiceOneAnswer[]
+  multiMoreList MultipleChoiceMoreAnswers[]
 
-  multiMoreArray         MultipleChoiceMoreAnswers[]
   summaryCompletion      SummaryCompletion?
   identifyingInformation IdentifyingInformation?
   matchingHeading        MatchingHeading?
@@ -98,9 +98,9 @@ model Question {
   assessmentId    String
   assessment      Assessment    @relation(fields: [assessmentId], references: [id])
 
-  multiOne MultipleChoiceOneAnswer?
+  multiOne  MultipleChoiceOneAnswer?
+  multiMore MultipleChoiceMoreAnswers?
 
-  multipleChoiceMoreAnswers  MultipleChoiceMoreAnswers?
   summaryCompletionItem      SummaryCompletionItem?
   identifyingInformationItem IdentifyingInformationItem?
   blank                      Blank?
@@ -124,6 +124,22 @@ model MultipleChoiceOneAnswer {
   choices         Choice[]
 }
 
+model MultipleChoiceMoreAnswers {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title           String
+  explanation     String?
+  expectedAnswers String[]
+
+  questionId      String        @unique
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionGroupId String
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  choices         Choice[]
+}
+
 model Choice {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -132,11 +148,10 @@ model Choice {
   content String
   order   Int
 
-  multiOneId String?
-  multiOne   MultipleChoiceOneAnswer? @relation(fields: [multiOneId], references: [id], onDelete: Cascade)
-
-  multipleChoiceMoreAnswersId Int?
-  multipleChoiceMoreAnswers   MultipleChoiceMoreAnswers? @relation(fields: [multipleChoiceMoreAnswersId], references: [id], onDelete: Cascade)
+  multiOneId  String?
+  multiOne    MultipleChoiceOneAnswer?   @relation(fields: [multiOneId], references: [id], onDelete: Cascade)
+  multiMoreId String?
+  multiMore   MultipleChoiceMoreAnswers? @relation(fields: [multiMoreId], references: [id], onDelete: Cascade)
 }
 
 model MatchingSentence {
@@ -232,23 +247,6 @@ model Blank {
 
   NoteCompletion   NoteCompletion? @relation(fields: [noteCompletionId], references: [id], onDelete: Cascade)
   noteCompletionId Int?
-}
-
-model MultipleChoiceMoreAnswers {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  title           String
-  explanation     String?
-  expectedAnswers String[]
-
-  questionId String   @unique
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  choices         Choice[]
-  questionGroupId String
-  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model IdentifyingInformation {

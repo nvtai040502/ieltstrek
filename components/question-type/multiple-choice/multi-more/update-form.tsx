@@ -1,8 +1,11 @@
-"use client";
-import { updateMultiMore } from "@/actions/books/multi-more";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+'use client';
+
+import { useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { updateMultiMore } from '@/actions/test-exam/multi-more';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -10,35 +13,33 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useEditHook } from "@/global/use-edit-hook";
-import { MultiMoreSchema } from "@/lib/validations/question-type";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useEditHook } from '@/global/use-edit-hook';
+import { MultiMoreSchema } from '@/lib/validations/question-type';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 export function UpdateMultiMoreForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
-  const isModalOpen = isOpen && type === "editMultiMore";
+  const isModalOpen = isOpen && type === 'editMultiMore';
   const multiMore = data?.multiMore;
   const form = useForm<z.infer<typeof MultiMoreSchema>>({
     resolver: zodResolver(MultiMoreSchema),
     defaultValues: {
-      title: "",
-      expectedAnswers: [""],
-    },
+      title: '',
+      expectedAnswers: ['']
+    }
   });
   const router = useRouter();
   useEffect(() => {
     if (multiMore) {
-      form.setValue("title", multiMore.title);
-      form.setValue("expectedAnswers", multiMore.expectedAnswers);
+      form.setValue('title', multiMore.title);
+      form.setValue('expectedAnswers', multiMore.expectedAnswers);
     }
   }, [form, multiMore]);
   if (!multiMore || !isModalOpen) {
@@ -49,14 +50,14 @@ export function UpdateMultiMoreForm() {
       const multiMoreUpdated = await updateMultiMore({
         title: values.title,
         id: multiMore.id,
-        expectedAnswers: values.expectedAnswers,
+        expectedAnswers: values.expectedAnswers
       });
       if (multiMoreUpdated) {
-        toast.success("Successfully updated multipleChoice!");
+        toast.success('Successfully updated multipleChoice!');
         form.reset();
         router.refresh();
       } else {
-        toast("Failed to update multipleChoice");
+        toast('Failed to update multipleChoice');
       }
       onClose();
     });
@@ -109,18 +110,18 @@ export function UpdateMultiMoreForm() {
                               <FormControl>
                                 <Checkbox
                                   defaultChecked={multiMore.expectedAnswers.includes(
-                                    choice.content,
+                                    choice.content
                                   )}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([
                                           ...field.value,
-                                          choice.content,
+                                          choice.content
                                         ])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== choice.content,
-                                          ),
+                                            (value) => value !== choice.content
+                                          )
                                         );
                                   }}
                                 />
