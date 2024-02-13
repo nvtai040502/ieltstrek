@@ -55,11 +55,11 @@ export const TestExamContentRender = ({
               </div>
             </div>
           </div>
-          <ButtonNavigationQuestion part={part} />
+
           <div className="overflow-y-auto">
             <BodyContentRender part={part} />
-            {/* <ResizePanelGroupDragAndDrop part={part} /> */}
           </div>
+          <ButtonNavigationQuestion part={part} />
         </TabsContent>
       ))}
       <TabsContent value="delivering" className="h-full">
