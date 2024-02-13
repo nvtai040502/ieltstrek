@@ -1,49 +1,50 @@
-"use client";
-import { updateQuestionGroup } from "@/actions/books/question-group";
-import { AutosizeTextarea } from "@/components/ui/autosize-text-area";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+'use client';
+
+import { useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { updateQuestionGroup } from '@/actions/test-exam/question-group';
+import { AutosizeTextarea } from '@/components/ui/autosize-text-area';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useEditHook } from "@/global/use-edit-hook";
-import { QuestionGroupSchema } from "@/lib/validations/question-group";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useEditHook } from '@/global/use-edit-hook';
+import { QuestionGroupSchema } from '@/lib/validations/question-group';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 export function UpdateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
-  const isModalOpen = isOpen && type === "editQuestionGroup";
+  const isModalOpen = isOpen && type === 'editQuestionGroup';
   const questionGroup = data?.questionGroup;
   const form = useForm<z.infer<typeof QuestionGroupSchema>>({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
-      title: "",
-      type: "MULTIPLE_CHOICE",
+      title: '',
+      type: 'MULTIPLE_CHOICE',
       startQuestionNumber: 1,
       endQuestionNumber: 2,
-      description: "",
-    },
+      description: ''
+    }
   });
   const router = useRouter();
   useEffect(() => {
     if (questionGroup) {
-      form.setValue("title", questionGroup.title);
-      form.setValue("description", questionGroup.description || "");
-      form.setValue("type", questionGroup.type);
-      form.setValue("startQuestionNumber", questionGroup.startQuestionNumber);
-      form.setValue("endQuestionNumber", questionGroup.endQuestionNumber);
+      form.setValue('title', questionGroup.title);
+      form.setValue('description', questionGroup.description || '');
+      form.setValue('type', questionGroup.type);
+      form.setValue('startQuestionNumber', questionGroup.startQuestionNumber);
+      form.setValue('endQuestionNumber', questionGroup.endQuestionNumber);
     }
   }, [form, questionGroup]);
   if (!isModalOpen && !questionGroup) {
@@ -56,25 +57,25 @@ export function UpdateQuestionGroupForm() {
     startTransition(async () => {
       try {
         const { data, success, error } = await updateQuestionGroup({
-          title: values.title || "",
+          title: values.title || '',
           description: values.description,
           type: values.type,
           startQuestionNumber: values.startQuestionNumber,
           endQuestionNumber: values.endQuestionNumber,
-          id: questionGroup.id,
+          id: questionGroup.id
         });
 
         if (success && data) {
           form.reset();
           router.refresh();
-          toast.success("Successfully updated questionGroup!");
+          toast.success('Successfully updated questionGroup!');
         } else {
-          console.error("Error updating questionGroup:", error);
+          console.error('Error updating questionGroup:', error);
           toast.error(error);
         }
       } catch (error) {
-        console.error("Error creating question group:", error);
-        toast.error("Failed to create question group.");
+        console.error('Error creating question group:', error);
+        toast.error('Failed to create question group.');
       } finally {
         onClose();
       }

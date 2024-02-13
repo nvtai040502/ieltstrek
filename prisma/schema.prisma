@@ -20,6 +20,7 @@ model Assessment {
 
   // for now just READING
   sectionType SectionType @default(READING)
+  questions   Question[]
   parts       Part[]
 }
 
@@ -89,7 +90,7 @@ model Question {
   questionNumber Int
 
   partId                     String
-  part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
+  part                       Part                        @relation(fields: [partId], references: [id])
   multipleChoice             MultipleChoice?
   multipleChoiceMoreAnswers  MultipleChoiceMoreAnswers?
   summaryCompletionItem      SummaryCompletionItem?
@@ -99,6 +100,8 @@ model Question {
   matchingChoice             MatchingChoice?
   questionGroupId            String
   questionGroup              QuestionGroup               @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+  assessmentId               String
+  assessment                 Assessment                  @relation(fields: [assessmentId], references: [id])
 }
 
 model MatchingSentence {

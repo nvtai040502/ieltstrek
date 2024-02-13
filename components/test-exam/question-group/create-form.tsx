@@ -1,15 +1,8 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useContext, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { createIdentifyingInformation } from '@/actions/books/identifying-infomation';
-import { createMultiMoreArray } from '@/actions/books/multi-more';
-import { createMultiOneArray } from '@/actions/books/multi-one';
-import { createNoteCompletion } from '@/actions/books/note-completion';
-import { createQuestionGroup } from '@/actions/books/question-group';
-import { createMatchingHeading } from '@/actions/books/question-type/matching-heading';
-import { createMatchingSentence } from '@/actions/books/question-type/matching-sentence';
-import { createTableComplete } from '@/actions/books/table-complete';
+import { createQuestionGroup } from '@/actions/test-exam/question-group';
 import { AutosizeTextarea } from '@/components/ui/autosize-text-area';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
@@ -29,7 +22,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { ExamContext } from '@/global/exam-context';
 import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { QuestionType } from '@prisma/client';
@@ -39,9 +34,8 @@ import { z } from 'zod';
 
 export function CreateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
-  const { isOpen, type, data, onClose } = useEditHook();
-
-  const part = data?.part;
+  const { isOpen, type, onClose } = useEditHook();
+  const { selectedPart, selectedAssessment } = useContext(ExamContext);
 
   const isModalOpen = isOpen && type === 'createQuestionGroup';
 
@@ -51,88 +45,31 @@ export function CreateQuestionGroupForm() {
       type: 'MULTIPLE_CHOICE',
       title: '',
       startQuestionNumber: 1,
-      endQuestionNumber: 2,
+      endQuestionNumber: 4,
       description: ''
     }
   });
-  const router = useRouter();
-  if (!part || !isModalOpen) {
+
+  if (!selectedAssessment || !selectedPart || !isModalOpen) {
     return null;
   }
+
   const onSubmit = async (values: z.infer<typeof QuestionGroupSchema>) => {
     startTransition(async () => {
       try {
-        const { questionGroup, success, error } = await createQuestionGroup({
-          title: values.title || '',
+        await createQuestionGroup({
+          title: values.title,
           description: values.description,
-          type: values.type,
+          partId: selectedPart.id,
           startQuestionNumber: values.startQuestionNumber,
           endQuestionNumber: values.endQuestionNumber,
-          partId: part.id
+          type: values.type
         });
 
-        if (success && questionGroup) {
-          let successfully = false;
-
-          switch (questionGroup.type) {
-            case 'MULTIPLE_CHOICE':
-              successfully = await createMultiOneArray({
-                questionGroupId: questionGroup.id
-              });
-              break;
-            case 'MATCHING_HEADING':
-              successfully = await createMatchingHeading({
-                questionGroupId: questionGroup.id
-              });
-              break;
-            case 'MATCHING_SENTENCE':
-              successfully = await createMatchingSentence({
-                questionGroupId: questionGroup.id
-              });
-              break;
-            case 'TABLE_COMPLETION':
-              successfully = await createTableComplete({
-                questionGroupId: questionGroup.id,
-                numberColumns: 4,
-                numberRows: 4
-              });
-              break;
-            case 'MULTIPLE_CHOICE_MORE_ANSWERS':
-              successfully = await createMultiMoreArray({
-                questionGroupId: questionGroup.id
-              });
-              break;
-            case 'NOTE_COMPLETION':
-              successfully = await createNoteCompletion({
-                questionGroupId: questionGroup.id
-              });
-              break;
-
-            case 'IDENTIFYING_INFORMATION':
-              successfully = await createIdentifyingInformation({
-                questionGroupId: questionGroup.id
-              });
-              break;
-            default:
-              console.error(
-                'Unsupported question group type:',
-                questionGroup.type
-              );
-          }
-
-          if (successfully) {
-            form.reset();
-            router.refresh();
-            toast.success(success);
-          }
-        } else {
-          toast.error(error);
-        }
-      } catch (error) {
-        console.error('Error creating question group:', error);
-        toast.error('Failed to create question group.');
-      } finally {
+        toast.success('Created');
         onClose();
+      } catch (err) {
+        catchError(err);
       }
     });
   };

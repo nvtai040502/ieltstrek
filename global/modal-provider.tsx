@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { CreatePassageForm } from '@/components/books/passage/create-form';
 import { UpdatePassageMultiHeadingForm } from '@/components/books/passage/multi-heading/update-form';
 import { UpdatePassageForm } from '@/components/books/passage/update-form';
-import { CreateQuestionGroupForm } from '@/components/books/question-group/create-form';
 import { DeleteQuestionGroupForm } from '@/components/books/question-group/delete-form';
 import { UpdateQuestionGroupForm } from '@/components/books/question-group/update-form';
 import { UpdateIdentifyingInformationItemForm } from '@/components/question-type/identifying-information/update-form';
@@ -17,6 +16,7 @@ import { UpdateMultiOneForm } from '@/components/question-type/multiple-choice/m
 import RichTextEditor from '@/components/question-type/note-completion/rich-text-editor';
 import { CreateAssessmentForm } from '@/components/test-exam/assessment/create-form';
 import { UpdatePartForm } from '@/components/test-exam/part/update-form';
+import { CreateQuestionGroupForm } from '@/components/test-exam/question-group/create-form';
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -35,6 +35,8 @@ export function ModalProvider() {
 
       <UpdatePartForm />
 
+      <CreateQuestionGroupForm />
+
       {/* <UpdateIdentifyingInformationItemForm />
 
       <UpdateMultiOneForm />
@@ -43,7 +45,6 @@ export function ModalProvider() {
 
       <UpdateQuestionGroupForm />
       <DeleteQuestionGroupForm />
-      <CreateQuestionGroupForm />
 
       <RichTextEditor />
 

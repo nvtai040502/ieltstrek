@@ -1,62 +1,59 @@
-"use server";
-import { db } from "@/lib/db";
-import { MultiOneExtended } from "@/types/db";
-import { create } from "domain";
-import { createQuestion } from "./question";
-export const createMultiOneArray = async ({
-  questionGroupId,
-}: {
-  questionGroupId: number;
-}): Promise<boolean> => {
-  try {
-    const questionGroup = await db.questionGroup.findUnique({
-      where: {
-        id: questionGroupId,
-      },
-      select: {
-        questions: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
-    if (!questionGroup) {
-      throw new Error("QUestion Group Id not found");
-    }
-    questionGroup.questions.map(async (question) => {
-      await db.multipleChoice.create({
-        data: {
-          questionGroupId,
-          title: "example",
-          expectedAnswer: "Option 1",
-          questionId: question.id,
-          choices: {
-            createMany: {
-              data: [
-                { content: "Option 1" },
-                { content: "Option 2" },
-                { content: "Option 3" },
-                { content: "Option 4" },
-              ],
-            },
-          },
-        },
-        include: { choices: true },
-      });
-    });
+'use server';
 
-    return true;
-  } catch (error) {
-    console.error("Error creating multiple choice array:", error);
-    return false;
+import { createQuestion } from './question';
+import { db } from '@/lib/db';
+import { MultiOneExtended } from '@/types/db';
+import { create } from 'domain';
+
+export const createMultiOneArray = async ({
+  questionGroupId
+}: {
+  questionGroupId: string;
+}) => {
+  const questionGroup = await db.questionGroup.findUnique({
+    where: {
+      id: questionGroupId
+    },
+    select: {
+      questions: {
+        select: {
+          id: true
+        }
+      }
+    }
+  });
+  if (!questionGroup) {
+    throw new Error('Question Group Id not found');
   }
+
+  questionGroup.questions.map(async (question) => {
+    await db.multipleChoice.create({
+      data: {
+        questionGroupId,
+        title: 'example',
+        expectedAnswer: 'Option 1',
+        questionId: question.id,
+        choices: {
+          createMany: {
+            data: [
+              { content: 'Option 1' },
+              { content: 'Option 2' },
+              { content: 'Option 3' },
+              { content: 'Option 4' }
+            ]
+          }
+        }
+      }
+    });
+  });
+
+  return;
 };
 
 export const updateMultiOne = async ({
   title,
   expectedAnswer,
-  id,
+  id
 }: {
   title: string;
   expectedAnswer: string;
@@ -65,17 +62,17 @@ export const updateMultiOne = async ({
   try {
     const multipleChoice = await db.multipleChoice.update({
       where: {
-        id,
+        id
       },
       data: {
         title,
-        expectedAnswer,
-      },
+        expectedAnswer
+      }
     });
 
     return multipleChoice;
   } catch (error) {
-    console.error("Error updating multipleChoice:", error);
+    console.error('Error updating multipleChoice:', error);
     return null;
   }
 };
