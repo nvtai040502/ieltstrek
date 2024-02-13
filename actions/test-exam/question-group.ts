@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createMultiOneArray } from '../books/multi-one';
+import { createMultiOneList } from '../question-type/multi-one';
 import { db } from '@/lib/db';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
 import { z } from 'zod';
@@ -66,8 +66,8 @@ export const createQuestionGroup = async ({
     }
   });
   switch (questionGroup.type) {
-    case 'MULTIPLE_CHOICE':
-      await createMultiOneArray({
+    case 'MULTIPLE_CHOICE_ONE_ANSWER':
+      await createMultiOneList({
         questionGroupId: questionGroup.id
       });
       break;

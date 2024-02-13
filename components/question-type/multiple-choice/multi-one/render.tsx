@@ -1,22 +1,24 @@
-"use client";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useContext, useState } from "react";
-import { MultiOneExtended } from "@/types/db";
-import { cn } from "@/lib/utils";
-import { ExamContext } from "@/global/exam-context";
-import { ActionButton } from "@/components/test-exam/action-button";
+'use client';
 
-interface MultipleChoiceRenderProps {
+import { useContext, useState } from 'react';
+import { ActionButton } from '@/components/test-exam/action-button';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { ExamContext } from '@/global/exam-context';
+import { cn } from '@/lib/utils';
+import { MultiOneExtended } from '@/types/test-exam';
+
+export const MultiOneRender = ({
+  multiOne
+}: {
   multiOne: MultiOneExtended;
-}
-export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
+}) => {
   const {
     questionRefs,
     currentQuestionIndex,
     setCurrentQuestionIndex,
     setUserAnswers,
-    userAnswers,
+    userAnswers
   } = useContext(ExamContext);
 
   if (!multiOne) {
@@ -26,7 +28,7 @@ export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
     setCurrentQuestionIndex(multiOne.question.questionNumber - 1);
     setUserAnswers((prevAnswers) => ({
       ...prevAnswers,
-      [multiOne.question.questionNumber]: answerSelected,
+      [multiOne.question.questionNumber]: answerSelected
     }));
   };
   return (
@@ -38,10 +40,10 @@ export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
       <div className="flex items-center gap-2 ">
         <p
           className={cn(
-            "px-2 py-1",
+            'px-2 py-1',
             currentQuestionIndex === multiOne.question.questionNumber - 1
-              ? "border border-foreground"
-              : "",
+              ? 'border border-foreground'
+              : ''
           )}
         >
           {multiOne.question.questionNumber}
@@ -56,7 +58,7 @@ export const MultiOneRender = ({ multiOne }: MultipleChoiceRenderProps) => {
       <RadioGroup
         onValueChange={handleAnswerSelected}
         defaultValue={
-          (userAnswers[multiOne.question.questionNumber] as string) || ""
+          (userAnswers[multiOne.question.questionNumber] as string) || ''
         }
       >
         {multiOne.choices.map((choice) => {

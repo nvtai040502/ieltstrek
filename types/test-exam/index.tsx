@@ -1,5 +1,7 @@
 import {
   Assessment,
+  Choice,
+  MultipleChoiceOneAnswer,
   Part,
   Passage,
   Question,
@@ -18,8 +20,9 @@ export type PartExtended = Part & {
   questionGroups: QuestionGroupExtended[];
   questions: Question[];
 };
+
 export type QuestionGroupExtended = QuestionGroup & {
-  // multipleChoiceArray: MultiOneExtended[]
+  multiOneList: MultiOneExtended[];
   // summaryCompletion?: SummaryCompletionExtended | null
   // identifyingInformation?: IdentifyingInformationExtended | null
   // noteCompletion?: NoteCompletionExtended | null
@@ -27,4 +30,8 @@ export type QuestionGroupExtended = QuestionGroup & {
   // matchingHeading?: MatchingHeadingExtended | null
   // listMatchingChoices?: ListMatchingChoicesExtended | null
   // matchingSentence?: MatchingSentenceExtended | null
+};
+export type MultiOneExtended = MultipleChoiceOneAnswer & {
+  choices: Choice[];
+  question: Question;
 };

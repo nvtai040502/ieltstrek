@@ -10,26 +10,33 @@ export function PassageRender() {
   if (!selectedPart) {
     return null;
   }
+  if (!passage) {
+    return (
+      <ActionButton
+        actionType="create"
+        editType="createPassage"
+        data={{ part: selectedPart }}
+      />
+    );
+  }
   return (
-    <div>
-      {passage ? (
-        <div className="flex flex-col gap-4">
-          <div className="flex justify-between">
-            <div>
-              <p className=" font-bold"> {passage.title} </p>
-              <p className=" italic font-light">{passage.description}</p>
-            </div>
-            <ActionButton
-              actionType="update"
-              editType="editPassage"
-              data={{ passage }}
-            />
-          </div>
-          {passage.type === 'PASSAGE_SIMPLE' && (
-            <p className="whitespace-pre-line"> {passage.content} </p>
-          )}
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between">
+        <div>
+          <p className=" font-bold"> {passage.title} </p>
+          <p className=" italic font-light">{passage.description}</p>
+        </div>
+        <ActionButton
+          actionType="update"
+          editType="editPassage"
+          data={{ passage }}
+        />
+      </div>
+      {passage.type === 'PASSAGE_SIMPLE' && (
+        <p className="whitespace-pre-line"> {passage.content} </p>
+      )}
 
-          {/* {passage.type === 'PASSAGE_MULTI_HEADING' &&
+      {/* {passage.type === 'PASSAGE_MULTI_HEADING' &&
             passage.passageMultiHeadingArray.map((item) => {
               return (
                 <div key={item.id}>
@@ -45,16 +52,6 @@ export function PassageRender() {
                 </div>
               );
             })} */}
-        </div>
-      ) : (
-        <>
-          <ActionButton
-            actionType="create"
-            editType="createPassage"
-            data={{ part: selectedPart }}
-          />
-        </>
-      )}
     </div>
   );
 }

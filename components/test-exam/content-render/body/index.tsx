@@ -2,6 +2,8 @@
 
 import { useContext } from 'react';
 import { PassageRender } from '../../passage/render';
+import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
+import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
 import { ActionButton } from '@/components/test-exam/action-button';
 import {
   ResizableHandle,
@@ -82,12 +84,11 @@ const PartBodyContentRender = () => {
                     </div>
                   </div>
 
-                  {/* {questionGroup.type === 'MULTIPLE_CHOICE' && (
-                      <MultiOneArrayRender
-                        multiOneArray={questionGroup.multipleChoiceArray}
-                      />
-                    )}
-                    {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' && (
+                  {questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER' &&
+                    questionGroup.multiOneList.map((multiOne) => (
+                      <MultiOneRender multiOne={multiOne} key={multiOne.id} />
+                    ))}
+                  {/* {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' && (
                       <MultiMoreArrayRender
                         multiMoreArray={questionGroup.multiMoreArray}
                       />

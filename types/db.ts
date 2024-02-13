@@ -1,4 +1,8 @@
 import {
+  ListMatchingChoicesExtended,
+  MatchingSentenceExtended
+} from './question-type';
+import {
   Assessment,
   Blank,
   Choice,
@@ -16,18 +20,9 @@ import {
   Question,
   QuestionGroup,
   SummaryCompletion,
-  SummaryCompletionItem,
-} from "@prisma/client";
-import {
-  ListMatchingChoicesExtended,
-  MatchingSentenceExtended,
-} from "./question-type";
+  SummaryCompletionItem
+} from '@prisma/client';
 
-
-export type MultiOneExtended = MultipleChoice & {
-  choices: Choice[];
-  question: Question;
-};
 export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
   choices: Choice[];
   question: Question;
@@ -40,8 +35,6 @@ export type PassageMultiHeadingExtended = PassageMultiHeading & {
   matchingHeadingItem?: MatchingHeadingItem;
   question?: Question | null;
 };
-
-
 
 export type SummaryCompletionItemExtended = SummaryCompletionItem & {
   question: Question;
@@ -64,4 +57,3 @@ export type NoteCompletionExtended = NoteCompletion & {
   blanks: BlankExtended[];
   questionGroup: QuestionGroup;
 };
-

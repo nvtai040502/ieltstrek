@@ -6,7 +6,7 @@ export const QuestionGroupSchema = z
     title: z.string().min(1),
     description: z.string().optional(),
     type: z.enum([
-      QuestionType.MULTIPLE_CHOICE,
+      QuestionType.MULTIPLE_CHOICE_ONE_ANSWER,
       QuestionType.MULTIPLE_CHOICE_MORE_ANSWERS,
       QuestionType.SUMMARY_COMPLETION,
       QuestionType.IDENTIFYING_INFORMATION,

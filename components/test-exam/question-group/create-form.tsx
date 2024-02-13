@@ -42,7 +42,6 @@ export function CreateQuestionGroupForm() {
   const form = useForm<z.infer<typeof QuestionGroupSchema>>({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
-      type: 'MULTIPLE_CHOICE',
       title: '',
       startQuestionNumber: 1,
       endQuestionNumber: 4,
@@ -118,11 +117,7 @@ export function CreateQuestionGroupForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Question Group Type</FormLabel>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select disabled={isPending} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a type for question" />
