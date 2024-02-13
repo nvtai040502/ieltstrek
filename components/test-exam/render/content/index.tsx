@@ -3,7 +3,7 @@
 import { Fragment, useContext, useEffect } from 'react';
 import { ActionButton } from '../../action-button';
 import ButtonNavigationQuestion from '../../button-nav-question';
-import BodyContentRender from './body';
+import PartBodyContentRender from './body';
 import FooterContentRender from './footer';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -55,9 +55,9 @@ export const TestExamContentRender = ({
           </div>
 
           <div className="overflow-y-auto">
-            <BodyContentRender part={part} />
+            <PartBodyContentRender />
           </div>
-          <ButtonNavigationQuestion part={part} />
+          <ButtonNavigationQuestion />
         </TabsContent>
       ))}
       <TabsContent value="delivering" className="h-full">

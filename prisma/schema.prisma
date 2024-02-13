@@ -58,7 +58,7 @@ enum QuestionType {
 }
 
 model QuestionGroup {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -97,7 +97,7 @@ model Question {
   blank                      Blank?
   passageMultiHeading        PassageMultiHeading?
   matchingChoice             MatchingChoice?
-  questionGroupId            Int
+  questionGroupId            String
   questionGroup              QuestionGroup               @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -110,7 +110,7 @@ model MatchingSentence {
 
   listMatchingChoices ListMatchingChoices?
 
-  questionGroupId Int           @unique
+  questionGroupId String        @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -125,7 +125,7 @@ model ListMatchingChoices {
   matchingSentence   MatchingSentence? @relation(fields: [matchingSentenceId], references: [id], onDelete: Cascade)
 
   matchingChoices MatchingChoice[]
-  questionGroupId Int              @unique
+  questionGroupId String           @unique
   questionGroup   QuestionGroup    @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -150,7 +150,7 @@ model NoteCompletion {
   paragraph String
 
   blanks          Blank[]
-  questionGroupId Int           @unique
+  questionGroupId String        @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -163,7 +163,7 @@ model MatchingHeading {
   matchingHeadingItemArray MatchingHeadingItem[]
   passageHeadingArray      PassageMultiHeading[]
 
-  questionGroupId Int           @unique
+  questionGroupId String        @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -209,7 +209,7 @@ model MultipleChoiceMoreAnswers {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   choices         Choice[]
-  questionGroupId Int
+  questionGroupId String
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -226,7 +226,7 @@ model MultipleChoice {
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   choices         Choice[]
-  questionGroupId Int
+  questionGroupId String
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -250,7 +250,7 @@ model IdentifyingInformation {
   updatedAt DateTime @default(now()) @updatedAt
 
   identifyingInformationItems IdentifyingInformationItem[]
-  questionGroupId             Int                          @unique
+  questionGroupId             String                       @unique
   questionGroup               QuestionGroup                @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
@@ -286,7 +286,7 @@ model SummaryCompletion {
   paragraphWithBlanks String
 
   summaryCompletionItems SummaryCompletionItem[]
-  questionGroupId        Int                     @unique
+  questionGroupId        String                  @unique
   questionGroup          QuestionGroup           @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 

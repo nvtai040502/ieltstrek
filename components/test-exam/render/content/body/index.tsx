@@ -12,9 +12,12 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { ExamContext } from '@/global/exam-context';
 import { PartExtended } from '@/types/test-exam';
 
-const BodyContentRender = ({ part }: { part: PartExtended }) => {
-  const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
-
+const PartBodyContentRender = () => {
+  const { questionRefs, setCurrentQuestionIndex, selectedPart } =
+    useContext(ExamContext);
+  if (!selectedPart) {
+    return null;
+  }
   // useEffect(() => {
   //   if (questionRefs.length && part.questionGroups.length) {
   //     questionRefs[
@@ -35,7 +38,7 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
             type="always"
             className="w-full h-full overflow-auto pl-4 pr-8"
           >
-            <PassageRender part={part} />
+            {/* <PassageRender part={part} /> */}
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>
@@ -49,39 +52,38 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
               <ActionButton
                 actionType="create"
                 editType="createQuestionGroup"
-                data={{ part }}
+                data={{ part: selectedPart }}
               />
             </div>
 
-            {/* {part.questionGroups &&
-              part.questionGroups.map((questionGroup) => {
-                return (
-                  <div key={questionGroup.id} className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-bold">
-                          Questions {questionGroup.startQuestionNumber}-
-                          {questionGroup.endQuestionNumber}
-                        </p>
-                        <p className=" whitespace-pre-line">
-                          {questionGroup.title}
-                        </p>
-                      </div>
-                      <div>
-                        <ActionButton
-                          actionType="update"
-                          editType="editQuestionGroup"
-                          data={{ questionGroup }}
-                        />
-                        <ActionButton
-                          actionType="delete"
-                          editType="deleteQuestionGroup"
-                          data={{ questionGroup }}
-                        />
-                      </div>
+            {selectedPart.questionGroups.map((questionGroup) => {
+              return (
+                <div key={questionGroup.id} className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold">
+                        Questions {questionGroup.startQuestionNumber}-
+                        {questionGroup.endQuestionNumber}
+                      </p>
+                      <p className=" whitespace-pre-line">
+                        {questionGroup.title}
+                      </p>
                     </div>
+                    <div>
+                      <ActionButton
+                        actionType="update"
+                        editType="editQuestionGroup"
+                        data={{ questionGroup }}
+                      />
+                      <ActionButton
+                        actionType="delete"
+                        editType="deleteQuestionGroup"
+                        data={{ questionGroup }}
+                      />
+                    </div>
+                  </div>
 
-                    {questionGroup.type === 'MULTIPLE_CHOICE' && (
+                  {/* {questionGroup.type === 'MULTIPLE_CHOICE' && (
                       <MultiOneArrayRender
                         multiOneArray={questionGroup.multipleChoiceArray}
                       />
@@ -116,10 +118,10 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
                     )}
                     {questionGroup.type === 'MATCHING_SENTENCE' && (
                       <MatchingSentenceRender questionGroup={questionGroup} />
-                    )}
-                  </div>
-                )
-              })} */}
+                    )} */}
+                </div>
+              );
+            })}
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>
@@ -128,4 +130,4 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
   );
 };
 
-export default BodyContentRender;
+export default PartBodyContentRender;

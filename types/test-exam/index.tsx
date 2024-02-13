@@ -4,20 +4,20 @@ import {
   Passage,
   Question,
   QuestionGroup
-} from '@prisma/client'
+} from '@prisma/client';
 
 export type AssessmentExtended = Assessment & {
-  parts: PartExtended[]
-}
+  parts: PartExtended[];
+};
 export type PassageExtended = Passage & {
   // passageMultiHeadingArray: PassageMultiHeadingExtended[]
-}
+};
 
 export type PartExtended = Part & {
   // passage: PassageExtended | null
-  // questionGroups: QuestionGroupExtended[]
-  questions: Question[]
-}
+  questionGroups: QuestionGroupExtended[];
+  questions: Question[];
+};
 export type QuestionGroupExtended = QuestionGroup & {
   // multipleChoiceArray: MultiOneExtended[]
   // summaryCompletion?: SummaryCompletionExtended | null
@@ -27,4 +27,4 @@ export type QuestionGroupExtended = QuestionGroup & {
   // matchingHeading?: MatchingHeadingExtended | null
   // listMatchingChoices?: ListMatchingChoicesExtended | null
   // matchingSentence?: MatchingSentenceExtended | null
-}
+};
