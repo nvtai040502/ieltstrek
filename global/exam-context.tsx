@@ -1,28 +1,26 @@
-import { AssessmentExtended } from "@/types/db";
-import { MatchingHeadingItem } from "@prisma/client";
-import { Dispatch, RefObject, SetStateAction, createContext } from "react";
+import { Dispatch, RefObject, SetStateAction, createContext } from 'react'
+import { AssessmentExtended } from '@/types/test-exam'
+import { MatchingHeadingItem } from '@prisma/client'
 
 interface ExamContextProps {
-  activeTab: string;
-  selectedAssessment: AssessmentExtended | null;
-  questionRefs: RefObject<HTMLDivElement | HTMLInputElement>[];
-  currentQuestionIndex: number;
-  setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
+  activeTab: string
+  selectedAssessment: AssessmentExtended | null
+  questionRefs: RefObject<HTMLDivElement | HTMLInputElement>[]
+  currentQuestionIndex: number
+  setCurrentQuestionIndex: Dispatch<SetStateAction<number>>
   setQuestionRefs: Dispatch<
     SetStateAction<RefObject<HTMLDivElement | HTMLInputElement>[]>
-  >;
-  setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>;
-  setActiveTab: Dispatch<SetStateAction<string>>;
-  listHeading: string[];
-  setListHeading: Dispatch<SetStateAction<string[]>>;
-  userAnswers: { [key: string]: string | string[] };
-  setUserAnswers: Dispatch<
-    SetStateAction<{ [key: string]: string | string[] }>
-  >;
+  >
+  setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>
+  setActiveTab: Dispatch<SetStateAction<string>>
+  listHeading: string[]
+  setListHeading: Dispatch<SetStateAction<string[]>>
+  userAnswers: { [key: string]: string | string[] }
+  setUserAnswers: Dispatch<SetStateAction<{ [key: string]: string | string[] }>>
 }
 
 export const ExamContext = createContext<ExamContextProps>({
-  activeTab: "",
+  activeTab: '',
   selectedAssessment: null,
   questionRefs: [],
   userAnswers: {},
@@ -33,5 +31,5 @@ export const ExamContext = createContext<ExamContextProps>({
   setCurrentQuestionIndex: () => {},
   setQuestionRefs: () => {},
   setSelectedAssessment: () => {},
-  setActiveTab: () => {},
-});
+  setActiveTab: () => {}
+})

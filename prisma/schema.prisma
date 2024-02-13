@@ -39,6 +39,7 @@ model Part {
   description String
   order       Int
 
+  questions      Question[]
   assessmentId   String
   assessment     Assessment      @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   questionGroups QuestionGroup[]
@@ -80,6 +81,26 @@ model QuestionGroup {
   listMatchingChoices    ListMatchingChoices?
 }
 
+model Question {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  questionNumber Int
+
+  partId                     String
+  part                       Part                        @relation(fields: [partId], references: [id], onDelete: Cascade)
+  multipleChoice             MultipleChoice?
+  multipleChoiceMoreAnswers  MultipleChoiceMoreAnswers?
+  summaryCompletionItem      SummaryCompletionItem?
+  identifyingInformationItem IdentifyingInformationItem?
+  blank                      Blank?
+  passageMultiHeading        PassageMultiHeading?
+  matchingChoice             MatchingChoice?
+  questionGroupId            Int
+  questionGroup              QuestionGroup               @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+}
+
 model MatchingSentence {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -119,24 +140,6 @@ model MatchingChoice {
   question              Question?           @relation(fields: [questionId], references: [id], onDelete: Cascade)
   listMatchingChoicesId Int
   listMatchingChoices   ListMatchingChoices @relation(fields: [listMatchingChoicesId], references: [id], onDelete: Cascade)
-}
-
-model Question {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  questionNumber Int
-
-  multipleChoice             MultipleChoice?
-  multipleChoiceMoreAnswers  MultipleChoiceMoreAnswers?
-  summaryCompletionItem      SummaryCompletionItem?
-  identifyingInformationItem IdentifyingInformationItem?
-  blank                      Blank?
-  passageMultiHeading        PassageMultiHeading?
-  matchingChoice             MatchingChoice?
-  questionGroupId            Int
-  questionGroup              QuestionGroup               @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model NoteCompletion {

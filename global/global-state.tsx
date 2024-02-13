@@ -1,34 +1,34 @@
-"use client";
+'use client'
 
-import { AssessmentExtended } from "@/types/db";
-import { FC, RefObject, createRef, useEffect, useState } from "react";
-import { EditContext, EditData, EditType } from "./edit-context";
-import { ExamContext } from "./exam-context";
-import { MatchingHeadingItem } from "@prisma/client";
+import { FC, RefObject, createRef, useEffect, useState } from 'react'
+import { EditContext, EditData, EditType } from './edit-context'
+import { ExamContext } from './exam-context'
+import { AssessmentExtended } from '@/types/test-exam'
+import { MatchingHeadingItem } from '@prisma/client'
 
 interface GlobalStateProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>('')
   const [selectedAssessment, setSelectedAssessment] =
-    useState<AssessmentExtended | null>(null);
+    useState<AssessmentExtended | null>(null)
   const [questionRefs, setQuestionRefs] = useState<
     RefObject<HTMLDivElement | HTMLInputElement>[]
-  >([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+  >([])
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
   const [userAnswers, setUserAnswers] = useState<{
-    [key: string]: string | string[];
-  }>({});
-  const [textNoteCompletion, setTextNoteCompletion] = useState("");
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [type, setType] = useState<EditType>(null);
-  const [data, setData] = useState<EditData | undefined>(undefined);
-  const [listHeading, setListHeading] = useState<string[]>([]);
+    [key: string]: string | string[]
+  }>({})
+  const [textNoteCompletion, setTextNoteCompletion] = useState('')
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [type, setType] = useState<EditType>(null)
+  const [data, setData] = useState<EditData | undefined>(undefined)
+  const [listHeading, setListHeading] = useState<string[]>([])
   useEffect(() => {
     if (!selectedAssessment) {
-      return;
+      return
     }
     // setQuestionRefs((prevRefs) =>
     //   Array.from({ length: selectedAssessment.questions.length }, (_, index) =>
@@ -37,7 +37,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     //       : createRef<HTMLDivElement | HTMLInputElement>(),
     //   ),
     // );
-    setActiveTab(String(selectedAssessment.parts[0].id));
+    setActiveTab(String(selectedAssessment.parts[0].id))
     // selectedAssessment.parts.map((part) => {
     //   if (part.passage) {
     //     part.passage.passageMultiHeadingArray.map((heading) => {
@@ -46,7 +46,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     //     });
     //   }
     // });
-  }, [selectedAssessment]);
+  }, [selectedAssessment])
   return (
     <ExamContext.Provider
       value={{
@@ -61,7 +61,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setCurrentQuestionIndex,
         setQuestionRefs,
         setSelectedAssessment,
-        setActiveTab,
+        setActiveTab
       }}
     >
       <EditContext.Provider
@@ -73,11 +73,11 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
           setIsOpen,
           setType,
           type,
-          data,
+          data
         }}
       >
         {children}
       </EditContext.Provider>
     </ExamContext.Provider>
-  );
-};
+  )
+}

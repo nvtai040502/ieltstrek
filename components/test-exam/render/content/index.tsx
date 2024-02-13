@@ -1,19 +1,21 @@
-"use client";
-import ButtonNavigateQuestions from "@/components/books/button-nav-questions";
-import ResizePanelGroup from "@/components/books/resize-panel-group";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
-import { ExamContext } from "@/global/exam-context";
-import { useExamHandler } from "@/global/exam-hook";
-import { AssessmentExtended } from "@/types/db";
-import { Check, Send } from "lucide-react";
-import { Fragment, useContext, useEffect } from "react";
+'use client'
+
+import { Fragment, useContext, useEffect } from 'react'
+import ButtonNavigationQuestion from '../../button-nav-question'
+import BodyContentRender from './body'
+import FooterContentRender from './footer'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
+import { ExamContext } from '@/global/exam-context'
+import { useExamHandler } from '@/global/exam-hook'
+import { AssessmentExtended } from '@/types/test-exam'
+import { Check, Send } from 'lucide-react'
 
 export const TestExamContentRender = ({
-  assessment,
+  assessment
 }: {
-  assessment: AssessmentExtended;
+  assessment: AssessmentExtended
 }) => {
   const {
     selectedAssessment,
@@ -22,28 +24,24 @@ export const TestExamContentRender = ({
     setActiveTab,
     questionRefs,
     setCurrentQuestionIndex,
-    currentQuestionIndex,
-  } = useContext(ExamContext);
+    currentQuestionIndex
+  } = useContext(ExamContext)
 
   useEffect(() => {
-    setSelectedAssessment(assessment);
-  }, [assessment, setSelectedAssessment]);
+    setSelectedAssessment(assessment)
+  }, [assessment, setSelectedAssessment])
 
-  const { handleSubmit } = useExamHandler();
-  const handleMoveToDiv = (questionIndex: number) => {
-    questionRefs[questionIndex].current?.focus();
-    setCurrentQuestionIndex(questionIndex);
-  };
+  const { handleSubmit } = useExamHandler()
 
   if (!selectedAssessment) {
-    return null;
+    return null
   }
   return (
     <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
-      {selectedAssessment.parts.map((part, i) => (
+      {selectedAssessment.parts.map((part) => (
         <TabsContent
           key={part.id}
-          value={String(part.id)}
+          value={part.id}
           className="overflow-hidden flex flex-col"
         >
           <div className="p-4">
@@ -57,9 +55,9 @@ export const TestExamContentRender = ({
               </div>
             </div>
           </div>
-          {/* <ButtonNavigateQuestions part={part} partIndex={i} /> */}
+          <ButtonNavigationQuestion part={part} />
           <div className="overflow-y-auto">
-            <ResizePanelGroup part={part} />
+            <BodyContentRender part={part} />
             {/* <ResizePanelGroupDragAndDrop part={part} /> */}
           </div>
         </TabsContent>
@@ -76,54 +74,7 @@ export const TestExamContentRender = ({
         </div>
         <Separator className="hidden xl:block mt-20" />
       </TabsContent>
-      <TabsList className="flex justify-between items-center h-40">
-        {/* {assessment.parts.map((part) => (
-          <Fragment key={part.id}>
-            {activeTab === String(part.id) ? (
-              <div
-                key={part.id}
-                className="flex items-center justify-center gap-8 w-full"
-              >
-                <p className="px-1 whitespace-nowrap">{part.title}</p>
-                <div className="flex items-center">
-                  {part.questions.map((question) => (
-                    <div
-                      key={question.id}
-                      role="button"
-                      className="hover:border hover:border-secondary-foreground"
-                      onClick={() =>
-                        handleMoveToDiv(question.questionNumber - 1)
-                      }
-                    >
-                      <p
-                        className={cn(
-                          "px-2",
-                          currentQuestionIndex === question.questionNumber - 1
-                            ? "border border-secondary-foreground"
-                            : "",
-                        )}
-                      >
-                        {question.questionNumber}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Button
-                className="w-full rounded-none border-none"
-                variant="outline"
-                onClick={() => setActiveTab(String(part.id))}
-              >
-                {part.title}
-              </Button>
-            )}
-          </Fragment>
-        ))} */}
-        <Button variant="secondary" onClick={() => setActiveTab("delivering")}>
-          <Check className="h-4 w-4" />
-        </Button>
-      </TabsList>
+      <FooterContentRender />
     </Tabs>
-  );
-};
+  )
+}
