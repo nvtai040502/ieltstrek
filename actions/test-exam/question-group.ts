@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createMultiMoreList } from '../question-type/multi-more';
 import { createMultiOneList } from '../question-type/multi-one';
 import { createNoteCompletion } from '../question-type/note-completion';
+import { createTableCompletion } from '../question-type/table-completion';
 import { db } from '@/lib/db';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
 import { z } from 'zod';
@@ -15,7 +16,12 @@ export const createQuestionGroup = async ({
   formData: z.infer<typeof QuestionGroupSchema>;
   partId: string;
 }) => {
-  const { startQuestionNumber, endQuestionNumber, type } = formData;
+  const { numberColumns, numberRows, ...rest } = formData;
+  if (formData.type === 'TABLE_COMPLETION') {
+    if (!numberColumns || !numberRows) {
+      throw new Error('Missing number Col, Row');
+    }
+  }
   const part = await db.part.findUnique({
     where: {
       id: partId
@@ -33,8 +39,8 @@ export const createQuestionGroup = async ({
       assessmentId: part.assessmentId,
 
       questionNumber: {
-        gte: startQuestionNumber,
-        lte: endQuestionNumber
+        gte: formData.startQuestionNumber,
+        lte: formData.endQuestionNumber
       }
     },
     select: {
@@ -52,14 +58,15 @@ export const createQuestionGroup = async ({
 
   const questionGroup = await db.questionGroup.create({
     data: {
-      ...formData,
+      ...rest,
       partId,
       questions: {
         createMany: {
           data: Array.from({
-            length: endQuestionNumber - startQuestionNumber + 1
+            length:
+              formData.endQuestionNumber - formData.startQuestionNumber + 1
           }).map((_, i) => ({
-            questionNumber: startQuestionNumber + i,
+            questionNumber: formData.startQuestionNumber + i,
             partId,
             assessmentId: part.assessmentId
           }))
@@ -83,8 +90,15 @@ export const createQuestionGroup = async ({
         questionGroupId: questionGroup.id
       });
       break;
+    case 'TABLE_COMPLETION':
+      await createTableCompletion({
+        questionGroupId: questionGroup.id,
+        numberColumns: numberColumns!,
+        numberRows: numberRows!
+      });
+      break;
     default:
-      throw new Error(`Unsupported question group type: ${type}`);
+      throw new Error(`Unsupported question group type: ${formData.type}`);
   }
   revalidatePath(`/assessments/${part.assessmentId}`);
   return;

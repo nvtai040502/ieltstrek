@@ -1,24 +1,25 @@
-"use client";
+'use client';
+
+import React, { useContext, useEffect, useState } from 'react';
+import { CompletionRender } from '../question-type/completion';
+import { IdentifyingInformationRender } from '../question-type/identifying-information';
+import { MatchingHeadingRender } from '../question-type/matching-heading';
+import { MultiMoreArrayRender } from '../question-type/multiple-choice/multi-more';
+import { MultiOneArrayRender } from '../question-type/multiple-choice/multi-one';
+import { ActionButton } from '../test-exam/action-button';
+import { Button } from '../ui/button';
 import {
   ResizableHandle,
   ResizablePanel,
-  ResizablePanelGroup,
-} from "../ui/resizable";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { Button } from "../ui/button";
-import React, { useContext, useEffect, useState } from "react";
-import { PartExtended } from "@/types/db";
-import { PassageRender } from "./passage/render";
-import { ExamContext } from "@/global/exam-context";
-import { ActionButton } from "../test-exam/action-button";
-import { PassageDragAndDropRender } from "./passage/dnd-render";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import { QuestionType } from "@prisma/client";
-import { MultiOneArrayRender } from "../question-type/multiple-choice/multi-one";
-import { MultiMoreArrayRender } from "../question-type/multiple-choice/multi-more";
-import { MatchingHeadingRender } from "../question-type/matching-heading";
-import { NoteCompletionRender } from "../question-type/note-completion";
-import { IdentifyingInformationRender } from "../question-type/identifying-information";
+  ResizablePanelGroup
+} from '../ui/resizable';
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import { PassageDragAndDropRender } from './passage/dnd-render';
+import { PassageRender } from './passage/render';
+import { ExamContext } from '@/global/exam-context';
+import { PartExtended } from '@/types/db';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+import { QuestionType } from '@prisma/client';
 
 const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
   const {
@@ -27,7 +28,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
     setUserAnswers,
     listHeading,
     userAnswers,
-    setListHeading,
+    setListHeading
   } = useContext(ExamContext);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
   }, []);
   const onDragEnd = (result: DropResult) => {
     const { destination, source, type } = result;
-    console.log("🚀 ~ onDragEnd ~ result:", result);
+    console.log('🚀 ~ onDragEnd ~ result:', result);
 
     if (
       !destination ||
@@ -56,7 +57,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
       const itemToRemove = listHeading[source.index];
 
       const updatedListHeading = listHeading.filter(
-        (_, index) => index !== source.index,
+        (_, index) => index !== source.index
       );
       setListHeading(updatedListHeading);
 
@@ -69,7 +70,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
       if (userAnswers[questionNumber]) {
         setListHeading((prev) => [
           ...prev,
-          userAnswers[questionNumber] as string,
+          userAnswers[questionNumber] as string
         ]);
       }
     }
@@ -133,37 +134,37 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
                         </div>
                       </div>
 
-                      {questionGroup.type === "MULTIPLE_CHOICE" && (
+                      {questionGroup.type === 'MULTIPLE_CHOICE' && (
                         <MultiOneArrayRender
                           multiOneArray={questionGroup.multipleChoiceArray}
                         />
                       )}
                       {questionGroup.type ===
-                        "MULTIPLE_CHOICE_MORE_ANSWERS" && (
+                        'MULTIPLE_CHOICE_MORE_ANSWERS' && (
                         <MultiMoreArrayRender
                           multiMoreArray={questionGroup.multiMoreArray}
                         />
                       )}
 
-                      {questionGroup.type === "MATCHING_HEADING" && (
+                      {questionGroup.type === 'MATCHING_HEADING' && (
                         <MatchingHeadingRender
                           matchingHeading={questionGroup.matchingHeading}
                         />
                       )}
-                      {questionGroup.type === "TABLE_COMPLETION" && (
-                        <NoteCompletionRender
+                      {questionGroup.type === 'TABLE_COMPLETION' && (
+                        <CompletionRender
                           noteCompletion={questionGroup.noteCompletion}
                         />
                       )}
-                      {questionGroup.type === "IDENTIFYING_INFORMATION" && (
+                      {questionGroup.type === 'IDENTIFYING_INFORMATION' && (
                         <IdentifyingInformationRender
                           identifyingInformation={
                             questionGroup.identifyingInformation
                           }
                         />
                       )}
-                      {questionGroup.type === "NOTE_COMPLETION" && (
-                        <NoteCompletionRender
+                      {questionGroup.type === 'NOTE_COMPLETION' && (
+                        <CompletionRender
                           noteCompletion={questionGroup.noteCompletion}
                         />
                       )}

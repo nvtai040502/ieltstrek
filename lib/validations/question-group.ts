@@ -44,4 +44,21 @@ export const QuestionGroupSchema = z
       message: 'in Reading section The endQuestionNumber must be 40 or fewer.',
       path: ['endQuestionNumber']
     }
+  )
+  .refine(
+    (data) => {
+      if (
+        data.type === QuestionType.TABLE_COMPLETION &&
+        (typeof data.numberColumns !== 'number' ||
+          typeof data.numberRows !== 'number')
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        'For TABLE_COMPLETION type, numberColumns and numberRows must be provided',
+      path: ['type']
+    }
   );

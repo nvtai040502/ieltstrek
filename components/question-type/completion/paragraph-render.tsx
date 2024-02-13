@@ -24,10 +24,10 @@ declare module 'slate' {
   }
 }
 
-const ParagraphRender = ({
-  noteCompletion
+const CompletionParagraphRender = ({
+  completion
 }: {
-  noteCompletion: CompletionExtended;
+  completion: CompletionExtended;
 }) => {
   const renderElement = useCallback(
     (props: RenderElementProps) => <EditElementRender props={props} />,
@@ -39,7 +39,7 @@ const ParagraphRender = ({
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   return (
-    <Slate editor={editor} initialValue={JSON.parse(noteCompletion.paragraph)}>
+    <Slate editor={editor} initialValue={JSON.parse(completion.paragraph)}>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -49,4 +49,4 @@ const ParagraphRender = ({
   );
 };
 
-export default ParagraphRender;
+export default CompletionParagraphRender;
