@@ -1,46 +1,47 @@
-"use client";
-import { updatePassage } from "@/actions/books/passage";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
-import { useEditHook } from "@/global/use-edit-hook";
-import { PassageSchema } from "@/lib/validations/books";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import { AutosizeTextarea } from "../../ui/autosize-text-area";
-import { Button } from "../../ui/button";
+'use client';
+
+import { useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { AutosizeTextarea } from '../../ui/autosize-text-area';
+import { Button } from '../../ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "../../ui/form";
-import { Input } from "../../ui/input";
+  FormMessage
+} from '../../ui/form';
+import { Input } from '../../ui/input';
+import { updatePassage } from '@/actions/books/passage';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
+import { useEditHook } from '@/global/use-edit-hook';
+import { PassageSchema } from '@/lib/validations/text-exam';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 export function UpdatePassageForm() {
   const [isPending, startTransition] = useTransition();
   const { data, type, isOpen, onClose } = useEditHook();
-  const isModalOpen = isOpen && type === "editPassage";
+  const isModalOpen = isOpen && type === 'editPassage';
   const passage = data?.passage;
   const form = useForm<z.infer<typeof PassageSchema>>({
     resolver: zodResolver(PassageSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      content: "",
-    },
+      title: '',
+      description: '',
+      content: ''
+    }
   });
   useEffect(() => {
     if (passage) {
-      form.setValue("title", passage.title);
-      form.setValue("description", passage.description || "");
-      form.setValue("type", passage.type);
-      passage.type === "PASSAGE_SIMPLE" &&
-        form.setValue("content", passage.content || "");
+      form.setValue('title', passage.title);
+      form.setValue('description', passage.description || '');
+      form.setValue('type', passage.type);
+      passage.type === 'PASSAGE_SIMPLE' &&
+        form.setValue('content', passage.content || '');
     }
   }, [passage, form]);
   const router = useRouter();
@@ -53,14 +54,14 @@ export function UpdatePassageForm() {
         title: values.title,
         description: values.description,
         content: values.content,
-        id: passage.id,
+        id: passage.id
       });
       if (passageUpdated) {
-        toast.success("Successfully updated Passage!");
+        toast.success('Successfully updated Passage!');
         form.reset();
         router.refresh();
       } else {
-        toast("Failed to create passage");
+        toast('Failed to create passage');
       }
       onClose();
     });
@@ -105,7 +106,7 @@ export function UpdatePassageForm() {
                   </FormItem>
                 )}
               />
-              {passage.type === "PASSAGE_SIMPLE" && (
+              {passage.type === 'PASSAGE_SIMPLE' && (
                 <FormField
                   control={form.control}
                   name="content"

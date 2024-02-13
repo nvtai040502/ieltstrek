@@ -1,45 +1,46 @@
-"use client";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+
+import { useEffect, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { updateMultiOne } from '@/actions/books/multi-one';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { useEffect, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { PassageSchema } from "@/lib/validations/books";
-import { Button } from "@/components/ui/button";
-import { MultipleChoice } from "@prisma/client";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
-import { useEditHook } from "@/global/use-edit-hook";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { MultiOneSchema } from "@/lib/validations/question-type";
-import { updateMultiOne } from "@/actions/books/multi-one";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useEditHook } from '@/global/use-edit-hook';
+import { MultiOneSchema } from '@/lib/validations/question-type';
+import { PassageSchema } from '@/lib/validations/text-exam';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { MultipleChoice } from '@prisma/client';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 export function UpdateMultiOneForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
-  const isModalOpen = isOpen && type === "editMultiOne";
+  const isModalOpen = isOpen && type === 'editMultiOne';
   const multiOne = data?.multiOne;
   const form = useForm<z.infer<typeof MultiOneSchema>>({
     resolver: zodResolver(MultiOneSchema),
     defaultValues: {
-      title: "",
-      expectedAnswer: "",
-    },
+      title: '',
+      expectedAnswer: ''
+    }
   });
   const router = useRouter();
   useEffect(() => {
     if (multiOne) {
-      form.setValue("title", multiOne.title);
-      form.setValue("expectedAnswer", multiOne.expectedAnswer);
+      form.setValue('title', multiOne.title);
+      form.setValue('expectedAnswer', multiOne.expectedAnswer);
     }
   }, [form, multiOne]);
   if (!multiOne || !isModalOpen) {
@@ -50,14 +51,14 @@ export function UpdateMultiOneForm() {
       const multipleChoiceUpdated = await updateMultiOne({
         title: values.title,
         id: multiOne.id,
-        expectedAnswer: values.expectedAnswer,
+        expectedAnswer: values.expectedAnswer
       });
       if (multipleChoiceUpdated) {
-        toast.success("Successfully updated multipleChoice!");
+        toast.success('Successfully updated multipleChoice!');
         form.reset();
         router.refresh();
       } else {
-        toast("Failed to update multipleChoice");
+        toast('Failed to update multipleChoice');
       }
       onClose();
     });

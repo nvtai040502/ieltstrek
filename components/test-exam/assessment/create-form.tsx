@@ -1,43 +1,44 @@
-"use client";
-import { createAssessment } from "@/actions/test-exam/assessment";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useEditHook } from "@/global/use-edit-hook";
-import { catchError } from "@/lib/utils";
-import { AssessmentSchema } from "@/lib/validations/books";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import { Button } from "../../ui/button";
+'use client';
+
+import { useTransition } from 'react';
+import { Button } from '../../ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "../../ui/form";
-import { Input } from "../../ui/input";
+  FormMessage
+} from '../../ui/form';
+import { Input } from '../../ui/input';
+import { createAssessment } from '@/actions/test-exam/assessment';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { AssessmentSchema } from '@/lib/validations/text-exam';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 export function CreateAssessmentForm() {
   const [isPending, startTransition] = useTransition();
   const { type, isOpen, onClose } = useEditHook();
-  const isModalOpen = isOpen && type === "createAssessment";
+  const isModalOpen = isOpen && type === 'createAssessment';
   const form = useForm<z.infer<typeof AssessmentSchema>>({
     resolver: zodResolver(AssessmentSchema),
     defaultValues: {
-      name: "",
-    },
+      name: ''
+    }
   });
 
   const onSubmit = async (values: z.infer<typeof AssessmentSchema>) => {
     startTransition(async () => {
       try {
         await createAssessment({
-          name: values.name,
+          name: values.name
         });
-        toast.success("Created");
+        toast.success('Created');
         onClose();
       } catch (err) {
         catchError(err);

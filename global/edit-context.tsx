@@ -1,41 +1,41 @@
+import { Dispatch, SetStateAction, createContext } from 'react';
 import {
   IdentifyingInformationItemExtended,
   MatchingHeadingExtended,
   MultiMoreExtended,
   MultiOneExtended,
   NoteCompletionExtended,
-  PartExtended,
-  QuestionGroupExtended,
-  SummaryCompletionExtended,
-} from "@/types/db";
+  SummaryCompletionExtended
+} from '@/types/db';
 import {
   ListMatchingChoicesExtended,
-  MatchingSentenceExtended,
-} from "@/types/question-type";
-import { Choice, Passage, PassageMultiHeading } from "@prisma/client";
-import { createContext, Dispatch, SetStateAction } from "react";
+  MatchingSentenceExtended
+} from '@/types/question-type';
+import { PartExtended, QuestionGroupExtended } from '@/types/test-exam';
+import { Choice, Passage, PassageMultiHeading } from '@prisma/client';
 
 export type EditType =
+  | 'editPart'
   // Question Type
-  | "editNoteCompletion"
-  | "editNoteCompletionGroupItem"
-  | "editIdentifyingInformationItem"
-  | "editChoice"
-  | "editMultiOne"
-  | "editSummaryCompletion"
-  | "editMultiMore"
-  | "editMatchingSentence"
+  | 'editNoteCompletion'
+  | 'editNoteCompletionGroupItem'
+  | 'editIdentifyingInformationItem'
+  | 'editChoice'
+  | 'editMultiOne'
+  | 'editSummaryCompletion'
+  | 'editMultiMore'
+  | 'editMatchingSentence'
   // Passage
-  | "editPassage"
-  | "createPassage"
-  | "editPassageMultiHeading"
+  | 'editPassage'
+  | 'createPassage'
+  | 'editPassageMultiHeading'
   // Question Group
-  | "editQuestionGroup"
-  | "deleteQuestionGroup"
-  | "createQuestionGroup"
-  | "editMatchingHeading"
-  | "editListMatchingChoices"
-  | "createAssessment"
+  | 'editQuestionGroup'
+  | 'deleteQuestionGroup'
+  | 'createQuestionGroup'
+  | 'editMatchingHeading'
+  | 'editListMatchingChoices'
+  | 'createAssessment'
   | null;
 
 export interface EditData {
@@ -67,11 +67,11 @@ interface EditContextProps {
 
 export const EditContext = createContext<EditContextProps>({
   isOpen: false,
-  textNoteCompletion: "",
+  textNoteCompletion: '',
   setTextNoteCompletion: () => {},
   setIsOpen: () => {},
   data: undefined,
   setData: () => {},
   type: null,
-  setType: () => {},
+  setType: () => {}
 });

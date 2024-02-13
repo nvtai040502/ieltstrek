@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  updatePassage,
-  updatePassageMultiHeading
-} from '@/actions/books/passage';
+import { updatePassageMultiHeading } from '@/actions/books/passage';
+import { updatePart } from '@/actions/test-exam/part';
 import { AutosizeTextarea } from '@/components/ui/autosize-text-area';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogContentWithScrollArea
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -20,43 +21,39 @@ import {
 import { Input } from '@/components/ui/input';
 import { useEditHook } from '@/global/use-edit-hook';
 import { catchError } from '@/lib/utils';
-import {
-  PassageMultiHeadingSchema,
-  PassageSchema
-} from '@/lib/validations/text-exam';
+import { PartSchema } from '@/lib/validations/text-exam';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-export function UpdatePassageMultiHeadingForm() {
+export function UpdatePartForm() {
   const [isPending, startTransition] = useTransition();
   const { data, type, isOpen, onClose } = useEditHook();
-  const isModalOpen = isOpen && type === 'editPassageMultiHeading';
-  const multiHeading = data?.passageMultiHeading;
-  const form = useForm<z.infer<typeof PassageMultiHeadingSchema>>({
-    resolver: zodResolver(PassageMultiHeadingSchema),
+  const isModalOpen = isOpen && type === 'editPart';
+  const part = data?.part;
+  const form = useForm<z.infer<typeof PartSchema>>({
+    resolver: zodResolver(PartSchema),
     defaultValues: {
       title: '',
-      content: ''
+      description: ''
     }
   });
   useEffect(() => {
-    if (multiHeading) {
-      form.setValue('title', multiHeading.title);
-      form.setValue('content', multiHeading.content);
-    }
-  }, [multiHeading, form]);
-  if (!multiHeading || !isModalOpen) {
+    if (!part) return;
+    form.setValue('title', part.title);
+    form.setValue('description', part.description);
+  }, [part, form]);
+  if (!part || !isModalOpen) {
     return null;
   }
-  const onSubmit = (values: z.infer<typeof PassageMultiHeadingSchema>) => {
+  const onSubmit = (values: z.infer<typeof PartSchema>) => {
     startTransition(async () => {
       try {
-        await updatePassageMultiHeading({
+        await updatePart({
           title: values.title,
-          content: values.content,
-          id: multiHeading.id
+          description: values.description,
+          id: part.id
         });
         toast.success('Updated');
         onClose();
@@ -67,7 +64,7 @@ export function UpdatePassageMultiHeadingForm() {
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContentWithScrollArea>
+      <DialogContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
             <div className="flex flex-col gap-4">
@@ -91,12 +88,12 @@ export function UpdatePassageMultiHeadingForm() {
 
               <FormField
                 control={form.control}
-                name="content"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Passage content</FormLabel>
                     <FormControl>
-                      <AutosizeTextarea
+                      <Input
                         {...field}
                         disabled={isPending}
                         placeholder="Type content passage here."
@@ -122,7 +119,7 @@ export function UpdatePassageMultiHeadingForm() {
             </div>
           </form>
         </Form>
-      </DialogContentWithScrollArea>
+      </DialogContent>
     </Dialog>
   );
 }

@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import { useContext, useEffect } from 'react'
-import { PassageRender } from '@/components/books/passage/render'
-import { ActionButton } from '@/components/test-exam/action-button'
+import { useContext, useEffect } from 'react';
+import { PassageRender } from '@/components/books/passage/render';
+import { ActionButton } from '@/components/test-exam/action-button';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup
-} from '@/components/ui/resizable'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { ExamContext } from '@/global/exam-context'
-import { PartExtended } from '@/types/test-exam'
+} from '@/components/ui/resizable';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ExamContext } from '@/global/exam-context';
+import { PartExtended } from '@/types/test-exam';
 
 const BodyContentRender = ({ part }: { part: PartExtended }) => {
-  const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext)
+  const { questionRefs, setCurrentQuestionIndex } = useContext(ExamContext);
 
   // useEffect(() => {
   //   if (questionRefs.length && part.questionGroups.length) {
@@ -53,7 +53,7 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
               />
             </div>
 
-            {part.questionGroups &&
+            {/* {part.questionGroups &&
               part.questionGroups.map((questionGroup) => {
                 return (
                   <div key={questionGroup.id} className="flex flex-col gap-2">
@@ -81,7 +81,7 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
                       </div>
                     </div>
 
-                    {/* {questionGroup.type === 'MULTIPLE_CHOICE' && (
+                    {questionGroup.type === 'MULTIPLE_CHOICE' && (
                       <MultiOneArrayRender
                         multiOneArray={questionGroup.multipleChoiceArray}
                       />
@@ -116,16 +116,16 @@ const BodyContentRender = ({ part }: { part: PartExtended }) => {
                     )}
                     {questionGroup.type === 'MATCHING_SENTENCE' && (
                       <MatchingSentenceRender questionGroup={questionGroup} />
-                    )} */}
+                    )}
                   </div>
                 )
-              })}
+              })} */}
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
-  )
-}
+  );
+};
 
-export default BodyContentRender
+export default BodyContentRender;

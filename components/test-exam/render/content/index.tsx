@@ -1,40 +1,34 @@
-'use client'
+'use client';
 
-import { Fragment, useContext, useEffect } from 'react'
-import ButtonNavigationQuestion from '../../button-nav-question'
-import BodyContentRender from './body'
-import FooterContentRender from './footer'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
-import { ExamContext } from '@/global/exam-context'
-import { useExamHandler } from '@/global/exam-hook'
-import { AssessmentExtended } from '@/types/test-exam'
-import { Check, Send } from 'lucide-react'
+import { Fragment, useContext, useEffect } from 'react';
+import { ActionButton } from '../../action-button';
+import ButtonNavigationQuestion from '../../button-nav-question';
+import BodyContentRender from './body';
+import FooterContentRender from './footer';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
+import { ExamContext } from '@/global/exam-context';
+import { useExamHandler } from '@/global/exam-hook';
+import { AssessmentExtended } from '@/types/test-exam';
+import { Check, Send } from 'lucide-react';
 
 export const TestExamContentRender = ({
   assessment
 }: {
-  assessment: AssessmentExtended
+  assessment: AssessmentExtended;
 }) => {
-  const {
-    selectedAssessment,
-    setSelectedAssessment,
-    activeTab,
-    setActiveTab,
-    questionRefs,
-    setCurrentQuestionIndex,
-    currentQuestionIndex
-  } = useContext(ExamContext)
+  const { selectedAssessment, setSelectedAssessment, activeTab } =
+    useContext(ExamContext);
 
   useEffect(() => {
-    setSelectedAssessment(assessment)
-  }, [assessment, setSelectedAssessment])
+    setSelectedAssessment(assessment);
+  }, [assessment, setSelectedAssessment]);
 
-  const { handleSubmit } = useExamHandler()
+  const { handleSubmit } = useExamHandler();
 
   if (!selectedAssessment) {
-    return null
+    return null;
   }
   return (
     <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
@@ -51,7 +45,11 @@ export const TestExamContentRender = ({
                   <p className=" font-bold">{part.title} </p>
                   <p> {part.description} </p>
                 </div>
-                {/* <ActionButton setIsUpdating={() => setIsEdittingPassage(true)} /> */}
+                <ActionButton
+                  editType="editPart"
+                  actionType="update"
+                  data={{ part }}
+                />
               </div>
             </div>
           </div>
@@ -76,5 +74,5 @@ export const TestExamContentRender = ({
       </TabsContent>
       <FooterContentRender />
     </Tabs>
-  )
-}
+  );
+};

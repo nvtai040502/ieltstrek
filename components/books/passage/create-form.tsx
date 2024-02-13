@@ -1,38 +1,39 @@
-"use client";
-import { useForm } from "react-hook-form";
-import { Button } from "../../ui/button";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client';
+
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { AutosizeTextarea } from '../../ui/autosize-text-area';
+import { Button } from '../../ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "../../ui/form";
-import { Input } from "../../ui/input";
-import { toast } from "sonner";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { createPassage, updatePassage } from "@/actions/books/passage";
-import { PassageSchema } from "@/lib/validations/books";
-import { AutosizeTextarea } from "../../ui/autosize-text-area";
-import { useEditHook } from "@/global/use-edit-hook";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { PassageType } from "@prisma/client";
+  FormMessage
+} from '../../ui/form';
+import { Input } from '../../ui/input';
+import { createPassage, updatePassage } from '@/actions/books/passage';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useEditHook } from '@/global/use-edit-hook';
+import { PassageSchema } from '@/lib/validations/text-exam';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PassageType } from '@prisma/client';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 export function CreatePassageForm() {
   const [isPending, startTransition] = useTransition();
   const { data, type, isOpen, onClose } = useEditHook();
-  const isModalOpen = isOpen && type === "createPassage";
+  const isModalOpen = isOpen && type === 'createPassage';
   const part = data?.part;
   const form = useForm<z.infer<typeof PassageSchema>>({
     resolver: zodResolver(PassageSchema),
     defaultValues: {
-      title: "",
-    },
+      title: ''
+    }
   });
   const router = useRouter();
   if (!part || !isModalOpen) {
@@ -43,14 +44,14 @@ export function CreatePassageForm() {
       const passage = await createPassage({
         title: values.title,
         partId: part.id,
-        type: values.type,
+        type: values.type
       });
       if (passage) {
-        toast.success("Successfully create passage!");
+        toast.success('Successfully create passage!');
         form.reset();
         router.refresh();
       } else {
-        toast("Failed to create passage");
+        toast('Failed to create passage');
       }
       onClose();
     });
@@ -94,7 +95,7 @@ export function CreatePassageForm() {
                       >
                         {[
                           PassageType.PASSAGE_SIMPLE,
-                          PassageType.PASSAGE_MULTI_HEADING,
+                          PassageType.PASSAGE_MULTI_HEADING
                         ].map((answer) => (
                           <FormItem
                             key={answer}
