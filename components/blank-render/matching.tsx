@@ -1,14 +1,39 @@
-import { css } from "@emotion/css";
-import { Droppable } from "@hello-pangea/dnd";
-import { QuestionType } from "@prisma/client";
-export function ReadMatchingBlankRender({
-  questionNumber,
+import { DragEvent } from 'react';
+import { css } from '@emotion/css';
+import { Droppable } from '@hello-pangea/dnd';
+import { QuestionType } from '@prisma/client';
+
+export function TestReadOnlyMatchingBlankRender({
+  questionNumber
+}: {
+  questionNumber: number;
+}) {
+  const handleDrop = (event: DragEvent) => {
+    event.preventDefault();
+    console.log('Destination:', event.target);
+  };
+  const handleDragOver = (event: DragEvent) => {
+    event.preventDefault();
+  };
+  return (
+    <div>
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        // ref={questionRefs[item.question!.questionNumber - 1]}
+        className="border border-secondary-foreground w-full p-4"
+      ></div>
+    </div>
+  );
+}
+export function ReadOnlyMatchingBlankRender({
+  questionNumber
 }: {
   questionNumber: number;
 }) {
   return (
     <Droppable
-      type={QuestionType.MATCHING_SENTENCE}
+      type={QuestionType.MATCHING}
       droppableId={String(questionNumber)}
     >
       {(provided, snapshot) => (

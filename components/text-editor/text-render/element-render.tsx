@@ -1,29 +1,33 @@
 import {
   EditMatchingBlankRender,
-  ReadMatchingBlankRender,
-} from "@/components/blank-render/matching";
+  ReadOnlyMatchingBlankRender,
+  TestReadOnlyMatchingBlankRender
+} from '@/components/blank-render/matching';
 
 export const ReadonlyElementRender = ({ props }) => {
   const { attributes, children, element } = props;
   switch (element.type) {
-    case "blank":
+    case 'blank':
       return (
-        <ReadMatchingBlankRender questionNumber={element.questionNumber} />
+        // <ReadOnlyMatchingBlankRender questionNumber={element.questionNumber} />
+        <TestReadOnlyMatchingBlankRender
+          questionNumber={element.questionNumber}
+        />
       );
 
-    case "table":
+    case 'table':
       return (
         <table className="w-full">
           <tbody {...attributes}>{children}</tbody>
         </table>
       );
-    case "table-row":
+    case 'table-row':
       return (
         <tr className="m-0 border-t p-0" {...attributes}>
           {children}
         </tr>
       );
-    case "table-cell":
+    case 'table-cell':
       return (
         <td
           className="border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right"
@@ -32,25 +36,25 @@ export const ReadonlyElementRender = ({ props }) => {
           {children}
         </td>
       );
-    case "blockquote":
+    case 'blockquote':
       return (
         <blockquote className="mt-6 border-l-2 pl-6 italic" {...attributes}>
           {children}
         </blockquote>
       );
-    case "bulleted-list":
+    case 'bulleted-list':
       return (
         <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...attributes}>
           {children}
         </ul>
       );
-    case "heading-one":
+    case 'heading-one':
       return (
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           {children}
         </h1>
       );
-    case "heading-two":
+    case 'heading-two':
       return (
         <h2
           className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
@@ -59,9 +63,9 @@ export const ReadonlyElementRender = ({ props }) => {
           {children}
         </h2>
       );
-    case "list-item":
+    case 'list-item':
       return <li {...attributes}>{children}</li>;
-    case "numbered-list":
+    case 'numbered-list':
       return <ol {...attributes}>{children}</ol>;
     default:
       return <span {...attributes}>{children}</span>;
@@ -72,22 +76,22 @@ export const EditElementRender = ({ props }) => {
   const { attributes, children, element } = props;
   const style = { textAlign: element.align };
   switch (element.type) {
-    case "blank":
+    case 'blank':
       return <EditMatchingBlankRender {...props} />;
 
-    case "table":
+    case 'table':
       return (
         <table className="w-full">
           <tbody {...attributes}>{children}</tbody>
         </table>
       );
-    case "table-row":
+    case 'table-row':
       return (
         <tr className="m-0 border-t p-0" {...attributes}>
           {children}
         </tr>
       );
-    case "table-cell":
+    case 'table-cell':
       return (
         <td
           className="border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right"
@@ -96,25 +100,25 @@ export const EditElementRender = ({ props }) => {
           {children}
         </td>
       );
-    case "blockquote":
+    case 'blockquote':
       return (
         <blockquote className="mt-6 border-l-2 pl-6 italic" {...attributes}>
           {children}
         </blockquote>
       );
-    case "bulleted-list":
+    case 'bulleted-list':
       return (
         <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...attributes}>
           {children}
         </ul>
       );
-    case "heading-one":
+    case 'heading-one':
       return (
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           {children}
         </h1>
       );
-    case "heading-two":
+    case 'heading-two':
       return (
         <h2
           className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
@@ -123,9 +127,9 @@ export const EditElementRender = ({ props }) => {
           {children}
         </h2>
       );
-    case "list-item":
+    case 'list-item':
       return <li {...attributes}>{children}</li>;
-    case "numbered-list":
+    case 'numbered-list':
       return <ol {...attributes}>{children}</ol>;
     default:
       return <p {...attributes}>{children}</p>;

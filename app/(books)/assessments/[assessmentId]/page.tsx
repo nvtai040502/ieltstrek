@@ -17,6 +17,11 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
       id: params.assessmentId
     },
     include: {
+      questions: {
+        orderBy: {
+          questionNumber: 'asc'
+        }
+      },
       parts: {
         orderBy: {
           order: 'asc'

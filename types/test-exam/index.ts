@@ -16,6 +16,7 @@ import {
 
 export type AssessmentExtended = Assessment & {
   parts: PartExtended[];
+  questions: Question[];
 };
 export type PassageExtended = Passage & {
   // passageMultiHeadingArray: PassageMultiHeadingExtended[]

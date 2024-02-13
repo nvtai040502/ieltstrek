@@ -1,6 +1,6 @@
 'use client';
 
-import MatchingSentenceParagraphRender from './paragraph-render';
+import MatchingParagraphRender from './paragraph-render';
 import { ActionButton } from '@/components/test-exam/action-button';
 import { QuestionGroupExtended } from '@/types/test-exam';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
@@ -24,7 +24,7 @@ export const MatchingRender = ({
         data={{ questionGroup }}
       />
       <DragDropContext onDragEnd={() => {}}>
-        <MatchingSentenceParagraphRender matchingSentence={matching} />
+        <MatchingParagraphRender matchingSentence={matching} />
         <div className="flex justify-between items-center">
           <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
           <ActionButton
