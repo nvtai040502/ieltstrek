@@ -1,10 +1,11 @@
 'use client'
 
 import { FC, RefObject, createRef, useEffect, useState } from 'react'
+import { MatchingChoice } from '@prisma/client'
 import { AssessmentExtended, PartExtended } from '@/types/test-exam'
 import { DndContext } from './dnd-context'
 import { EditContext, EditData, EditType } from './edit-context'
-import { ExamContext } from './exam-context'
+import { AnswerType, ExamContext } from './exam-context'
 
 interface GlobalStateProps {
   children: React.ReactNode
@@ -19,9 +20,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     RefObject<HTMLDivElement | HTMLInputElement>[]
   >([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
-  const [userAnswers, setUserAnswers] = useState<{
-    [key: string]: string | string[]
-  }>({})
+  const [userAnswers, setUserAnswers] = useState<AnswerType[]>([])
   const [textNoteCompletion, setTextNoteCompletion] = useState('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [type, setType] = useState<EditType>(null)
@@ -30,7 +29,11 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
 
   const [questionGroupId, setQuestionGroupId] = useState<string>('')
   const [questionId, setQuestionId] = useState('')
+  const [prevContent, setPrevContent] = useState('')
   const [matchingChoiceId, setMatchingChoiceId] = useState('')
+  const [matchingChoiceList, setMatchingChoiceList] = useState<
+    MatchingChoice[]
+  >([])
 
   useEffect(() => {
     if (!selectedAssessment) {
@@ -96,6 +99,10 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
             questionGroupId,
             matchingChoiceId,
             questionId,
+            matchingChoiceList,
+            prevContent,
+            setPrevContent,
+            setMatchingChoiceList,
             setQuestionId,
             setMatchingChoiceId,
             setQuestionGroupId,

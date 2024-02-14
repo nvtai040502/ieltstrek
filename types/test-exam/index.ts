@@ -12,6 +12,7 @@ import {
   Passage,
   Question,
   QuestionGroup,
+  QuestionType,
 } from '@prisma/client'
 
 export type AssessmentExtended = Assessment & {

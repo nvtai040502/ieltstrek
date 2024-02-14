@@ -24,7 +24,7 @@ export const createMatching = async ({
     (question) => ({
       type: 'paragraph',
       children: [
-        { text: 'This is matching sentence example' },
+        { text: `This is matching sentence example` },
         {
           type: 'blank',
           children: [{ text: 'editable button' }],
@@ -49,8 +49,7 @@ export const createMatching = async ({
       matchingChoiceList: {
         createMany: {
           data: Array.from({ length: totalChoicesCreated }).map((_, i) => ({
-            content:
-              'This is a sentence example for heading choice so that can drag and drop to the answer',
+            content: `This is a example sentence number ${i + 1}`,
             questionId:
               i < totalQuestions - 1 ? questionGroup.questions[i].id : null,
           })),

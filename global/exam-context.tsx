@@ -1,5 +1,25 @@
 import { Dispatch, RefObject, SetStateAction, createContext } from 'react'
+import { QuestionType } from '@prisma/client'
 import { AssessmentExtended, PartExtended } from '@/types/test-exam'
+
+export type AnswerType =
+  | {
+      questionId: string
+      type: 'MULTIPLE_CHOICE_ONE_ANSWER'
+      content: string
+      choiceId: string
+    }
+  | {
+      questionId: string
+      type: 'NOTE_COMPLETION'
+      content: string
+    }
+  | {
+      questionId: string
+      type: 'MATCHING'
+      content: string
+      matchingChoiceId: string
+    }
 
 interface ExamContextProps {
   activeTab: string
@@ -16,15 +36,15 @@ interface ExamContextProps {
   setActiveTab: Dispatch<SetStateAction<string>>
   listHeading: string[]
   setListHeading: Dispatch<SetStateAction<string[]>>
-  userAnswers: { [key: string]: string | string[] }
-  setUserAnswers: Dispatch<SetStateAction<{ [key: string]: string | string[] }>>
+  userAnswers: AnswerType[]
+  setUserAnswers: Dispatch<SetStateAction<AnswerType[]>>
 }
 
 export const ExamContext = createContext<ExamContextProps>({
   activeTab: '',
   selectedAssessment: null,
   questionRefs: [],
-  userAnswers: {},
+  userAnswers: [],
   listHeading: [],
   selectedPart: null,
   setSelectedPart: () => {},

@@ -13,6 +13,7 @@ export function TestReadOnlyMatchingBlankRender({
   questionId: string
 }) {
   const { userAnswers } = useContext(ExamContext)
+  const { matchingChoiceList } = useContext(DndContext)
   const { handleDragOver } = useDnd()
   const { setQuestionId } = useContext(DndContext)
 
@@ -26,6 +27,8 @@ export function TestReadOnlyMatchingBlankRender({
     event.preventDefault()
     setIsOver(false)
   }
+  const userAnswer = userAnswers.find((prev) => prev.questionId === questionId)
+
   return (
     <div>
       <div
@@ -38,7 +41,7 @@ export function TestReadOnlyMatchingBlankRender({
           isOver ? 'bg-red-500' : ''
         )}
       >
-        {userAnswers[questionId]}
+        {userAnswer?.content}
       </div>
     </div>
   )

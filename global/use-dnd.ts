@@ -1,6 +1,6 @@
 import { DragEvent, useContext } from 'react'
 import { DndContext } from './dnd-context'
-import { ExamContext } from './exam-context'
+import { AnswerType, ExamContext } from './exam-context'
 
 export const useDnd = () => {
   const {
@@ -8,6 +8,8 @@ export const useDnd = () => {
     questionGroupId,
     questionId,
     setQuestionId,
+    matchingChoiceList,
+    setMatchingChoiceList,
     setMatchingChoiceId,
     setQuestionGroupId,
   } = useContext(DndContext)
@@ -32,11 +34,49 @@ export const useDnd = () => {
     if (!matchingChoice) {
       return
     }
+    const existAnswer = userAnswers.find(
+      (prev) => prev.questionId === question.id
+    )
 
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [question.id]: matchingChoice.content,
-    }))
+    if (existAnswer && existAnswer.type === 'MATCHING') {
+      setMatchingChoiceList((prevList) =>
+        prevList.map((choice) =>
+          choice.id === matchingChoiceId
+            ? { ...choice, content: '' }
+            : choice.id === existAnswer.matchingChoiceId
+              ? { ...choice, content: existAnswer.content }
+              : choice
+        )
+      )
+    } else {
+      setMatchingChoiceList((prevList) =>
+        prevList.map((choice) =>
+          choice.id === matchingChoiceId ? { ...choice, content: '' } : choice
+        )
+      )
+    }
+    setUserAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers]
+      const findAnswerIndex = updatedAnswers.findIndex(
+        (prev) => prev.questionId === question.id && prev.type === 'MATCHING'
+      )
+      if (findAnswerIndex !== -1) {
+        updatedAnswers[findAnswerIndex] = {
+          ...updatedAnswers[findAnswerIndex],
+          type: 'MATCHING',
+          content: matchingChoice.content,
+          matchingChoiceId: matchingChoice.id,
+        }
+      } else {
+        updatedAnswers.push({
+          questionId: question.id,
+          type: 'MATCHING',
+          matchingChoiceId: matchingChoice.id,
+          content: matchingChoice.content,
+        })
+      }
+      return updatedAnswers
+    })
   }
   const handleDragStart = (
     questionGroupId: string,

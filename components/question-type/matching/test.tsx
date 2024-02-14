@@ -15,8 +15,14 @@ export const TestMatchingRender = ({
   questionGroup: QuestionGroupExtended
 }) => {
   const matching = questionGroup.matching
+  const { setMatchingChoiceList, matchingChoiceList } = useContext(DndContext)
   const { handleDragEnd, handleDragStart, handleDragOver } = useDnd()
 
+  useEffect(() => {
+    if (matching && matching.matchingChoiceGroup) {
+      setMatchingChoiceList(matching.matchingChoiceGroup.matchingChoiceList)
+    }
+  }, [matching, setMatchingChoiceList])
   if (!matching || !matching.matchingChoiceGroup) {
     return null
   }
@@ -39,20 +45,18 @@ export const TestMatchingRender = ({
           />
         </div>
         <div onDragOver={handleDragOver} className="flex flex-col gap-4">
-          {matching.matchingChoiceGroup.matchingChoiceList.map(
-            (matchingChoice) => (
-              <div
-                key={matchingChoice.id}
-                draggable={true}
-                onDragStart={() =>
-                  handleDragStart(matching.questionGroupId, matchingChoice.id)
-                }
-                className={cn('bg-red-500 ')}
-              >
-                {matchingChoice.content}
-              </div>
-            )
-          )}
+          {matchingChoiceList.map((matchingChoice) => (
+            <div
+              key={matchingChoice.id}
+              draggable={true}
+              onDragStart={() =>
+                handleDragStart(matching.questionGroupId, matchingChoice.id)
+              }
+              className={cn('bg-red-500', matchingChoice.content ? '' : 'p-4')}
+            >
+              {matchingChoice.content}
+            </div>
+          ))}
         </div>
       </div>
     </>
