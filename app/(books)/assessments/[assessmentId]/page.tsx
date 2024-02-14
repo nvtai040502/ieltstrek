@@ -1,37 +1,42 @@
-import { notFound } from 'next/navigation';
-import { TestExamContentRender } from '@/components/test-exam/content-render';
-import { Button } from '@/components/ui/button';
-import { Icons } from '@/components/ui/icons';
-import { db } from '@/lib/db';
-import { AssessmentExtended } from '@/types/test-exam';
-import { AlignJustify, Bell, Wifi } from 'lucide-react';
+import { notFound } from 'next/navigation'
+import { AlignJustify, Bell, Wifi } from 'lucide-react'
+import { AssessmentExtended } from '@/types/test-exam'
+import { db } from '@/lib/db'
+import { TestExamContentRender } from '@/components/test-exam/content-render'
+import { Button } from '@/components/ui/button'
+import { Icons } from '@/components/ui/icons'
 
 interface AssessmentIdPageProps {
   params: {
-    assessmentId: string;
-  };
+    assessmentId: string
+  }
 }
 const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
   const assessment: AssessmentExtended | null = await db.assessment.findUnique({
     where: {
-      id: params.assessmentId
+      id: params.assessmentId,
     },
     include: {
       questions: {
         orderBy: {
-          questionNumber: 'asc'
-        }
+          questionNumber: 'asc',
+        },
       },
       parts: {
         orderBy: {
-          order: 'asc'
+          order: 'asc',
         },
         include: {
           questionGroups: {
             orderBy: {
-              startQuestionNumber: 'asc'
+              startQuestionNumber: 'asc',
             },
             include: {
+              questions: {
+                orderBy: {
+                  questionNumber: 'asc',
+                },
+              },
               matching: {
                 include: {
                   matchingChoiceGroup: {
@@ -39,67 +44,67 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
                       matchingChoiceList: {
                         orderBy: {
                           question: {
-                            questionNumber: 'asc'
-                          }
+                            questionNumber: 'asc',
+                          },
                         },
                         include: {
-                          question: true
-                        }
-                      }
-                    }
-                  }
-                }
+                          question: true,
+                        },
+                      },
+                    },
+                  },
+                },
               },
               completion: {
                 include: {
                   blanks: {
                     orderBy: {
                       question: {
-                        questionNumber: 'asc'
-                      }
+                        questionNumber: 'asc',
+                      },
                     },
                     include: {
-                      question: true
-                    }
-                  }
-                }
+                      question: true,
+                    },
+                  },
+                },
               },
               multiMoreList: {
                 include: {
                   choices: true,
-                  question: true
+                  question: true,
                 },
                 orderBy: {
                   question: {
-                    questionNumber: 'asc'
-                  }
-                }
+                    questionNumber: 'asc',
+                  },
+                },
               },
               multiOneList: {
                 include: {
                   choices: true,
-                  question: true
+                  question: true,
                 },
                 orderBy: {
                   question: {
-                    questionNumber: 'asc'
-                  }
-                }
-              }
-            }
+                    questionNumber: 'asc',
+                  },
+                },
+              },
+            },
           },
           passage: true,
           questions: {
             orderBy: {
-              questionNumber: 'asc'
-            }
-          }
-        }
-      }
-    }
-  });
+              questionNumber: 'asc',
+            },
+          },
+        },
+      },
+    },
+  })
   if (!assessment) {
-    return notFound();
+    return notFound()
   }
   return (
     <div className="max-h-screen h-screen flex flex-col">
@@ -128,7 +133,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
       </div>
       <TestExamContentRender assessment={assessment} />
     </div>
-  );
-};
+  )
+}
 
-export default AssessmentIdPage;
+export default AssessmentIdPage

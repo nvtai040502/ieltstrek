@@ -11,54 +11,56 @@ import {
   Part,
   Passage,
   Question,
-  QuestionGroup
-} from '@prisma/client';
+  QuestionGroup,
+} from '@prisma/client'
 
 export type AssessmentExtended = Assessment & {
-  parts: PartExtended[];
-  questions: Question[];
-};
+  parts: PartExtended[]
+  questions: Question[]
+}
 export type PassageExtended = Passage & {
   // passageMultiHeadingArray: PassageMultiHeadingExtended[]
-};
+}
 
 export type PartExtended = Part & {
-  passage: PassageExtended | null;
-  questionGroups: QuestionGroupExtended[];
-  questions: Question[];
-};
+  passage: PassageExtended | null
+  questionGroups: QuestionGroupExtended[]
+  questions: Question[]
+}
 
 export type QuestionGroupExtended = QuestionGroup & {
-  multiOneList: MultiOneExtended[];
-  multiMoreList: MultiMoreExtended[];
-  completion?: CompletionExtended | null;
-  matching?: MatchingExtended | null;
-  matchingChoiceGroup?: MatchingChoiceGroupExtended | null;
+  questions: Question[]
+
+  multiOneList: MultiOneExtended[]
+  multiMoreList: MultiMoreExtended[]
+  completion?: CompletionExtended | null
+  matching?: MatchingExtended | null
+  matchingChoiceGroup?: MatchingChoiceGroupExtended | null
 
   // identifyingInformation?: IdentifyingInformationExtended | null
   // matchingHeading?: MatchingHeadingExtended | null
-};
+}
 export type MultiOneExtended = MultipleChoiceOneAnswer & {
-  choices: Choice[];
-  question: Question;
-};
+  choices: Choice[]
+  question: Question
+}
 export type MultiMoreExtended = MultipleChoiceMoreAnswers & {
-  choices: Choice[];
-  question: Question;
-};
+  choices: Choice[]
+  question: Question
+}
 
 export type CompletionExtended = Completion & {
-  blanks: BlankExtended[];
-};
+  blanks: BlankExtended[]
+}
 export type BlankExtended = Blank & {
-  question: Question;
-};
+  question: Question
+}
 export type MatchingExtended = Matching & {
-  matchingChoiceGroup: MatchingChoiceGroupExtended;
-};
+  matchingChoiceGroup: MatchingChoiceGroupExtended
+}
 export type MatchingChoiceGroupExtended = MatchingChoiceGroup & {
-  matchingChoiceList: MatchingChoiceExtended[];
-};
+  matchingChoiceList: MatchingChoiceExtended[]
+}
 export type MatchingChoiceExtended = MatchingChoice & {
-  question?: Question | null;
-};
+  question?: Question | null
+}

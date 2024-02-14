@@ -1,33 +1,31 @@
-import { DragEvent, useState } from 'react';
-import { cn } from '@/lib/utils';
-import { css } from '@emotion/css';
-import { Droppable } from '@hello-pangea/dnd';
-import { QuestionType } from '@prisma/client';
+import { DragEvent, useContext, useState } from 'react'
+import { css } from '@emotion/css'
+import { Droppable } from '@hello-pangea/dnd'
+import { QuestionType } from '@prisma/client'
+import { DndContext } from '@/global/dnd-context'
+import { ExamContext } from '@/global/exam-context'
+import { useDnd } from '@/global/use-dnd'
+import { cn } from '@/lib/utils'
 
 export function TestReadOnlyMatchingBlankRender({
-  questionNumber
+  questionId,
 }: {
-  questionNumber: number;
+  questionId: string
 }) {
-  const [isOver, setIsOver] = useState(false);
-  const [content, setContent] = useState('');
-  const handleDrop = (event: DragEvent) => {
-    event.preventDefault();
-    console.log('Destination:', event.target);
-    const data = JSON.parse(event.dataTransfer?.getData('text/plain') || '');
-    const content = data.content;
+  const { userAnswers } = useContext(ExamContext)
+  const { handleDragOver } = useDnd()
+  const { setQuestionId } = useContext(DndContext)
 
-    console.log('Dropped matching choice ID:', content);
-    setContent(content);
-  };
-  const handleDragOver = (event: DragEvent) => {
-    event.preventDefault();
-    setIsOver(true);
-  };
+  const [isOver, setIsOver] = useState(false)
+  const handleDrop = (event: DragEvent) => {
+    event.preventDefault()
+    setQuestionId(questionId)
+  }
+
   const handleDragLeave = (event: DragEvent) => {
-    event.preventDefault();
-    setIsOver(false);
-  };
+    event.preventDefault()
+    setIsOver(false)
+  }
   return (
     <div>
       <div
@@ -40,15 +38,15 @@ export function TestReadOnlyMatchingBlankRender({
           isOver ? 'bg-red-500' : ''
         )}
       >
-        {content}
+        {userAnswers[questionId]}
       </div>
     </div>
-  );
+  )
 }
 export function ReadOnlyMatchingBlankRender({
-  questionNumber
+  questionNumber,
 }: {
-  questionNumber: number;
+  questionNumber: number
 }) {
   return (
     <Droppable
@@ -68,7 +66,7 @@ export function ReadOnlyMatchingBlankRender({
         </div>
       )}
     </Droppable>
-  );
+  )
 }
 
 const InlineChromiumBugfix = () => (
@@ -80,7 +78,7 @@ const InlineChromiumBugfix = () => (
   >
     {String.fromCodePoint(160) /* Non-breaking space */}
   </span>
-);
+)
 
 export const EditMatchingBlankRender = ({ attributes, children }) => {
   return (
@@ -111,5 +109,5 @@ export const EditMatchingBlankRender = ({ attributes, children }) => {
       {children}
       <InlineChromiumBugfix />
     </span>
-  );
-};
+  )
+}

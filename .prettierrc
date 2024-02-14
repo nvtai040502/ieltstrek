@@ -1,9 +1,9 @@
 {
   "singleQuote": true,
   "endOfLine": "lf",
-  "semi": true,
+  "semi": false,
   "tabWidth": 2,
-  "trailingComma": "none",
+  "trailingComma": "es5",
   "plugins": [
     "prettier-plugin-tailwindcss", 
     "prettier-plugin-prisma",
@@ -15,14 +15,12 @@
     "^(react/(.*)$)|^(react$)",
     "^(next/(.*)$)|^(next$)",
     "<THIRD_PARTY_MODULES>",
-    "",
-    "^types$",
+    "^@/global/(.*)$",
     "^@/types/(.*)$",
     "^@/config/(.*)$",
     "^@/lib/(.*)$",
     "^@/hooks/(.*)$",
     "^@/components/(.*)$",
-    "^@/registry/(.*)$",
     "^@/styles/(.*)$",
     "^@/app/(.*)$",
     "^[./]"

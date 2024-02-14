@@ -1,46 +1,25 @@
-'use client';
+'use client'
 
-import { DragEvent, useEffect, useState } from 'react';
-import MatchingParagraphRender from './paragraph-render';
-import { ActionButton } from '@/components/test-exam/action-button';
-import { cn } from '@/lib/utils';
-import { QuestionGroupExtended } from '@/types/test-exam';
-import { QuestionType } from '@prisma/client';
+import { DragEvent, useContext, useEffect, useState } from 'react'
+import { QuestionType } from '@prisma/client'
+import { DndContext } from '@/global/dnd-context'
+import { useDnd } from '@/global/use-dnd'
+import { QuestionGroupExtended } from '@/types/test-exam'
+import { cn } from '@/lib/utils'
+import { ActionButton } from '@/components/test-exam/action-button'
+import MatchingParagraphRender from './paragraph-render'
 
 export const TestMatchingRender = ({
-  questionGroup
+  questionGroup,
 }: {
-  questionGroup: QuestionGroupExtended;
+  questionGroup: QuestionGroupExtended
 }) => {
-  const matching = questionGroup.matching;
-  const [content, setContent] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (matching && matching.matchingChoiceGroup) {
-      setContent(
-        matching.matchingChoiceGroup.matchingChoiceList.map(
-          (item) => item.content
-        )
-      );
-    }
-  }, [matching]);
+  const matching = questionGroup.matching
+  const { handleDragEnd, handleDragStart, handleDragOver } = useDnd()
 
   if (!matching || !matching.matchingChoiceGroup) {
-    return null;
+    return null
   }
-
-  const handleDragStart = (
-    event: DragEvent<HTMLDivElement>,
-    content: string
-  ) => {
-    event.dataTransfer?.setData('text/plain', JSON.stringify({ content }));
-  };
-  const handleDragOver = (event: DragEvent) => {
-    event.preventDefault();
-    console.log('drag over');
-  };
-
-  const handleDragEnd = () => {};
 
   return (
     <>
@@ -61,21 +40,21 @@ export const TestMatchingRender = ({
         </div>
         <div onDragOver={handleDragOver} className="flex flex-col gap-4">
           {matching.matchingChoiceGroup.matchingChoiceList.map(
-            (matchingChoice, i) => (
+            (matchingChoice) => (
               <div
                 key={matchingChoice.id}
                 draggable={true}
-                onDragStart={(event) =>
-                  handleDragStart(event, matchingChoice.content)
+                onDragStart={() =>
+                  handleDragStart(matching.questionGroupId, matchingChoice.id)
                 }
-                className={cn('bg-red-500 ', content[i] ? '' : 'p-4')}
+                className={cn('bg-red-500 ')}
               >
-                {content[i]}
+                {matchingChoice.content}
               </div>
             )
           )}
         </div>
       </div>
     </>
-  );
-};
+  )
+}
