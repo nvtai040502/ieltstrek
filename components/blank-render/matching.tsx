@@ -16,8 +16,10 @@ export function TestReadOnlyMatchingBlankRender({
 
   const { handleDragOver } = useDnd()
   const { setQuestionId } = useContext(DndContext)
-  const { setCurrentQuestionIndex, currentQuestionIndex } =
-    useContext(ExamContext)
+  const {
+    setCurrentRef: setCurrentQuestionIndex,
+    currentRef: currentQuestionIndex,
+  } = useContext(ExamContext)
   const [isOver, setIsOver] = useState(false)
 
   const userAnswer = userAnswers.find((prev) => prev.questionId === questionId)

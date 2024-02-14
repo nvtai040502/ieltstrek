@@ -16,10 +16,10 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [selectedPart, setSelectedPart] = useState<PartExtended | null>(null)
   const [selectedAssessment, setSelectedAssessment] =
     useState<AssessmentExtended | null>(null)
-  const [questionRefs, setQuestionRefs] = useState<
-    RefObject<HTMLDivElement | HTMLInputElement>[]
-  >([])
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
+  const [questionRefs, setQuestionRefs] = useState<RefObject<HTMLDivElement>[]>(
+    []
+  )
+  const [currentRef, setCurrentRef] = useState<number>(0)
   const [userAnswers, setUserAnswers] = useState<AnswerType[]>([])
   const [textNoteCompletion, setTextNoteCompletion] = useState('')
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -39,11 +39,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     if (!selectedAssessment) {
       return
     }
-    setQuestionRefs((prevRefs) =>
-      Array.from({ length: selectedAssessment.questions.length }, (_, index) =>
-        index < prevRefs.length
-          ? prevRefs[index]
-          : createRef<HTMLDivElement | HTMLInputElement>()
+    setQuestionRefs(() =>
+      Array.from({ length: selectedAssessment.totalQuestions }, () =>
+        createRef<HTMLDivElement>()
       )
     )
     setActiveTab(String(selectedAssessment.parts[0].id))
@@ -70,13 +68,13 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         selectedAssessment,
         questionRefs,
         userAnswers,
-        currentQuestionIndex,
+        currentRef,
         listHeading,
         selectedPart,
         setSelectedPart,
         setListHeading,
         setUserAnswers,
-        setCurrentQuestionIndex,
+        setCurrentRef,
         setQuestionRefs,
         setSelectedAssessment,
         setActiveTab,

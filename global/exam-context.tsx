@@ -24,14 +24,12 @@ export type AnswerType =
 interface ExamContextProps {
   activeTab: string
   selectedAssessment: AssessmentExtended | null
-  questionRefs: RefObject<HTMLDivElement | HTMLInputElement>[]
-  currentQuestionIndex: number
+  questionRefs: RefObject<HTMLDivElement>[]
+  currentRef: number
   selectedPart: PartExtended | null
   setSelectedPart: Dispatch<SetStateAction<PartExtended | null>>
-  setCurrentQuestionIndex: Dispatch<SetStateAction<number>>
-  setQuestionRefs: Dispatch<
-    SetStateAction<RefObject<HTMLDivElement | HTMLInputElement>[]>
-  >
+  setCurrentRef: Dispatch<SetStateAction<number>>
+  setQuestionRefs: Dispatch<SetStateAction<RefObject<HTMLDivElement>[]>>
   setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>
   setActiveTab: Dispatch<SetStateAction<string>>
   listHeading: string[]
@@ -50,8 +48,8 @@ export const ExamContext = createContext<ExamContextProps>({
   setSelectedPart: () => {},
   setListHeading: () => {},
   setUserAnswers: () => {},
-  currentQuestionIndex: 0,
-  setCurrentQuestionIndex: () => {},
+  currentRef: 0,
+  setCurrentRef: () => {},
   setQuestionRefs: () => {},
   setSelectedAssessment: () => {},
   setActiveTab: () => {},

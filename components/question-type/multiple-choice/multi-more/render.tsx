@@ -1,55 +1,55 @@
-'use client';
+'use client'
 
-import { useContext, useState } from 'react';
-import { ActionButton } from '@/components/test-exam/action-button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ExamContext } from '@/global/exam-context';
-import { cn } from '@/lib/utils';
-import { MultiMoreExtended } from '@/types/test-exam';
-import { Choice } from '@prisma/client';
+import { useContext, useState } from 'react'
+import { Choice } from '@prisma/client'
+import { ExamContext } from '@/global/exam-context'
+import { MultiMoreExtended } from '@/types/test-exam'
+import { cn } from '@/lib/utils'
+import { ActionButton } from '@/components/test-exam/action-button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export const MultiMoreRender = ({
-  multiMore
+  multiMore,
 }: {
-  multiMore: MultiMoreExtended;
+  multiMore: MultiMoreExtended
 }) => {
   const {
     questionRefs,
-    currentQuestionIndex,
-    setCurrentQuestionIndex,
+    currentRef: currentQuestionIndex,
+    setCurrentRef: setCurrentQuestionIndex,
     setUserAnswers,
-    userAnswers
-  } = useContext(ExamContext);
+    userAnswers,
+  } = useContext(ExamContext)
 
   if (!multiMore) {
-    return null;
+    return null
   }
   const handleAnswerSelected = ({
     checked,
-    choice
+    choice,
   }: {
-    checked: boolean;
-    choice: Choice;
+    checked: boolean
+    choice: Choice
   }) => {
-    setCurrentQuestionIndex(multiMore.question.questionNumber - 1);
+    setCurrentQuestionIndex(multiMore.question.questionNumber - 1)
     setUserAnswers((prevAnswers) => {
-      const prevContent = prevAnswers[multiMore.question.questionNumber] || [];
+      const prevContent = prevAnswers[multiMore.question.questionNumber] || []
       const updatedAnswers = Array.isArray(prevContent)
         ? prevContent // Use prevContent directly if it's already an array
-        : [prevContent]; // Otherwise, convert prevContent to an array
+        : [prevContent] // Otherwise, convert prevContent to an array
 
       const newAnswers = checked
         ? [...updatedAnswers, choice.content]
-        : updatedAnswers.filter((value) => value !== choice.content);
+        : updatedAnswers.filter((value) => value !== choice.content)
 
       return {
         ...prevAnswers,
-        [multiMore.question.questionNumber]: newAnswers
-      };
-    });
-  };
+        [multiMore.question.questionNumber]: newAnswers,
+      }
+    })
+  }
   return (
     <div
       className="space-y-2"
@@ -106,8 +106,8 @@ export const MultiMoreRender = ({
               />
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}

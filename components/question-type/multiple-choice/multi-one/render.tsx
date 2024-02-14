@@ -1,36 +1,36 @@
-'use client';
+'use client'
 
-import { useContext, useState } from 'react';
-import { ActionButton } from '@/components/test-exam/action-button';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { ExamContext } from '@/global/exam-context';
-import { cn } from '@/lib/utils';
-import { MultiOneExtended } from '@/types/test-exam';
+import { useContext, useState } from 'react'
+import { ExamContext } from '@/global/exam-context'
+import { MultiOneExtended } from '@/types/test-exam'
+import { cn } from '@/lib/utils'
+import { ActionButton } from '@/components/test-exam/action-button'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export const MultiOneRender = ({
-  multiOne
+  multiOne,
 }: {
-  multiOne: MultiOneExtended;
+  multiOne: MultiOneExtended
 }) => {
   const {
     questionRefs,
-    currentQuestionIndex,
-    setCurrentQuestionIndex,
+    currentRef: currentQuestionIndex,
+    setCurrentRef: setCurrentQuestionIndex,
     setUserAnswers,
-    userAnswers
-  } = useContext(ExamContext);
+    userAnswers,
+  } = useContext(ExamContext)
 
   if (!multiOne) {
-    return null;
+    return null
   }
   const handleAnswerSelected = (answerSelected: string) => {
-    setCurrentQuestionIndex(multiOne.question.questionNumber - 1);
+    setCurrentQuestionIndex(multiOne.question.questionNumber - 1)
     setUserAnswers((prevAnswers) => ({
       ...prevAnswers,
-      [multiOne.question.questionNumber]: answerSelected
-    }));
-  };
+      [multiOne.question.questionNumber]: answerSelected,
+    }))
+  }
   return (
     <div
       className="space-y-2"
@@ -82,9 +82,9 @@ export const MultiOneRender = ({
                 />
               </div>
             </div>
-          );
+          )
         })}
       </RadioGroup>
     </div>
-  );
-};
+  )
+}

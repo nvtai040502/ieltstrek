@@ -1,80 +1,80 @@
-'use client';
+'use client'
 
-import React, { useContext, useEffect, useState } from 'react';
-import { CompletionRender } from '../question-type/completion';
-import { IdentifyingInformationRender } from '../question-type/identifying-information';
-import { MatchingHeadingRender } from '../question-type/matching-heading';
-import { MultiMoreArrayRender } from '../question-type/multiple-choice/multi-more';
-import { MultiOneArrayRender } from '../question-type/multiple-choice/multi-one';
-import { ActionButton } from '../test-exam/action-button';
-import { Button } from '../ui/button';
+import React, { useContext, useEffect, useState } from 'react'
+import { DragDropContext, DropResult } from '@hello-pangea/dnd'
+import { QuestionType } from '@prisma/client'
+import { ExamContext } from '@/global/exam-context'
+import { PartExtended } from '@/types/db'
+import { CompletionRender } from '../question-type/completion'
+import { IdentifyingInformationRender } from '../question-type/identifying-information'
+import { MatchingHeadingRender } from '../question-type/matching-heading'
+import { MultiMoreArrayRender } from '../question-type/multiple-choice/multi-more'
+import { MultiOneArrayRender } from '../question-type/multiple-choice/multi-one'
+import { ActionButton } from '../test-exam/action-button'
+import { Button } from '../ui/button'
 import {
   ResizableHandle,
   ResizablePanel,
-  ResizablePanelGroup
-} from '../ui/resizable';
-import { ScrollArea, ScrollBar } from '../ui/scroll-area';
-import { PassageDragAndDropRender } from './passage/dnd-render';
-import { PassageRender } from './passage/render';
-import { ExamContext } from '@/global/exam-context';
-import { PartExtended } from '@/types/db';
-import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import { QuestionType } from '@prisma/client';
+  ResizablePanelGroup,
+} from '../ui/resizable'
+import { ScrollArea, ScrollBar } from '../ui/scroll-area'
+import { PassageDragAndDropRender } from './passage/dnd-render'
+import { PassageRender } from './passage/render'
 
 const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
   const {
     questionRefs,
-    setCurrentQuestionIndex,
+    setCurrentRef: setCurrentQuestionIndex,
     setUserAnswers,
     listHeading,
     userAnswers,
-    setListHeading
-  } = useContext(ExamContext);
+    setListHeading,
+  } = useContext(ExamContext)
 
   useEffect(() => {
     if (questionRefs.length && part.questionGroups.length) {
       questionRefs[
         part.questionGroups[0].startQuestionNumber - 1
-      ].current?.focus();
-      setCurrentQuestionIndex(part.questionGroups[0].startQuestionNumber - 1);
+      ].current?.focus()
+      setCurrentQuestionIndex(part.questionGroups[0].startQuestionNumber - 1)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
   const onDragEnd = (result: DropResult) => {
-    const { destination, source, type } = result;
-    console.log('🚀 ~ onDragEnd ~ result:', result);
+    const { destination, source, type } = result
+    console.log('🚀 ~ onDragEnd ~ result:', result)
 
     if (
       !destination ||
       (destination.droppableId === source.droppableId &&
         destination.index === source.index)
     ) {
-      return;
+      return
     }
 
     if (type === QuestionType.MATCHING_HEADING) {
-      const questionNumber = Number(destination.droppableId);
-      const itemToRemove = listHeading[source.index];
+      const questionNumber = Number(destination.droppableId)
+      const itemToRemove = listHeading[source.index]
 
       const updatedListHeading = listHeading.filter(
         (_, index) => index !== source.index
-      );
-      setListHeading(updatedListHeading);
+      )
+      setListHeading(updatedListHeading)
 
       setUserAnswers((prev) => {
-        const updatedAnswers = { ...prev };
-        updatedAnswers[questionNumber] = itemToRemove;
-        return updatedAnswers;
-      });
+        const updatedAnswers = { ...prev }
+        updatedAnswers[questionNumber] = itemToRemove
+        return updatedAnswers
+      })
 
       if (userAnswers[questionNumber]) {
         setListHeading((prev) => [
           ...prev,
-          userAnswers[questionNumber] as string
-        ]);
+          userAnswers[questionNumber] as string,
+        ])
       }
     }
-  };
+  }
   return (
     <div className="h-full">
       <DragDropContext onDragEnd={onDragEnd}>
@@ -169,7 +169,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
                         />
                       )}
                     </div>
-                  );
+                  )
                 })}
               <ScrollBar className="w-4" />
             </ScrollArea>
@@ -177,7 +177,7 @@ const ResizePanelGroupDragAndDrop = ({ part }: { part: PartExtended }) => {
         </ResizablePanelGroup>
       </DragDropContext>
     </div>
-  );
-};
+  )
+}
 
-export default ResizePanelGroupDragAndDrop;
+export default ResizePanelGroupDragAndDrop

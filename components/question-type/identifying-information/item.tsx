@@ -1,41 +1,42 @@
-"use client";
-import Link from "next/link";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useContext, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { IdentifyingInformationItemExtended } from "@/types/db";
-import { cn } from "@/lib/utils";
-import { ExamContext } from "@/global/exam-context";
-import { IdentifyingInformationAnswer } from "@prisma/client";
-import { useEditHook } from "@/global/use-edit-hook";
-import { ActionButton } from "../../action-button";
+'use client'
+
+import { useContext, useState } from 'react'
+import Link from 'next/link'
+import { IdentifyingInformationAnswer } from '@prisma/client'
+import { ExamContext } from '@/global/exam-context'
+import { useEditHook } from '@/global/use-edit-hook'
+import { IdentifyingInformationItemExtended } from '@/types/db'
+import { cn } from '@/lib/utils'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { ActionButton } from '../../action-button'
 
 interface ItemRenderProps {
-  item: IdentifyingInformationItemExtended;
+  item: IdentifyingInformationItemExtended
 }
 
 export const ItemRender = ({ item }: ItemRenderProps) => {
   const {
     questionRefs,
-    currentQuestionIndex,
-    setCurrentQuestionIndex,
+    currentRef: currentQuestionIndex,
+    setCurrentRef: setCurrentQuestionIndex,
     setUserAnswers,
     userAnswers,
-  } = useContext(ExamContext);
-  const { onOpen } = useEditHook();
+  } = useContext(ExamContext)
+  const { onOpen } = useEditHook()
 
   if (!item) {
-    return null;
+    return null
   }
 
   const handleAnswerSelected = (answerSelected: string) => {
-    setCurrentQuestionIndex(item.question.questionNumber - 1);
+    setCurrentQuestionIndex(item.question.questionNumber - 1)
     setUserAnswers((prevAnswers) => ({
       ...prevAnswers,
       [item.question.questionNumber]: answerSelected,
-    }));
-  };
+    }))
+  }
   return (
     <div
       className="space-y-2"
@@ -45,10 +46,10 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
       <div className="flex items-center gap-2 ">
         <p
           className={cn(
-            "px-2 py-1",
+            'px-2 py-1',
             currentQuestionIndex === item.question.questionNumber - 1
-              ? "border border-foreground"
-              : "",
+              ? 'border border-foreground'
+              : ''
           )}
         >
           {item.question.questionNumber}
@@ -64,7 +65,7 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
       <RadioGroup
         onValueChange={handleAnswerSelected}
         defaultValue={
-          (userAnswers[item.question.questionNumber] as string) || ""
+          (userAnswers[item.question.questionNumber] as string) || ''
         }
       >
         {[
@@ -87,5 +88,5 @@ export const ItemRender = ({ item }: ItemRenderProps) => {
         ))}
       </RadioGroup>
     </div>
-  );
-};
+  )
+}

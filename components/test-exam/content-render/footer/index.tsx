@@ -1,9 +1,9 @@
 import { Fragment, useContext } from 'react'
-import { Button } from '@/components/ui/button'
-import { TabsList } from '@/components/ui/tabs'
+import { Check } from 'lucide-react'
 import { ExamContext } from '@/global/exam-context'
 import { cn } from '@/lib/utils'
-import { Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { TabsList } from '@/components/ui/tabs'
 
 function FooterContentRender() {
   const {
@@ -11,8 +11,8 @@ function FooterContentRender() {
     activeTab,
     setActiveTab,
     questionRefs,
-    setCurrentQuestionIndex,
-    currentQuestionIndex
+    setCurrentRef: setCurrentQuestionIndex,
+    currentRef: currentQuestionIndex,
   } = useContext(ExamContext)
   if (!selectedAssessment) {
     return null

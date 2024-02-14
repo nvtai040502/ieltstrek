@@ -1,26 +1,29 @@
-'use client';
+'use client'
 
-import { useContext } from 'react';
-import { PassageRender } from '../../passage/render';
-import { CompletionRender } from '@/components/question-type/completion';
-import { MatchingRender } from '@/components/question-type/matching';
-import { TestMatchingRender } from '@/components/question-type/matching/test';
-import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
-import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
-import { ActionButton } from '@/components/test-exam/action-button';
+import { useContext } from 'react'
+import { ExamContext } from '@/global/exam-context'
+import { CompletionRender } from '@/components/question-type/completion'
+import { MatchingRender } from '@/components/question-type/matching'
+import { TestMatchingRender } from '@/components/question-type/matching/test'
+import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render'
+import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render'
+import { ActionButton } from '@/components/test-exam/action-button'
 import {
   ResizableHandle,
   ResizablePanel,
-  ResizablePanelGroup
-} from '@/components/ui/resizable';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { ExamContext } from '@/global/exam-context';
+  ResizablePanelGroup,
+} from '@/components/ui/resizable'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { PassageRender } from '../../passage/render'
 
 const PartBodyContentRender = () => {
-  const { questionRefs, setCurrentQuestionIndex, selectedPart } =
-    useContext(ExamContext);
+  const {
+    questionRefs,
+    setCurrentRef: setCurrentQuestionIndex,
+    selectedPart,
+  } = useContext(ExamContext)
   if (!selectedPart) {
-    return null;
+    return null
   }
   // useEffect(() => {
   //   if (questionRefs.length && part.questionGroups.length) {
@@ -120,14 +123,14 @@ const PartBodyContentRender = () => {
                     />
                   )} */}
                 </div>
-              );
+              )
             })}
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
-  );
-};
+  )
+}
 
-export default PartBodyContentRender;
+export default PartBodyContentRender
