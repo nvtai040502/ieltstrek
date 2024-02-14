@@ -1,6 +1,5 @@
-import { useContext } from "react";
-import { ExamContext } from "./exam-context";
-import { PartExtended } from "@/types/db";
+import { useContext } from 'react'
+import { ExamContext } from './exam-context'
 
 export const useExamHandler = () => {
   const {
@@ -10,11 +9,10 @@ export const useExamHandler = () => {
     currentQuestionIndex,
     setActiveTab,
     selectedAssessment,
-  } = useContext(ExamContext);
+  } = useContext(ExamContext)
   const handleSubmit = () => {
-    console.log("User Answers:", userAnswers);
-  };
+    console.log('User Answers:', userAnswers)
+  }
 
-  
-  return { handleSubmit };
-};
+  return { handleSubmit }
+}

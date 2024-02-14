@@ -12,37 +12,48 @@ export function TestReadOnlyMatchingBlankRender({
 }: {
   questionId: string
 }) {
-  const { userAnswers } = useContext(ExamContext)
-  const { matchingChoiceList } = useContext(DndContext)
+  const { userAnswers, selectedPart, questionRefs } = useContext(ExamContext)
+
   const { handleDragOver } = useDnd()
   const { setQuestionId } = useContext(DndContext)
-
+  const { setCurrentQuestionIndex, currentQuestionIndex } =
+    useContext(ExamContext)
   const [isOver, setIsOver] = useState(false)
+
+  const userAnswer = userAnswers.find((prev) => prev.questionId === questionId)
+  const question = selectedPart?.questions.find(
+    (question) => question.id === questionId
+  )
+  if (!question) {
+    return null
+  }
+
   const handleDrop = (event: DragEvent) => {
     event.preventDefault()
     setQuestionId(questionId)
+    setCurrentQuestionIndex(question.questionNumber - 1)
+    const ref = questionRefs[question.questionNumber - 1].current
+    if (ref) {
+      ref.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   const handleDragLeave = (event: DragEvent) => {
     event.preventDefault()
     setIsOver(false)
   }
-  const userAnswer = userAnswers.find((prev) => prev.questionId === questionId)
-
   return (
-    <div>
-      <div
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        // ref={questionRefs[item.question!.questionNumber - 1]}
-        className={cn(
-          'border border-secondary-foreground w-full p-4',
-          isOver ? 'bg-red-500' : ''
-        )}
-      >
-        {userAnswer?.content}
-      </div>
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      ref={questionRefs[question.questionNumber - 1]}
+      className={cn(
+        'border border-secondary-foreground w-full p-4',
+        currentQuestionIndex === question.questionNumber - 1 ? 'bg-red-500' : ''
+      )}
+    >
+      {userAnswer?.content}
     </div>
   )
 }

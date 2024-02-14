@@ -1,8 +1,8 @@
-import { useContext } from 'react';
-import { Button } from '@/components/ui/button';
-import { ExamContext } from '@/global/exam-context';
-import { PartExtended } from '@/types/test-exam';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useContext } from 'react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { ExamContext } from '@/global/exam-context'
+import { PartExtended } from '@/types/test-exam'
+import { Button } from '@/components/ui/button'
 
 function ButtonNavigationQuestion() {
   const {
@@ -11,46 +11,58 @@ function ButtonNavigationQuestion() {
     setCurrentQuestionIndex,
     selectedAssessment,
     setActiveTab,
-    selectedPart
-  } = useContext(ExamContext);
+    selectedPart,
+  } = useContext(ExamContext)
   if (!selectedAssessment || !selectedPart) {
-    return null;
+    return null
   }
 
-  const isHasNextQuestion = currentQuestionIndex < questionRefs.length - 1;
-  const isHasPrevQuestion = currentQuestionIndex > 0;
+  const isHasNextQuestion = currentQuestionIndex < questionRefs.length - 1
+  const isHasPrevQuestion = currentQuestionIndex > 0
   const handleNextQuestion = (part: PartExtended, i: number) => {
     if (
       currentQuestionIndex + 1 <
       part.questionGroups[part.questionGroups.length - 1].endQuestionNumber
     ) {
-      questionRefs[currentQuestionIndex + 1].current?.focus();
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
+      const ref = questionRefs[currentQuestionIndex + 1].current
+      if (ref) {
+        ref.scrollIntoView({ behavior: 'auto' })
+        ref.focus()
+      }
     } else {
       if (i < selectedAssessment.parts.length - 1) {
         setCurrentQuestionIndex(
           selectedAssessment.parts[i + 1].questionGroups[0]
             .startQuestionNumber - 1
-        );
-        setActiveTab(String(selectedAssessment.parts[i + 1].id));
+        )
+        setActiveTab(String(selectedAssessment.parts[i + 1].id))
       } else {
-        setActiveTab('delivering');
+        setActiveTab('delivering')
       }
     }
-  };
+  }
 
   const handlePrevQuestion = (part: PartExtended, i: number) => {
-    if (currentQuestionIndex >= part.questionGroups[0].startQuestionNumber) {
-      questionRefs[currentQuestionIndex - 1].current?.focus();
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    if (
+      currentQuestionIndex + 1 >=
+      part.questionGroups[0].startQuestionNumber
+    ) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+      const ref = questionRefs[currentQuestionIndex - 1].current
+      if (ref) {
+        console.log(ref)
+        ref.scrollIntoView({ behavior: 'auto' })
+        ref.focus()
+      }
     } else {
-      setActiveTab(String(selectedAssessment.parts[i - 1].id));
+      setActiveTab(selectedAssessment.parts[i - 1].id)
       setCurrentQuestionIndex(
         selectedAssessment.parts[i - 1].questionGroups[0].startQuestionNumber -
           1
-      );
+      )
     }
-  };
+  }
   return (
     <div className="absolute inset-0 h-20">
       <Button
@@ -68,7 +80,7 @@ function ButtonNavigationQuestion() {
         <ArrowRight />
       </Button>
     </div>
-  );
+  )
 }
 
-export default ButtonNavigationQuestion;
+export default ButtonNavigationQuestion
