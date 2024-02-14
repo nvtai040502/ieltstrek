@@ -1,4 +1,5 @@
-import { DragEvent } from 'react';
+import { DragEvent, useState } from 'react';
+import { cn } from '@/lib/utils';
 import { css } from '@emotion/css';
 import { Droppable } from '@hello-pangea/dnd';
 import { QuestionType } from '@prisma/client';
@@ -8,21 +9,39 @@ export function TestReadOnlyMatchingBlankRender({
 }: {
   questionNumber: number;
 }) {
+  const [isOver, setIsOver] = useState(false);
+  const [content, setContent] = useState('');
   const handleDrop = (event: DragEvent) => {
     event.preventDefault();
     console.log('Destination:', event.target);
+    const data = JSON.parse(event.dataTransfer?.getData('text/plain') || '');
+    const content = data.content;
+
+    console.log('Dropped matching choice ID:', content);
+    setContent(content);
   };
   const handleDragOver = (event: DragEvent) => {
     event.preventDefault();
+    setIsOver(true);
+  };
+  const handleDragLeave = (event: DragEvent) => {
+    event.preventDefault();
+    setIsOver(false);
   };
   return (
     <div>
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         // ref={questionRefs[item.question!.questionNumber - 1]}
-        className="border border-secondary-foreground w-full p-4"
-      ></div>
+        className={cn(
+          'border border-secondary-foreground w-full p-4',
+          isOver ? 'bg-red-500' : ''
+        )}
+      >
+        {content}
+      </div>
     </div>
   );
 }

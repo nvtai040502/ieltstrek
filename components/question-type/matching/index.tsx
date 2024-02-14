@@ -24,7 +24,7 @@ export const MatchingRender = ({
         data={{ questionGroup }}
       />
       <DragDropContext onDragEnd={() => {}}>
-        <MatchingParagraphRender matchingSentence={matching} />
+        <MatchingParagraphRender matching={matching} />
         <div className="flex justify-between items-center">
           <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
           <ActionButton
