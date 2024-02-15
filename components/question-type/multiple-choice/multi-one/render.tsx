@@ -2,6 +2,7 @@
 
 import { useContext, useState } from 'react'
 import { ExamContext } from '@/global/exam-context'
+import { useExamHandler } from '@/global/use-exam-handler'
 import { MultiOneExtended } from '@/types/test-exam'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/components/test-exam/action-button'
@@ -13,24 +14,21 @@ export const MultiOneRender = ({
 }: {
   multiOne: MultiOneExtended
 }) => {
-  const {
-    questionRefs,
-    currentRef: currentQuestionIndex,
-    setCurrentRef: setCurrentQuestionIndex,
-    setUserAnswers,
-    userAnswers,
-  } = useContext(ExamContext)
-
+  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext)
+  const { handleAnswerSelected } = useExamHandler()
   if (!multiOne) {
     return null
   }
-  const handleAnswerSelected = (answerSelected: string) => {
-    setCurrentQuestionIndex(multiOne.question.questionNumber - 1)
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [multiOne.question.questionNumber]: answerSelected,
-    }))
-  }
+  // const handleAnswerSelected = (answerSelected: string) => {
+  //   setCurrentQuestionIndex(multiOne.question.questionNumber - 1)
+  //   setUserAnswers((prevAnswers) => ({
+  //     ...prevAnswers,
+  //     [multiOne.question.questionNumber]: answerSelected,
+  //   }))
+  // }
+  const answer = userAnswers.find(
+    (answer) => answer.questionId === multiOne.questionId
+  )
   return (
     <div
       className="space-y-2"
@@ -41,7 +39,7 @@ export const MultiOneRender = ({
         <p
           className={cn(
             'px-2 py-1',
-            currentQuestionIndex === multiOne.question.questionNumber - 1
+            currentRef === multiOne.question.questionNumber - 1
               ? 'border border-foreground'
               : ''
           )}
@@ -56,9 +54,17 @@ export const MultiOneRender = ({
         />
       </div>
       <RadioGroup
-        onValueChange={handleAnswerSelected}
+        onValueChange={(choiceId) =>
+          handleAnswerSelected({
+            questionId: multiOne.questionId,
+            type: 'MULTIPLE_CHOICE_ONE_ANSWER',
+            choiceId,
+          })
+        }
         defaultValue={
-          (userAnswers[multiOne.question.questionNumber] as string) || ''
+          answer && answer.type === 'MULTIPLE_CHOICE_ONE_ANSWER'
+            ? answer.choiceId
+            : ''
         }
       >
         {multiOne.choices.map((choice) => {
@@ -68,9 +74,9 @@ export const MultiOneRender = ({
                 className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
                 key={choice.id}
               >
-                <RadioGroupItem value={choice.content} id={String(choice.id)} />
+                <RadioGroupItem value={choice.id} id={choice.id} />
                 <Label
-                  htmlFor={String(choice.id)}
+                  htmlFor={choice.id}
                   className="py-4 w-full cursor-pointer"
                 >
                   {choice.content}

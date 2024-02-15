@@ -6,7 +6,6 @@ export type AnswerType =
   | {
       questionId: string
       type: 'MULTIPLE_CHOICE_ONE_ANSWER'
-      content: string
       choiceId: string
     }
   | {

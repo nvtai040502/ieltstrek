@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { ExamContext } from './exam-context'
+import { AnswerType, ExamContext } from './exam-context'
 
 export const useExamHandler = () => {
   const {
@@ -9,11 +9,44 @@ export const useExamHandler = () => {
     currentRef,
     setActiveTab,
     selectedAssessment,
+    setUserAnswers,
     selectedPart,
   } = useContext(ExamContext)
 
   function handleSubmit() {
     console.log('User Answers:', userAnswers)
+  }
+  function handleAnswerSelected(props: AnswerType) {
+    const { questionId, type } = props
+
+    // Update or add the answer based on the type
+    setUserAnswers((prevAnswers) => {
+      const updatedAnswers = [...prevAnswers]
+
+      if (type === 'MULTIPLE_CHOICE_ONE_ANSWER') {
+        const updatedAnswerIndex = updatedAnswers.findIndex(
+          (prev) => prev.questionId === questionId
+        )
+
+        if (updatedAnswerIndex !== -1) {
+          updatedAnswers[updatedAnswerIndex] = {
+            ...updatedAnswers[updatedAnswerIndex],
+            type: 'MULTIPLE_CHOICE_ONE_ANSWER',
+            choiceId: props.choiceId,
+          }
+        } else {
+          updatedAnswers.push({
+            questionId: questionId,
+            type: 'MULTIPLE_CHOICE_ONE_ANSWER',
+            choiceId: props.choiceId,
+          })
+        }
+      } else if (type === 'MATCHING') {
+        // Add handling for 'MATCHING' type here
+      }
+
+      return updatedAnswers
+    })
   }
   function handleNextQuestion() {
     if (!selectedAssessment || !selectedPart) {
@@ -26,9 +59,11 @@ export const useExamHandler = () => {
     ) {
       setCurrentRef(currentRef + 1)
       const ref = questionRefs[currentRef + 1].current
-      console.log(ref)
       if (ref) {
-        ref.scrollIntoView({ behavior: 'auto' })
+        ref.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        })
         ref.focus()
       }
     } else {
@@ -52,7 +87,10 @@ export const useExamHandler = () => {
       setCurrentRef(currentRef - 1)
       const ref = questionRefs[currentRef - 1].current
       if (ref) {
-        ref.scrollIntoView({ behavior: 'auto' })
+        ref.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        })
         ref.focus()
       }
     } else {
@@ -70,6 +108,7 @@ export const useExamHandler = () => {
     .some((ref) => ref.current !== null)
   const isHasPrevQuestion = currentRef > 0
   return {
+    handleAnswerSelected,
     handleSubmit,
     handleNextQuestion,
     handlePrevQuestion,
