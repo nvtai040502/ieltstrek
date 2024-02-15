@@ -8,6 +8,7 @@ import { MultiOneUpdateForm } from '@/components/question-type/multiple-choice/m
 import { CreateAssessmentForm } from '@/components/test-exam/assessment/create-form';
 import { UpdatePartForm } from '@/components/test-exam/part/update-form';
 import { CreatePassageForm } from '@/components/test-exam/passage/create-form';
+import { PassageUpdateForm } from '@/components/test-exam/passage/update-form';
 import { CreateQuestionGroupForm } from '@/components/test-exam/question-group/create-form';
 import { DeleteQuestionGroupForm } from '@/components/test-exam/question-group/delete-form';
 
@@ -28,10 +29,11 @@ export function ModalProvider() {
 
       <UpdatePartForm />
 
+      <CreatePassageForm />
+      <PassageUpdateForm />
+
       <CreateQuestionGroupForm />
       <DeleteQuestionGroupForm />
-
-      <CreatePassageForm />
 
       <MultiOneUpdateForm />
       <MultiMoreUpdateForm />

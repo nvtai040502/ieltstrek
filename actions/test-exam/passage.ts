@@ -112,32 +112,23 @@ export const createPassage = async ({
 //   return;
 // };
 
-// export const updatePassage = async ({
-//   title,
-//   content,
-//   id,
-//   description
-// }: {
-//   title: string;
-//   content?: string;
-//   description?: string;
-//   id: number;
-// }) => {
-//   try {
-//     const passage = await db.passage.update({
-//       where: {
-//         id
-//       },
-//       data: {
-//         title,
-//         content,
-//         description
-//       }
-//     });
-
-//     return passage;
-//   } catch (error) {
-//     console.error('Error updating Passage:', error);
-//     return null;
-//   }
-// };
+export const updatePassage = async ({
+  formData,
+  id
+}: {
+  formData: z.infer<typeof PassageSchema>;
+  id: string;
+}) => {
+  const passage = await db.passage.findUnique({
+    where: { id },
+    select: { part: { select: { assessmentId: true } } }
+  });
+  if (!passage) {
+    throw new Error('Passage Id Not Found');
+  }
+  await db.passage.update({
+    where: { id },
+    data: { ...formData }
+  });
+  revalidatePath(`/assessments/${passage.part.assessmentId}`);
+};
