@@ -65,3 +65,13 @@ export async function getAssessmentIdByPartId(partId: string) {
 
   return part.assessmentId;
 }
+export async function publicAssessment(assessmentId: string) {
+  await db.assessment.update({
+    where: {
+      id: assessmentId
+    },
+    data: {
+      isPublic: true
+    }
+  });
+}

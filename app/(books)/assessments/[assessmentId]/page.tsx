@@ -3,6 +3,7 @@ import { AlignJustify, Bell, Wifi } from 'lucide-react';
 import { AssessmentExtended } from '@/types/test-exam';
 import { db } from '@/lib/db';
 import { TestExamContentRender } from '@/components/test-exam/content-render';
+import PublicAssessmentButton from '@/components/test-exam/public-assessment-button';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/ui/icons';
 
@@ -158,6 +159,7 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
         </div>
       </div>
       <TestExamContentRender assessment={assessment} />
+      <PublicAssessmentButton />
     </div>
   );
 };

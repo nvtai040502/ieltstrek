@@ -35,7 +35,7 @@ export const QuestionGroupSchema = z
   )
   .refine(
     (data) => {
-      if (data.endQuestionNumber - data.startQuestionNumber + 1 > 40) {
+      if (data.endQuestionNumber > 40) {
         return false;
       }
       return true;

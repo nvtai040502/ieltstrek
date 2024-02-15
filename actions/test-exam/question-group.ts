@@ -112,7 +112,6 @@ export const createQuestionGroup = async ({
       throw new Error(`Unsupported question group type: ${formData.type}`);
   }
   revalidatePath(`/assessments/${part.assessmentId}`);
-  return;
 };
 // export const updateQuestionGroup = async ({
 //   title,
