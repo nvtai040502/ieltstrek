@@ -10,6 +10,11 @@ export type AnswerType =
     }
   | {
       questionId: string
+      type: 'MULTI_MORE'
+      choiceIdList: string[]
+    }
+  | {
+      questionId: string
       type: 'NOTE_COMPLETION'
       content: string
     }

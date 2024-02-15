@@ -1,29 +1,29 @@
-'use server';
+'use server'
 
-import { db } from '@/lib/db';
+import { db } from '@/lib/db'
 
 export const createMultiMoreList = async ({
-  questionGroupId
+  questionGroupId,
 }: {
-  questionGroupId: string;
+  questionGroupId: string
 }) => {
   const questionGroup = await db.questionGroup.findUnique({
     where: {
-      id: questionGroupId
+      id: questionGroupId,
     },
     select: {
       questions: {
         select: {
-          id: true
-        }
-      }
-    }
-  });
+          id: true,
+        },
+      },
+    },
+  })
   if (!questionGroup) {
-    throw new Error('QUestion Group Id not found');
+    throw new Error('QUestion Group Id not found')
   }
 
-  const totalChoices = 4;
+  const totalChoices = 4
   questionGroup.questions.map(async (question) => {
     await db.multipleChoiceMoreAnswers.create({
       data: {
@@ -35,16 +35,17 @@ export const createMultiMoreList = async ({
           createMany: {
             data: Array.from({ length: totalChoices }).map((_, i) => ({
               content: `Option ${i + 1}`,
-              order: i
-            }))
-          }
-        }
-      }
-    });
-  });
+              order: i,
+              isCorrect: i < 2 ? true : false,
+            })),
+          },
+        },
+      },
+    })
+  })
 
-  return;
-};
+  return
+}
 
 // export const updateMultiMore = async ({
 //   title,

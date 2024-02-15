@@ -41,8 +41,27 @@ export const useExamHandler = () => {
             choiceId: props.choiceId,
           })
         }
+      } else if (type === 'MULTI_MORE') {
+        const { choiceIdList } = props
+        const updatedAnswerIndex = updatedAnswers.findIndex(
+          (prev) => prev.questionId === questionId
+        )
+
+        if (updatedAnswerIndex !== -1) {
+          updatedAnswers[updatedAnswerIndex] = {
+            ...updatedAnswers[updatedAnswerIndex],
+            type: 'MULTI_MORE',
+            choiceIdList: choiceIdList,
+          }
+        } else {
+          updatedAnswers.push({
+            questionId: questionId,
+            type: 'MULTI_MORE',
+            choiceIdList: choiceIdList,
+          })
+        }
       } else if (type === 'MATCHING') {
-        // Add handling for 'MATCHING' type here
+        // Do Something
       }
 
       return updatedAnswers

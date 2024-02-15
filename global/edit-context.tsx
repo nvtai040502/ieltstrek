@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, createContext } from 'react'
 import { Choice, Passage, PassageMultiHeading } from '@prisma/client'
 import {
+  MultiMoreExtended,
   MultiOneExtended,
   PartExtended,
   QuestionGroupExtended,
@@ -45,14 +46,15 @@ interface MultiMoreChoice {
 export type ChoiceData = MultiOneChoice | MultiMoreChoice
 
 export interface EditData {
+  part?: PartExtended
+  questionGroup?: QuestionGroupExtended
   choiceData?: ChoiceData
   multiOne?: MultiOneExtended
-  questionGroup?: QuestionGroupExtended
-  part?: PartExtended
+  multiMore?: MultiMoreExtended
   passage?: Passage
   passageMultiHeading?: PassageMultiHeading
+
   // summaryCompletion?: SummaryCompletionExtended;
-  // multiMore?: MultiMoreExtended;
   // matchingHeading?: MatchingHeadingExtended;
   // matchingSentence?: MatchingSentenceExtended;
   // listMatchingChoices?: ListMatchingChoicesExtended;

@@ -1,55 +1,45 @@
 'use client'
 
-import { useContext, useState } from 'react'
-import { Choice } from '@prisma/client'
+import { useContext, useEffect, useState } from 'react'
 import { ExamContext } from '@/global/exam-context'
+import { useExamHandler } from '@/global/use-exam-handler'
 import { MultiMoreExtended } from '@/types/test-exam'
 import { cn } from '@/lib/utils'
 import { ActionButton } from '@/components/test-exam/action-button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 export const MultiMoreRender = ({
   multiMore,
 }: {
   multiMore: MultiMoreExtended
 }) => {
-  const {
-    questionRefs,
-    currentRef: currentQuestionIndex,
-    setCurrentRef: setCurrentQuestionIndex,
-    setUserAnswers,
-    userAnswers,
-  } = useContext(ExamContext)
+  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext)
+  const [choiceIdList, setChoiceIdList] = useState<string[]>([])
+  const { handleAnswerSelected } = useExamHandler()
+  useEffect(() => {
+    const answer = userAnswers.find(
+      (answer) => answer.questionId === multiMore.questionId
+    )
+    if (answer && answer.type === 'MULTI_MORE') {
+      setChoiceIdList(answer.choiceIdList)
+    }
+  }, [userAnswers, multiMore.questionId])
 
   if (!multiMore) {
     return null
   }
-  const handleAnswerSelected = ({
-    checked,
-    choice,
-  }: {
-    checked: boolean
-    choice: Choice
-  }) => {
-    setCurrentQuestionIndex(multiMore.question.questionNumber - 1)
-    setUserAnswers((prevAnswers) => {
-      const prevContent = prevAnswers[multiMore.question.questionNumber] || []
-      const updatedAnswers = Array.isArray(prevContent)
-        ? prevContent // Use prevContent directly if it's already an array
-        : [prevContent] // Otherwise, convert prevContent to an array
-
-      const newAnswers = checked
-        ? [...updatedAnswers, choice.content]
-        : updatedAnswers.filter((value) => value !== choice.content)
-
-      return {
-        ...prevAnswers,
-        [multiMore.question.questionNumber]: newAnswers,
-      }
+  const handleCheck = (checked: boolean, choiceId: string) => {
+    const updatedChoiceIdList = checked
+      ? [...choiceIdList, choiceId]
+      : choiceIdList.filter((id) => id !== choiceId)
+    handleAnswerSelected({
+      questionId: multiMore.questionId,
+      type: 'MULTI_MORE',
+      choiceIdList: updatedChoiceIdList,
     })
   }
+
   return (
     <div
       className="space-y-2"
@@ -60,7 +50,7 @@ export const MultiMoreRender = ({
         <p
           className={cn(
             'px-2 py-1',
-            currentQuestionIndex === multiMore.question.questionNumber - 1
+            currentRef === multiMore.question.questionNumber - 1
               ? 'border border-foreground'
               : ''
           )}
@@ -80,30 +70,21 @@ export const MultiMoreRender = ({
           <div key={choice.id}>
             <div className="flex items-center space-x-2 px-4 w-full hover:bg-secondary">
               <Checkbox
-                defaultChecked={
-                  userAnswers[multiMore.question.questionNumber]
-                    ? userAnswers[multiMore.question.questionNumber].includes(
-                        choice.content
-                      )
-                    : false
-                }
+                checked={choiceIdList.includes(choice.id)}
                 onCheckedChange={(checked: boolean) =>
-                  handleAnswerSelected({ checked, choice })
+                  handleCheck(checked, choice.id)
                 }
-                value={choice.content}
-                id={String(choice.id)}
+                value={choice.id}
+                id={choice.id}
               />
-              <Label
-                htmlFor={String(choice.id)}
-                className="py-4 w-full cursor-pointer"
-              >
+              <Label htmlFor={choice.id} className="py-4 w-full cursor-pointer">
                 {choice.content}
               </Label>
-              <ActionButton
+              {/* <ActionButton
                 actionType="update"
                 editType="editChoice"
                 data={{ choice }}
-              />
+              /> */}
             </div>
           </div>
         )

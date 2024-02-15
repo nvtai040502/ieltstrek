@@ -1,7 +1,7 @@
 'use client'
 
-import { useContext, useState } from 'react'
-import { ExamContext } from '@/global/exam-context'
+import { useContext, useEffect, useState } from 'react'
+import { AnswerType, ExamContext } from '@/global/exam-context'
 import { useExamHandler } from '@/global/use-exam-handler'
 import { MultiOneExtended } from '@/types/test-exam'
 import { cn } from '@/lib/utils'
@@ -15,20 +15,18 @@ export const MultiOneRender = ({
   multiOne: MultiOneExtended
 }) => {
   const { questionRefs, currentRef, userAnswers } = useContext(ExamContext)
+  const [answer, setAnswer] = useState<AnswerType | undefined>(undefined)
   const { handleAnswerSelected } = useExamHandler()
+  useEffect(() => {
+    const answer = userAnswers.find(
+      (answer) => answer.questionId === multiOne.questionId
+    )
+    setAnswer(answer)
+  }, [userAnswers, multiOne.questionId])
   if (!multiOne) {
     return null
   }
-  // const handleAnswerSelected = (answerSelected: string) => {
-  //   setCurrentQuestionIndex(multiOne.question.questionNumber - 1)
-  //   setUserAnswers((prevAnswers) => ({
-  //     ...prevAnswers,
-  //     [multiOne.question.questionNumber]: answerSelected,
-  //   }))
-  // }
-  const answer = userAnswers.find(
-    (answer) => answer.questionId === multiOne.questionId
-  )
+
   return (
     <div
       className="space-y-2"
