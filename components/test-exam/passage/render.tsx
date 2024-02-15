@@ -1,8 +1,8 @@
 'use client';
 
 import { useContext } from 'react';
-import { ActionButton } from '../action-button';
 import { ExamContext } from '@/global/exam-context';
+import { ActionButton } from '../action-button';
 
 export function PassageRender() {
   const { selectedPart } = useContext(ExamContext);
@@ -36,22 +36,22 @@ export function PassageRender() {
         <p className="whitespace-pre-line"> {passage.content} </p>
       )}
 
-      {/* {passage.type === 'PASSAGE_MULTI_HEADING' &&
-            passage.passageMultiHeadingArray.map((item) => {
-              return (
-                <div key={item.id}>
-                  <div className="flex justify-between">
-                    <p className="font-bold"> {item.title}</p>
-                    <ActionButton
-                      actionType="update"
-                      editType="editPassageMultiHeading"
-                      data={{ passageMultiHeading: item }}
-                    />
-                  </div>
-                  <p className=" whitespace-pre-line ">{item.content}</p>
-                </div>
-              );
-            })} */}
+      {passage.type === 'PASSAGE_MULTI_HEADING' &&
+        passage.passageHeadingList.map((passageHeading) => {
+          return (
+            <div key={passageHeading.id}>
+              <div className="flex justify-between">
+                <p className="font-bold"> {passageHeading.title}</p>
+                <ActionButton
+                  actionType="update"
+                  editType="editPassageMultiHeading"
+                  data={{ passageHeading }}
+                />
+              </div>
+              <p className=" whitespace-pre-line ">{passageHeading.content}</p>
+            </div>
+          );
+        })}
     </div>
   );
 }

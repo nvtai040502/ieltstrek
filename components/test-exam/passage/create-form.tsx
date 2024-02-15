@@ -2,6 +2,17 @@
 
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { createPassage } from '@/actions/test-exam/passage';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PassageType } from '@prisma/client';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { PassageSchema } from '@/lib/validations/text-exam';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '../../ui/button';
 import {
   Form,
@@ -12,17 +23,6 @@ import {
   FormMessage
 } from '../../ui/form';
 import { Input } from '../../ui/input';
-import { createPassage } from '@/actions/test-exam/passage';
-import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useEditHook } from '@/global/use-edit-hook';
-import { catchError } from '@/lib/utils';
-import { PassageSchema } from '@/lib/validations/text-exam';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { PassageType } from '@prisma/client';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
 
 export function CreatePassageForm() {
   const [isPending, startTransition] = useTransition();
@@ -127,7 +127,7 @@ export function CreatePassageForm() {
                 // variant="ghost"
                 type="submit"
               >
-                Save
+                Create
               </Button>
             </div>
           </form>

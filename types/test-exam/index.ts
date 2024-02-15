@@ -11,6 +11,7 @@ import {
   MultipleChoiceOneAnswer,
   Part,
   Passage,
+  PassageHeading,
   Question,
   QuestionGroup,
   QuestionType
@@ -21,7 +22,7 @@ export type AssessmentExtended = Assessment & {
   questions: Question[];
 };
 export type PassageExtended = Passage & {
-  // passageMultiHeadingArray: PassageMultiHeadingExtended[]
+  passageHeadingList: PassageHeading[];
 };
 
 export type PartExtended = Part & {

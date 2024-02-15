@@ -80,7 +80,7 @@ model QuestionGroup {
   completion          Completion?
   matching            Matching?
   matchingChoiceGroup MatchingChoiceGroup?
-  matchingHeading     MatchingHeading?
+  // matchingHeading     MatchingHeading?
 }
 
 model Question {
@@ -103,7 +103,7 @@ model Question {
   matchingChoice MatchingChoice?
   identifyInfo   IdentifyingInformation?
 
-  passageMultiHeading PassageMultiHeading?
+  // passageMultiHeading PassageMultiHeading?
 }
 
 model MultipleChoiceOneAnswer {
@@ -237,58 +237,59 @@ model MatchingChoice {
   matchingChoiceGroup   MatchingChoiceGroup @relation(fields: [matchingChoiceGroupId], references: [id], onDelete: Cascade)
 }
 
-model MatchingHeading {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+// model MatchingHeading {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now()) @updatedAt
 
-  title                    String
-  matchingHeadingItemArray MatchingHeadingItem[]
-  passageHeadingArray      PassageMultiHeading[]
+//   title                    String
+//   matchingHeadingItemArray MatchingHeadingItem[]
+//   passageHeadingArray      PassageMultiHeading[]
 
-  questionGroupId String        @unique
-  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-}
+//   questionGroupId String        @unique
+//   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
+// }
 
-model MatchingHeadingItem {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+// model MatchingHeadingItem {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now()) @updatedAt
 
-  content String
+//   content String
 
-  passageMultiHeadingId Int?                 @unique
-  passageMultiHeading   PassageMultiHeading? @relation(fields: [passageMultiHeadingId], references: [id], onDelete: Cascade)
+//   passageMultiHeadingId String?                 @unique
+//   passageMultiHeading   PassageMultiHeading? @relation(fields: [passageMultiHeadingId], references: [id], onDelete: Cascade)
 
-  matchingHeadingId Int
-  matchingHeading   MatchingHeading @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
-}
+//   matchingHeadingId Int
+//   matchingHeading   MatchingHeading @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
+// }
 
 enum PassageType {
   PASSAGE_SIMPLE
   PASSAGE_MULTI_HEADING
 }
 
-model PassageMultiHeading {
-  id        Int      @id @default(autoincrement())
+model PassageHeading {
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   title   String
   content String
+  order   Int
 
-  questionId          String?              @unique
-  question            Question?            @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  matchingHeadingItem MatchingHeadingItem?
-  matchingHeadingId   Int?
-  matchingHeading     MatchingHeading?     @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
-
-  passageId Int
+  passageId String
   passage   Passage @relation(fields: [passageId], references: [id], onDelete: Cascade)
+
+  // questionId          String?              @unique
+  // question            Question?            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  // matchingHeadingItem MatchingHeadingItem?
+  // matchingHeadingId   Int?
+  // matchingHeading     MatchingHeading?     @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
 }
 
 model Passage {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -298,9 +299,9 @@ model Passage {
   type        PassageType
   content     String?
 
-  passageMultiHeadingArray PassageMultiHeading[]
-  partId                   String                @unique // Ensures that each Part can have only one Passage
-  part                     Part                  @relation(fields: [partId], references: [id], onDelete: Cascade)
+  passageHeadingList PassageHeading[]
+  partId             String           @unique
+  part               Part             @relation(fields: [partId], references: [id], onDelete: Cascade)
 }
 
 enum UserRole {

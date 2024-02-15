@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from 'react';
-import { Choice, Passage, PassageMultiHeading } from '@prisma/client';
+import { Choice, Passage, PassageHeading } from '@prisma/client';
 import {
   IdentifyInfoExtended,
   MultiMoreExtended,
@@ -54,7 +54,7 @@ export interface EditData {
   multiMore?: MultiMoreExtended;
   identifyInfo?: IdentifyInfoExtended;
   passage?: Passage;
-  passageMultiHeading?: PassageMultiHeading;
+  passageHeading?: PassageHeading;
 
   // summaryCompletion?: SummaryCompletionExtended;
   // matchingHeading?: MatchingHeadingExtended;

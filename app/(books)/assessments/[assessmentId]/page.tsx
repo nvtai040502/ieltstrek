@@ -111,7 +111,15 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               }
             }
           },
-          passage: true,
+          passage: {
+            include: {
+              passageHeadingList: {
+                orderBy: {
+                  order: 'asc'
+                }
+              }
+            }
+          },
           questions: {
             orderBy: {
               questionNumber: 'asc'
