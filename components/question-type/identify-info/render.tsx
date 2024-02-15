@@ -1,10 +1,12 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IdentifyChoice } from '@prisma/client';
-import { ExamContext } from '@/global/exam-context';
+import { AnswerType, ExamContext } from '@/global/exam-context';
+import { useExamHandler } from '@/global/use-exam-handler';
 import { IdentifyInfoExtended } from '@/types/test-exam';
 import { cn } from '@/lib/utils';
+import { ActionButton } from '@/components/test-exam/action-button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
@@ -13,7 +15,15 @@ export const IdentifyInfoRender = ({
 }: {
   identifyInfo: IdentifyInfoExtended;
 }) => {
-  const { questionRefs, currentRef } = useContext(ExamContext);
+  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
+  const [answer, setAnswer] = useState<AnswerType | undefined>(undefined);
+  const { handleAnswerSelected } = useExamHandler();
+  useEffect(() => {
+    const answer = userAnswers.find(
+      (answer) => answer.questionId === identifyInfo.questionId
+    );
+    setAnswer(answer);
+  }, [userAnswers, identifyInfo.questionId]);
   return (
     <div
       className="space-y-2"
@@ -32,18 +42,22 @@ export const IdentifyInfoRender = ({
           {identifyInfo.question.questionNumber}
         </p>
         <p>{identifyInfo.title}</p>
-        {/* <ActionButton
+        <ActionButton
           actionType="update"
-          editType="editIdentifyingInformationItem"
-          data={{ identifyingInformationItem: item }}
-        /> */}
+          editType="editIdentifyInfo"
+          data={{ identifyInfo }}
+        />
       </div>
 
       <RadioGroup
-      // onValueChange={handleAnswerSelected}
-      // defaultValue={
-      //   (userAnswers[item.question.questionNumber] as string) || ''
-      // }
+        onValueChange={(value: IdentifyChoice) =>
+          handleAnswerSelected({
+            questionId: identifyInfo.questionId,
+            type: 'IDENTIFY_INFO',
+            content: value
+          })
+        }
+        value={answer && answer.type === 'IDENTIFY_INFO' ? answer.content : ''}
       >
         {[
           IdentifyChoice.TRUE,

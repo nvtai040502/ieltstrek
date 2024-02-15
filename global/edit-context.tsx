@@ -1,18 +1,19 @@
-import { Dispatch, SetStateAction, createContext } from 'react'
-import { Choice, Passage, PassageMultiHeading } from '@prisma/client'
+import { Dispatch, SetStateAction, createContext } from 'react';
+import { Choice, Passage, PassageMultiHeading } from '@prisma/client';
 import {
+  IdentifyInfoExtended,
   MultiMoreExtended,
   MultiOneExtended,
   PartExtended,
-  QuestionGroupExtended,
-} from '@/types/test-exam'
+  QuestionGroupExtended
+} from '@/types/test-exam';
 
 export type EditType =
   | 'editPart'
   // Question Type
   | 'editNoteCompletion'
   | 'editNoteCompletionGroupItem'
-  | 'editIdentifyingInformationItem'
+  | 'editIdentifyInfo'
   | 'editChoice'
   | 'editMultiOne'
   | 'editSummaryCompletion'
@@ -29,30 +30,31 @@ export type EditType =
   | 'editMatchingHeading'
   | 'editListMatchingChoices'
   | 'createAssessment'
-  | null
+  | null;
 
 interface MultiOneChoice {
-  type: 'MULTI_ONE'
-  multiOneId: string
-  choice: Choice
+  type: 'MULTI_ONE';
+  multiOneId: string;
+  choice: Choice;
 }
 
 interface MultiMoreChoice {
-  type: 'MULTI_MORE'
-  multiMoreId: string
-  choice: Choice
+  type: 'MULTI_MORE';
+  multiMoreId: string;
+  choice: Choice;
 }
 
-export type ChoiceData = MultiOneChoice | MultiMoreChoice
+export type ChoiceData = MultiOneChoice | MultiMoreChoice;
 
 export interface EditData {
-  part?: PartExtended
-  questionGroup?: QuestionGroupExtended
-  choiceData?: ChoiceData
-  multiOne?: MultiOneExtended
-  multiMore?: MultiMoreExtended
-  passage?: Passage
-  passageMultiHeading?: PassageMultiHeading
+  part?: PartExtended;
+  questionGroup?: QuestionGroupExtended;
+  choiceData?: ChoiceData;
+  multiOne?: MultiOneExtended;
+  multiMore?: MultiMoreExtended;
+  identifyInfo?: IdentifyInfoExtended;
+  passage?: Passage;
+  passageMultiHeading?: PassageMultiHeading;
 
   // summaryCompletion?: SummaryCompletionExtended;
   // matchingHeading?: MatchingHeadingExtended;
@@ -61,14 +63,14 @@ export interface EditData {
 }
 
 interface EditContextProps {
-  isOpen: boolean
-  setIsOpen: Dispatch<SetStateAction<boolean>>
-  data: EditData | undefined
-  setData: Dispatch<SetStateAction<EditData | undefined>>
-  type: EditType
-  setType: Dispatch<SetStateAction<EditType>>
-  textNoteCompletion: string
-  setTextNoteCompletion: Dispatch<SetStateAction<string>>
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  data: EditData | undefined;
+  setData: Dispatch<SetStateAction<EditData | undefined>>;
+  type: EditType;
+  setType: Dispatch<SetStateAction<EditType>>;
+  textNoteCompletion: string;
+  setTextNoteCompletion: Dispatch<SetStateAction<string>>;
 }
 
 export const EditContext = createContext<EditContextProps>({
@@ -79,5 +81,5 @@ export const EditContext = createContext<EditContextProps>({
   data: undefined,
   setData: () => {},
   type: null,
-  setType: () => {},
-})
+  setType: () => {}
+});

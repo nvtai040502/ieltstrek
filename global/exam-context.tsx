@@ -1,18 +1,23 @@
-import { Dispatch, RefObject, SetStateAction, createContext } from 'react'
-import { QuestionType } from '@prisma/client'
-import { AssessmentExtended, PartExtended } from '@/types/test-exam'
+import { Dispatch, RefObject, SetStateAction, createContext } from 'react';
+import { IdentifyChoice, QuestionType } from '@prisma/client';
+import { AssessmentExtended, PartExtended } from '@/types/test-exam';
 
 export type AnswerType =
   | {
-      questionId: string
-      type: 'MULTIPLE_CHOICE_ONE_ANSWER'
-      choiceId: string
+      questionId: string;
+      type: 'MULTIPLE_CHOICE_ONE_ANSWER';
+      choiceId: string;
     }
   | {
-      questionId: string
-      type: 'MULTI_MORE'
-      choiceIdList: string[]
+      questionId: string;
+      type: 'MULTI_MORE';
+      choiceIdList: string[];
     }
+  | {
+      questionId: string;
+      type: 'IDENTIFY_INFO';
+      content: IdentifyChoice;
+    };
 // | {
 //     questionId: string
 //     type: 'NOTE_COMPLETION'
@@ -26,20 +31,20 @@ export type AnswerType =
 //   }
 
 interface ExamContextProps {
-  activeTab: string
-  selectedAssessment: AssessmentExtended | null
-  questionRefs: RefObject<HTMLDivElement>[]
-  currentRef: number
-  selectedPart: PartExtended | null
-  setSelectedPart: Dispatch<SetStateAction<PartExtended | null>>
-  setCurrentRef: Dispatch<SetStateAction<number>>
-  setQuestionRefs: Dispatch<SetStateAction<RefObject<HTMLDivElement>[]>>
-  setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>
-  setActiveTab: Dispatch<SetStateAction<string>>
-  listHeading: string[]
-  setListHeading: Dispatch<SetStateAction<string[]>>
-  userAnswers: AnswerType[]
-  setUserAnswers: Dispatch<SetStateAction<AnswerType[]>>
+  activeTab: string;
+  selectedAssessment: AssessmentExtended | null;
+  questionRefs: RefObject<HTMLDivElement>[];
+  currentRef: number;
+  selectedPart: PartExtended | null;
+  setSelectedPart: Dispatch<SetStateAction<PartExtended | null>>;
+  setCurrentRef: Dispatch<SetStateAction<number>>;
+  setQuestionRefs: Dispatch<SetStateAction<RefObject<HTMLDivElement>[]>>;
+  setSelectedAssessment: Dispatch<SetStateAction<AssessmentExtended | null>>;
+  setActiveTab: Dispatch<SetStateAction<string>>;
+  listHeading: string[];
+  setListHeading: Dispatch<SetStateAction<string[]>>;
+  userAnswers: AnswerType[];
+  setUserAnswers: Dispatch<SetStateAction<AnswerType[]>>;
 }
 
 export const ExamContext = createContext<ExamContextProps>({
@@ -56,5 +61,5 @@ export const ExamContext = createContext<ExamContextProps>({
   setCurrentRef: () => {},
   setQuestionRefs: () => {},
   setSelectedAssessment: () => {},
-  setActiveTab: () => {},
-})
+  setActiveTab: () => {}
+});

@@ -33,6 +33,8 @@ export const useExamHandler = () => {
             return { questionId, type, choiceId: props.choiceId };
           case 'MULTI_MORE':
             return { questionId, type, choiceIdList: props.choiceIdList };
+          case 'IDENTIFY_INFO':
+            return { questionId, type, content: props.content };
           default:
             throw new Error(`Unsupported answer type: ${type}`);
         }
