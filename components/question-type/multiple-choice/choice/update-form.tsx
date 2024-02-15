@@ -1,68 +1,67 @@
-'use client'
+'use client';
 
-import { useContext, useEffect, useTransition } from 'react'
-import { updateChoice } from '@/actions/question-type/multiple-choice/choice'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { ExamContext } from '@/global/exam-context'
-import { useEditHook } from '@/global/use-edit-hook'
-import { catchError } from '@/lib/utils'
-import { ChoiceSchema } from '@/lib/validations/question-type'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog'
+import { useContext, useEffect, useTransition } from 'react';
+import { updateChoice } from '@/actions/question-type/multiple-choice/choice';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { ExamContext } from '@/global/exam-context';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { ChoiceSchema } from '@/lib/validations/question-type';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 export function UpdateChoiceForm() {
-  const [isPending, startTransition] = useTransition()
-  const { selectedAssessment } = useContext(ExamContext)
-  const { onClose, isOpen, type, data } = useEditHook()
-  const isModalOpen = isOpen && type === 'editChoice'
-  const choiceData = data?.choiceData
+  const [isPending, startTransition] = useTransition();
+  const { onClose, isOpen, type, data } = useEditHook();
+  const isModalOpen = isOpen && type === 'editChoice';
+  const choiceData = data?.choiceData;
 
   const form = useForm<z.infer<typeof ChoiceSchema>>({
     resolver: zodResolver(ChoiceSchema),
     defaultValues: {
       content: '',
       isCorrect: false,
-      explanation: '',
-    },
-  })
+      explanation: ''
+    }
+  });
   useEffect(() => {
     if (choiceData) {
-      form.setValue('content', choiceData.choice.content)
-      form.setValue('isCorrect', choiceData.choice.isCorrect)
-      form.setValue('explanation', choiceData.choice.explanation || '')
+      form.setValue('content', choiceData.choice.content);
+      form.setValue('isCorrect', choiceData.choice.isCorrect);
+      form.setValue('explanation', choiceData.choice.explanation || '');
     }
-  }, [form, choiceData])
-  if (!isModalOpen || !choiceData || !selectedAssessment) {
-    return null
+  }, [form, choiceData]);
+  if (!isModalOpen || !choiceData) {
+    return null;
   }
   const onSubmit = (values: z.infer<typeof ChoiceSchema>) => {
     startTransition(async () => {
       try {
         await updateChoice({
           formData: values,
-          choiceData,
-        })
+          choiceData
+        });
 
-        toast.success('Updated')
-        onClose()
+        toast.success('Updated');
+        onClose();
       } catch (err) {
-        catchError(err)
+        catchError(err);
       }
-    })
-  }
+    });
+  };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContentWithScrollArea>
@@ -128,5 +127,5 @@ export function UpdateChoiceForm() {
         </Form>
       </DialogContentWithScrollArea>
     </Dialog>
-  )
+  );
 }

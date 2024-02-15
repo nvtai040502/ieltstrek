@@ -80,11 +80,17 @@ export const MultiMoreRender = ({
               <Label htmlFor={choice.id} className="py-4 w-full cursor-pointer">
                 {choice.content}
               </Label>
-              {/* <ActionButton
+              <ActionButton
                 actionType="update"
                 editType="editChoice"
-                data={{ choice }}
-              /> */}
+                data={{
+                  choiceData: {
+                    type: 'MULTI_MORE',
+                    multiMoreId: multiMore.id,
+                    choice
+                  }
+                }}
+              />
             </div>
           </div>
         );
