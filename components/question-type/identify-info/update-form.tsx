@@ -1,8 +1,16 @@
 'use client';
 
-import { Fragment, useContext, useEffect, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { updateIdentifyingInformationItem } from '@/actions/books/identifying-infomation';
+import { useContext, useEffect, useTransition } from 'react';
+import { updateIdentifyInfo } from '@/actions/question-type/identify-info';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { IdentifyChoice } from '@prisma/client';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { EditContext } from '@/global/edit-context';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { IdentifyInfoSchema } from '@/lib/validations/question-type';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
@@ -15,70 +23,42 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { EditContext } from '@/global/edit-context';
-import { useEditHook } from '@/global/use-edit-hook';
-import {
-  IdentifyingInformationItemSchema,
-  SummaryCompletionSchema
-} from '@/lib/validations/text-exam';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  IdentifyingInformationAnswer,
-  SummaryCompletion
-} from '@prisma/client';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
 
-export function UpdateIdentifyingInformationItemForm() {
+export function IdentifyInfoUpdateForm() {
   const [isPending, startTransition] = useTransition();
   const { isOpen, type, data } = useContext(EditContext);
   const { onClose } = useEditHook();
-  const isModalOpen = isOpen && type === 'editIdentifyingInformationItem';
-  const item = data?.identifyingInformationItem;
-  const form = useForm<z.infer<typeof IdentifyingInformationItemSchema>>({
-    resolver: zodResolver(IdentifyingInformationItemSchema),
+  const isModalOpen = isOpen && type === 'editIdentifyInfo';
+  const identifyInfo = data?.identifyInfo;
+  const form = useForm<z.infer<typeof IdentifyInfoSchema>>({
+    resolver: zodResolver(IdentifyInfoSchema),
     defaultValues: {
-      title: '',
-      expectedAnswer: 'TRUE',
-      explanation: ''
+      title: ''
     }
   });
-  const router = useRouter();
   useEffect(() => {
-    if (item) {
-      form.setValue('title', item.title);
-      form.setValue('expectedAnswer', item.expectedAnswer);
-      form.setValue('explanation', item.explanation || '');
+    if (identifyInfo) {
+      form.setValue('title', identifyInfo.title);
+      form.setValue('choiceCorrect', identifyInfo.choiceCorrect);
     }
-  }, [form, item]);
-  const onSubmit = async (
-    values: z.infer<typeof IdentifyingInformationItemSchema>
-  ) => {
+  }, [form, identifyInfo]);
+  if (!identifyInfo || !isModalOpen) {
+    return null;
+  }
+  const onSubmit = (values: z.infer<typeof IdentifyInfoSchema>) => {
     startTransition(async () => {
       try {
-        if (!item) {
-          return;
-        }
-        const successfully = await updateIdentifyingInformationItem({
-          id: item.id,
-          expectedAnswer: values.expectedAnswer,
-          explanation: values.explanation,
-          title: values.title
+        await updateIdentifyInfo({
+          formData: values,
+          id: identifyInfo.id
         });
-        if (successfully) {
-          toast.success('Successfully updated summaryCompletion!');
-          router.refresh();
-        } else {
-          toast.error('Some thing went Wrong');
-        }
-      } catch (error) {
-        console.error('Failed to update summaryCompletion:', error);
-        toast.error('Failed to update summaryCompletion');
+
+        toast.success('Updated');
+        onClose();
+      } catch (err) {
+        catchError(err);
       }
     });
-
-    onClose();
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -105,20 +85,20 @@ export function UpdateIdentifyingInformationItemForm() {
               />
               <FormField
                 control={form.control}
-                name="expectedAnswer"
+                name="choiceCorrect"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
                     <FormLabel>Expected Answer</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                         className="flex flex-col space-y-1"
                       >
                         {[
-                          IdentifyingInformationAnswer.TRUE,
-                          IdentifyingInformationAnswer.FALSE,
-                          IdentifyingInformationAnswer.NOT_GIVEN
+                          IdentifyChoice.TRUE,
+                          IdentifyChoice.FALSE,
+                          IdentifyChoice.NOT_GIVEN
                         ].map((answer) => (
                           <FormItem
                             key={answer}

@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { UpdateChoiceForm } from '@/components/question-type/multiple-choice/choice/update-form';
-import { UpdateMultiMoreForm } from '@/components/question-type/multiple-choice/multi-more/update-form';
-import { UpdateMultiOneForm } from '@/components/question-type/multiple-choice/multi-one/update-form';
+import { IdentifyInfoUpdateForm } from '@/components/question-type/identify-info/update-form';
+import { ChoiceUpdateForm } from '@/components/question-type/multiple-choice/choice/update-form';
+import { MultiMoreUpdateForm } from '@/components/question-type/multiple-choice/multi-more/update-form';
+import { MultiOneUpdateForm } from '@/components/question-type/multiple-choice/multi-one/update-form';
 import { CreateAssessmentForm } from '@/components/test-exam/assessment/create-form';
 import { UpdatePartForm } from '@/components/test-exam/part/update-form';
 import { CreatePassageForm } from '@/components/test-exam/passage/create-form';
@@ -32,9 +33,11 @@ export function ModalProvider() {
 
       <CreatePassageForm />
 
-      <UpdateMultiOneForm />
-      <UpdateMultiMoreForm />
-      <UpdateChoiceForm />
+      <MultiOneUpdateForm />
+      <MultiMoreUpdateForm />
+      <ChoiceUpdateForm />
+
+      <IdentifyInfoUpdateForm />
     </>
   );
 }

@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-export function UpdateMultiMoreForm() {
+export function MultiMoreUpdateForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === 'editMultiMore';

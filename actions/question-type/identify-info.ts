@@ -1,6 +1,9 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 import { db } from '@/lib/db';
+import { IdentifyInfoSchema } from '@/lib/validations/question-type';
 
 export const createIdentifyInfoList = async ({
   questionGroupId
@@ -33,4 +36,27 @@ export const createIdentifyInfoList = async ({
       }
     });
   });
+};
+export const updateIdentifyInfo = async ({
+  formData,
+  id
+}: {
+  formData: z.infer<typeof IdentifyInfoSchema>;
+  id: string;
+}) => {
+  const identifyInfo = await db.identifyingInformation.findUnique({
+    where: { id },
+    select: { question: { select: { assessmentId: true } } }
+  });
+  if (!identifyInfo) {
+    throw new Error('IdentifyInfo Id not found');
+  }
+
+  await db.identifyingInformation.update({
+    where: { id },
+    data: {
+      ...formData
+    }
+  });
+  revalidatePath(`/assessments/${identifyInfo.question.assessmentId}`);
 };

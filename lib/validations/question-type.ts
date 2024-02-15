@@ -1,3 +1,4 @@
+import { IdentifyChoice } from '@prisma/client';
 import { z } from 'zod';
 
 export const ChoiceSchema = z.object({
@@ -20,6 +21,15 @@ export const MultiMoreSchema = z.object({
     message: 'Title Multiple Choice is required'
   }),
   choiceIdList: z.array(z.string())
+});
+
+export const IdentifyInfoSchema = z.object({
+  title: z.string().min(1),
+  choiceCorrect: z.enum([
+    IdentifyChoice.TRUE,
+    IdentifyChoice.FALSE,
+    IdentifyChoice.NOT_GIVEN
+  ])
 });
 
 export const MatchingHeadingSchema = z.object({

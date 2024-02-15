@@ -1,65 +1,65 @@
-'use client'
+'use client';
 
-import { useEffect, useTransition } from 'react'
-import { updateMultiOne } from '@/actions/question-type/multiple-choice/multi-one'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { useEditHook } from '@/global/use-edit-hook'
-import { catchError, cn } from '@/lib/utils'
-import { MultiOneSchema } from '@/lib/validations/question-type'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog'
+import { useEffect, useTransition } from 'react';
+import { updateMultiOne } from '@/actions/question-type/multiple-choice/multi-one';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError, cn } from '@/lib/utils';
+import { MultiOneSchema } from '@/lib/validations/question-type';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-export function UpdateMultiOneForm() {
-  const [isPending, startTransition] = useTransition()
-  const { onClose, isOpen, type, data } = useEditHook()
-  const isModalOpen = isOpen && type === 'editMultiOne'
-  const multiOne = data?.multiOne
+export function MultiOneUpdateForm() {
+  const [isPending, startTransition] = useTransition();
+  const { onClose, isOpen, type, data } = useEditHook();
+  const isModalOpen = isOpen && type === 'editMultiOne';
+  const multiOne = data?.multiOne;
   const form = useForm<z.infer<typeof MultiOneSchema>>({
     resolver: zodResolver(MultiOneSchema),
     defaultValues: {
-      title: '',
-    },
-  })
+      title: ''
+    }
+  });
   useEffect(() => {
     if (multiOne) {
-      form.setValue('title', multiOne.title)
+      form.setValue('title', multiOne.title);
     }
-  }, [form, multiOne])
+  }, [form, multiOne]);
   if (!multiOne || !isModalOpen) {
-    return null
+    return null;
   }
   const onSubmit = (values: z.infer<typeof MultiOneSchema>) => {
     startTransition(async () => {
       try {
         await updateMultiOne({
           formData: values,
-          id: multiOne.id,
-        })
+          id: multiOne.id
+        });
 
-        toast.success('Updated')
-        onClose()
+        toast.success('Updated');
+        onClose();
       } catch (err) {
-        catchError(err)
+        catchError(err);
       }
-    })
-  }
+    });
+  };
 
   const correctChoice = multiOne.choices.find(
     (choice) => choice.isCorrect === true
-  )
+  );
 
   return (
     <Dialog onOpenChange={onClose} open={isModalOpen}>
@@ -129,5 +129,5 @@ export function UpdateMultiOneForm() {
         </Form>
       </DialogContentWithScrollArea>
     </Dialog>
-  )
+  );
 }
