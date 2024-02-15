@@ -1,65 +1,69 @@
-'use client'
+'use client';
 
-import { FC, RefObject, createRef, useEffect, useState } from 'react'
-import { MatchingChoice } from '@prisma/client'
-import { AssessmentExtended, PartExtended } from '@/types/test-exam'
-import { DndContext } from './dnd-context'
-import { EditContext, EditData, EditType } from './edit-context'
-import { AnswerType, ExamContext } from './exam-context'
+import { FC, RefObject, createRef, useEffect, useState } from 'react';
+import { MatchingChoice } from '@prisma/client';
+import { AssessmentExtended, PartExtended } from '@/types/test-exam';
+import { DndContext } from './dnd-context';
+import { EditContext, EditData, EditType } from './edit-context';
+import { AnswerType, ExamContext } from './exam-context';
 
 interface GlobalStateProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState<string>('')
-  const [selectedPart, setSelectedPart] = useState<PartExtended | null>(null)
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [selectedPart, setSelectedPart] = useState<PartExtended | null>(null);
   const [selectedAssessment, setSelectedAssessment] =
-    useState<AssessmentExtended | null>(null)
+    useState<AssessmentExtended | null>(null);
   const [questionRefs, setQuestionRefs] = useState<RefObject<HTMLDivElement>[]>(
     []
-  )
-  const [currentRef, setCurrentRef] = useState<number>(0)
-  const [userAnswers, setUserAnswers] = useState<AnswerType[]>([])
-  const [textNoteCompletion, setTextNoteCompletion] = useState('')
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [type, setType] = useState<EditType>(null)
-  const [data, setData] = useState<EditData | undefined>(undefined)
-  const [listHeading, setListHeading] = useState<string[]>([])
+  );
+  const [currentRef, setCurrentRef] = useState<number>(0);
+  const [userAnswers, setUserAnswers] = useState<AnswerType[]>([]);
+  const [textNoteCompletion, setTextNoteCompletion] = useState('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [type, setType] = useState<EditType>(null);
+  const [data, setData] = useState<EditData | undefined>(undefined);
+  const [listHeading, setListHeading] = useState<string[]>([]);
 
-  const [questionGroupId, setQuestionGroupId] = useState<string>('')
-  const [questionId, setQuestionId] = useState('')
-  const [prevContent, setPrevContent] = useState('')
-  const [matchingChoiceId, setMatchingChoiceId] = useState('')
+  const [questionGroupId, setQuestionGroupId] = useState<string>('');
+  const [questionId, setQuestionId] = useState('');
+  const [prevContent, setPrevContent] = useState('');
+  const [matchingChoiceId, setMatchingChoiceId] = useState('');
   const [matchingChoiceList, setMatchingChoiceList] = useState<
     MatchingChoice[]
-  >([])
+  >([]);
 
   useEffect(() => {
-    if (!selectedAssessment) {
-      return
-    }
+    if (!selectedAssessment || selectedPart) return;
+
     setQuestionRefs(() =>
       Array.from({ length: selectedAssessment.totalQuestions }, () =>
         createRef<HTMLDivElement>()
       )
-    )
-    setActiveTab(String(selectedAssessment.parts[0].id))
-    setSelectedPart(selectedAssessment.parts[0])
-  }, [selectedAssessment])
+    );
+    setActiveTab(selectedAssessment.parts[0].id);
+    setSelectedPart(selectedAssessment.parts[0]);
+  }, [selectedAssessment, selectedPart]);
+
   useEffect(() => {
-    if (!selectedAssessment || !activeTab) {
-      return
-    }
+    if (!selectedAssessment || !activeTab) return;
+
     const partIndex = selectedAssessment.parts.findIndex(
       (part) => part.id === activeTab
-    )
-    if (partIndex === -1) {
-      setSelectedPart(null)
-    } else {
-      setSelectedPart(selectedAssessment.parts[partIndex])
+    );
+
+    if (partIndex !== -1) {
+      setSelectedPart(selectedAssessment.parts[partIndex]);
+
+      const firstQuestionGroup =
+        selectedAssessment.parts[partIndex].questionGroups[0];
+      if (firstQuestionGroup) {
+        setCurrentRef(firstQuestionGroup.startQuestionNumber - 1);
+      }
     }
-  }, [selectedAssessment, activeTab])
+  }, [selectedAssessment, activeTab]);
 
   return (
     <ExamContext.Provider
@@ -77,7 +81,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setCurrentRef,
         setQuestionRefs,
         setSelectedAssessment,
-        setActiveTab,
+        setActiveTab
       }}
     >
       <EditContext.Provider
@@ -89,7 +93,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
           setIsOpen,
           setType,
           type,
-          data,
+          data
         }}
       >
         <DndContext.Provider
@@ -103,12 +107,12 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
             setMatchingChoiceList,
             setQuestionId,
             setMatchingChoiceId,
-            setQuestionGroupId,
+            setQuestionGroupId
           }}
         >
           {children}
         </DndContext.Provider>
       </EditContext.Provider>
     </ExamContext.Provider>
-  )
-}
+  );
+};

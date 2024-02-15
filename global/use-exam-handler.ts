@@ -50,6 +50,7 @@ export const useExamHandler = () => {
     console.log('🚀 ~ handleSubmit ~ score:', score);
   }
   function handleAnswerSelected(props: AnswerType) {
+    console.log(questionRefs);
     const { questionId, type } = props;
 
     // Update or add the answer based on the type
@@ -83,21 +84,16 @@ export const useExamHandler = () => {
     });
   }
   function handleNextQuestion() {
-    if (!selectedAssessment || !selectedPart) {
-      return null;
-    }
-    if (
-      currentRef + 1 <
+    if (!selectedAssessment || !selectedPart) return null;
+
+    const lastQuestionNumber =
       selectedPart.questionGroups[selectedPart.questionGroups.length - 1]
-        .endQuestionNumber
-    ) {
+        .endQuestionNumber;
+    if (currentRef + 1 < lastQuestionNumber) {
       setCurrentRef(currentRef + 1);
       const ref = questionRefs[currentRef + 1].current;
       if (ref) {
-        ref.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
+        ref.scrollIntoView({ behavior: 'smooth', block: 'center' });
         ref.focus();
       }
     } else {
@@ -114,10 +110,11 @@ export const useExamHandler = () => {
   }
 
   function handlePrevQuestion() {
-    if (!selectedAssessment || !selectedPart) {
-      return null;
-    }
-    if (currentRef + 1 >= selectedPart.questionGroups[0].startQuestionNumber) {
+    if (!selectedAssessment || !selectedPart) return null;
+
+    const startQuestionNumber =
+      selectedPart.questionGroups[0].startQuestionNumber;
+    if (currentRef - 1 >= startQuestionNumber) {
       setCurrentRef(currentRef - 1);
       const ref = questionRefs[currentRef - 1].current;
       if (ref) {
@@ -133,13 +130,15 @@ export const useExamHandler = () => {
       );
       if (prevPart) {
         setActiveTab(prevPart.id);
-        setCurrentRef(prevPart.questionGroups[0].startQuestionNumber - 1);
+        // setCurrentRef(
+        //   prevPart.questionGroups[prevPart.questionGroups.length - 1]
+        //     .endQuestionNumber - 1
+        // );
       }
     }
   }
-  const isHasNextQuestion = questionRefs
-    .slice(currentRef + 1)
-    .some((ref) => ref.current !== null);
+
+  const isHasNextQuestion = currentRef < questionRefs.length - 1;
   const isHasPrevQuestion = currentRef > 0;
   return {
     handleAnswerSelected,
