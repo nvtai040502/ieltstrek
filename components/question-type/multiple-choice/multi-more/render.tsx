@@ -1,44 +1,44 @@
-'use client'
+'use client';
 
-import { useContext, useEffect, useState } from 'react'
-import { ExamContext } from '@/global/exam-context'
-import { useExamHandler } from '@/global/use-exam-handler'
-import { MultiMoreExtended } from '@/types/test-exam'
-import { cn } from '@/lib/utils'
-import { ActionButton } from '@/components/test-exam/action-button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { useContext, useEffect, useState } from 'react';
+import { ExamContext } from '@/global/exam-context';
+import { useExamHandler } from '@/global/use-exam-handler';
+import { MultiMoreExtended } from '@/types/test-exam';
+import { cn } from '@/lib/utils';
+import { ActionButton } from '@/components/test-exam/action-button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 export const MultiMoreRender = ({
-  multiMore,
+  multiMore
 }: {
-  multiMore: MultiMoreExtended
+  multiMore: MultiMoreExtended;
 }) => {
-  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext)
-  const [choiceIdList, setChoiceIdList] = useState<string[]>([])
-  const { handleAnswerSelected } = useExamHandler()
+  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
+  const [choiceIdList, setChoiceIdList] = useState<string[]>([]);
+  const { handleAnswerSelected } = useExamHandler();
   useEffect(() => {
     const answer = userAnswers.find(
       (answer) => answer.questionId === multiMore.questionId
-    )
+    );
     if (answer && answer.type === 'MULTI_MORE') {
-      setChoiceIdList(answer.choiceIdList)
+      setChoiceIdList(answer.choiceIdList);
     }
-  }, [userAnswers, multiMore.questionId])
+  }, [userAnswers, multiMore.questionId]);
 
   if (!multiMore) {
-    return null
+    return null;
   }
   const handleCheck = (checked: boolean, choiceId: string) => {
     const updatedChoiceIdList = checked
       ? [...choiceIdList, choiceId]
-      : choiceIdList.filter((id) => id !== choiceId)
+      : choiceIdList.filter((id) => id !== choiceId);
     handleAnswerSelected({
       questionId: multiMore.questionId,
       type: 'MULTI_MORE',
-      choiceIdList: updatedChoiceIdList,
-    })
-  }
+      choiceIdList: updatedChoiceIdList
+    });
+  };
 
   return (
     <div
@@ -87,8 +87,8 @@ export const MultiMoreRender = ({
               /> */}
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};

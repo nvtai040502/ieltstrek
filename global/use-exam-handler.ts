@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-import { AnswerType, ExamContext } from './exam-context'
+import { useContext } from 'react';
+import { AnswerType, ExamContext } from './exam-context';
 
 export const useExamHandler = () => {
   const {
@@ -10,128 +10,108 @@ export const useExamHandler = () => {
     setActiveTab,
     selectedAssessment,
     setUserAnswers,
-    selectedPart,
-  } = useContext(ExamContext)
+    selectedPart
+  } = useContext(ExamContext);
 
   function handleSubmit() {
-    console.log('User Answers:', userAnswers)
+    console.log('User Answers:', userAnswers);
   }
   function handleAnswerSelected(props: AnswerType) {
-    const { questionId, type } = props
+    const { questionId, type } = props;
 
     // Update or add the answer based on the type
     setUserAnswers((prevAnswers) => {
-      const updatedAnswers = [...prevAnswers]
+      const updatedAnswers = [...prevAnswers];
+      const existingAnswerIndex = updatedAnswers.findIndex(
+        (prev) => prev.questionId === questionId
+      );
 
-      if (type === 'MULTIPLE_CHOICE_ONE_ANSWER') {
-        const updatedAnswerIndex = updatedAnswers.findIndex(
-          (prev) => prev.questionId === questionId
-        )
-
-        if (updatedAnswerIndex !== -1) {
-          updatedAnswers[updatedAnswerIndex] = {
-            ...updatedAnswers[updatedAnswerIndex],
-            type: 'MULTIPLE_CHOICE_ONE_ANSWER',
-            choiceId: props.choiceId,
-          }
-        } else {
-          updatedAnswers.push({
-            questionId: questionId,
-            type: 'MULTIPLE_CHOICE_ONE_ANSWER',
-            choiceId: props.choiceId,
-          })
+      // Create a new answer object based on the type
+      const newAnswer = (() => {
+        switch (type) {
+          case 'MULTIPLE_CHOICE_ONE_ANSWER':
+            return { questionId, type, choiceId: props.choiceId };
+          case 'MULTI_MORE':
+            return { questionId, type, choiceIdList: props.choiceIdList };
+          default:
+            throw new Error(`Unsupported answer type: ${type}`);
         }
-      } else if (type === 'MULTI_MORE') {
-        const { choiceIdList } = props
-        const updatedAnswerIndex = updatedAnswers.findIndex(
-          (prev) => prev.questionId === questionId
-        )
+      })();
 
-        if (updatedAnswerIndex !== -1) {
-          updatedAnswers[updatedAnswerIndex] = {
-            ...updatedAnswers[updatedAnswerIndex],
-            type: 'MULTI_MORE',
-            choiceIdList: choiceIdList,
-          }
-        } else {
-          updatedAnswers.push({
-            questionId: questionId,
-            type: 'MULTI_MORE',
-            choiceIdList: choiceIdList,
-          })
-        }
-      } else if (type === 'MATCHING') {
-        // Do Something
+      if (existingAnswerIndex !== -1) {
+        updatedAnswers[existingAnswerIndex] = newAnswer;
+      } else {
+        updatedAnswers.push(newAnswer);
       }
 
-      return updatedAnswers
-    })
+      return updatedAnswers;
+    });
   }
   function handleNextQuestion() {
     if (!selectedAssessment || !selectedPart) {
-      return null
+      return null;
     }
     if (
       currentRef + 1 <
       selectedPart.questionGroups[selectedPart.questionGroups.length - 1]
         .endQuestionNumber
     ) {
-      setCurrentRef(currentRef + 1)
-      const ref = questionRefs[currentRef + 1].current
+      setCurrentRef(currentRef + 1);
+      const ref = questionRefs[currentRef + 1].current;
       if (ref) {
         ref.scrollIntoView({
           behavior: 'smooth',
-          block: 'center',
-        })
-        ref.focus()
+          block: 'center'
+        });
+        ref.focus();
       }
     } else {
       const nextPart = selectedAssessment.parts.find(
         (part) => part.order === selectedPart.order + 1
-      )
+      );
       if (nextPart) {
-        setCurrentRef(nextPart.questionGroups[0].startQuestionNumber - 1)
-        setActiveTab(nextPart.id)
+        setCurrentRef(nextPart.questionGroups[0].startQuestionNumber - 1);
+        setActiveTab(nextPart.id);
       } else {
-        setActiveTab('delivering')
+        setActiveTab('delivering');
       }
     }
   }
 
   function handlePrevQuestion() {
     if (!selectedAssessment || !selectedPart) {
-      return null
+      return null;
     }
     if (currentRef + 1 >= selectedPart.questionGroups[0].startQuestionNumber) {
-      setCurrentRef(currentRef - 1)
-      const ref = questionRefs[currentRef - 1].current
+      setCurrentRef(currentRef - 1);
+      const ref = questionRefs[currentRef - 1].current;
       if (ref) {
         ref.scrollIntoView({
           behavior: 'smooth',
-          block: 'center',
-        })
-        ref.focus()
+          block: 'center'
+        });
+        ref.focus();
       }
     } else {
       const prevPart = selectedAssessment.parts.find(
         (part) => part.order === selectedPart.order - 1
-      )
+      );
       if (prevPart) {
-        setActiveTab(prevPart.id)
-        setCurrentRef(prevPart.questionGroups[0].startQuestionNumber - 1)
+        setActiveTab(prevPart.id);
+        setCurrentRef(prevPart.questionGroups[0].startQuestionNumber - 1);
       }
     }
   }
   const isHasNextQuestion = questionRefs
     .slice(currentRef + 1)
-    .some((ref) => ref.current !== null)
-  const isHasPrevQuestion = currentRef > 0
+    .some((ref) => ref.current !== null);
+  const isHasPrevQuestion = currentRef > 0;
   return {
     handleAnswerSelected,
     handleSubmit,
     handleNextQuestion,
     handlePrevQuestion,
     isHasNextQuestion,
-    isHasPrevQuestion,
-  }
-}
+    isHasPrevQuestion
+  };
+};

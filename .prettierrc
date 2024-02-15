@@ -1,9 +1,9 @@
 {
   "singleQuote": true,
   "endOfLine": "lf",
-  "semi": false,
+  "semi": true,
   "tabWidth": 2,
-  "trailingComma": "es5",
+  "trailingComma": "none",
   "plugins": [
     "prettier-plugin-tailwindcss", 
     "prettier-plugin-prisma",
