@@ -1,29 +1,32 @@
-'use server'
+'use server';
 
-import { db } from '@/lib/db'
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+import { db } from '@/lib/db';
+import { MultiMoreSchema } from '@/lib/validations/question-type';
 
 export const createMultiMoreList = async ({
-  questionGroupId,
+  questionGroupId
 }: {
-  questionGroupId: string
+  questionGroupId: string;
 }) => {
   const questionGroup = await db.questionGroup.findUnique({
     where: {
-      id: questionGroupId,
+      id: questionGroupId
     },
     select: {
       questions: {
         select: {
-          id: true,
-        },
-      },
-    },
-  })
+          id: true
+        }
+      }
+    }
+  });
   if (!questionGroup) {
-    throw new Error('QUestion Group Id not found')
+    throw new Error('QUestion Group Id not found');
   }
 
-  const totalChoices = 4
+  const totalChoices = 4;
   questionGroup.questions.map(async (question) => {
     await db.multipleChoiceMoreAnswers.create({
       data: {
@@ -36,40 +39,58 @@ export const createMultiMoreList = async ({
             data: Array.from({ length: totalChoices }).map((_, i) => ({
               content: `Option ${i + 1}`,
               order: i,
-              isCorrect: i < 2 ? true : false,
-            })),
+              isCorrect: i < 2 ? true : false
+            }))
+          }
+        }
+      }
+    });
+  });
+
+  return;
+};
+export const updateMultiMore = async ({
+  formData,
+  id
+}: {
+  formData: z.infer<typeof MultiMoreSchema>;
+  id: string;
+}) => {
+  const { title, choiceIdList } = formData;
+
+  const multiMore = await db.multipleChoiceMoreAnswers.findUnique({
+    where: { id },
+    select: { question: { select: { assessmentId: true } } }
+  });
+
+  if (!multiMore) {
+    throw new Error('MultiMore ID not found');
+  }
+
+  await db.multipleChoiceMoreAnswers.update({
+    where: { id },
+    data: {
+      title,
+      choices: {
+        updateMany: {
+          where: {
+            id: { in: choiceIdList }
           },
-        },
-      },
-    })
-  })
+          data: {
+            isCorrect: true
+          }
+        }
+      }
+    }
+  });
 
-  return
-}
+  await db.choice.updateMany({
+    where: {
+      NOT: { id: { in: choiceIdList } },
+      multiMoreId: id
+    },
+    data: { isCorrect: false }
+  });
 
-// export const updateMultiMore = async ({
-//   title,
-//   expectedAnswers,
-//   id
-// }: {
-//   title: string;
-//   expectedAnswers: string[];
-//   id: number;
-// }) => {
-//   try {
-//     const multiMoreAnswers = await db.multipleChoiceMoreAnswers.update({
-//       where: {
-//         id
-//       },
-//       data: {
-//         title,
-//         expectedAnswers
-//       }
-//     });
-
-//     return multiMoreAnswers;
-//   } catch (error) {
-//     console.error('Error updating multipleChoice:', error);
-//     return null;
-//   }
-// };
+  revalidatePath(`/assessments/${multiMore.question.assessmentId}`);
+};

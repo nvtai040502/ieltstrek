@@ -1,7 +1,14 @@
 'use client';
 
 import { useEffect, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { updateMultiMore } from '@/actions/question-type/multiple-choice/multi-more';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { MultiMoreSchema } from '@/lib/validations/question-type';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
@@ -15,12 +22,6 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useEditHook } from '@/global/use-edit-hook';
-import { MultiMoreSchema } from '@/lib/validations/question-type';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
 
 export function UpdateMultiMoreForm() {
   const [isPending, startTransition] = useTransition();
@@ -30,15 +31,17 @@ export function UpdateMultiMoreForm() {
   const form = useForm<z.infer<typeof MultiMoreSchema>>({
     resolver: zodResolver(MultiMoreSchema),
     defaultValues: {
-      title: '',
-      expectedAnswers: ['']
+      title: ''
     }
   });
-  const router = useRouter();
   useEffect(() => {
     if (multiMore) {
+      const correctChoiceIdList = multiMore.choices
+        .filter((choice) => choice.isCorrect)
+        .map((choice) => choice.id);
+
       form.setValue('title', multiMore.title);
-      form.setValue('expectedAnswers', multiMore.expectedAnswers);
+      form.setValue('choiceIdList', correctChoiceIdList);
     }
   }, [form, multiMore]);
   if (!multiMore || !isModalOpen) {
@@ -46,19 +49,17 @@ export function UpdateMultiMoreForm() {
   }
   const onSubmit = (values: z.infer<typeof MultiMoreSchema>) => {
     startTransition(async () => {
-      const multiMoreUpdated = await updateMultiMore({
-        title: values.title,
-        id: multiMore.id,
-        expectedAnswers: values.expectedAnswers
-      });
-      if (multiMoreUpdated) {
-        toast.success('Successfully updated multipleChoice!');
-        form.reset();
-        router.refresh();
-      } else {
-        toast('Failed to update multipleChoice');
+      try {
+        await updateMultiMore({
+          formData: values,
+          id: multiMore.id
+        });
+
+        toast.success('Updated');
+        onClose();
+      } catch (err) {
+        catchError(err);
       }
-      onClose();
     });
   };
   return (
@@ -86,7 +87,7 @@ export function UpdateMultiMoreForm() {
               />
               <FormField
                 control={form.control}
-                name="expectedAnswers"
+                name="choiceIdList"
                 render={() => (
                   <FormItem>
                     <div className="mb-4">
@@ -99,7 +100,7 @@ export function UpdateMultiMoreForm() {
                       <FormField
                         key={choice.id}
                         control={form.control}
-                        name="expectedAnswers"
+                        name="choiceIdList"
                         render={({ field }) => {
                           return (
                             <FormItem
@@ -108,24 +109,22 @@ export function UpdateMultiMoreForm() {
                             >
                               <FormControl>
                                 <Checkbox
-                                  defaultChecked={multiMore.expectedAnswers.includes(
-                                    choice.content
-                                  )}
+                                  checked={field.value?.includes(choice.id)}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([
                                           ...field.value,
-                                          choice.content
+                                          choice.id
                                         ])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== choice.content
+                                            (value) => value !== choice.id
                                           )
                                         );
                                   }}
                                 />
                               </FormControl>
-                              <FormLabel className="text-sm font-normal">
+                              <FormLabel className="font-normal">
                                 {choice.content}
                               </FormLabel>
                             </FormItem>
