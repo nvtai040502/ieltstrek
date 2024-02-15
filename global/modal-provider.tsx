@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { UpdateListMatchingChoicesForm } from '@/components/question-type/matching/matching-choices-update-form'
-import UpdateMatchingSentenceForm from '@/components/question-type/matching/update-form'
+import { UpdateChoiceForm } from '@/components/question-type/multiple-choice/choice/update-form'
 import { UpdateMultiOneForm } from '@/components/question-type/multiple-choice/multi-one/update-form'
 import { CreateAssessmentForm } from '@/components/test-exam/assessment/create-form'
 import { UpdatePartForm } from '@/components/test-exam/part/update-form'
@@ -31,27 +30,7 @@ export function ModalProvider() {
       <CreatePassageForm />
 
       <UpdateMultiOneForm />
-
-      {/* <UpdateIdentifyingInformationItemForm />
-
-      <UpdateMultiOneForm />
       <UpdateChoiceForm />
-      <UpdateMultiMoreForm />
-
-      <UpdateQuestionGroupForm />
-      <DeleteQuestionGroupForm />
-
-      <RichTextEditor />
-
-      <CreatePassageForm />
-      <UpdatePassageForm />
-      <UpdatePassageMultiHeadingForm />
-
-      <UpdateMatchingHeadingForm /> */}
-
-      {/* <UpdateMatchingSentenceForm /> */}
-
-      {/* <UpdateListMatchingChoicesForm /> */}
     </>
   )
 }

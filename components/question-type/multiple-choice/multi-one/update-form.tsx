@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useTransition } from 'react'
-import { updateMultiOne } from '@/actions/question-type/multi-one'
+import { updateMultiOne } from '@/actions/question-type/multiple-choice/multi-one'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'

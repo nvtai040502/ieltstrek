@@ -1,38 +1,38 @@
-'use server';
+'use server'
 
-import { revalidatePath } from 'next/cache';
-import { createMatching } from '../question-type/matching';
-import { createMultiMoreList } from '../question-type/multi-more';
-import { createMultiOneList } from '../question-type/multi-one';
-import { createNoteCompletion } from '../question-type/note-completion';
-import { createTableCompletion } from '../question-type/table-completion';
-import { db } from '@/lib/db';
-import { QuestionGroupSchema } from '@/lib/validations/question-group';
-import { z } from 'zod';
+import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
+import { db } from '@/lib/db'
+import { QuestionGroupSchema } from '@/lib/validations/question-group'
+import { createMatching } from '../question-type/matching'
+import { createMultiMoreList } from '../question-type/multiple-choice/multi-more'
+import { createMultiOneList } from '../question-type/multiple-choice/multi-one'
+import { createNoteCompletion } from '../question-type/note-completion'
+import { createTableCompletion } from '../question-type/table-completion'
 
 export const createQuestionGroup = async ({
   formData,
-  partId
+  partId,
 }: {
-  formData: z.infer<typeof QuestionGroupSchema>;
-  partId: string;
+  formData: z.infer<typeof QuestionGroupSchema>
+  partId: string
 }) => {
-  const { numberColumns, numberRows, ...rest } = formData;
+  const { numberColumns, numberRows, ...rest } = formData
   if (formData.type === 'TABLE_COMPLETION') {
     if (!numberColumns || !numberRows) {
-      throw new Error('Missing number Col, Row');
+      throw new Error('Missing number Col, Row')
     }
   }
   const part = await db.part.findUnique({
     where: {
-      id: partId
+      id: partId,
     },
     select: {
-      assessmentId: true
-    }
-  });
+      assessmentId: true,
+    },
+  })
   if (!part) {
-    throw new Error('Part Id not found!');
+    throw new Error('Part Id not found!')
   }
 
   const existingQuestionNumbers = await db.question.findMany({
@@ -41,20 +41,20 @@ export const createQuestionGroup = async ({
 
       questionNumber: {
         gte: formData.startQuestionNumber,
-        lte: formData.endQuestionNumber
-      }
+        lte: formData.endQuestionNumber,
+      },
     },
     select: {
-      questionNumber: true
-    }
-  });
+      questionNumber: true,
+    },
+  })
   if (existingQuestionNumbers.length) {
     const existingNumbersArray = existingQuestionNumbers.map(
       (item) => item.questionNumber
-    );
+    )
     throw new Error(
       `The following Questions ${existingNumbersArray.join(', ')} already exist. Please try again.`
-    );
+    )
   }
 
   const questionGroup = await db.questionGroup.create({
@@ -65,50 +65,50 @@ export const createQuestionGroup = async ({
         createMany: {
           data: Array.from({
             length:
-              formData.endQuestionNumber - formData.startQuestionNumber + 1
+              formData.endQuestionNumber - formData.startQuestionNumber + 1,
           }).map((_, i) => ({
             questionNumber: formData.startQuestionNumber + i,
             partId,
-            assessmentId: part.assessmentId
-          }))
-        }
-      }
-    }
-  });
+            assessmentId: part.assessmentId,
+          })),
+        },
+      },
+    },
+  })
   switch (questionGroup.type) {
     case 'MULTIPLE_CHOICE_ONE_ANSWER':
       await createMultiOneList({
-        questionGroupId: questionGroup.id
-      });
-      break;
+        questionGroupId: questionGroup.id,
+      })
+      break
     case 'MULTIPLE_CHOICE_MORE_ANSWERS':
       await createMultiMoreList({
-        questionGroupId: questionGroup.id
-      });
-      break;
+        questionGroupId: questionGroup.id,
+      })
+      break
     case 'NOTE_COMPLETION':
       await createNoteCompletion({
-        questionGroupId: questionGroup.id
-      });
-      break;
+        questionGroupId: questionGroup.id,
+      })
+      break
     case 'TABLE_COMPLETION':
       await createTableCompletion({
         questionGroupId: questionGroup.id,
         numberColumns: numberColumns!,
-        numberRows: numberRows!
-      });
-      break;
+        numberRows: numberRows!,
+      })
+      break
     case 'MATCHING':
       await createMatching({
-        questionGroupId: questionGroup.id
-      });
-      break;
+        questionGroupId: questionGroup.id,
+      })
+      break
     default:
-      throw new Error(`Unsupported question group type: ${formData.type}`);
+      throw new Error(`Unsupported question group type: ${formData.type}`)
   }
-  revalidatePath(`/assessments/${part.assessmentId}`);
-  return;
-};
+  revalidatePath(`/assessments/${part.assessmentId}`)
+  return
+}
 
 // export const updateQuestionGroup = async ({
 //   title,

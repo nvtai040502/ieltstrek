@@ -84,7 +84,13 @@ export const MultiOneRender = ({
                 <ActionButton
                   actionType="update"
                   editType="editChoice"
-                  data={{ choice }}
+                  data={{
+                    choiceData: {
+                      type: 'MULTI_ONE',
+                      choice,
+                      multiOneId: multiOne.id,
+                    },
+                  }}
                 />
               </div>
             </div>

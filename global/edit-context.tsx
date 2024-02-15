@@ -30,8 +30,22 @@ export type EditType =
   | 'createAssessment'
   | null
 
+interface MultiOneChoice {
+  type: 'MULTI_ONE'
+  multiOneId: string
+  choice: Choice
+}
+
+interface MultiMoreChoice {
+  type: 'MULTI_MORE'
+  multiMoreId: string
+  choice: Choice
+}
+
+export type ChoiceData = MultiOneChoice | MultiMoreChoice
+
 export interface EditData {
-  choice?: Choice
+  choiceData?: ChoiceData
   multiOne?: MultiOneExtended
   questionGroup?: QuestionGroupExtended
   part?: PartExtended

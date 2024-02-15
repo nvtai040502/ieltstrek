@@ -4,6 +4,8 @@ export const ChoiceSchema = z.object({
   content: z.string().min(1, {
     message: 'Content Choice is required',
   }),
+  isCorrect: z.boolean(),
+  explanation: z.string().optional(),
 })
 
 export const MultiOneSchema = z.object({
