@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
+import { createIdentifyInfoList } from '../question-type/identify-info';
 import { createMatching } from '../question-type/matching';
 import { createMultiMoreList } from '../question-type/multiple-choice/multi-more';
 import { createMultiOneList } from '../question-type/multiple-choice/multi-one';
@@ -86,6 +87,10 @@ export const createQuestionGroup = async ({
         questionGroupId: questionGroup.id
       });
       break;
+    case 'IDENTIFYING_INFORMATION':
+      await createIdentifyInfoList({
+        questionGroupId: questionGroup.id
+      });
     case 'NOTE_COMPLETION':
       await createNoteCompletion({
         questionGroupId: questionGroup.id
@@ -109,7 +114,6 @@ export const createQuestionGroup = async ({
   revalidatePath(`/assessments/${part.assessmentId}`);
   return;
 };
-
 // export const updateQuestionGroup = async ({
 //   title,
 //   description,

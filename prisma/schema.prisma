@@ -73,14 +73,14 @@ model QuestionGroup {
   part      Part       @relation(fields: [partId], references: [id], onDelete: Cascade)
   questions Question[]
 
-  multiOneList        MultipleChoiceOneAnswer[]
-  multiMoreList       MultipleChoiceMoreAnswers[]
+  multiOneList     MultipleChoiceOneAnswer[]
+  multiMoreList    MultipleChoiceMoreAnswers[]
+  identifyInfoList IdentifyingInformation[]
+
   completion          Completion?
   matching            Matching?
   matchingChoiceGroup MatchingChoiceGroup?
-
-  identifyingInformation IdentifyingInformation?
-  matchingHeading        MatchingHeading?
+  matchingHeading     MatchingHeading?
 }
 
 model Question {
@@ -101,9 +101,9 @@ model Question {
   multiMore      MultipleChoiceMoreAnswers?
   blank          Blank?
   matchingChoice MatchingChoice?
+  identifyInfo   IdentifyingInformation?
 
-  identifyingInformationItem IdentifyingInformationItem?
-  passageMultiHeading        PassageMultiHeading?
+  passageMultiHeading PassageMultiHeading?
 }
 
 model MultipleChoiceOneAnswer {
@@ -150,6 +150,26 @@ model Choice {
   multiOne    MultipleChoiceOneAnswer?   @relation(fields: [multiOneId], references: [id], onDelete: Cascade)
   multiMoreId String?
   multiMore   MultipleChoiceMoreAnswers? @relation(fields: [multiMoreId], references: [id], onDelete: Cascade)
+}
+
+enum IdentifyChoice {
+  TRUE
+  FALSE
+  NOT_GIVEN
+}
+
+model IdentifyingInformation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  title         String
+  choiceCorrect IdentifyChoice
+
+  questionId      String        @unique
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionGroupId String
+  questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
 }
 
 model Completion {
@@ -242,38 +262,6 @@ model MatchingHeadingItem {
 
   matchingHeadingId Int
   matchingHeading   MatchingHeading @relation(fields: [matchingHeadingId], references: [id], onDelete: Cascade)
-}
-
-model IdentifyingInformation {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  identifyingInformationItems IdentifyingInformationItem[]
-  questionGroupId             String                       @unique
-  questionGroup               QuestionGroup                @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-}
-
-enum IdentifyingInformationAnswer {
-  TRUE
-  FALSE
-  NOT_GIVEN
-}
-
-model IdentifyingInformationItem {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  title          String
-  expectedAnswer IdentifyingInformationAnswer
-  explanation    String?
-
-  questionId String   @unique
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  identifyingInformationId Int
-  identifyingInformation   IdentifyingInformation @relation(fields: [identifyingInformationId], references: [id], onDelete: Cascade)
 }
 
 enum PassageType {

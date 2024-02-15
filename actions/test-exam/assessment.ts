@@ -2,9 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { z } from 'zod';
 import { db } from '@/lib/db';
 import { AssessmentSchema } from '@/lib/validations/text-exam';
-import { z } from 'zod';
 
 export const createAssessment = async ({
   formData
@@ -26,6 +26,28 @@ export const createAssessment = async ({
   });
   redirect(`/assessments/${assessment.id}`);
 };
+export async function getAssessmentIdByQuestionGroupId(
+  questionGroupId: string
+) {
+  const questionGroup = await db.questionGroup.findUnique({
+    where: {
+      id: questionGroupId
+    },
+    select: {
+      part: {
+        select: {
+          assessmentId: true
+        }
+      }
+    }
+  });
+
+  if (!questionGroup) {
+    throw new Error('Question Group Id Not found');
+  }
+
+  return questionGroup.part.assessmentId;
+}
 
 export async function getAssessmentIdByPartId(partId: string) {
   const part = await db.part.findUnique({

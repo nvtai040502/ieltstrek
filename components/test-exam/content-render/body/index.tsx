@@ -1,39 +1,31 @@
-'use client'
+'use client';
 
-import { useContext } from 'react'
-import { ExamContext } from '@/global/exam-context'
-import { CompletionRender } from '@/components/question-type/completion'
-import { MatchingRender } from '@/components/question-type/matching'
-import { TestMatchingRender } from '@/components/question-type/matching/test'
-import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render'
-import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render'
-import { ActionButton } from '@/components/test-exam/action-button'
+import { useContext } from 'react';
+import { ExamContext } from '@/global/exam-context';
+import { CompletionRender } from '@/components/question-type/completion';
+import { IdentifyInfoRender } from '@/components/question-type/identify-info/render';
+import { MatchingRender } from '@/components/question-type/matching';
+import { TestMatchingRender } from '@/components/question-type/matching/test';
+import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
+import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
+import { ActionButton } from '@/components/test-exam/action-button';
 import {
   ResizableHandle,
   ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable'
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { PassageRender } from '../../passage/render'
+  ResizablePanelGroup
+} from '@/components/ui/resizable';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { PassageRender } from '../../passage/render';
 
 const PartBodyContentRender = () => {
   const {
     questionRefs,
     setCurrentRef: setCurrentQuestionIndex,
-    selectedPart,
-  } = useContext(ExamContext)
+    selectedPart
+  } = useContext(ExamContext);
   if (!selectedPart) {
-    return null
+    return null;
   }
-  // useEffect(() => {
-  //   if (questionRefs.length && part.questionGroups.length) {
-  //     questionRefs[
-  //       part.questionGroups[0].startQuestionNumber - 1
-  //     ].current?.focus()
-  //     setCurrentQuestionIndex(part.questionGroups[0].startQuestionNumber - 1)
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
   return (
     <div className="h-full">
       <ResizablePanelGroup
@@ -101,7 +93,13 @@ const PartBodyContentRender = () => {
                         key={multiMore.id}
                       />
                     ))}
-
+                  {questionGroup.type === 'IDENTIFYING_INFORMATION' &&
+                    questionGroup.identifyInfoList.map((identifyInfo) => (
+                      <IdentifyInfoRender
+                        identifyInfo={identifyInfo}
+                        key={identifyInfo.id}
+                      />
+                    ))}
                   {(questionGroup.type === 'NOTE_COMPLETION' ||
                     questionGroup.type === 'TABLE_COMPLETION') && (
                     <CompletionRender completion={questionGroup.completion} />
@@ -115,22 +113,16 @@ const PartBodyContentRender = () => {
                       matchingHeading={questionGroup.matchingHeading}
                     />
                   )}
-                  {questionGroup.type === 'IDENTIFYING_INFORMATION' && (
-                    <IdentifyingInformationRender
-                      identifyingInformation={
-                        questionGroup.identifyingInformation
-                      }
-                    />
-                  )} */}
+                   */}
                 </div>
-              )
+              );
             })}
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
-  )
-}
+  );
+};
 
-export default PartBodyContentRender
+export default PartBodyContentRender;
