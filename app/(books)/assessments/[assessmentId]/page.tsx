@@ -71,7 +71,11 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               },
               multiMoreList: {
                 include: {
-                  choices: true,
+                  choices: {
+                    orderBy: {
+                      order: 'asc',
+                    },
+                  },
                   question: true,
                 },
                 orderBy: {
@@ -82,7 +86,11 @@ const AssessmentIdPage = async ({ params }: AssessmentIdPageProps) => {
               },
               multiOneList: {
                 include: {
-                  choices: true,
+                  choices: {
+                    orderBy: {
+                      order: 'asc',
+                    },
+                  },
                   question: true,
                 },
                 orderBy: {
