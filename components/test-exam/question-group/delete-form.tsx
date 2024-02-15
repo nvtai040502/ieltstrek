@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { deleteQuestionGroup } from '@/actions/test-exam/question-group';
+import { toast } from 'sonner';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,8 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog';
-import { useEditHook } from '@/global/use-edit-hook';
-import { toast } from 'sonner';
 
 export function DeleteQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
@@ -22,34 +22,22 @@ export function DeleteQuestionGroupForm() {
   const isModalOpen = isOpen && type === 'deleteQuestionGroup';
   const questionGroup = data?.questionGroup;
 
-  const router = useRouter();
-
-  if (!isModalOpen && !questionGroup) {
+  if (!isModalOpen || !questionGroup) {
     return null;
   }
   const onSubmit = async () => {
-    if (!questionGroup) {
-      return;
-    }
-    try {
-      startTransition(async () => {
-        const { success, error } = await deleteQuestionGroup({
+    startTransition(async () => {
+      try {
+        await deleteQuestionGroup({
           id: questionGroup.id
         });
 
-        if (success) {
-          router.refresh();
-          toast.success('Successfully deleted questionGroup!');
-        } else {
-          toast.error(error);
-        }
-      });
-    } catch (e) {
-      console.error('Error deleting questionGroup:', e);
-      toast.error('Failed to delete questionGroup.');
-    } finally {
-      onClose();
-    }
+        toast.success('Deleted');
+        onClose();
+      } catch (err) {
+        catchError(err);
+      }
+    });
   };
 
   return (

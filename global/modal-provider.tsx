@@ -8,6 +8,7 @@ import { CreateAssessmentForm } from '@/components/test-exam/assessment/create-f
 import { UpdatePartForm } from '@/components/test-exam/part/update-form';
 import { CreatePassageForm } from '@/components/test-exam/passage/create-form';
 import { CreateQuestionGroupForm } from '@/components/test-exam/question-group/create-form';
+import { DeleteQuestionGroupForm } from '@/components/test-exam/question-group/delete-form';
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -27,6 +28,7 @@ export function ModalProvider() {
       <UpdatePartForm />
 
       <CreateQuestionGroupForm />
+      <DeleteQuestionGroupForm />
 
       <CreatePassageForm />
 
