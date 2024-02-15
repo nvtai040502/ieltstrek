@@ -1,4 +1,6 @@
 import { useContext } from 'react';
+import { isChoiceCorrect } from '@/actions/question-type/multiple-choice/multi-one';
+import { getCorrectAnswerByQuestionId } from '@/actions/test-exam/question';
 import { AnswerType, ExamContext } from './exam-context';
 
 export const useExamHandler = () => {
@@ -13,8 +15,39 @@ export const useExamHandler = () => {
     selectedPart
   } = useContext(ExamContext);
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    if (!selectedAssessment) {
+      return null;
+    }
     console.log('User Answers:', userAnswers);
+    let score = 0;
+    const promises = userAnswers.map(async (userAnswer) => {
+      if (userAnswer.type === 'MULTIPLE_CHOICE_ONE_ANSWER') {
+        const choiceCorrect = await isChoiceCorrect(userAnswer.choiceId);
+        if (choiceCorrect) {
+          score += 0.25;
+        }
+      } else if (userAnswer.type === 'MULTI_MORE') {
+        await Promise.all(
+          userAnswer.choiceIdList.map(async (choiceId) => {
+            const choiceCorrect = await isChoiceCorrect(choiceId);
+            if (choiceCorrect) {
+              score += 0.25;
+            }
+          })
+        );
+      } else if (userAnswer.type === 'IDENTIFY_INFO') {
+        const correctAnswer = await getCorrectAnswerByQuestionId({
+          questionId: userAnswer.questionId,
+          questionType: 'IDENTIFYING_INFORMATION'
+        });
+        if (correctAnswer === userAnswer.content) {
+          score += 0.25;
+        }
+      }
+    });
+    await Promise.all(promises);
+    console.log('🚀 ~ handleSubmit ~ score:', score);
   }
   function handleAnswerSelected(props: AnswerType) {
     const { questionId, type } = props;

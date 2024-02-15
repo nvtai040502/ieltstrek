@@ -1,30 +1,30 @@
-'use client'
+'use client';
 
-import { useContext, useEffect, useState } from 'react'
-import { AnswerType, ExamContext } from '@/global/exam-context'
-import { useExamHandler } from '@/global/use-exam-handler'
-import { MultiOneExtended } from '@/types/test-exam'
-import { cn } from '@/lib/utils'
-import { ActionButton } from '@/components/test-exam/action-button'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useContext, useEffect, useState } from 'react';
+import { AnswerType, ExamContext } from '@/global/exam-context';
+import { useExamHandler } from '@/global/use-exam-handler';
+import { MultiOneExtended } from '@/types/test-exam';
+import { cn } from '@/lib/utils';
+import { ActionButton } from '@/components/test-exam/action-button';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export const MultiOneRender = ({
-  multiOne,
+  multiOne
 }: {
-  multiOne: MultiOneExtended
+  multiOne: MultiOneExtended;
 }) => {
-  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext)
-  const [answer, setAnswer] = useState<AnswerType | undefined>(undefined)
-  const { handleAnswerSelected } = useExamHandler()
+  const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
+  const [answer, setAnswer] = useState<AnswerType | undefined>(undefined);
+  const { handleAnswerSelected } = useExamHandler();
   useEffect(() => {
     const answer = userAnswers.find(
       (answer) => answer.questionId === multiOne.questionId
-    )
-    setAnswer(answer)
-  }, [userAnswers, multiOne.questionId])
+    );
+    setAnswer(answer);
+  }, [userAnswers, multiOne.questionId]);
   if (!multiOne) {
-    return null
+    return null;
   }
 
   return (
@@ -56,10 +56,10 @@ export const MultiOneRender = ({
           handleAnswerSelected({
             questionId: multiOne.questionId,
             type: 'MULTIPLE_CHOICE_ONE_ANSWER',
-            choiceId,
+            choiceId
           })
         }
-        defaultValue={
+        value={
           answer && answer.type === 'MULTIPLE_CHOICE_ONE_ANSWER'
             ? answer.choiceId
             : ''
@@ -86,15 +86,15 @@ export const MultiOneRender = ({
                     choiceData: {
                       type: 'MULTI_ONE',
                       choice,
-                      multiOneId: multiOne.id,
-                    },
+                      multiOneId: multiOne.id
+                    }
                   }}
                 />
               </div>
             </div>
-          )
+          );
         })}
       </RadioGroup>
     </div>
-  )
-}
+  );
+};
