@@ -1,17 +1,17 @@
-import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { useExamHandler } from '@/global/use-exam-handler'
-import { Button } from '@/components/ui/button'
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useExamHandler } from '@/global/use-exam-handler';
+import { Button } from '@/components/ui/button';
 
 function ButtonNavigationQuestion() {
   const {
     handleNextQuestion,
     handlePrevQuestion,
     isHasNextQuestion,
-    isHasPrevQuestion,
-  } = useExamHandler()
+    isHasPrevQuestion
+  } = useExamHandler();
 
   return (
-    <div className="absolute inset-0 h-20">
+    <div className="absolute bottom-8  right-4 h-20">
       <Button
         onClick={() => handlePrevQuestion()}
         disabled={!isHasPrevQuestion}
@@ -27,7 +27,7 @@ function ButtonNavigationQuestion() {
         <ArrowRight />
       </Button>
     </div>
-  )
+  );
 }
 
-export default ButtonNavigationQuestion
+export default ButtonNavigationQuestion;

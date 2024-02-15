@@ -20,6 +20,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     []
   );
   const [currentRef, setCurrentRef] = useState<number>(0);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [userAnswers, setUserAnswers] = useState<AnswerType[]>([]);
   const [textNoteCompletion, setTextNoteCompletion] = useState('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -38,6 +39,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   useEffect(() => {
     if (!selectedAssessment || selectedPart) return;
 
+    setTimeRemaining(20000);
     setQuestionRefs(() =>
       Array.from({ length: selectedAssessment.totalQuestions }, () =>
         createRef<HTMLDivElement>()
@@ -46,6 +48,13 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     setActiveTab(selectedAssessment.parts[0].id);
     setSelectedPart(selectedAssessment.parts[0]);
   }, [selectedAssessment, selectedPart]);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeRemaining((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     if (!selectedAssessment || !activeTab) return;
@@ -75,6 +84,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         currentRef,
         listHeading,
         selectedPart,
+        timeRemaining,
+        setTimeRemaining,
         setSelectedPart,
         setListHeading,
         setUserAnswers,

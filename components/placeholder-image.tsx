@@ -1,3 +1,4 @@
+import { AvatarIcon, ImageIcon } from '@radix-ui/react-icons';
 import { Slot } from '@radix-ui/react-slot';
 import { FcLikePlaceholder } from 'react-icons/fc';
 import { cn } from '@/lib/utils';
@@ -33,7 +34,7 @@ export function PlaceholderImage({
           isSkeleton ? 'animate-pulse' : 'animate-none'
         )}
       >
-        <FcLikePlaceholder
+        <ImageIcon
           className="size-9 text-muted-foreground"
           aria-hidden="true"
         />

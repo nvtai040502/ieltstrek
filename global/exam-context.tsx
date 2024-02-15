@@ -36,6 +36,8 @@ interface ExamContextProps {
   questionRefs: RefObject<HTMLDivElement>[];
   currentRef: number;
   selectedPart: PartExtended | null;
+  timeRemaining: number;
+  setTimeRemaining: Dispatch<SetStateAction<number>>;
   setSelectedPart: Dispatch<SetStateAction<PartExtended | null>>;
   setCurrentRef: Dispatch<SetStateAction<number>>;
   setQuestionRefs: Dispatch<SetStateAction<RefObject<HTMLDivElement>[]>>;
@@ -53,6 +55,8 @@ export const ExamContext = createContext<ExamContextProps>({
   questionRefs: [],
   userAnswers: [],
   listHeading: [],
+  timeRemaining: 0,
+  setTimeRemaining: () => {},
   selectedPart: null,
   setSelectedPart: () => {},
   setListHeading: () => {},

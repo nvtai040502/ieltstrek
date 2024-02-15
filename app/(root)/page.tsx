@@ -37,9 +37,7 @@ const RootPage = async () => {
           </ActionButton>
         </PageActions>
       </PageHeader>
-      <ActionButton actionType="create" editType="createAssessment" data={{}}>
-        <div className={buttonVariants()}>Create Assessment</div>
-      </ActionButton>
+
       <ContentSection
         title="Latest IELTS test releases"
         description="Description"
