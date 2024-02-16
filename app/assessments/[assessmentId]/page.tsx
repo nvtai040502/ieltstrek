@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { AssessmentExtended } from '@/types/test-exam';
 import { db } from '@/lib/db';
-import { searchParamsSchema } from '@/lib/validations/params';
+import { ParamsAssessmentPageSchema } from '@/lib/validations/params';
 import AssessmentRender from '@/components/test-exam/assessment/render';
 import { TestExamContentRender } from '@/components/test-exam/content-render';
 import TextExamHeaderRender from '@/components/test-exam/header-render';
@@ -17,7 +17,7 @@ const AssessmentIdPage = async ({
   params,
   searchParams
 }: AssessmentIdPageProps) => {
-  const { mode } = searchParamsSchema.parse(searchParams);
+  const { mode } = ParamsAssessmentPageSchema.parse(searchParams);
   const assessment: AssessmentExtended | null = await db.assessment.findUnique({
     where: {
       id: params.assessmentId

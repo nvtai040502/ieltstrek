@@ -72,7 +72,7 @@ const ScoreHeaderRender = async ({
         </div>
       </div>
       {/* Answer Keys */}
-      <div className="border mt-10 flex flex-col gap-6">
+      <div className=" mt-10 flex flex-col gap-6">
         <p className="font-bold text-xl">Answer Keys</p>
         <Suspense fallback={<></>}>
           <div className="flex flex-col gap-4">

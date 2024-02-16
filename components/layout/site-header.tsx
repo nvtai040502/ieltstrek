@@ -1,8 +1,10 @@
-import Link from "next/link"
-import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons"
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import Link from 'next/link';
+import { ExtendedUser } from '@/auth';
+import { DashboardIcon, ExitIcon, GearIcon } from '@radix-ui/react-icons';
+import { dashboardConfig } from '@/config/routes/dashboard-route';
+import { siteConfig } from '@/config/routes/root-route';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,19 +13,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { MainNav } from "./main-nav"
-import { siteConfig } from "@/config/routes/root-route"
-import { MobileNav } from "./mobile-nav"
-import { Icons } from "../ui/icons"
-import { dashboardConfig } from "@/config/routes/dashboard-route"
-import { ExtendedUser } from "@/auth"
-import { LogoutButton } from "../auth/logout-button"
-import { LoginButton } from "../auth/login-button"
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { LoginButton } from '../auth/login-button';
+import { LogoutButton } from '../auth/logout-button';
+import { Icons } from '../ui/icons';
+import { MainNav } from './main-nav';
+import { MobileNav } from './mobile-nav';
 
 interface SiteHeaderProps {
-  user?: ExtendedUser
+  user?: ExtendedUser;
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
@@ -47,10 +46,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     className="relative size-8 rounded-full"
                   >
                     <Avatar className="size-8">
-                      <AvatarImage
-                        src={user.image!}
-                        alt={user.name ?? ""}
-                      />
+                      <AvatarImage src={user.image!} alt={user.name ?? ''} />
                       <AvatarFallback>{user.name}</AvatarFallback>
                     </Avatar>
                   </Button>
@@ -102,7 +98,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                       <DropdownMenuItem>
                         <ExitIcon className="h-4 w-4 mr-2" />
                         Logout
-                      <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                       </DropdownMenuItem>
                     </LogoutButton>
                   </DropdownMenuItem>
@@ -110,14 +106,12 @@ export function SiteHeader({ user }: SiteHeaderProps) {
               </DropdownMenu>
             ) : (
               <LoginButton mode="modal" asChild>
-                <Button >
-                  Log in
-                </Button>
+                <Button>Log in</Button>
               </LoginButton>
             )}
           </nav>
         </div>
       </div>
     </header>
-  )
+  );
 }
