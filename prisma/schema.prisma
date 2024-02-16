@@ -105,6 +105,8 @@ model Question {
   updatedAt DateTime @default(now()) @updatedAt
 
   questionNumber Int
+  respond        String?
+  correctAnswer  String?
 
   questionGroupId String
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)

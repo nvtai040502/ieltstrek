@@ -8,11 +8,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// export const formatTime = (time: number) => {
+//   const hours = Math.floor(time / 3600);
+//   const minutes = Math.floor((time % 3600) / 60);
+//   const seconds = time % 60;
+//   return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+// };
 export const formatTime = (time: number) => {
-  const hours = Math.floor(time / 3600);
-  const minutes = Math.floor((time % 3600) / 60);
+  const minutes = Math.floor(time / 60);
   const seconds = time % 60;
-  return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 };
 export const createUrl = (
   pathname: string,
