@@ -15,6 +15,7 @@ export const createAssessment = async ({
     data: {
       ...formData,
       totalQuestions: 40,
+      duration: 3600,
       parts: {
         create: Array.from({ length: 3 }).map((_, i) => ({
           title: `Part ${i + 1}`,

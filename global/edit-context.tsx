@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, createContext } from 'react';
-import { Choice, Passage, PassageHeading } from '@prisma/client';
+import { Assessment, Choice, Passage, PassageHeading } from '@prisma/client';
 import {
   IdentifyInfoExtended,
   MultiMoreExtended,
@@ -10,6 +10,7 @@ import {
 
 export type EditType =
   | 'editPart'
+  | 'openAssessment'
   // Question Type
   | 'editNoteCompletion'
   | 'editNoteCompletionGroupItem'
@@ -55,6 +56,7 @@ export interface EditData {
   identifyInfo?: IdentifyInfoExtended;
   passage?: Passage;
   passageHeading?: PassageHeading;
+  assessment?: Assessment;
 
   // summaryCompletion?: SummaryCompletionExtended;
   // matchingHeading?: MatchingHeadingExtended;

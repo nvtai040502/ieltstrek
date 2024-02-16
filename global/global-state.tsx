@@ -39,7 +39,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   useEffect(() => {
     if (!selectedAssessment || selectedPart) return;
 
-    setTimeRemaining(20000);
+    setTimeRemaining(3600);
     setQuestionRefs(() =>
       Array.from({ length: selectedAssessment.totalQuestions }, () =>
         createRef<HTMLDivElement>()

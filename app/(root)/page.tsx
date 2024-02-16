@@ -46,10 +46,11 @@ const RootPage = async () => {
         className="pt-8 md:pt-10 lg:pt-12"
       >
         {assessments.map(
-          (assessment) =>
-            assessment.isPublic && (
-              <AssessmentCard key={assessment.id} assessment={assessment} />
-            )
+          (assessment) => (
+            // assessment.isPublic && (
+            <AssessmentCard key={assessment.id} assessment={assessment} />
+          )
+          // )
         )}
       </ContentSection>
     </div>

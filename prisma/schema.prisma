@@ -17,6 +17,7 @@ model Assessment {
   imageCover     String?
   name           String
   totalQuestions Int
+  duration       Int
   isPublic       Boolean @default(false)
 
   // for now just READING

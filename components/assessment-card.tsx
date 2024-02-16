@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Assessment } from '@prisma/client';
 import { CheckIcon, EyeOpenIcon, PlusIcon } from '@radix-ui/react-icons';
 import { toast } from 'sonner';
+import { useEditHook } from '@/global/use-edit-hook';
 import { AssessmentExtended } from '@/types/test-exam';
 import { cn } from '@/lib/utils';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -35,14 +36,16 @@ export function AssessmentCard({
   className,
   ...props
 }: AssessmentCardProps) {
-  const [isAddingToCart, startAddingToCart] = React.useTransition();
-
+  const { onOpen } = useEditHook();
   return (
     <Card
       className={cn('size-full overflow-hidden rounded-sm', className)}
       {...props}
     >
-      <Link aria-label={assessment.name} href={`/assessments/${assessment.id}`}>
+      <div
+        role="button"
+        onClick={() => onOpen({ type: 'openAssessment', data: { assessment } })}
+      >
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
             {assessment.imageCover ? (
@@ -63,7 +66,7 @@ export function AssessmentCard({
         <CardContent className="space-y-1.5 p-4">
           <CardTitle className="line-clamp-1">{assessment.name}</CardTitle>
         </CardContent>
-      </Link>
+      </div>
     </Card>
   );
 }

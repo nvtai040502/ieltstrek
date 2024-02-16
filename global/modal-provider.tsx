@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import OpenAssessmentModal from '@/components/open-assessment-modal';
 import { IdentifyInfoUpdateForm } from '@/components/question-type/identify-info/update-form';
 import { ChoiceUpdateForm } from '@/components/question-type/multiple-choice/choice/update-form';
 import { MultiMoreUpdateForm } from '@/components/question-type/multiple-choice/multi-more/update-form';
@@ -26,6 +27,7 @@ export function ModalProvider() {
   return (
     <>
       <CreateAssessmentForm />
+      <OpenAssessmentModal />
 
       <UpdatePartForm />
 
