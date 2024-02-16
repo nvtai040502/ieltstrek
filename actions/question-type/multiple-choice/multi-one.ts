@@ -1,52 +1,47 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { QuestionGroup } from '@prisma/client';
 import { z } from 'zod';
+import { CHOICE_OPTIONS } from '@/config/constants';
 import { db } from '@/lib/db';
+import { getTotalQuestions } from '@/lib/utils';
 import { MultiOneSchema } from '@/lib/validations/question-type';
 
-export const createMultiOneList = async ({
-  questionGroupId
-}: {
-  questionGroupId: string;
-}) => {
-  const questionGroup = await db.questionGroup.findUnique({
-    where: {
-      id: questionGroupId
-    },
-    select: {
-      questions: {
-        select: {
-          id: true
-        }
-      }
-    }
-  });
-  if (!questionGroup) {
-    throw new Error('Question Group Id not found');
-  }
-
-  questionGroup.questions.map(async (question) => {
-    const totalChoices = 4;
-    await db.multipleChoiceOneAnswer.create({
-      data: {
-        questionGroupId,
-        title: 'This is title for multi one question',
-        questionId: question.id,
-        choices: {
-          createMany: {
-            data: Array.from({ length: totalChoices }).map((_, i) => ({
-              content: `Option ${i + 1}`,
-              order: i,
-              isCorrect: i === 0 ? true : false
-            }))
+export const createMultiOneList = async (
+  questionGroup: QuestionGroup,
+  assessmentId: string
+) => {
+  const totalQuestions = getTotalQuestions(questionGroup);
+  Array.from({ length: totalQuestions }).map(
+    async (_, questionIndex) =>
+      await db.question.create({
+        data: {
+          questionNumber: questionGroup.startQuestionNumber + questionIndex,
+          questionGroupId: questionGroup.id,
+          correctAnswer: CHOICE_OPTIONS[0],
+          partId: questionGroup.partId,
+          assessmentId: assessmentId,
+          multiOne: {
+            create: {
+              title: 'This is title for multi one question',
+              questionGroupId: questionGroup.id,
+              choices: {
+                createMany: {
+                  data: Array.from({ length: CHOICE_OPTIONS.length }).map(
+                    (_, choiceIndex) => ({
+                      content: `Option ${choiceIndex + 1}`,
+                      order: choiceIndex,
+                      isCorrect: choiceIndex === 0 ? true : false
+                    })
+                  )
+                }
+              }
+            }
           }
         }
-      }
-    });
-  });
-
-  return;
+      })
+  );
 };
 
 export const updateMultiOne = async ({

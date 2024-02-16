@@ -13,7 +13,7 @@ model Result {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  score               Int
+  score               Float
   totalCorrectAnswers Int
   timeSpent           Int
 
@@ -105,8 +105,8 @@ model Question {
   updatedAt DateTime @default(now()) @updatedAt
 
   questionNumber Int
+  correctAnswer  String
   respond        String?
-  correctAnswer  String?
 
   questionGroupId String
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)

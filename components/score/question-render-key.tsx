@@ -4,20 +4,11 @@ import { db } from '@/lib/db';
 
 const QuestionRenderKey = async ({ questionId }: { questionId: string }) => {
   const question = await db.question.findUnique({
-    where: { id: questionId },
-    include: {
-      questionGroup: { select: { type: true } },
-      multiOne: { include: { choices: { where: { isCorrect: true } } } }
-    }
+    where: { id: questionId }
   });
-  let correctAnswer;
+
   if (!question) {
     return null;
-  }
-  if (question.questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER') {
-    const choiceCorrect = question.multiOne!.choices;
-    const keys = ['A', 'B', 'C', 'D'];
-    correctAnswer = keys[choiceCorrect[0].order];
   }
 
   return (
@@ -26,10 +17,10 @@ const QuestionRenderKey = async ({ questionId }: { questionId: string }) => {
         <p>{question.questionNumber}</p>
       </div>
       <div>
-        <span className="text-green-400">{correctAnswer}: </span>
+        <span className="text-green-400">{question.correctAnswer}: </span>
         <span>{question.respond || 'null'} </span>
         <span>
-          {question.respond === correctAnswer ? (
+          {question.respond === question.correctAnswer ? (
             <Check className=" inline-flex items-center text-green-500" />
           ) : (
             <X className="text-destructive inline-flex items-center justify-center" />

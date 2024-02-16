@@ -1,41 +1,36 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { IdentifyChoice, QuestionGroup } from '@prisma/client';
 import { z } from 'zod';
 import { db } from '@/lib/db';
+import { getTotalQuestions } from '@/lib/utils';
 import { IdentifyInfoSchema } from '@/lib/validations/question-type';
 
-export const createIdentifyInfoList = async ({
-  questionGroupId
-}: {
-  questionGroupId: string;
-}) => {
-  const questionGroup = await db.questionGroup.findUnique({
-    where: {
-      id: questionGroupId
-    },
-    select: {
-      questions: {
-        select: {
-          id: true
+export const createIdentifyInfoList = async (
+  questionGroup: QuestionGroup,
+  assessmentId: string
+) => {
+  const totalQuestions = getTotalQuestions(questionGroup);
+  Array.from({ length: totalQuestions }).map(
+    async (_, questionIndex) =>
+      await db.question.create({
+        data: {
+          questionNumber: questionGroup.startQuestionNumber + questionIndex,
+          questionGroupId: questionGroup.id,
+          correctAnswer: IdentifyChoice.TRUE,
+          partId: questionGroup.partId,
+          assessmentId: assessmentId,
+          identifyInfo: {
+            create: {
+              questionGroupId: questionGroup.id,
+              title: 'This is title for identify information question',
+              choiceCorrect: 'TRUE'
+            }
+          }
         }
-      }
-    }
-  });
-  if (!questionGroup) {
-    throw new Error('Question Group Id not found');
-  }
-
-  questionGroup.questions.map(async (question) => {
-    await db.identifyingInformation.create({
-      data: {
-        questionGroupId,
-        title: 'This is title for identify information question',
-        questionId: question.id,
-        choiceCorrect: 'TRUE'
-      }
-    });
-  });
+      })
+  );
 };
 export const updateIdentifyInfo = async ({
   formData,

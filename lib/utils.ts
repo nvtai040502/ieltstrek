@@ -1,4 +1,5 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
+import { QuestionGroup } from '@prisma/client';
 import { type ClassValue, clsx } from 'clsx';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
@@ -7,7 +8,11 @@ import { z } from 'zod';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
+export const getTotalQuestions = (questionGroup: QuestionGroup) => {
+  return (
+    questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1
+  );
+};
 // export const formatTime = (time: number) => {
 //   const hours = Math.floor(time / 3600);
 //   const minutes = Math.floor((time % 3600) / 60);

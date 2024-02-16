@@ -25,12 +25,8 @@ export const createQuestionGroup = async ({
     }
   }
   const part = await db.part.findUnique({
-    where: {
-      id: partId
-    },
-    select: {
-      assessmentId: true
-    }
+    where: { id: partId },
+    select: { assessmentId: true }
   });
   if (!part) {
     throw new Error('Part Id not found!');
@@ -61,26 +57,12 @@ export const createQuestionGroup = async ({
   const questionGroup = await db.questionGroup.create({
     data: {
       ...rest,
-      partId,
-      questions: {
-        createMany: {
-          data: Array.from({
-            length:
-              formData.endQuestionNumber - formData.startQuestionNumber + 1
-          }).map((_, i) => ({
-            questionNumber: formData.startQuestionNumber + i,
-            partId,
-            assessmentId: part.assessmentId
-          }))
-        }
-      }
+      partId
     }
   });
   switch (questionGroup.type) {
     case 'MULTIPLE_CHOICE_ONE_ANSWER':
-      await createMultiOneList({
-        questionGroupId: questionGroup.id
-      });
+      await createMultiOneList(questionGroup, part.assessmentId);
       break;
     case 'MULTIPLE_CHOICE_MORE_ANSWERS':
       await createMultiMoreList({
@@ -88,9 +70,7 @@ export const createQuestionGroup = async ({
       });
       break;
     case 'IDENTIFYING_INFORMATION':
-      await createIdentifyInfoList({
-        questionGroupId: questionGroup.id
-      });
+      await createIdentifyInfoList(questionGroup, part.assessmentId);
     case 'NOTE_COMPLETION':
       await createNoteCompletion({
         questionGroupId: questionGroup.id

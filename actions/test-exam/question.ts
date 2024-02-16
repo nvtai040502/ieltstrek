@@ -3,23 +3,25 @@
 import { QuestionType } from '@prisma/client';
 import { db } from '@/lib/db';
 
-export const getCorrectAnswerByQuestionId = async ({
+export const getCorrectAnswerByQuestionId = async (id: string) => {
+  const question = await db.question.findUnique({
+    where: { id },
+    select: { correctAnswer: true }
+  });
+  if (!question) {
+    throw new Error('Question Id Not FOund');
+  }
+  return question.correctAnswer;
+};
+export const updateRespond = async ({
   questionId,
-  questionType
+  respond
 }: {
   questionId: string;
-  questionType: QuestionType;
+  respond: string;
 }) => {
-  if (questionType === 'IDENTIFYING_INFORMATION') {
-    const question = await db.question.findUnique({
-      where: { id: questionId },
-      include: {
-        identifyInfo: true
-      }
-    });
-    if (!question || !question.identifyInfo) {
-      throw new Error('Question Id Not found');
-    }
-    return question.identifyInfo.choiceCorrect;
-  }
+  await db.question.update({
+    where: { id: questionId },
+    data: { respond }
+  });
 };

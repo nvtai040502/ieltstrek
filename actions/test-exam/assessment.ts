@@ -3,7 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { MODE } from '@/config/constants';
 import { db } from '@/lib/db';
+import { createUrl } from '@/lib/utils';
 import { AssessmentSchema } from '@/lib/validations/text-exam';
 
 export const createAssessment = async ({
@@ -25,7 +27,10 @@ export const createAssessment = async ({
       }
     }
   });
-  redirect(`/assessments/${assessment.id}`);
+  const newSearchParams = new URLSearchParams();
+  newSearchParams.set('mode', MODE.edit);
+  const pathname = `/assessments/${assessment.id}`;
+  redirect(createUrl(pathname, newSearchParams));
 };
 export async function getAssessmentIdByQuestionGroupId(
   questionGroupId: string

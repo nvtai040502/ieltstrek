@@ -6,6 +6,13 @@ import { ChoiceData } from '@/global/edit-context';
 import { db } from '@/lib/db';
 import { ChoiceSchema } from '@/lib/validations/question-type';
 
+export const getChoiceById = async (id: string) => {
+  const choice = await db.choice.findUnique({ where: { id } });
+  if (!choice) {
+    throw new Error('Choice Id not found');
+  }
+  return choice;
+};
 export const updateChoice = async ({
   formData,
   choiceData

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useContext } from 'react';
+import { usePathname } from 'next/navigation';
 import { Delete, Edit, Plus, XCircle } from 'lucide-react';
 import { EditData, EditType } from '@/global/edit-context';
 import { ExamContext } from '@/global/exam-context';
@@ -20,7 +21,7 @@ export const ActionButton = ({
 }) => {
   const { onOpen, onClose } = useEditHook();
   const { mode } = useContext(ExamContext);
-
+  const pathName = usePathname();
   const renderIcon = () => {
     switch (actionType) {
       case 'create':
@@ -35,7 +36,7 @@ export const ActionButton = ({
         return null;
     }
   };
-  if (mode !== 'edit') {
+  if (mode !== 'edit' && pathName !== '/') {
     return null;
   }
   return (
