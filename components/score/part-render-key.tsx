@@ -12,16 +12,16 @@ const PartRenderKey = async ({ partId }: { partId: string }) => {
     return notFound();
   }
   return (
-    <div>
-      <div>Part {part.order + 1}</div>
+    <>
+      <div className="text-lg font-bold">Part {part.order + 1}</div>
       <Suspense fallback={<></>}>
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-2 gap-2">
           {part.questions.map((question) => (
             <QuestionRenderKey questionId={question.id} key={question.id} />
           ))}
         </div>
       </Suspense>
-    </div>
+    </>
   );
 };
 

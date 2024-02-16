@@ -21,7 +21,7 @@ export function PlaceholderImage({
 
   return (
     <Comp
-      ratio={16 / 9}
+      ratio={4 / 3}
       {...props}
       className={cn('overflow-hidden rounded-lg', className)}
     >

@@ -1,7 +1,10 @@
 import { Suspense } from 'react';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { ImageIcon } from 'lucide-react';
 import { db } from '@/lib/db';
-import { formatTime } from '@/lib/utils';
+import { cn, formatTime } from '@/lib/utils';
+import { PlaceholderImage } from '../placeholder-image';
 import PartRenderKey from './part-render-key';
 
 const ScoreHeaderRender = async ({
@@ -16,35 +19,67 @@ const ScoreHeaderRender = async ({
   if (!assessment || !assessment.result) {
     return notFound();
   }
+
   return (
     // TODO: Make design better
     <div className="">
       {/* Exam Card */}
-      <div>
-        <p>{assessment.name}</p>
+      <div className="flex flex-wrap bg-red-500 gap-4 sm:justify-start justify-center ">
+        <div className="relative">
+          {assessment.imageCover ? (
+            <Image
+              src={assessment.imageCover}
+              width={64}
+              height={64}
+              alt={assessment.name}
+            />
+          ) : (
+            <div className="w-64">
+              <PlaceholderImage />
+            </div>
+          )}
+        </div>
+        <h1 className="font-bold text-xl">{assessment.name}</h1>
       </div>
       {/* Score Render */}
-      <div className="mt-8 bg-blue-300">
-        <p className="text-center font-bold text-xl">Your score is</p>
-        <div className="flex items-center justify-between">
-          <p>
-            Correct Answers {assessment.result.totalCorrectAnswers}/
-            {assessment.totalQuestions}
-          </p>
-          <p>{assessment.result.score}</p>
-          <p>
-            Time Spent {formatTime(assessment.result.timeSpent)}{' '}
-            {`(${formatTime(assessment.duration)})`}{' '}
-          </p>
+      <div className="mt-8">
+        <p className="text-center font-bold text-3xl">Your score is:</p>
+        <div className="flex sm:flex-row flex-col items-center gap-10 px-8 sm:py-8 py-4 sm:justify-between justify-center">
+          <div className="rounded-full h-40 w-40 flex items-center justify-center border-4 border-success">
+            <div className="flex flex-col items-center">
+              <p>Correct</p>
+              <p>Answers</p>
+              <p>
+                {assessment.result.totalCorrectAnswers}/
+                {assessment.totalQuestions}
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-full h-40 w-40 flex items-center justify-center border-4 bg-success">
+            <p className="font-bold text-3xl">{assessment.result.score}</p>
+          </div>
+
+          <div className="rounded-full h-40 w-40 flex items-center justify-center border-4 border-success">
+            <div className="flex flex-col items-center">
+              <p>Time Spent</p>
+              <p className="font-bold text-xl">
+                {formatTime(assessment.result.timeSpent)}
+              </p>
+              <p>({formatTime(assessment.duration)})</p>
+            </div>
+          </div>
         </div>
       </div>
       {/* Answer Keys */}
-      <div className="border mt-10">
-        <p className="font-bold ">Answer Keys</p>
+      <div className="border mt-10 flex flex-col gap-6">
+        <p className="font-bold text-xl">Answer Keys</p>
         <Suspense fallback={<></>}>
-          {assessment.parts.map((part) => (
-            <PartRenderKey partId={part.id} key={part.id} />
-          ))}
+          <div className="flex flex-col gap-4">
+            {assessment.parts.map((part) => (
+              <PartRenderKey partId={part.id} key={part.id} />
+            ))}
+          </div>
         </Suspense>
       </div>
     </div>
