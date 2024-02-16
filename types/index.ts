@@ -1,32 +1,28 @@
-import { Icons } from "@/components/ui/icons"
-export type MODE_TYPE = "edit" | "exam" | "practice"
-
+import { Icons } from '@/components/ui/icons';
 
 export interface FooterItem {
-  title: string
+  title: string;
   items: {
-    title: string
-    href: string
-    external?: boolean
-  }[]
+    title: string;
+    href: string;
+    external?: boolean;
+  }[];
 }
 export interface NavItemWithChildren extends NavItem {
-  items: NavItemWithChildren[]
+  items: NavItemWithChildren[];
 }
 export interface NavItemWithOptionalChildren extends NavItem {
-  items?: NavItemWithChildren[]
+  items?: NavItemWithChildren[];
 }
-export type SidebarNavItem = NavItemWithChildren
-export type MainNavItem = NavItemWithOptionalChildren
-
-
+export type SidebarNavItem = NavItemWithChildren;
+export type MainNavItem = NavItemWithOptionalChildren;
 
 export type NavItem = {
-  title: string
-  href?: string
-  disabled?: boolean
-  external?: boolean
-  icon?: keyof typeof Icons
-  label?: string
-  description?: string
-}
+  title: string;
+  href?: string;
+  disabled?: boolean;
+  external?: boolean;
+  icon?: keyof typeof Icons;
+  label?: string;
+  description?: string;
+};

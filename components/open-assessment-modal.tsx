@@ -1,7 +1,8 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useContext, useTransition } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { ExamContext } from '@/global/exam-context';
 import { useEditHook } from '@/global/use-edit-hook';
 import { MODE } from '@/config/constants';
 import { createUrl } from '@/lib/utils';
@@ -10,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 
 function OpenAssessmentModal() {
   const [isPending, startTransition] = useTransition();
+  const { setMode } = useContext(ExamContext);
   const router = useRouter();
   const { isOpen, data, type, onClose } = useEditHook();
   const isModalOpen = isOpen && type === 'openAssessment';

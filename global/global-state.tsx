@@ -3,6 +3,7 @@
 import { FC, RefObject, createRef, useEffect, useState } from 'react';
 import { MatchingChoice } from '@prisma/client';
 import { AssessmentExtended, PartExtended } from '@/types/test-exam';
+import { ModeType } from '@/lib/validations/params';
 import { DndContext } from './dnd-context';
 import { EditContext, EditData, EditType } from './edit-context';
 import { AnswerType, ExamContext } from './exam-context';
@@ -32,12 +33,13 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [questionId, setQuestionId] = useState('');
   const [prevContent, setPrevContent] = useState('');
   const [matchingChoiceId, setMatchingChoiceId] = useState('');
+  const [mode, setMode] = useState<ModeType | null>(null);
   const [matchingChoiceList, setMatchingChoiceList] = useState<
     MatchingChoice[]
   >([]);
 
   useEffect(() => {
-    if (!selectedAssessment || selectedPart) return;
+    if (!selectedAssessment || selectedPart || !mode) return;
 
     setTimeRemaining(3600);
     setQuestionRefs(() =>
@@ -47,7 +49,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     );
     setActiveTab(selectedAssessment.parts[0].id);
     setSelectedPart(selectedAssessment.parts[0]);
-  }, [selectedAssessment, selectedPart]);
+  }, [selectedAssessment, selectedPart, mode]);
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTimeRemaining((prevTime) => prevTime - 1);
@@ -57,7 +59,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (!selectedAssessment || !activeTab) return;
+    if (!selectedAssessment || !activeTab || !mode) return;
 
     const partIndex = selectedAssessment.parts.findIndex(
       (part) => part.id === activeTab
@@ -72,7 +74,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setCurrentRef(firstQuestionGroup.startQuestionNumber - 1);
       }
     }
-  }, [selectedAssessment, activeTab]);
+  }, [selectedAssessment, activeTab, mode]);
 
   return (
     <ExamContext.Provider
@@ -85,6 +87,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         listHeading,
         selectedPart,
         timeRemaining,
+        mode,
+        setMode,
         setTimeRemaining,
         setSelectedPart,
         setListHeading,

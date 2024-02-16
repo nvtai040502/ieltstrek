@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
-import { Button } from '../ui/button';
-import { EditData, EditType } from '@/global/edit-context';
-import { useEditHook } from '@/global/use-edit-hook';
+import React, { useContext } from 'react';
 import { Delete, Edit, Plus, XCircle } from 'lucide-react';
+import { EditData, EditType } from '@/global/edit-context';
+import { ExamContext } from '@/global/exam-context';
+import { useEditHook } from '@/global/use-edit-hook';
+import { Button } from '../ui/button';
 
 export const ActionButton = ({
   actionType,
@@ -18,6 +19,7 @@ export const ActionButton = ({
   children?: React.ReactNode;
 }) => {
   const { onOpen, onClose } = useEditHook();
+  const { mode } = useContext(ExamContext);
 
   const renderIcon = () => {
     switch (actionType) {
@@ -33,7 +35,9 @@ export const ActionButton = ({
         return null;
     }
   };
-
+  if (mode !== 'edit') {
+    return null;
+  }
   return (
     <Button
       variant="ghost"

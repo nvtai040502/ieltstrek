@@ -1,34 +1,38 @@
-'use client'
+'use client';
 
-import { Fragment, useContext, useEffect } from 'react'
-import { Check, Send } from 'lucide-react'
-import { ExamContext } from '@/global/exam-context'
-import { useExamHandler } from '@/global/use-exam-handler'
-import { AssessmentExtended } from '@/types/test-exam'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
-import { ActionButton } from '../action-button'
-import ButtonNavigationQuestion from '../button-nav-question'
-import PartBodyContentRender from './body'
-import FooterContentRender from './footer'
+import { Fragment, useContext, useEffect } from 'react';
+import { Check, Send } from 'lucide-react';
+import { ExamContext } from '@/global/exam-context';
+import { useExamHandler } from '@/global/use-exam-handler';
+import { AssessmentExtended } from '@/types/test-exam';
+import { ModeType } from '@/lib/validations/params';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
+import { ActionButton } from '../action-button';
+import ButtonNavigationQuestion from '../button-nav-question';
+import PartBodyContentRender from './body';
+import FooterContentRender from './footer';
 
 export const TestExamContentRender = ({
   assessment,
+  mode
 }: {
-  assessment: AssessmentExtended
+  assessment: AssessmentExtended;
+  mode: ModeType;
 }) => {
-  const { selectedAssessment, setSelectedAssessment, activeTab } =
-    useContext(ExamContext)
+  const { selectedAssessment, setSelectedAssessment, activeTab, setMode } =
+    useContext(ExamContext);
 
   useEffect(() => {
-    setSelectedAssessment(assessment)
-  }, [assessment, setSelectedAssessment])
+    setSelectedAssessment(assessment);
+    setMode(mode);
+  }, [assessment, setSelectedAssessment, mode, setMode]);
 
-  const { handleSubmit } = useExamHandler()
+  const { handleSubmit } = useExamHandler();
 
   if (!selectedAssessment) {
-    return null
+    return null;
   }
   return (
     <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
@@ -74,5 +78,5 @@ export const TestExamContentRender = ({
       </TabsContent>
       <FooterContentRender />
     </Tabs>
-  )
-}
+  );
+};

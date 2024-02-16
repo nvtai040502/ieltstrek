@@ -1,6 +1,7 @@
 import { Dispatch, RefObject, SetStateAction, createContext } from 'react';
-import { IdentifyChoice, QuestionType } from '@prisma/client';
+import { IdentifyChoice } from '@prisma/client';
 import { AssessmentExtended, PartExtended } from '@/types/test-exam';
+import { ModeType } from '@/lib/validations/params';
 
 export type AnswerType =
   | {
@@ -37,6 +38,8 @@ interface ExamContextProps {
   currentRef: number;
   selectedPart: PartExtended | null;
   timeRemaining: number;
+  mode: ModeType | null;
+  setMode: Dispatch<SetStateAction<ModeType | null>>;
   setTimeRemaining: Dispatch<SetStateAction<number>>;
   setSelectedPart: Dispatch<SetStateAction<PartExtended | null>>;
   setCurrentRef: Dispatch<SetStateAction<number>>;
@@ -56,6 +59,8 @@ export const ExamContext = createContext<ExamContextProps>({
   userAnswers: [],
   listHeading: [],
   timeRemaining: 0,
+  mode: null,
+  setMode: () => {},
   setTimeRemaining: () => {},
   selectedPart: null,
   setSelectedPart: () => {},
