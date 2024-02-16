@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { isChoiceCorrect } from '@/actions/question-type/multiple-choice/multi-one';
 import { getCorrectAnswerByQuestionId } from '@/actions/test-exam/question';
+import { createOrUpdateResult } from '@/actions/test-exam/result';
 import { AnswerType, ExamContext } from './exam-context';
 
 export const useExamHandler = () => {
@@ -12,13 +13,16 @@ export const useExamHandler = () => {
     setActiveTab,
     selectedAssessment,
     setUserAnswers,
-    selectedPart
+    selectedPart,
+    timeRemaining,
+    setIsSubmit
   } = useContext(ExamContext);
 
   async function handleSubmit() {
     if (!selectedAssessment) {
       return null;
     }
+    setIsSubmit(true);
     console.log('User Answers:', userAnswers);
     let score = 0;
     const promises = userAnswers.map(async (userAnswer) => {
@@ -47,6 +51,14 @@ export const useExamHandler = () => {
       }
     });
     await Promise.all(promises);
+    const timeSpent = selectedAssessment.duration - timeRemaining;
+    await createOrUpdateResult({
+      score,
+      timeSpent,
+      totalCorrectAnswers: 2,
+      assessmentId: selectedAssessment.id
+    });
+    setIsSubmit(false);
     console.log('🚀 ~ handleSubmit ~ score:', score);
   }
   function handleAnswerSelected(props: AnswerType) {

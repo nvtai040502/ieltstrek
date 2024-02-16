@@ -9,6 +9,7 @@ import { TestMatchingRender } from '@/components/question-type/matching/test';
 import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
 import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
 import { ActionButton } from '@/components/test-exam/action-button';
+import { buttonVariants } from '@/components/ui/button';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -18,11 +19,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { PassageRender } from '../../passage/render';
 
 const PartBodyContentRender = () => {
-  const {
-    questionRefs,
-    setCurrentRef: setCurrentQuestionIndex,
-    selectedPart
-  } = useContext(ExamContext);
+  const { selectedPart } = useContext(ExamContext);
   if (!selectedPart) {
     return null;
   }
@@ -52,7 +49,9 @@ const PartBodyContentRender = () => {
                 actionType="create"
                 editType="createQuestionGroup"
                 data={{ part: selectedPart }}
-              />
+              >
+                <div className={buttonVariants()}>New Question Group</div>
+              </ActionButton>
             </div>
 
             {selectedPart.questionGroups.map((questionGroup) => {

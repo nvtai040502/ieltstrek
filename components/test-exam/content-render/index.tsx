@@ -1,39 +1,24 @@
 'use client';
 
-import { Fragment, useContext, useEffect } from 'react';
-import { Check, Send } from 'lucide-react';
+import { useContext } from 'react';
+import { Send } from 'lucide-react';
 import { ExamContext } from '@/global/exam-context';
 import { useExamHandler } from '@/global/use-exam-handler';
-import { AssessmentExtended } from '@/types/test-exam';
-import { ModeType } from '@/lib/validations/params';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { ActionButton } from '../action-button';
 import ButtonNavigationQuestion from '../button-nav-question';
 import PartBodyContentRender from './body';
 import FooterContentRender from './footer';
 
-export const TestExamContentRender = ({
-  assessment,
-  mode
-}: {
-  assessment: AssessmentExtended;
-  mode: ModeType;
-}) => {
-  const { selectedAssessment, setSelectedAssessment, activeTab, setMode } =
-    useContext(ExamContext);
-
-  useEffect(() => {
-    setSelectedAssessment(assessment);
-    setMode(mode);
-  }, [assessment, setSelectedAssessment, mode, setMode]);
-
+export const TestExamContentRender = () => {
+  const { selectedAssessment, activeTab } = useContext(ExamContext);
   const { handleSubmit } = useExamHandler();
-
   if (!selectedAssessment) {
     return null;
   }
+
   return (
     <Tabs value={activeTab} className="overflow-hidden flex-1 flex flex-col">
       {selectedAssessment.parts.map((part) => (

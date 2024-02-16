@@ -4,10 +4,11 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-  "/",
-  "/auth/new-verification",
-  "/assessments/:assessmentId", 
-  "/test"
+  '/',
+  '/auth/new-verification',
+  '/assessments/:assessmentId',
+  '/score/:assessmentId',
+  '/test'
 ];
 
 /**
@@ -16,11 +17,11 @@ export const publicRoutes = [
  * @type {string[]}
  */
 export const authRoutes = [
-  "/auth/login",
-  "/auth/register",
-  "/auth/error",
-  "/auth/new-password",
-  "/auth/reset"
+  '/auth/login',
+  '/auth/register',
+  '/auth/error',
+  '/auth/new-password',
+  '/auth/reset'
 ];
 
 /**
@@ -28,10 +29,10 @@ export const authRoutes = [
  * Routes that start with this prefix are used for API authentication purposes
  * @type {string}
  */
-export const apiAuthPrefix = "/api/auth";
+export const apiAuthPrefix = '/api/auth';
 
 /**
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_LOGIN_REDIRECT = '/settings';

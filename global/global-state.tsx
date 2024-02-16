@@ -37,6 +37,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [matchingChoiceList, setMatchingChoiceList] = useState<
     MatchingChoice[]
   >([]);
+  const [isSubmit, setIsSubmit] = useState(false);
 
   useEffect(() => {
     if (!selectedAssessment || selectedPart || !mode) return;
@@ -88,6 +89,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         selectedPart,
         timeRemaining,
         mode,
+        isSubmit,
+        setIsSubmit,
         setMode,
         setTimeRemaining,
         setSelectedPart,

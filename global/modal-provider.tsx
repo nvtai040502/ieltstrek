@@ -12,6 +12,7 @@ import { CreatePassageForm } from '@/components/test-exam/passage/create-form';
 import { PassageUpdateForm } from '@/components/test-exam/passage/update-form';
 import { CreateQuestionGroupForm } from '@/components/test-exam/question-group/create-form';
 import { DeleteQuestionGroupForm } from '@/components/test-exam/question-group/delete-form';
+import SubmitModal from '@/components/test-exam/submit-modal';
 
 export function ModalProvider() {
   const [isMounted, setIsMounted] = useState(false);
@@ -42,6 +43,8 @@ export function ModalProvider() {
       <ChoiceUpdateForm />
 
       <IdentifyInfoUpdateForm />
+
+      <SubmitModal />
     </>
   );
 }

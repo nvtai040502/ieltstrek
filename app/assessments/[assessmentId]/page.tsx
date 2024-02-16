@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { AssessmentExtended } from '@/types/test-exam';
 import { db } from '@/lib/db';
 import { searchParamsSchema } from '@/lib/validations/params';
+import AssessmentRender from '@/components/test-exam/assessment/render';
 import { TestExamContentRender } from '@/components/test-exam/content-render';
 import TextExamHeaderRender from '@/components/test-exam/header-render';
 import PublicAssessmentButton from '@/components/test-exam/public-assessment-button';
@@ -137,12 +138,8 @@ const AssessmentIdPage = async ({
   if (!assessment || !mode) {
     return notFound();
   }
-  return (
-    <div className="max-h-screen h-screen flex flex-col">
-      <TextExamHeaderRender />
-      <TestExamContentRender assessment={assessment} mode={mode} />
-    </div>
-  );
+  // Using client side because it is an exam, and user don't want to wait even 3s for just load data from the server
+  return <AssessmentRender assessment={assessment} mode={mode} />;
 };
 
 export default AssessmentIdPage;

@@ -8,6 +8,19 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Result {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  score               Int
+  totalCorrectAnswers Int
+  timeSpent           Int
+
+  assessmentId String     @unique
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+}
+
 model Assessment {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -24,6 +37,7 @@ model Assessment {
   sectionType SectionType @default(READING)
   questions   Question[]
   parts       Part[]
+  result      Result?
 }
 
 enum SectionType {

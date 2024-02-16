@@ -39,6 +39,8 @@ interface ExamContextProps {
   selectedPart: PartExtended | null;
   timeRemaining: number;
   mode: ModeType | null;
+  isSubmit: boolean;
+  setIsSubmit: Dispatch<SetStateAction<boolean>>;
   setMode: Dispatch<SetStateAction<ModeType | null>>;
   setTimeRemaining: Dispatch<SetStateAction<number>>;
   setSelectedPart: Dispatch<SetStateAction<PartExtended | null>>;
@@ -60,6 +62,8 @@ export const ExamContext = createContext<ExamContextProps>({
   listHeading: [],
   timeRemaining: 0,
   mode: null,
+  isSubmit: false,
+  setIsSubmit: () => {},
   setMode: () => {},
   setTimeRemaining: () => {},
   selectedPart: null,

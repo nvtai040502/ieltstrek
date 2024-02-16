@@ -2,6 +2,7 @@
 
 import { useContext } from 'react';
 import { ExamContext } from '@/global/exam-context';
+import { buttonVariants } from '@/components/ui/button';
 import { ActionButton } from '../action-button';
 
 export function PassageRender() {
@@ -16,7 +17,9 @@ export function PassageRender() {
         actionType="create"
         editType="createPassage"
         data={{ part: selectedPart }}
-      />
+      >
+        <div className={buttonVariants()}>New Passage</div>
+      </ActionButton>
     );
   }
   return (
