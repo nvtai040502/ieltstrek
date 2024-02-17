@@ -112,7 +112,7 @@ const PartBodyContentRender = () => {
                     ))}
                   {(questionGroup.type === 'COMPLETION' ||
                     questionGroup.type === 'TABLE_COMPLETION') && (
-                    <CompletionRender completion={questionGroup.completion} />
+                    <CompletionRender questionGroup={questionGroup} />
                   )}
                   {questionGroup.type === 'MATCHING' && (
                     // <MatchingRender questionGroup={questionGroup} />

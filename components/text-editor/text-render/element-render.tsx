@@ -78,7 +78,8 @@ export const EditElementRender = ({ props }) => {
   switch (element.type) {
     case 'blank':
       return <EditMatchingBlankRender {...props} />;
-
+    case 'completionBlank':
+      return <EditMatchingBlankRender {...props} />;
     case 'table':
       return (
         <table className="w-full">

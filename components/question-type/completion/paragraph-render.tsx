@@ -29,7 +29,9 @@ const CompletionParagraphRender = ({
   completion: CompletionExtended;
 }) => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <ReadonlyElementRender props={props} />,
+    (props: RenderElementProps) => (
+      <ReadonlyElementRender props={props} type="Completion" />
+    ),
     []
   );
   const renderLeaf = useCallback(
@@ -50,12 +52,20 @@ const CompletionParagraphRender = ({
 
 export default CompletionParagraphRender;
 
-export const ReadonlyElementRender = ({ props }) => {
+export const ReadonlyElementRender = ({
+  props,
+  type
+}: {
+  type: 'Matching' | 'Completion';
+}) => {
   const { attributes, children, element } = props;
   switch (element.type) {
-    case 'completionBlank':
-      return <CompletionBlankRender questionNumber={element.questionNumber} />;
-
+    case 'blank':
+      if (type === 'Completion') {
+        return (
+          <CompletionBlankRender questionNumber={element.questionNumber} />
+        );
+      }
     case 'table':
       return (
         <table className="w-full">

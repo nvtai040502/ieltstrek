@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { QuestionGroup } from '@prisma/client';
 import { Descendant } from 'slate';
 import { db } from '@/lib/db';
@@ -19,13 +20,13 @@ export const createCompletion = async (
       children: [
         { text: `This is note completion example` },
         {
-          type: 'completionBlank',
-          children: [{ text: '' }],
+          type: 'blank',
+          children: [{ text: ' hello' }],
           questionNumber: questionGroup.startQuestionNumber + i
         },
-        { text: 'rich', bold: true },
+        { text: ' rich', bold: true },
         { text: ' text, ' },
-        { text: 'much', italic: true },
+        { text: ' much', italic: true },
         { text: ' better than a!' }
       ]
     })
@@ -51,26 +52,31 @@ export const createCompletion = async (
   return;
 };
 
-// export const updateNoteCompletion = async ({
-//   id,
-//   paragraph,
-// }: {
-//   id: number;
-//   paragraph: string;
-// }): Promise<boolean> => {
-//   try {
-//     await db.noteCompletion.update({
-//       where: {
-//         id,
-//       },
-//       data: {
-//         paragraph,
-//       },
-//     });
+export const updateCompletion = async ({
+  id,
+  paragraph
+}: {
+  id: string;
+  paragraph: string;
+}) => {
+  const completion = await db.completion.findUnique({
+    where: { id },
+    select: {
+      questionGroup: { select: { part: { select: { assessmentId: true } } } }
+    }
+  });
+  if (!completion) {
+    throw new Error('Completion Id not found');
+  }
 
-//     return true;
-//   } catch (error) {
-//     console.error("Error updating note completion:", error);
-//     return false;
-//   }
-// };
+  await db.completion.update({
+    where: {
+      id
+    },
+    data: {
+      paragraph
+    }
+  });
+
+  revalidatePath(`/assessments/${completion.questionGroup.part.assessmentId}`);
+};

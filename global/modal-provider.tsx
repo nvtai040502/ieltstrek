@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import OpenAssessmentModal from '@/components/open-assessment-modal';
+import CompletionParagraphUpdateForm from '@/components/question-type/completion/paragraph-update-form';
 import { IdentifyInfoUpdateForm } from '@/components/question-type/identify-info/update-form';
 import { ChoiceUpdateForm } from '@/components/question-type/multiple-choice/choice/update-form';
 import { MultiMoreUpdateForm } from '@/components/question-type/multiple-choice/multi-more/update-form';
@@ -45,6 +46,8 @@ export function ModalProvider() {
       <IdentifyInfoUpdateForm />
 
       <SubmitModal />
+
+      <CompletionParagraphUpdateForm />
     </>
   );
 }

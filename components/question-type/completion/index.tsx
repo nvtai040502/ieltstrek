@@ -1,26 +1,34 @@
 'use client';
 
-import CompletionParagraphRender from './paragraph-render';
+import { CompletionExtended, QuestionGroupExtended } from '@/types/test-exam';
 import { ActionButton } from '@/components/test-exam/action-button';
-import { CompletionExtended } from '@/types/test-exam';
+import CompletionParagraphRender from './paragraph-render';
 
-interface NoteCompletionRenderProps {
-  completion?: CompletionExtended | null;
-}
-export const CompletionRender = ({ completion }: NoteCompletionRenderProps) => {
-  if (!completion) {
+export const CompletionRender = ({
+  questionGroup
+}: {
+  questionGroup: QuestionGroupExtended;
+}) => {
+  if (!questionGroup.completion) {
     return null;
   }
 
   return (
     <>
-      <ActionButton
-        actionType="update"
-        editType="editNoteCompletion"
-        data={{}}
-      />
+      <div className="gap-4 flex justify-between items-center">
+        <ActionButton
+          actionType="update"
+          editType="editCompletionParagraph"
+          data={{ completion: questionGroup.completion }}
+        />
+        <ActionButton
+          actionType="update"
+          editType="editCompletionAnswer"
+          data={{ completion: questionGroup.completion }}
+        />
+      </div>
 
-      <CompletionParagraphRender completion={completion} />
+      <CompletionParagraphRender completion={questionGroup.completion} />
     </>
   );
 };

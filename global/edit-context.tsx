@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, createContext } from 'react';
 import { Assessment, Choice, Passage, PassageHeading } from '@prisma/client';
 import {
+  CompletionExtended,
   IdentifyInfoExtended,
   MultiMoreExtended,
   MultiOneExtended,
@@ -12,12 +13,11 @@ export type EditType =
   | 'editPart'
   | 'openAssessment'
   // Question Type
-  | 'editNoteCompletion'
-  | 'editNoteCompletionGroupItem'
   | 'editIdentifyInfo'
   | 'editChoice'
   | 'editMultiOne'
-  | 'editSummaryCompletion'
+  | 'editCompletionParagraph'
+  | 'editCompletionAnswer'
   | 'editMultiMore'
   | 'editMatchingSentence'
   // Passage
@@ -57,6 +57,7 @@ export interface EditData {
   passage?: Passage;
   passageHeading?: PassageHeading;
   assessment?: Assessment;
+  completion?: CompletionExtended;
 
   // summaryCompletion?: SummaryCompletionExtended;
   // matchingHeading?: MatchingHeadingExtended;
