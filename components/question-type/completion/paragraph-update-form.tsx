@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useTransition } from 'react';
-import { updateCompletion } from '@/actions/question-type/completion';
+import { updateCompletionParagraph } from '@/actions/question-type/completion';
 import { Editor, createEditor } from 'slate';
 import { Transforms } from 'slate';
 import { withHistory } from 'slate-history';
@@ -86,7 +86,7 @@ const CompletionParagraphUpdateForm = () => {
     }
     startTransition(async () => {
       try {
-        await updateCompletion({
+        await updateCompletionParagraph({
           id: completion.id,
           paragraph: JSON.stringify(editor.children)
         });

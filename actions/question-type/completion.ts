@@ -3,8 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { QuestionGroup } from '@prisma/client';
 import { Descendant } from 'slate';
+import { z } from 'zod';
 import { db } from '@/lib/db';
 import { getTotalQuestions } from '@/lib/utils';
+import { CompletionAnswerSchema } from '@/lib/validations/question-type';
 
 export const createCompletion = async (
   questionGroup: QuestionGroup,
@@ -52,7 +54,7 @@ export const createCompletion = async (
   return;
 };
 
-export const updateCompletion = async ({
+export const updateCompletionParagraph = async ({
   id,
   paragraph
 }: {
@@ -68,7 +70,6 @@ export const updateCompletion = async ({
   if (!completion) {
     throw new Error('Completion Id not found');
   }
-
   await db.completion.update({
     where: {
       id
@@ -78,5 +79,40 @@ export const updateCompletion = async ({
     }
   });
 
+  revalidatePath(`/assessments/${completion.questionGroup.part.assessmentId}`);
+};
+
+export const updateCompletionAnswers = async ({
+  formData,
+  id
+}: {
+  formData: z.infer<typeof CompletionAnswerSchema>;
+  id: string;
+}) => {
+  const completion = await db.completion.findUnique({
+    where: { id },
+    include: {
+      questions: { orderBy: { questionNumber: 'asc' } },
+      questionGroup: { select: { part: { select: { assessmentId: true } } } }
+    }
+  });
+  if (!completion) {
+    throw new Error('Completion Id not found');
+  }
+  const { questions } = formData;
+  await db.completion.update({
+    where: { id },
+    data: {
+      questions: {
+        updateMany: questions.map((question, i) => ({
+          where: { id: completion.questions[i].id },
+          data: {
+            correctAnswer: question.correctAnswer,
+            explain: question.explain
+          }
+        }))
+      }
+    }
+  });
   revalidatePath(`/assessments/${completion.questionGroup.part.assessmentId}`);
 };

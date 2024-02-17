@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useTransition } from 'react';
-import { updateMultiOne } from '@/actions/question-type/multiple-choice/multi-one';
+import { updateCompletionAnswers } from '@/actions/question-type/completion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useEditHook } from '@/global/use-edit-hook';
-import { catchError, cn } from '@/lib/utils';
-import { CompletionSchema } from '@/lib/validations/question-type';
+import { catchError } from '@/lib/utils';
+import { CompletionAnswerSchema } from '@/lib/validations/question-type';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
@@ -20,15 +20,14 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export function CompletionAnswerUpdateForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === 'editCompletionAnswer';
   const completion = data?.completion;
-  const form = useForm<z.infer<typeof CompletionSchema>>({
-    resolver: zodResolver(CompletionSchema),
+  const form = useForm<z.infer<typeof CompletionAnswerSchema>>({
+    resolver: zodResolver(CompletionAnswerSchema),
     defaultValues: {
       questions: [{ correctAnswer: '', explain: '' }]
     }
@@ -47,20 +46,19 @@ export function CompletionAnswerUpdateForm() {
   if (!completion || !isModalOpen) {
     return null;
   }
-  const onSubmit = (values: z.infer<typeof CompletionSchema>) => {
-    console.log(values);
-    // startTransition(async () => {
-    //   try {
-    //     await updateMultiOne({
-    //       formData: values,
-    //       id: completion.id
-    //     });
-    //     toast.success('Updated');
-    //     onClose();
-    //   } catch (err) {
-    //     catchError(err);
-    //   }
-    // });
+  const onSubmit = (values: z.infer<typeof CompletionAnswerSchema>) => {
+    startTransition(async () => {
+      try {
+        await updateCompletionAnswers({
+          formData: values,
+          id: completion.id
+        });
+        toast.success('Updated');
+        onClose();
+      } catch (err) {
+        catchError(err);
+      }
+    });
   };
 
   // const correctChoice = completion.choices.find(

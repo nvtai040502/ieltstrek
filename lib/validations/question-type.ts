@@ -44,7 +44,7 @@ export const ListMatchingChoicesSchema = z.object({
   matchingChoices: z.array(z.string().min(1))
 });
 
-export const CompletionSchema = z.object({
+export const CompletionAnswerSchema = z.object({
   questions: z.array(
     z.object({
       correctAnswer: z.string(),
