@@ -1,4 +1,6 @@
+import { Suspense } from 'react';
 import { db } from '@/lib/db';
+import { IdentifyInfoListRender } from './identify-info-render';
 import { MultiOneListRender } from './multi-one-render';
 
 async function QuestionGroupRender({ partId }: { partId: string }) {
@@ -15,10 +17,16 @@ async function QuestionGroupRender({ partId }: { partId: string }) {
             {questionGroup.endQuestionNumber}
           </p>
           <p className=" whitespace-pre-line">{questionGroup.title}</p>
-
-          {questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER' && (
-            <MultiOneListRender questionGroupId={questionGroup.id} />
-          )}
+          <Suspense fallback={<></>}>
+            {questionGroup.type === 'MULTIPLE_CHOICE_ONE_ANSWER' && (
+              <MultiOneListRender questionGroupId={questionGroup.id} />
+            )}
+          </Suspense>
+          <Suspense fallback={<></>}>
+            {questionGroup.type === 'IDENTIFYING_INFORMATION' && (
+              <IdentifyInfoListRender questionGroupId={questionGroup.id} />
+            )}
+          </Suspense>
           {/* {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' &&
             questionGroup.multiMoreList.map((multiMore) => (
               <MultiMoreRender multiMore={multiMore} key={multiMore.id} />

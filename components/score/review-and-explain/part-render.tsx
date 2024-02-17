@@ -25,10 +25,12 @@ const PartRender = async ({
       className="rounded-lg flex-grow"
     >
       <CustomResizablePanel>
-        <p>{part.title}</p>
-        <Suspense fallback={<></>}>
-          <QuestionGroupRender partId={part.id} />
-        </Suspense>
+        <div className=" mb-20">
+          <p>{part.title}</p>
+          <Suspense fallback={<></>}>
+            <QuestionGroupRender partId={part.id} />
+          </Suspense>
+        </div>
         <div className="absolute bottom-0 left-0 bg-secondary w-full py-2 px-4">
           <div className="flex items-center justify-between">
             <p>{part.title}</p>
