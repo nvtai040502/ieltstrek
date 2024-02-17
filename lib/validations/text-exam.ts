@@ -42,29 +42,3 @@ export const SummaryCompletionSchema = z.object({
     })
   )
 });
-
-const TextNodeSchema = z.object({
-  text: z.string(),
-  bold: z.boolean().optional(),
-  italic: z.boolean().optional(),
-  underline: z.boolean().optional(),
-  code: z.boolean().optional()
-});
-
-const ParagraphNodeSchema = z.object({
-  type: z.literal('paragraph'),
-  children: z.array(TextNodeSchema)
-});
-const BlockQuoteNodeSchema = z.object({
-  type: z.literal('block-quote'),
-  children: z.array(TextNodeSchema)
-});
-
-const CenterAlignedParagraphNodeSchema = z.object({
-  type: z.literal('paragraph'),
-  align: z.literal('center'),
-  children: z.array(TextNodeSchema)
-});
-export const NoteCompletionSchema = z.object({
-  title: z.string().min(1)
-});

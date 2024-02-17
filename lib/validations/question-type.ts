@@ -43,3 +43,12 @@ export const ListMatchingChoicesSchema = z.object({
   title: z.string().optional(),
   matchingChoices: z.array(z.string().min(1))
 });
+
+export const CompletionSchema = z.object({
+  questions: z.array(
+    z.object({
+      correctAnswer: z.string(),
+      explain: z.string().optional()
+    })
+  )
+});
