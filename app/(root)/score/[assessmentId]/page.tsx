@@ -13,7 +13,7 @@ interface ScorePageProps {
 async function ScorePage({ params, searchParams }: ScorePageProps) {
   const { part: partIndex } = ParamsScorePageSchema.parse(searchParams);
   return (
-    <Shell variant="default" className="max-w-4xl">
+    <div className=" container mt-4">
       <Suspense fallback={<></>}>
         <ScoreHeaderRender assessmentId={params.assessmentId} />
       </Suspense>
@@ -23,7 +23,7 @@ async function ScorePage({ params, searchParams }: ScorePageProps) {
           partIndex={Number(partIndex)}
         />
       </Suspense>
-    </Shell>
+    </div>
   );
 }
 

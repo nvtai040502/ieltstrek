@@ -31,7 +31,7 @@ const PartRender = async ({
             <QuestionGroupRender partId={part.id} />
           </Suspense>
         </div>
-        <div className="absolute bottom-0 left-0 bg-secondary w-full py-2 px-4">
+        <div className="absolute bottom-0 left-0 bg-background w-full py-2 px-4">
           <div className="flex items-center justify-between">
             <p>{part.title}</p>
             <ButtonNavigatePart

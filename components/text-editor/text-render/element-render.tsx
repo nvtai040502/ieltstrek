@@ -1,30 +1,32 @@
 import {
   EditMatchingBlankRender,
   ReadOnlyMatchingBlankRender,
-  TestReadOnlyMatchingBlankRender,
-} from '@/components/blank-render/matching'
+  TestReadOnlyMatchingBlankRender
+} from '@/components/blank-render/matching';
 
 export const ReadonlyElementRender = ({ props }) => {
-  const { attributes, children, element } = props
+  const { attributes, children, element } = props;
   switch (element.type) {
     case 'blank':
       return (
         // <ReadOnlyMatchingBlankRender questionNumber={element.questionNumber} />
-        <TestReadOnlyMatchingBlankRender questionId={element.questionId} />
-      )
+        <TestReadOnlyMatchingBlankRender
+          questionNumber={element.questionNumber}
+        />
+      );
 
     case 'table':
       return (
         <table className="w-full">
           <tbody {...attributes}>{children}</tbody>
         </table>
-      )
+      );
     case 'table-row':
       return (
         <tr className="m-0 border-t p-0" {...attributes}>
           {children}
         </tr>
-      )
+      );
     case 'table-cell':
       return (
         <td
@@ -33,25 +35,25 @@ export const ReadonlyElementRender = ({ props }) => {
         >
           {children}
         </td>
-      )
+      );
     case 'blockquote':
       return (
         <blockquote className="mt-6 border-l-2 pl-6 italic" {...attributes}>
           {children}
         </blockquote>
-      )
+      );
     case 'bulleted-list':
       return (
         <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...attributes}>
           {children}
         </ul>
-      )
+      );
     case 'heading-one':
       return (
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           {children}
         </h1>
-      )
+      );
     case 'heading-two':
       return (
         <h2
@@ -60,35 +62,35 @@ export const ReadonlyElementRender = ({ props }) => {
         >
           {children}
         </h2>
-      )
+      );
     case 'list-item':
-      return <li {...attributes}>{children}</li>
+      return <li {...attributes}>{children}</li>;
     case 'numbered-list':
-      return <ol {...attributes}>{children}</ol>
+      return <ol {...attributes}>{children}</ol>;
     default:
-      return <span {...attributes}>{children}</span>
+      return <span {...attributes}>{children}</span>;
   }
-}
+};
 
 export const EditElementRender = ({ props }) => {
-  const { attributes, children, element } = props
-  const style = { textAlign: element.align }
+  const { attributes, children, element } = props;
+  const style = { textAlign: element.align };
   switch (element.type) {
     case 'blank':
-      return <EditMatchingBlankRender {...props} />
+      return <EditMatchingBlankRender {...props} />;
 
     case 'table':
       return (
         <table className="w-full">
           <tbody {...attributes}>{children}</tbody>
         </table>
-      )
+      );
     case 'table-row':
       return (
         <tr className="m-0 border-t p-0" {...attributes}>
           {children}
         </tr>
-      )
+      );
     case 'table-cell':
       return (
         <td
@@ -97,25 +99,25 @@ export const EditElementRender = ({ props }) => {
         >
           {children}
         </td>
-      )
+      );
     case 'blockquote':
       return (
         <blockquote className="mt-6 border-l-2 pl-6 italic" {...attributes}>
           {children}
         </blockquote>
-      )
+      );
     case 'bulleted-list':
       return (
         <ul className="my-6 ml-6 list-disc [&>li]:mt-2" {...attributes}>
           {children}
         </ul>
-      )
+      );
     case 'heading-one':
       return (
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           {children}
         </h1>
-      )
+      );
     case 'heading-two':
       return (
         <h2
@@ -124,12 +126,12 @@ export const EditElementRender = ({ props }) => {
         >
           {children}
         </h2>
-      )
+      );
     case 'list-item':
-      return <li {...attributes}>{children}</li>
+      return <li {...attributes}>{children}</li>;
     case 'numbered-list':
-      return <ol {...attributes}>{children}</ol>
+      return <ol {...attributes}>{children}</ol>;
     default:
-      return <p {...attributes}>{children}</p>
+      return <p {...attributes}>{children}</p>;
   }
-}
+};

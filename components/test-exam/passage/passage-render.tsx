@@ -1,5 +1,5 @@
 import { PassageExtended } from '@/types/test-exam';
-import { ActionButton } from '../test-exam/action-button';
+import { ActionButton } from '../action-button';
 
 export function PassageRender({ passage }: { passage: PassageExtended }) {
   return (

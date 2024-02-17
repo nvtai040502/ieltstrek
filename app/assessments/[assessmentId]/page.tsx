@@ -73,14 +73,9 @@ const AssessmentIdPage = async ({
               },
               completion: {
                 include: {
-                  blanks: {
+                  questions: {
                     orderBy: {
-                      question: {
-                        questionNumber: 'asc'
-                      }
-                    },
-                    include: {
-                      question: true
+                      questionNumber: 'asc'
                     }
                   }
                 }

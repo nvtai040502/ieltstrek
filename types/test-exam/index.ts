@@ -1,6 +1,5 @@
 import {
   Assessment,
-  Blank,
   Choice,
   Completion,
   IdentifyingInformation,
@@ -56,11 +55,9 @@ export type IdentifyInfoExtended = IdentifyingInformation & {
   question: Question;
 };
 export type CompletionExtended = Completion & {
-  blanks: BlankExtended[];
+  questions: Question[];
 };
-export type BlankExtended = Blank & {
-  question: Question;
-};
+
 export type MatchingExtended = Matching & {
   matchingChoiceGroup: MatchingChoiceGroupExtended;
 };

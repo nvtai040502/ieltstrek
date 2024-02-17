@@ -8,9 +8,8 @@ export const QuestionGroupSchema = z
     type: z.enum([
       QuestionType.MULTIPLE_CHOICE_ONE_ANSWER,
       QuestionType.MULTIPLE_CHOICE_MORE_ANSWERS,
-      QuestionType.SUMMARY_COMPLETION,
       QuestionType.IDENTIFYING_INFORMATION,
-      QuestionType.NOTE_COMPLETION,
+      QuestionType.COMPLETION,
       QuestionType.TABLE_COMPLETION,
       QuestionType.MATCHING_HEADING,
       QuestionType.MATCHING

@@ -4,11 +4,11 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { QuestionGroupSchema } from '@/lib/validations/question-group';
+import { createCompletion } from '../question-type/completion';
 import { createIdentifyInfoList } from '../question-type/identify-info';
 import { createMatching } from '../question-type/matching';
 import { createMultiMoreList } from '../question-type/multiple-choice/multi-more';
 import { createMultiOneList } from '../question-type/multiple-choice/multi-one';
-import { createNoteCompletion } from '../question-type/note-completion';
 import { createTableCompletion } from '../question-type/table-completion';
 
 export const createQuestionGroup = async ({
@@ -71,10 +71,9 @@ export const createQuestionGroup = async ({
       break;
     case 'IDENTIFYING_INFORMATION':
       await createIdentifyInfoList(questionGroup, part.assessmentId);
-    case 'NOTE_COMPLETION':
-      await createNoteCompletion({
-        questionGroupId: questionGroup.id
-      });
+      break;
+    case 'COMPLETION':
+      await createCompletion(questionGroup, part.assessmentId);
       break;
     case 'TABLE_COMPLETION':
       await createTableCompletion({

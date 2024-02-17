@@ -67,8 +67,7 @@ enum QuestionType {
   MULTIPLE_CHOICE_ONE_ANSWER
   MULTIPLE_CHOICE_MORE_ANSWERS
   IDENTIFYING_INFORMATION
-  SUMMARY_COMPLETION
-  NOTE_COMPLETION
+  COMPLETION
   TABLE_COMPLETION
   MATCHING
   MATCHING_HEADING
@@ -106,6 +105,7 @@ model Question {
 
   questionNumber Int
   correctAnswer  String
+  explain        String?
   respond        String?
 
   questionGroupId String
@@ -115,9 +115,10 @@ model Question {
   assessmentId    String
   assessment      Assessment    @relation(fields: [assessmentId], references: [id])
 
+  completionId   String?
+  completion     Completion?                @relation(fields: [completionId], references: [id])
   multiOne       MultipleChoiceOneAnswer?
   multiMore      MultipleChoiceMoreAnswers?
-  blank          Blank?
   matchingChoice MatchingChoice?
   identifyInfo   IdentifyingInformation?
 
@@ -197,23 +198,9 @@ model Completion {
 
   paragraph String
 
-  blanks          Blank[]
+  questions       Question[]
   questionGroupId String        @unique
   questionGroup   QuestionGroup @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-}
-
-model Blank {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  expectedAnswer String
-  explanation    String?
-
-  questionId   String     @unique
-  question     Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  completionId String
-  completion   Completion @relation(fields: [completionId], references: [id], onDelete: Cascade)
 }
 
 model Matching {

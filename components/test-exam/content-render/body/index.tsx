@@ -16,7 +16,7 @@ import {
   ResizablePanelGroup
 } from '@/components/ui/resizable';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { PassageRender } from '../../../common/passage-render';
+import { PassageRender } from '../../passage/passage-render';
 
 const PartBodyContentRender = () => {
   const { selectedPart } = useContext(ExamContext);
@@ -110,7 +110,7 @@ const PartBodyContentRender = () => {
                         key={identifyInfo.id}
                       />
                     ))}
-                  {(questionGroup.type === 'NOTE_COMPLETION' ||
+                  {(questionGroup.type === 'COMPLETION' ||
                     questionGroup.type === 'TABLE_COMPLETION') && (
                     <CompletionRender completion={questionGroup.completion} />
                   )}

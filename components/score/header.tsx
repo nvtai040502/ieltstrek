@@ -22,7 +22,7 @@ const ScoreHeaderRender = async ({
 
   return (
     // TODO: Make design better
-    <div className="">
+    <div className="container max-w-4xl">
       {/* Exam Card */}
       <div className="flex flex-wrap bg-red-500 gap-4 sm:justify-start justify-center ">
         <div className="relative">
