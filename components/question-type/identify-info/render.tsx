@@ -17,7 +17,7 @@ export const IdentifyInfoRender = ({
 }) => {
   const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
   const [answer, setAnswer] = useState<AnswerType | undefined>(undefined);
-  const { handleAnswerSelected } = useExamHandler();
+  const { handleAnswerChange: handleAnswerSelected } = useExamHandler();
   useEffect(() => {
     const answer = userAnswers.find(
       (answer) => answer.questionId === identifyInfo.questionId

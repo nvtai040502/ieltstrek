@@ -1,23 +1,28 @@
 import { Dispatch, RefObject, SetStateAction, createContext } from 'react';
-import { IdentifyChoice } from '@prisma/client';
+import { IdentifyChoice, QuestionType } from '@prisma/client';
 import { AssessmentExtended, PartExtended } from '@/types/test-exam';
 import { ModeType } from '@/lib/validations/params';
 
 export type AnswerType =
   | {
-      questionId: string;
+      questionNumber: number;
       type: 'MULTIPLE_CHOICE_ONE_ANSWER';
       choiceId: string;
     }
   | {
-      questionId: string;
+      questionNumber: number;
       type: 'MULTI_MORE';
       choiceIdList: string[];
     }
   | {
-      questionId: string;
+      questionNumber: number;
       type: 'IDENTIFY_INFO';
       content: IdentifyChoice;
+    }
+  | {
+      questionNumber: number;
+      type: 'COMPLETION';
+      content: string;
     };
 // | {
 //     questionId: string

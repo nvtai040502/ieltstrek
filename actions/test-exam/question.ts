@@ -25,3 +25,24 @@ export const updateRespond = async ({
     data: { respond }
   });
 };
+
+export const getQuestion = async ({
+  assessmentId,
+  questionNumber
+}: {
+  assessmentId: string;
+  questionNumber: number;
+}) => {
+  const question = await db.question.findUnique({
+    where: {
+      assessmentId_questionNumber: {
+        assessmentId,
+        questionNumber
+      }
+    }
+  });
+  if (!question) {
+    throw new Error('Assessment Id or Question Number wrong');
+  }
+  return question;
+};

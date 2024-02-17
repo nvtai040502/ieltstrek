@@ -122,7 +122,7 @@ model Question {
   matchingChoice MatchingChoice?
   identifyInfo   IdentifyingInformation?
 
-  // passageMultiHeading PassageMultiHeading?
+  @@unique([assessmentId, questionNumber])
 }
 
 model MultipleChoiceOneAnswer {

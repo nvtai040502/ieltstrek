@@ -16,7 +16,7 @@ export const MultiMoreRender = ({
 }) => {
   const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
   const [choiceIdList, setChoiceIdList] = useState<string[]>([]);
-  const { handleAnswerSelected } = useExamHandler();
+  const { handleAnswerChange: handleAnswerSelected } = useExamHandler();
   useEffect(() => {
     const answer = userAnswers.find(
       (answer) => answer.questionId === multiMore.questionId
