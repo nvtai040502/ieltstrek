@@ -1,10 +1,8 @@
 import { db } from '@/lib/db';
-import { Button } from '@/components/ui/button';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { PassageRender } from '@/components/common/passage-render';
 import {
   CustomResizablePanel,
   ResizableHandle,
-  ResizablePanel,
   ResizablePanelGroup
 } from '../../ui/resizable';
 import ButtonNavigatePart from './button-nav-part';
@@ -18,14 +16,19 @@ const PartRender = async ({
 }) => {
   const part = await db.part.findUnique({
     where: { id: partId },
-    include: { passage: true }
+    include: {
+      passage: {
+        include: { passageHeadingList: { orderBy: { order: 'asc' } } }
+      }
+    }
   });
   if (!part || !part.passage) {
     return null;
   }
   const nextPartIndex =
-    part.order < totalParts - 2 ? part.order + 1 : undefined;
+    part.order < totalParts - 1 ? part.order + 1 : undefined;
   const prevPartIndex = part.order > 0 ? part.order - 1 : undefined;
+  console.log(part.order, totalParts);
   return (
     <ResizablePanelGroup
       direction="horizontal"
@@ -49,7 +52,7 @@ const PartRender = async ({
 
       <ResizableHandle withHandle />
       <CustomResizablePanel>
-        <p>{part.passage.title}</p>
+        <PassageRender passage={part.passage} />
       </CustomResizablePanel>
     </ResizablePanelGroup>
   );

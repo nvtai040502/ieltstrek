@@ -20,6 +20,7 @@ export const useExamHandler = () => {
     setUserAnswers,
     selectedPart,
     timeRemaining,
+    setMode,
     setIsSubmit
   } = useContext(ExamContext);
 
@@ -69,6 +70,7 @@ export const useExamHandler = () => {
       totalCorrectAnswers,
       assessmentId: selectedAssessment.id
     });
+    setMode(null);
     setIsSubmit(false);
     console.log('🚀 ~ handleSubmit ~ score:', score);
   }

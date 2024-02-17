@@ -21,14 +21,14 @@ function ButtonNavigatePart({
   };
 
   return (
-    <>
-      {nextPartIndex && (
-        <Button onClick={() => handleClick(nextPartIndex)}>Next</Button>
-      )}
-      {prevPartIndex && (
+    <div className="flex gap-4">
+      {prevPartIndex !== undefined && (
         <Button onClick={() => handleClick(prevPartIndex)}>Previous</Button>
       )}
-    </>
+      {nextPartIndex !== undefined && (
+        <Button onClick={() => handleClick(nextPartIndex)}>Next</Button>
+      )}
+    </div>
   );
 }
 

@@ -16,7 +16,7 @@ import {
   ResizablePanelGroup
 } from '@/components/ui/resizable';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { PassageRender } from '../../passage/render';
+import { PassageRender } from '../../../common/passage-render';
 
 const PartBodyContentRender = () => {
   const { selectedPart } = useContext(ExamContext);
@@ -34,7 +34,18 @@ const PartBodyContentRender = () => {
             type="always"
             className="w-full h-full overflow-auto pl-4 pr-8"
           >
-            <PassageRender />
+            {selectedPart.passage ? (
+              <PassageRender passage={selectedPart.passage} />
+            ) : (
+              <ActionButton
+                actionType="create"
+                editType="createPassage"
+                data={{ part: selectedPart }}
+              >
+                <div className={buttonVariants()}>New Passage</div>
+              </ActionButton>
+            )}
+
             <ScrollBar className="w-4" />
           </ScrollArea>
         </ResizablePanel>

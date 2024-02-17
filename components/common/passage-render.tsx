@@ -1,27 +1,7 @@
-'use client';
+import { PassageExtended } from '@/types/test-exam';
+import { ActionButton } from '../test-exam/action-button';
 
-import { useContext } from 'react';
-import { ExamContext } from '@/global/exam-context';
-import { buttonVariants } from '@/components/ui/button';
-import { ActionButton } from '../action-button';
-
-export function PassageRender() {
-  const { selectedPart } = useContext(ExamContext);
-  const passage = selectedPart?.passage;
-  if (!selectedPart) {
-    return null;
-  }
-  if (!passage) {
-    return (
-      <ActionButton
-        actionType="create"
-        editType="createPassage"
-        data={{ part: selectedPart }}
-      >
-        <div className={buttonVariants()}>New Passage</div>
-      </ActionButton>
-    );
-  }
+export function PassageRender({ passage }: { passage: PassageExtended }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between">

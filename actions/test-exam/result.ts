@@ -41,6 +41,6 @@ export const createOrUpdateResult = async ({
     });
   }
 
-  // revalidatePath(`/score/${assessmentId}`);
+  revalidatePath(`/score/${assessmentId}`);
   redirect(`/score/${assessmentId}`);
 };
