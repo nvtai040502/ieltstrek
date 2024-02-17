@@ -1,44 +1,34 @@
-import { db } from '@/lib/db';
-import { PassageRender } from '@/components/common/passage-render';
+import { Suspense } from 'react';
+import { Part } from '@prisma/client';
 import {
   CustomResizablePanel,
   ResizableHandle,
   ResizablePanelGroup
 } from '../../ui/resizable';
 import ButtonNavigatePart from './button-nav-part';
+import { PassageRender } from './passage-render';
+import QuestionGroupRender from './question-group-render';
 
 const PartRender = async ({
-  partId,
+  part,
   totalParts
 }: {
-  partId: string;
+  part: Part;
   totalParts: number;
 }) => {
-  const part = await db.part.findUnique({
-    where: { id: partId },
-    include: {
-      passage: {
-        include: { passageHeadingList: { orderBy: { order: 'asc' } } }
-      }
-    }
-  });
-  if (!part || !part.passage) {
-    return null;
-  }
   const nextPartIndex =
     part.order < totalParts - 1 ? part.order + 1 : undefined;
   const prevPartIndex = part.order > 0 ? part.order - 1 : undefined;
-  console.log(part.order, totalParts);
   return (
     <ResizablePanelGroup
       direction="horizontal"
       className="rounded-lg flex-grow"
     >
       <CustomResizablePanel>
-        <p className="p-40">{part.title}</p>
-        <p className="p-40">{part.title}</p>
-        <p className="p-40">{part.title}</p>
-        <p>{part.description}</p>
+        <p>{part.title}</p>
+        <Suspense fallback={<></>}>
+          <QuestionGroupRender partId={part.id} />
+        </Suspense>
         <div className="absolute bottom-0 left-0 bg-secondary w-full py-2 px-4">
           <div className="flex items-center justify-between">
             <p>{part.title}</p>
@@ -52,7 +42,9 @@ const PartRender = async ({
 
       <ResizableHandle withHandle />
       <CustomResizablePanel>
-        <PassageRender passage={part.passage} />
+        <Suspense fallback={<></>}>
+          <PassageRender partId={part.id} />
+        </Suspense>
       </CustomResizablePanel>
     </ResizablePanelGroup>
   );

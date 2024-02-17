@@ -22,14 +22,12 @@ const ReviewAndExplainRender = async ({
   if (!assessment) {
     return notFound();
   }
-  const partId = partIndex
-    ? assessment.parts[partIndex].id
-    : assessment.parts[0].id;
+  const part = partIndex ? assessment.parts[partIndex] : assessment.parts[0];
   return (
     <div className="max-h-[400px] h-[400px] flex flex-col ">
       <div className="font-bold text-xl">Review And Explanation</div>
       <Suspense fallback={<></>}>
-        <PartRender partId={partId} totalParts={assessment.parts.length} />
+        <PartRender part={part} totalParts={assessment.parts.length} />
       </Suspense>
     </div>
   );
