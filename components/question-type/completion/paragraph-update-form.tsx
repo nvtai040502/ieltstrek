@@ -2,8 +2,7 @@
 
 import { useCallback, useMemo, useTransition } from 'react';
 import { updateCompletionParagraph } from '@/actions/question-type/completion';
-import { Editor, createEditor } from 'slate';
-import { Element, Transforms } from 'slate';
+import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
   Editable,
@@ -14,8 +13,7 @@ import {
 } from 'slate-react';
 import { toast } from 'sonner';
 import { useEditHook } from '@/global/use-edit-hook';
-import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
-import { catchError } from '@/lib/utils';
+import { catchError, countBlankOccurrences, withInline } from '@/lib/utils';
 import { ElementRender } from '@/components/common/text-editor/element-render';
 import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
 import Toolbar from '@/components/common/text-editor/toolbar';
@@ -25,14 +23,6 @@ import {
   DialogClose,
   DialogContentWithScrollArea
 } from '@/components/ui/dialog';
-
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: CustomEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
 
 const CompletionParagraphUpdateForm = () => {
   const renderElement = useCallback(
@@ -48,37 +38,21 @@ const CompletionParagraphUpdateForm = () => {
   const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
   const isModalOpen = isOpen && type === 'editCompletionParagraph';
-  const completion = data?.completion;
+  const questionGroup = data?.questionGroup;
+  const completion = questionGroup?.completion;
   const editor = useMemo(
     () => withInline(withHistory(withReact(createEditor()))),
     []
   );
-  if (!completion || !isModalOpen) {
+  if (!questionGroup || !completion || !isModalOpen) {
     return null;
   }
 
-  const countBlankOccurrences = () => {
-    let blankCount = 0;
-
-    for (const [node, path] of Editor.nodes(editor, {
-      at: []
-    })) {
-      if (Element.isElement(node) && node.type === 'blank') {
-        const { type, ...props } = node;
-
-        const newNode = {
-          ...props,
-          type,
-          questionNumber: completion.questions[0].questionNumber + blankCount
-        };
-        blankCount++;
-        Transforms.setNodes(editor, { ...newNode }, { at: path });
-      }
-    }
-    return blankCount;
-  };
   const handleSave = async () => {
-    const blankCount = countBlankOccurrences();
+    const blankCount = countBlankOccurrences({
+      editor,
+      startQuesNum: questionGroup.startQuestionNumber
+    });
     const totalQuestions = completion.questions.length;
     if (blankCount !== totalQuestions) {
       toast.error(
@@ -125,12 +99,3 @@ const CompletionParagraphUpdateForm = () => {
 };
 
 export default CompletionParagraphUpdateForm;
-
-const withInline = (editor: CustomEditor) => {
-  const { isInline } = editor;
-
-  editor.isInline = (element) =>
-    ['blank'].includes(element.type) || isInline(element);
-
-  return editor;
-};

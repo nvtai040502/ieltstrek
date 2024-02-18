@@ -11,17 +11,8 @@ import {
   withReact
 } from 'slate-react';
 import { CompletionExtended } from '@/types/test-exam';
-import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
 import { ElementRender } from '@/components/common/text-editor/element-render';
 import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
-
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: CustomEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
 
 const CompletionParagraphRender = ({
   completion

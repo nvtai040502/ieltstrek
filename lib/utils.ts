@@ -16,6 +16,14 @@ export const getTotalQuestions = (questionGroup: QuestionGroup) => {
     questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1
   );
 };
+export const withInline = (editor: CustomEditor) => {
+  const { isInline } = editor;
+
+  editor.isInline = (element) =>
+    ['blank'].includes(element.type) || isInline(element);
+
+  return editor;
+};
 export const countBlankOccurrences = ({
   editor,
   startQuesNum

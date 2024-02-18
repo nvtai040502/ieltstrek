@@ -2,6 +2,13 @@ import { BaseEditor, Descendant } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
 
+declare module 'slate' {
+  interface CustomTypes {
+    Editor: CustomEditor;
+    Element: CustomElement;
+    Text: CustomText;
+  }
+}
 export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor;
 
 export type TextAlignType = 'center' | 'left' | 'right' | 'justify';

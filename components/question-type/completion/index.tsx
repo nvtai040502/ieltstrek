@@ -20,14 +20,14 @@ export const CompletionRender = ({
         <ActionButton
           actionType="update"
           editType="editCompletionParagraph"
-          data={{ completion: questionGroup.completion }}
+          data={{ questionGroup }}
         >
           <div className={buttonVariants()}>Update Paragraph</div>
         </ActionButton>
         <ActionButton
           actionType="update"
           editType="editCompletionAnswer"
-          data={{ completion: questionGroup.completion }}
+          data={{ questionGroup }}
         >
           <div className={buttonVariants()}>Update Answers</div>
         </ActionButton>

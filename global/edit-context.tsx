@@ -56,13 +56,6 @@ export interface EditData {
   passage?: Passage;
   passageHeading?: PassageHeading;
   assessment?: Assessment;
-  completion?: CompletionExtended;
-  matching?: MatchingExtended;
-
-  // summaryCompletion?: SummaryCompletionExtended;
-  // matchingHeading?: MatchingHeadingExtended;
-  // matchingSentence?: MatchingSentenceExtended;
-  // listMatchingChoices?: ListMatchingChoicesExtended;
 }
 
 interface EditContextProps {

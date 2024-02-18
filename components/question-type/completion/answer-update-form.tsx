@@ -25,7 +25,8 @@ export function CompletionAnswerUpdateForm() {
   const [isPending, startTransition] = useTransition();
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === 'editCompletionAnswer';
-  const completion = data?.completion;
+  const questionGroup = data?.questionGroup;
+  const completion = questionGroup?.completion;
   const form = useForm<z.infer<typeof CompletionAnswerSchema>>({
     resolver: zodResolver(CompletionAnswerSchema),
     defaultValues: {
@@ -43,7 +44,7 @@ export function CompletionAnswerUpdateForm() {
       );
     }
   }, [form, completion]);
-  if (!completion || !isModalOpen) {
+  if (!questionGroup || !completion || !isModalOpen) {
     return null;
   }
   const onSubmit = (values: z.infer<typeof CompletionAnswerSchema>) => {
@@ -60,10 +61,6 @@ export function CompletionAnswerUpdateForm() {
       }
     });
   };
-
-  // const correctChoice = completion.choices.find(
-  //   (choice) => choice.isCorrect === true
-  // );
 
   return (
     <Dialog onOpenChange={onClose} open={isModalOpen}>

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useTransition } from 'react';
 import { updateMatchingParagraph } from '@/actions/question-type/matching';
-import { Element, Transforms, createEditor } from 'slate';
+import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
   Editable,
@@ -13,8 +13,7 @@ import {
 } from 'slate-react';
 import { toast } from 'sonner';
 import { useEditHook } from '@/global/use-edit-hook';
-import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
-import { catchError, countBlankOccurrences } from '@/lib/utils';
+import { catchError, countBlankOccurrences, withInline } from '@/lib/utils';
 import { ElementRender } from '@/components/common/text-editor/element-render';
 import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
 import Toolbar from '@/components/common/text-editor/toolbar';
@@ -24,14 +23,6 @@ import {
   DialogClose,
   DialogContentWithScrollArea
 } from '@/components/ui/dialog';
-
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: CustomEditor;
-    Element: CustomElement;
-    Text: CustomText;
-  }
-}
 
 const MatchingParagraphUpdateForm = () => {
   const renderElement = useCallback(
@@ -48,7 +39,7 @@ const MatchingParagraphUpdateForm = () => {
   const [isPending, startTransition] = useTransition();
   const isModalOpen = isOpen && type === 'editMatchingSentence';
   const questionGroup = data?.questionGroup;
-  const matching = data?.questionGroup?.matching;
+  const matching = questionGroup?.matching;
   const editor = useMemo(
     () => withInline(withHistory(withReact(createEditor()))),
     []
@@ -109,12 +100,3 @@ const MatchingParagraphUpdateForm = () => {
 };
 
 export default MatchingParagraphUpdateForm;
-
-const withInline = (editor: CustomEditor) => {
-  const { isInline } = editor;
-
-  editor.isInline = (element) =>
-    ['blank'].includes(element.type) || isInline(element);
-
-  return editor;
-};
