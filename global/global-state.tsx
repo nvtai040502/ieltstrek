@@ -30,7 +30,6 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [listHeading, setListHeading] = useState<string[]>([]);
 
   const [questionGroupId, setQuestionGroupId] = useState<string>('');
-  const [questionId, setQuestionId] = useState('');
   const [prevContent, setPrevContent] = useState('');
   const [matchingChoiceId, setMatchingChoiceId] = useState('');
   const [mode, setMode] = useState<ModeType | null>(null);
@@ -38,6 +37,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     MatchingChoice[]
   >([]);
   const [choiceGroupOver, setChoiceGroupOver] = useState(false);
+  const [questionId, setQuestionId] = useState<string | null>(null);
   const [isSubmit, setIsSubmit] = useState(false);
 
   useEffect(() => {
@@ -119,14 +119,14 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
           value={{
             questionGroupId,
             matchingChoiceId,
-            questionId,
             matchingChoiceList,
             prevContent,
             choiceGroupOver,
+            questionId,
+            setQuestionId,
             setChoiceGroupOver,
             setPrevContent,
             setMatchingChoiceList,
-            setQuestionId,
             setMatchingChoiceId,
             setQuestionGroupId
           }}

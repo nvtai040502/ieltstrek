@@ -47,7 +47,7 @@ export const MatchingRender = ({
           /> */}
         </div>
         <div
-          onDragOver={(event) => handleDragOver(event)}
+          onDragOver={(event) => handleDragOver({ event, type: 'groupChoice' })}
           onDragLeave={handleDragLeave}
           className={cn(
             'flex flex-col gap-4',

@@ -12,7 +12,7 @@ export function MatchingBlankRender({
   const { userAnswers, selectedPart, questionRefs } = useContext(ExamContext);
 
   const { handleDragOver, handleDragLeave } = useDnd();
-  const { setQuestionId } = useContext(DndContext);
+  const { questionId } = useContext(DndContext);
   const {
     setCurrentRef: setCurrentQuestionIndex,
     currentRef: currentQuestionIndex
@@ -31,20 +31,20 @@ export function MatchingBlankRender({
 
   const handleDrop = (event: DragEvent) => {
     event.preventDefault();
-    setQuestionId(question.id);
     setCurrentQuestionIndex(question.questionNumber - 1);
     const ref = questionRefs[question.questionNumber - 1].current;
     if (ref) {
       ref.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
   return (
     <>
       {answer && answer.type === 'MATCHING' && answer.content ? (
         <div
           onDrop={handleDrop}
-          onDragOver={handleDragOver}
+          onDragOver={(event) =>
+            handleDragOver({ event, type: 'question', questionId: question.id })
+          }
           draggable
           onDragLeave={handleDragLeave}
           ref={questionRefs[question.questionNumber - 1]}
@@ -55,11 +55,14 @@ export function MatchingBlankRender({
       ) : (
         <div
           onDrop={handleDrop}
-          onDragOver={handleDragOver}
+          onDragOver={(event) =>
+            handleDragOver({ event, type: 'question', questionId: question.id })
+          }
           onDragLeave={handleDragLeave}
           ref={questionRefs[question.questionNumber - 1]}
           className={cn(
             'border-4 border-dotted  w-full p-4',
+            questionId === question.id ? 'bg-secondary' : ' ',
             currentQuestionIndex === question.questionNumber - 1
               ? ' '
               : 'border-secondary'

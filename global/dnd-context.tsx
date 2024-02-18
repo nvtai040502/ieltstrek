@@ -6,31 +6,27 @@ interface DndContextProps {
   matchingChoiceList: MatchingChoice[];
   prevContent: string;
   choiceGroupOver: boolean;
+  matchingChoiceId: string;
+  questionId: string | null;
   setChoiceGroupOver: Dispatch<SetStateAction<boolean>>;
-  // questionIdOver: { [id: string]: boolean };
-  // setQuestionIdOver: Dispatch<SetStateAction<{ [id: string]: boolean }>>;
+  setQuestionId: Dispatch<SetStateAction<string | null>>;
   setPrevContent: Dispatch<SetStateAction<string>>;
   setMatchingChoiceList: Dispatch<SetStateAction<MatchingChoice[]>>;
   setQuestionGroupId: Dispatch<SetStateAction<string>>;
-  matchingChoiceId: string;
   setMatchingChoiceId: Dispatch<SetStateAction<string>>;
-  questionId: string;
-  setQuestionId: Dispatch<SetStateAction<string>>;
 }
 
 export const DndContext = createContext<DndContextProps>({
   questionGroupId: '',
   matchingChoiceId: '',
-  questionId: '',
   matchingChoiceList: [],
   prevContent: '',
   choiceGroupOver: false,
-  // questionIdOver: {},
-  // setQuestionIdOver: () => {},
+  questionId: null,
+  setQuestionId: () => {},
   setChoiceGroupOver: () => {},
   setPrevContent: () => {},
   setMatchingChoiceList: () => {},
-  setQuestionId: () => {},
   setMatchingChoiceId: () => {},
   setQuestionGroupId: () => {}
 });

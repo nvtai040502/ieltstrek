@@ -6,6 +6,7 @@ export const useDnd = () => {
   const {
     matchingChoiceId,
     questionGroupId,
+    setQuestionId,
     questionId,
     setChoiceGroupOver,
     setMatchingChoiceList,
@@ -94,13 +95,33 @@ export const useDnd = () => {
     setQuestionGroupId(questionGroupId);
     setMatchingChoiceId(matchingChoiceId);
   };
-  const handleDragOver = (event: DragEvent) => {
+  const handleDragOver = ({
+    event,
+    type,
+    questionId
+  }:
+    | {
+        event: DragEvent;
+        type: 'question';
+        questionId: string;
+      }
+    | {
+        event: DragEvent;
+        type: 'groupChoice';
+        questionId?: never;
+      }) => {
     event.preventDefault();
-    setChoiceGroupOver(true);
+    if (type === 'groupChoice') {
+      setChoiceGroupOver(true);
+    }
+    if (type === 'question') {
+      setQuestionId(questionId);
+    }
   };
   const handleDragLeave = (event: DragEvent) => {
     event.preventDefault();
     setChoiceGroupOver(false);
+    setQuestionId(null);
   };
   return { handleDragEnd, handleDragStart, handleDragOver, handleDragLeave };
 };
