@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { getQuestion } from '@/actions/test-exam/question';
 import { Question } from '@prisma/client';
 import { InputGap } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 
-function BlankRender({
+function ResultBlankRender({
   questionNumber,
   assessmentId
 }: {
@@ -26,13 +27,23 @@ function BlankRender({
 
     fetchData();
   }, [questionNumber, assessmentId]);
+  if (!question) {
+    return (
+      <Skeleton className="inline-block">
+        <InputGap
+          className={' inline-block border-none bg-secondary-foreground'}
+          readOnly
+        />
+      </Skeleton>
+    );
+  }
   return (
     <InputGap
-      value={question?.respond || ''}
+      value={question.respond || ''}
       className="inline-block"
       readOnly
     />
   );
 }
 
-export default BlankRender;
+export default ResultBlankRender;
