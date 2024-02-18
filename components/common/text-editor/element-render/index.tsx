@@ -1,6 +1,6 @@
 import { RenderElementProps } from 'slate-react';
-import { EditMatchingBlankRender } from '@/components/blank-render/matching';
 import CompletionBlankRender from '@/components/question-type/completion/blank-render';
+import { MatchingBlankRender } from '@/components/question-type/matching/matching';
 import ResultBlankRender from '@/components/score/review-and-explain/completion-render/blank';
 
 type ReadonlyElementRenderProps =
@@ -31,12 +31,20 @@ export const ElementRender = (props: ReadonlyElementRenderProps) => {
         }
       }
       if (props.mode === 'edit') {
-        return <EditMatchingBlankRender {...slateProps} />;
+        return (
+          <span {...attributes} className="bg-red-500">
+            {children}
+          </span>
+        );
       }
       if (props.mode === 'readonly') {
         if (props.type === 'Completion') {
           return (
             <CompletionBlankRender questionNumber={element.questionNumber} />
+          );
+        } else if (props.type === 'Matching') {
+          return (
+            <MatchingBlankRender questionNumber={element.questionNumber} />
           );
         }
       }
