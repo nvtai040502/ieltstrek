@@ -92,10 +92,8 @@ model QuestionGroup {
   multiMoreList    MultipleChoiceMoreAnswers[]
   identifyInfoList IdentifyingInformation[]
 
-  completion          Completion?
-  matching            Matching?
-  matchingChoiceGroup MatchingChoiceGroup?
-  // matchingHeading     MatchingHeading?
+  completion Completion?
+  matching   Matching?
 }
 
 model Question {
@@ -208,22 +206,9 @@ model Matching {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  paragraph String
+  paragraph        String
+  titleForQuestion String?
 
-  questionGroupId       String              @unique
-  questionGroup         QuestionGroup       @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
-  matchingChoiceGroupId String              @unique
-  matchingChoiceGroup   MatchingChoiceGroup @relation(fields: [matchingChoiceGroupId], references: [id], onDelete: Cascade)
-}
-
-model MatchingChoiceGroup {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  title String?
-
-  matching           Matching?
   matchingChoiceList MatchingChoice[]
   questionGroupId    String           @unique
   questionGroup      QuestionGroup    @relation(fields: [questionGroupId], references: [id], onDelete: Cascade)
@@ -236,10 +221,10 @@ model MatchingChoice {
 
   content String
 
-  questionId            String?             @unique
-  question              Question?           @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  matchingChoiceGroupId String
-  matchingChoiceGroup   MatchingChoiceGroup @relation(fields: [matchingChoiceGroupId], references: [id], onDelete: Cascade)
+  questionId String?   @unique
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  matchingId String
+  matching   Matching  @relation(fields: [matchingId], references: [id], onDelete: Cascade)
 }
 
 // model MatchingHeading {

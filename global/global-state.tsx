@@ -39,7 +39,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [choiceGroupOver, setChoiceGroupOver] = useState(false);
   const [questionId, setQuestionId] = useState<string | null>(null);
   const [isSubmit, setIsSubmit] = useState(false);
-
+  const [dndType, setDndType] = useState<'question' | 'groupChoice' | null>(
+    null
+  );
   useEffect(() => {
     if (!selectedAssessment || selectedPart || !mode) return;
 
@@ -123,6 +125,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
             prevContent,
             choiceGroupOver,
             questionId,
+            type: dndType,
+            setType: setDndType,
             setQuestionId,
             setChoiceGroupOver,
             setPrevContent,

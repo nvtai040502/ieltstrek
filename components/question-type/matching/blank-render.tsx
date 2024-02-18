@@ -11,7 +11,8 @@ export function MatchingBlankRender({
 }) {
   const { userAnswers, selectedPart, questionRefs } = useContext(ExamContext);
 
-  const { handleDragOver, handleDragLeave, handleDrop } = useDnd();
+  const { handleDragOver, handleDragLeave, handleDrop, handleDragStart } =
+    useDnd();
   const { questionId } = useContext(DndContext);
   const { setCurrentRef, currentRef } = useContext(ExamContext);
 
@@ -30,22 +31,36 @@ export function MatchingBlankRender({
       {answer && answer.type === 'MATCHING' && answer.content ? (
         <div
           onDrop={(event) =>
-            handleDrop({ event, quesNum: question.questionNumber })
+            handleDrop({
+              event,
+              quesNum: question.questionNumber,
+              type: 'question'
+            })
           }
+          // onDragStart={() =>
+          //   handleDragStart(question.questionGroupId, answer.matchingChoiceId)
+          // }
           onDragOver={(event) =>
             handleDragOver({ event, type: 'question', questionId: question.id })
           }
-          draggable
+          // draggable
           onDragLeave={handleDragLeave}
           ref={questionRefs[question.questionNumber - 1]}
-          className={cn('bg-background border-4 border-dotted w-full p-4')}
+          className={cn(
+            'border-4 bg-background border-dotted  w-full p-4',
+            questionId === question.id ? 'bg-secondary' : ' '
+          )}
         >
           {answer.content}
         </div>
       ) : (
         <div
           onDrop={(event) =>
-            handleDrop({ event, quesNum: question.questionNumber })
+            handleDrop({
+              event,
+              quesNum: question.questionNumber,
+              type: 'question'
+            })
           }
           onDragOver={(event) =>
             handleDragOver({ event, type: 'question', questionId: question.id })

@@ -1,9 +1,7 @@
 import { Dispatch, SetStateAction, createContext } from 'react';
 import { Assessment, Choice, Passage, PassageHeading } from '@prisma/client';
 import {
-  CompletionExtended,
   IdentifyInfoExtended,
-  MatchingExtended,
   MultiMoreExtended,
   MultiOneExtended,
   PartExtended,
@@ -28,7 +26,7 @@ export type EditType =
   | 'deleteQuestionGroup'
   | 'createQuestionGroup'
   | 'editMatchingHeading'
-  | 'editListMatchingChoices'
+  | 'editMatchingChoiceList'
   | 'createAssessment'
   | null;
 

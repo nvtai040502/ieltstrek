@@ -3,9 +3,6 @@ import { AssessmentExtended } from '@/types/test-exam';
 import { db } from '@/lib/db';
 import { ParamsAssessmentPageSchema } from '@/lib/validations/params';
 import AssessmentRender from '@/components/test-exam/assessment/render';
-import { TestExamContentRender } from '@/components/test-exam/content-render';
-import TextExamHeaderRender from '@/components/test-exam/header-render';
-import PublicAssessmentButton from '@/components/test-exam/public-assessment-button';
 
 interface AssessmentIdPageProps {
   params: {

@@ -1,80 +1,75 @@
-"use client";
+'use client';
 
-import { updateListMatchingChoices } from "@/actions/books/list-match-choices";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContentWithScrollArea } from "@/components/ui/dialog";
+import { useEffect, useState, useTransition } from 'react';
+import { updateMatchingChoiceGroup } from '@/actions/question-type/list-match-choices';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import { ListMatchingChoicesSchema } from '@/lib/validations/question-type';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
-import { useEditHook } from "@/global/use-edit-hook";
-import { catchError } from "@/lib/utils";
-import {
-  ListMatchingChoicesSchema,
-  MatchingHeadingSchema,
-} from "@/lib/validations/question-type";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-
-export function UpdateListMatchingChoicesForm() {
+export function MatchingChoiceGroupUpdateForm() {
   const [isPending, startTransition] = useTransition();
   const [listMatchingChoicesDynamic, setListMatchingChoicesDynamic] = useState<
     string[]
   >([]);
   const { onClose, isOpen, type, data } = useEditHook();
-  const isModalOpen = isOpen && type === "editListMatchingChoices";
-  const listMatchingChoices = data?.listMatchingChoices;
+  const isModalOpen = isOpen && type === 'editMatchingChoiceList';
+  const questionGroup = data?.questionGroup;
+  const matchingChoiceGroup = questionGroup?.matching?.matchingChoiceGroup;
 
   const form = useForm<z.infer<typeof ListMatchingChoicesSchema>>({
     resolver: zodResolver(ListMatchingChoicesSchema),
     defaultValues: {
-      title: "",
-      matchingChoices: [],
-    },
+      title: '',
+      matchingChoices: []
+    }
   });
   useEffect(() => {
-    if (listMatchingChoices) {
-      form.setValue("title", listMatchingChoices.title || "");
+    if (matchingChoiceGroup) {
+      form.setValue('title', matchingChoiceGroup.title || '');
       setListMatchingChoicesDynamic(
-        listMatchingChoices.matchingChoices.map((item) => item.content),
+        matchingChoiceGroup.matchingChoiceList.map((item) => item.content)
       );
     }
-  }, [form, listMatchingChoices]);
+  }, [form, matchingChoiceGroup]);
 
   useEffect(() => {
     if (
       listMatchingChoicesDynamic.length <
       form.getValues().matchingChoices.length
     ) {
-      form.resetField("matchingChoices");
+      form.resetField('matchingChoices');
     }
     listMatchingChoicesDynamic.forEach((content, index) => {
       form.setValue(`matchingChoices.${index}`, content);
     });
   }, [form, listMatchingChoicesDynamic]);
-  if (!isModalOpen || !listMatchingChoices) {
+  if (!isModalOpen || !matchingChoiceGroup || !questionGroup) {
     return null;
   }
-
   const onSubmit = (values: z.infer<typeof ListMatchingChoicesSchema>) => {
     console.log(values);
     startTransition(async () => {
       try {
-        await updateListMatchingChoices({
-          title: values.title || "",
-          matchingChoices: values.matchingChoices,
-          id: listMatchingChoices.id,
+        await updateMatchingChoiceGroup({
+          formData: values,
+          id: matchingChoiceGroup.id
         });
-        toast.success("Updated");
+        toast.success('Updated');
         onClose();
       } catch (err) {
         catchError(err);
@@ -82,7 +77,7 @@ export function UpdateListMatchingChoicesForm() {
     });
   };
   const handleAddChoice = () => {
-    setListMatchingChoicesDynamic((prev) => [...prev, ""]);
+    setListMatchingChoicesDynamic((prev) => [...prev, '']);
   };
 
   const handleDeleteChoice = (index: number) => {
@@ -122,9 +117,9 @@ export function UpdateListMatchingChoicesForm() {
                   name={`matchingChoices.${i}`}
                   render={({ field }) => (
                     <FormItem>
-                      {listMatchingChoices.matchingChoices[i] &&
-                      listMatchingChoices.matchingChoices[i].question ? (
-                        <FormLabel>{`Question ${listMatchingChoices.matchingChoices[i].question?.questionNumber}`}</FormLabel>
+                      {matchingChoiceGroup.matchingChoiceList[i] &&
+                      matchingChoiceGroup.matchingChoiceList[i].question ? (
+                        <FormLabel>{`Question ${matchingChoiceGroup.matchingChoiceList[i].question?.questionNumber}`}</FormLabel>
                       ) : (
                         <>
                           <FormLabel>Fake Choice</FormLabel>
@@ -143,7 +138,7 @@ export function UpdateListMatchingChoicesForm() {
 
                       <FormControl>
                         <Input
-                          value={field.value || ""}
+                          value={field.value || ''}
                           onChange={(e) => {
                             setListMatchingChoicesDynamic((prev) => {
                               const updatedChoices = [...prev];

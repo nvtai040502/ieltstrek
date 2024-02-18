@@ -22,55 +22,40 @@ export const useDnd = () => {
   } = useContext(ExamContext);
   const handleDragEnd = () => {
     setChoiceGroupOver(false);
-
     const questionGroup = selectedPart?.questionGroups.find(
       (questionGroup) => questionGroup.id === questionGroupId
     );
-
-    if (!questionGroup) {
-      return;
-    }
-
+    if (!questionGroup) return;
     const question = questionGroup.questions.find(
       (question) => question.id === questionId
     );
-
-    if (!question) {
-      return;
-    }
-
+    if (!question) return;
     setQuestionId(null);
-
     const matchingChoice =
       questionGroup.matching?.matchingChoiceGroup.matchingChoiceList.find(
         (matchingChoice) => matchingChoice.id === matchingChoiceId
       );
-
-    if (!matchingChoice) {
-      return;
-    }
+    if (!matchingChoice) return;
 
     const existAnswer = userAnswers.find(
       (prev) => prev.questionNumber === question.questionNumber
     );
 
-    if (existAnswer && existAnswer.type === 'MATCHING') {
-      setMatchingChoiceList((prevList) =>
-        prevList.map((choice) =>
-          choice.id === matchingChoiceId
-            ? { ...choice, content: '' }
-            : choice.id === existAnswer.matchingChoiceId
-              ? { ...choice, content: existAnswer.content }
-              : choice
-        )
+    setMatchingChoiceList((prevList) => {
+      const updatedList = prevList.map((choice) =>
+        choice.id === matchingChoiceId ? { ...choice, content: '' } : choice
       );
-    } else {
-      setMatchingChoiceList((prevList) =>
-        prevList.map((choice) =>
-          choice.id === matchingChoiceId ? { ...choice, content: '' } : choice
-        )
-      );
-    }
+
+      if (existAnswer && existAnswer.type === 'MATCHING') {
+        return updatedList.map((choice) =>
+          choice.id === existAnswer.matchingChoiceId
+            ? { ...choice, content: existAnswer.content }
+            : choice
+        );
+      }
+
+      return updatedList;
+    });
 
     setUserAnswers((prevAnswers) => {
       const updatedAnswers = [...prevAnswers];
@@ -97,6 +82,7 @@ export const useDnd = () => {
       return updatedAnswers;
     });
   };
+
   const handleDragStart = (
     questionGroupId: string,
     matchingChoiceId: string
@@ -120,9 +106,11 @@ export const useDnd = () => {
         questionId?: never;
       }) => {
     event.preventDefault();
+
     if (type === 'groupChoice') {
       setChoiceGroupOver(true);
     }
+
     if (type === 'question') {
       setQuestionId(questionId);
     }
@@ -134,16 +122,28 @@ export const useDnd = () => {
   };
   const handleDrop = ({
     event,
-    quesNum
-  }: {
-    event: DragEvent;
-    quesNum: number;
-  }) => {
+    quesNum,
+    type
+  }:
+    | {
+        event: DragEvent;
+        type: 'question';
+        quesNum: number;
+      }
+    | {
+        event: DragEvent;
+        type: 'groupChoice';
+        quesNum?: never;
+      }) => {
     event.preventDefault();
-    setCurrentRef(quesNum - 1);
-    const ref = questionRefs[quesNum - 1].current;
-    if (ref) {
-      ref.scrollIntoView({ behavior: 'smooth' });
+    if (type === 'question') {
+      setCurrentRef(quesNum - 1);
+      const ref = questionRefs[quesNum - 1].current;
+      if (ref) {
+        ref.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (type === 'groupChoice') {
+      console.log('aaaaaaa');
     }
   };
   return {

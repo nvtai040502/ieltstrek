@@ -16,8 +16,13 @@ export const MatchingRender = ({
   const matching = questionGroup.matching;
   const { setMatchingChoiceList, matchingChoiceList, choiceGroupOver } =
     useContext(DndContext);
-  const { handleDragEnd, handleDragStart, handleDragOver, handleDragLeave } =
-    useDnd();
+  const {
+    handleDragEnd,
+    handleDragStart,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop
+  } = useDnd();
 
   useEffect(() => {
     if (matching && matching.matchingChoiceGroup) {
@@ -39,15 +44,21 @@ export const MatchingRender = ({
         <MatchingParagraphRender matching={matching} />
         <div className="flex justify-between items-center">
           <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
-          {/* <ActionButton
-            editType="editListMatchingChoices"
+          <ActionButton
+            editType="editMatchingChoiceList"
             actionType="update"
-            data={{ listMatchingChoices: matching.matchingChoiceGroup }}
-          /> */}
+            data={{ questionGroup }}
+          />
         </div>
         <div
           onDragOver={(event) => handleDragOver({ event, type: 'groupChoice' })}
           onDragLeave={handleDragLeave}
+          onDrop={(event) =>
+            handleDrop({
+              event,
+              type: 'groupChoice'
+            })
+          }
           className={cn(
             'flex flex-col gap-4',
             choiceGroupOver ? 'bg-secondary' : ''
