@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { QuestionGroup } from '@prisma/client';
 import { Descendant } from 'slate';
 import { z } from 'zod';
+import { FormattedText } from '@/types/text-editor';
 import { db } from '@/lib/db';
 import { getTotalQuestions } from '@/lib/utils';
 import { CompletionAnswerSchema } from '@/lib/validations/question-type';
@@ -20,7 +21,7 @@ export const createCompletion = async (
     (_, i) => ({
       type: 'paragraph',
       children: [
-        { text: `This is note completion example` },
+        { text: `This is note completion example ` },
         {
           type: 'blank',
           children: [{ text: ' hello' }],
@@ -30,7 +31,7 @@ export const createCompletion = async (
         { text: ' text, ' },
         { text: ' much', italic: true },
         { text: ' better than a!' }
-      ]
+      ] as FormattedText[]
     })
   );
   await db.completion.create({
@@ -50,8 +51,6 @@ export const createCompletion = async (
       }
     }
   });
-
-  return;
 };
 
 export const updateCompletionParagraph = async ({

@@ -60,7 +60,7 @@ export const createQuestionGroup = async ({
       partId
     }
   });
-  switch (questionGroup.type) {
+  switch (formData.type) {
     case 'MULTIPLE_CHOICE_ONE_ANSWER':
       await createMultiOneList(questionGroup, part.assessmentId);
       break;
@@ -77,8 +77,9 @@ export const createQuestionGroup = async ({
       break;
     case 'TABLE_COMPLETION':
       await createTableCompletion({
-        questionGroupId: questionGroup.id,
-        numberColumns: numberColumns!,
+        questionGroup: questionGroup,
+        assessmentId: part.assessmentId,
+        numberColumns: formData.numberColumns,
         numberRows: numberRows!
       });
       break;

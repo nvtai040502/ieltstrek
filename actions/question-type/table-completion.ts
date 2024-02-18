@@ -1,29 +1,23 @@
 'use server';
 
-import { db } from '@/lib/db';
+import { QuestionGroup } from '@prisma/client';
 import { Descendant } from 'slate';
+import { FormattedText } from '@/types/text-editor';
+import { db } from '@/lib/db';
+import { getTotalQuestions } from '@/lib/utils';
 
 export const createTableCompletion = async ({
-  questionGroupId,
+  questionGroup,
+  assessmentId,
   numberColumns,
   numberRows
 }: {
-  questionGroupId: string;
+  questionGroup: QuestionGroup;
+  assessmentId: string;
   numberColumns: number;
   numberRows: number;
 }) => {
-  const questionGroup = await db.questionGroup.findUnique({
-    where: {
-      id: questionGroupId
-    },
-    include: {
-      questions: true
-    }
-  });
-  if (!questionGroup) {
-    throw new Error('Id not found');
-  }
-  const totalQuestions = questionGroup.questions.length;
+  const totalQuestions = getTotalQuestions(questionGroup);
 
   let blankCount = 0;
   const tableCompleteInitial: Descendant[] = [
@@ -59,19 +53,22 @@ export const createTableCompletion = async ({
             }
           )
         })
-      )
+      ) as any
     }
   ];
 
   await db.completion.create({
     data: {
-      questionGroupId,
+      questionGroupId: questionGroup.id,
       paragraph: JSON.stringify(tableCompleteInitial),
-      blanks: {
+      questions: {
         createMany: {
-          data: questionGroup.questions.map((question) => ({
-            expectedAnswer: 'is',
-            questionId: question.id
+          data: Array.from({ length: totalQuestions }).map((_, i) => ({
+            questionGroupId: questionGroup.id,
+            questionNumber: questionGroup.startQuestionNumber + i,
+            correctAnswer: 'hello',
+            partId: questionGroup.partId,
+            assessmentId
           }))
         }
       }
@@ -80,26 +77,3 @@ export const createTableCompletion = async ({
 
   return;
 };
-// export const updateNoteCompletion = async ({
-//   id,
-//   paragraph,
-// }: {
-//   id: number;
-//   paragraph: string;
-// }): Promise<boolean> => {
-//   try {
-//     await db.noteCompletion.update({
-//       where: {
-//         id,
-//       },
-//       data: {
-//         paragraph,
-//       },
-//     });
-
-//     return true;
-//   } catch (error) {
-//     console.error("Error updating note completion:", error);
-//     return false;
-//   }
-// };

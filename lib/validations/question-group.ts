@@ -1,5 +1,26 @@
 import { QuestionType } from '@prisma/client';
 import { z } from 'zod';
+import { QUESTION_TYPE_VALUE } from '@/config/constants';
+
+const a = QUESTION_TYPE_VALUE;
+export type QuestionGroup = {
+  title: string;
+  description?: string;
+  type: QuestionType;
+  startQuestionNumber: number;
+  endQuestionNumber: number;
+} & (
+  | {
+      type: Exclude<QuestionType>;
+      numberColumns?: never;
+      numberRows?: never;
+    }
+  | {
+      type: QUESTION_TYPE_VALUE;
+      numberColumns: number;
+      numberRows: number;
+    }
+);
 
 export const QuestionGroupSchema = z
   .object({
