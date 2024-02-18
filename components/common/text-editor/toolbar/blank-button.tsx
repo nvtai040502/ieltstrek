@@ -1,22 +1,24 @@
 import { Editor, Element, Range as RangeSlate, Transforms } from 'slate';
 import { useSlate } from 'slate-react';
+import { CustomEditor } from '@/types/text-editor';
 import { Button } from '@/components/ui/button';
 
-const unwrapBlank = (editor) => {
+const unwrapBlank = (editor: CustomEditor) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && Element.isElement(n) && n.type === 'blank'
   });
 };
 
-const wrapButton = (editor) => {
+const wrapButton = (editor: CustomEditor) => {
   if (isBlankActive(editor)) {
     unwrapBlank(editor);
   }
 
   const { selection } = editor;
   const isCollapsed = selection && RangeSlate.isCollapsed(selection);
-  const blank = {
+  // TODO: Fix type script this
+  const blank: any = {
     type: 'blank',
     children: isCollapsed ? [{ text: 'Edit me!' }] : []
   };
@@ -49,13 +51,13 @@ export const BlankButton = ({ icon }: { icon: React.ReactNode }) => {
   );
 };
 
-const insertBlank = (editor) => {
+const insertBlank = (editor: CustomEditor) => {
   if (editor.selection) {
     wrapButton(editor);
   }
 };
 
-const isBlankActive = (editor) => {
+const isBlankActive = (editor: CustomEditor) => {
   const [blank] = Editor.nodes(editor, {
     match: (n) =>
       !Editor.isEditor(n) && Element.isElement(n) && n.type === 'blank'

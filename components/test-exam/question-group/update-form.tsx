@@ -2,7 +2,12 @@
 
 import { useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { updateQuestionGroup } from '@/actions/test-exam/question-group';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { useEditHook } from '@/global/use-edit-hook';
+import { QuestionGroupSchema } from '@/lib/validations/question-group';
 import { AutosizeTextarea } from '@/components/ui/autosize-text-area';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
@@ -15,12 +20,6 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useEditHook } from '@/global/use-edit-hook';
-import { QuestionGroupSchema } from '@/lib/validations/question-group';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
 
 export function UpdateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
@@ -31,7 +30,7 @@ export function UpdateQuestionGroupForm() {
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
       title: '',
-      type: 'MULTIPLE_CHOICE',
+      // type: 'MULTIPLE_CHOICE',
       startQuestionNumber: 1,
       endQuestionNumber: 2,
       description: ''
@@ -54,32 +53,32 @@ export function UpdateQuestionGroupForm() {
     if (!questionGroup) {
       return;
     }
-    startTransition(async () => {
-      try {
-        const { data, success, error } = await updateQuestionGroup({
-          title: values.title || '',
-          description: values.description,
-          type: values.type,
-          startQuestionNumber: values.startQuestionNumber,
-          endQuestionNumber: values.endQuestionNumber,
-          id: questionGroup.id
-        });
+    // startTransition(async () => {
+    //   try {
+    //     const { data, success, error } = await updateQuestionGroup({
+    //       title: values.title || '',
+    //       description: values.description,
+    //       type: values.type,
+    //       startQuestionNumber: values.startQuestionNumber,
+    //       endQuestionNumber: values.endQuestionNumber,
+    //       id: questionGroup.id
+    //     });
 
-        if (success && data) {
-          form.reset();
-          router.refresh();
-          toast.success('Successfully updated questionGroup!');
-        } else {
-          console.error('Error updating questionGroup:', error);
-          toast.error(error);
-        }
-      } catch (error) {
-        console.error('Error creating question group:', error);
-        toast.error('Failed to create question group.');
-      } finally {
-        onClose();
-      }
-    });
+    //     if (success && data) {
+    //       form.reset();
+    //       router.refresh();
+    //       toast.success('Successfully updated questionGroup!');
+    //     } else {
+    //       console.error('Error updating questionGroup:', error);
+    //       toast.error(error);
+    //     }
+    //   } catch (error) {
+    //     console.error('Error creating question group:', error);
+    //     toast.error('Failed to create question group.');
+    //   } finally {
+    //     onClose();
+    //   }
+    // });
   };
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>

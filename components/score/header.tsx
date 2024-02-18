@@ -1,9 +1,7 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import { ImageIcon } from 'lucide-react';
 import { db } from '@/lib/db';
-import { cn, formatTime } from '@/lib/utils';
+import { formatTime } from '@/lib/utils';
 import { PlaceholderImage } from '../placeholder-image';
 import PartRenderKey from './part-render-key';
 
@@ -17,11 +15,10 @@ const ScoreHeaderRender = async ({
     include: { result: true, parts: { select: { id: true } } }
   });
   if (!assessment || !assessment.result) {
-    return notFound();
+    return null;
   }
 
   return (
-    // TODO: Make design better
     <div className="container max-w-4xl">
       {/* Exam Card */}
       <div className="flex flex-wrap bg-red-500 gap-4 sm:justify-start justify-center ">

@@ -9,7 +9,7 @@ const PartRenderKey = async ({ partId }: { partId: string }) => {
     include: { questions: { select: { id: true } } }
   });
   if (!part) {
-    return notFound();
+    return null;
   }
   return (
     <>
