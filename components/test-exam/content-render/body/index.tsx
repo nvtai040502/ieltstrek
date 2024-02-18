@@ -5,7 +5,6 @@ import { ExamContext } from '@/global/exam-context';
 import { CompletionRender } from '@/components/question-type/completion';
 import { IdentifyInfoRender } from '@/components/question-type/identify-info/render';
 import { MatchingRender } from '@/components/question-type/matching';
-import { TestMatchingRender } from '@/components/question-type/matching/test';
 import { MultiMoreRender } from '@/components/question-type/multiple-choice/multi-more/render';
 import { MultiOneRender } from '@/components/question-type/multiple-choice/multi-one/render';
 import { ActionButton } from '@/components/test-exam/action-button';
@@ -115,8 +114,7 @@ const PartBodyContentRender = () => {
                     <CompletionRender questionGroup={questionGroup} />
                   )}
                   {questionGroup.type === 'MATCHING' && (
-                    // <MatchingRender questionGroup={questionGroup} />
-                    <TestMatchingRender questionGroup={questionGroup} />
+                    <MatchingRender questionGroup={questionGroup} />
                   )}
                   {/* {questionGroup.type === 'MATCHING_HEADING' && (
                     <MatchingHeadingRender

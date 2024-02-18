@@ -1,7 +1,4 @@
 import { DragEvent, useContext, useState } from 'react';
-import { css } from '@emotion/css';
-import { Droppable } from '@hello-pangea/dnd';
-import { QuestionType } from '@prisma/client';
 import { DndContext } from '@/global/dnd-context';
 import { ExamContext } from '@/global/exam-context';
 import { useDnd } from '@/global/use-dnd';

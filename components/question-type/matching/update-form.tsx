@@ -1,9 +1,8 @@
 'use client';
 
 import { useCallback, useMemo, useTransition } from 'react';
-import { updateMatchingSentence } from '@/actions/question-type/matching-sentence';
-import { Editor, createEditor } from 'slate';
-import { Transforms } from 'slate';
+import { updateMatchingParagraph } from '@/actions/question-type/matching';
+import { Element, Transforms, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
   Editable,
@@ -15,9 +14,9 @@ import {
 import { toast } from 'sonner';
 import { useEditHook } from '@/global/use-edit-hook';
 import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
-import { catchError } from '@/lib/utils';
-import { EditElementRender } from '@/components/common/text-editor/text-render/element-render';
-import { LeafEditorRender } from '@/components/common/text-editor/text-render/leaf-render';
+import { catchError, countBlankOccurrences } from '@/lib/utils';
+import { ElementRender } from '@/components/common/text-editor/element-render';
+import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
 import Toolbar from '@/components/common/text-editor/toolbar';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,49 +33,35 @@ declare module 'slate' {
   }
 }
 
-const UpdateMatchingSentenceForm = () => {
+const MatchingParagraphUpdateForm = () => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <EditElementRender props={props} />,
+    (props: RenderElementProps) => (
+      <ElementRender slateProps={props} type="Matching" mode="edit" />
+    ),
     []
   );
   const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <LeafEditorRender {...props} />,
+    (props: RenderLeafProps) => <LeafRender {...props} />,
     []
   );
   const { onClose, data, isOpen, type } = useEditHook();
   const [isPending, startTransition] = useTransition();
   const isModalOpen = isOpen && type === 'editMatchingSentence';
   const questionGroup = data?.questionGroup;
-  const matchingSentence = data?.questionGroup?.matchingSentence;
+  const matching = data?.questionGroup?.matching;
   const editor = useMemo(
-    () => withInlines(withHistory(withReact(createEditor()))),
+    () => withInline(withHistory(withReact(createEditor()))),
     []
   );
-  if (!questionGroup || !matchingSentence || !isModalOpen) {
+  if (!questionGroup || !matching || !isModalOpen) {
     return null;
   }
 
-  const countBlankOccurrences = () => {
-    let blankCount = 0;
-
-    for (const [node, path] of Editor.nodes(editor, {
-      at: [],
-      match: (n) => n.type === 'blank'
-    })) {
-      const { type, ...props } = node;
-
-      const newNode = {
-        ...props,
-        type,
-        questionNumber: questionGroup.startQuestionNumber + blankCount
-      };
-      blankCount++;
-      Transforms.setNodes(editor, { ...newNode }, { at: path });
-    }
-    return blankCount;
-  };
   const handleSave = async () => {
-    const blankCount = countBlankOccurrences();
+    const blankCount = countBlankOccurrences({
+      editor,
+      startQuesNum: questionGroup.startQuestionNumber
+    });
     const totalQuestions =
       questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1;
     if (blankCount !== totalQuestions) {
@@ -88,8 +73,8 @@ const UpdateMatchingSentenceForm = () => {
     }
     startTransition(async () => {
       try {
-        await updateMatchingSentence({
-          id: matchingSentence.id,
+        await updateMatchingParagraph({
+          id: matching.id,
           paragraph: JSON.stringify(editor.children)
         });
         toast.success('Updated');
@@ -103,10 +88,7 @@ const UpdateMatchingSentenceForm = () => {
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContentWithScrollArea className="max-w-7xl">
-        <Slate
-          editor={editor}
-          initialValue={JSON.parse(matchingSentence.paragraph)}
-        >
+        <Slate editor={editor} initialValue={JSON.parse(matching.paragraph)}>
           <Toolbar />
 
           <Editable
@@ -126,9 +108,9 @@ const UpdateMatchingSentenceForm = () => {
   );
 };
 
-export default UpdateMatchingSentenceForm;
+export default MatchingParagraphUpdateForm;
 
-const withInlines = (editor) => {
+const withInline = (editor: CustomEditor) => {
   const { isInline } = editor;
 
   editor.isInline = (element) =>

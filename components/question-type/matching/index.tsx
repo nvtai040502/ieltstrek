@@ -1,8 +1,11 @@
 'use client';
 
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import { DragEvent, useContext, useEffect, useState } from 'react';
 import { QuestionType } from '@prisma/client';
+import { DndContext } from '@/global/dnd-context';
+import { useDnd } from '@/global/use-dnd';
 import { QuestionGroupExtended } from '@/types/test-exam';
+import { cn } from '@/lib/utils';
 import { ActionButton } from '@/components/test-exam/action-button';
 import MatchingParagraphRender from './paragraph-render';
 
@@ -12,6 +15,14 @@ export const MatchingRender = ({
   questionGroup: QuestionGroupExtended;
 }) => {
   const matching = questionGroup.matching;
+  const { setMatchingChoiceList, matchingChoiceList } = useContext(DndContext);
+  const { handleDragEnd, handleDragStart, handleDragOver } = useDnd();
+
+  useEffect(() => {
+    if (matching && matching.matchingChoiceGroup) {
+      setMatchingChoiceList(matching.matchingChoiceGroup.matchingChoiceList);
+    }
+  }, [matching, setMatchingChoiceList]);
   if (!matching || !matching.matchingChoiceGroup) {
     return null;
   }
@@ -23,7 +34,7 @@ export const MatchingRender = ({
         editType="editMatchingSentence"
         data={{ questionGroup }}
       />
-      <DragDropContext onDragEnd={() => {}}>
+      <div onDragEnd={handleDragEnd}>
         <MatchingParagraphRender matching={matching} />
         <div className="flex justify-between items-center">
           <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
@@ -33,40 +44,21 @@ export const MatchingRender = ({
             data={{ listMatchingChoices: matching.matchingChoiceGroup }}
           /> */}
         </div>
-        <Droppable
-          type={QuestionType.MATCHING}
-          droppableId="matching-sentence"
-          direction="vertical"
-          isDropDisabled
-        >
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {matching.matchingChoiceGroup.matchingChoiceList.map(
-                (matchingChoice, i) => (
-                  <Draggable
-                    draggableId={String(matchingChoice.id)}
-                    index={i}
-                    key={i}
-                  >
-                    {(provided) => (
-                      <div
-                        {...provided.draggableProps}
-                        ref={provided.innerRef}
-                        className=" border-4 p-4"
-                      >
-                        <div {...provided.dragHandleProps}>
-                          {matchingChoice.content}
-                        </div>
-                      </div>
-                    )}
-                  </Draggable>
-                )
-              )}
-              {provided.placeholder}
+        <div onDragOver={handleDragOver} className="flex flex-col gap-4">
+          {matchingChoiceList.map((matchingChoice) => (
+            <div
+              key={matchingChoice.id}
+              draggable={true}
+              onDragStart={() =>
+                handleDragStart(matching.questionGroupId, matchingChoice.id)
+              }
+              className={cn('bg-red-500', matchingChoice.content ? '' : 'p-4')}
+            >
+              {matchingChoice.content}
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+          ))}
+        </div>
+      </div>
     </>
   );
 };

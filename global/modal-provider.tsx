@@ -5,6 +5,7 @@ import OpenAssessmentModal from '@/components/open-assessment-modal';
 import { CompletionAnswerUpdateForm } from '@/components/question-type/completion/answer-update-form';
 import CompletionParagraphUpdateForm from '@/components/question-type/completion/paragraph-update-form';
 import { IdentifyInfoUpdateForm } from '@/components/question-type/identify-info/update-form';
+import MatchingParagraphUpdateForm from '@/components/question-type/matching/update-form';
 import { ChoiceUpdateForm } from '@/components/question-type/multiple-choice/choice/update-form';
 import { MultiMoreUpdateForm } from '@/components/question-type/multiple-choice/multi-more/update-form';
 import { MultiOneUpdateForm } from '@/components/question-type/multiple-choice/multi-one/update-form';
@@ -50,6 +51,8 @@ export function ModalProvider() {
 
       <CompletionParagraphUpdateForm />
       <CompletionAnswerUpdateForm />
+
+      <MatchingParagraphUpdateForm />
     </>
   );
 }

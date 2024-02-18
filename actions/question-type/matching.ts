@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { QuestionGroup } from '@prisma/client';
 import { Descendant } from 'slate';
 import { FormattedText } from '@/types/text-editor';
@@ -67,31 +68,30 @@ export const createMatching = async (
   });
 };
 
-// export const updateMatchingSentence = async ({
-//   id,
-//   paragraph
-// }: {
-//   id: number;
-//   paragraph: string;
-// }) => {
-//   const matchingSentence = await db.matchingSentence.findUnique({
-//     where: {
-//       id
-//     }
-//   });
-//   if (!matchingSentence) {
-//     throw new Error('Id not found');
-//   }
+export const updateMatchingParagraph = async ({
+  id,
+  paragraph
+}: {
+  id: string;
+  paragraph: string;
+}) => {
+  const matching = await db.matching.findUnique({
+    where: { id },
+    select: {
+      questionGroup: { select: { part: { select: { assessmentId: true } } } }
+    }
+  });
+  if (!matching) {
+    throw new Error('matching Id not found');
+  }
+  await db.matching.update({
+    where: {
+      id
+    },
+    data: {
+      paragraph
+    }
+  });
 
-//   await db.matchingSentence.update({
-//     where: {
-//       id
-//     },
-//     data: {
-//       paragraph
-//     }
-//   });
-
-//   // revalidatePath(`/assessments/${questionGroup.part.assessmentId}`);
-//   return;
-// };
+  revalidatePath(`/assessments/${matching.questionGroup.part.assessmentId}`);
+};

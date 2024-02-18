@@ -3,6 +3,7 @@ import { Assessment, Choice, Passage, PassageHeading } from '@prisma/client';
 import {
   CompletionExtended,
   IdentifyInfoExtended,
+  MatchingExtended,
   MultiMoreExtended,
   MultiOneExtended,
   PartExtended,
@@ -12,19 +13,17 @@ import {
 export type EditType =
   | 'editPart'
   | 'openAssessment'
-  // Question Type
-  | 'editIdentifyInfo'
   | 'editChoice'
   | 'editMultiOne'
+  | 'editIdentifyInfo'
   | 'editCompletionParagraph'
+  | 'editMatchingParagraph'
   | 'editCompletionAnswer'
   | 'editMultiMore'
   | 'editMatchingSentence'
-  // Passage
   | 'editPassage'
   | 'createPassage'
   | 'editPassageMultiHeading'
-  // Question Group
   | 'editQuestionGroup'
   | 'deleteQuestionGroup'
   | 'createQuestionGroup'
@@ -58,6 +57,7 @@ export interface EditData {
   passageHeading?: PassageHeading;
   assessment?: Assessment;
   completion?: CompletionExtended;
+  matching?: MatchingExtended;
 
   // summaryCompletion?: SummaryCompletionExtended;
   // matchingHeading?: MatchingHeadingExtended;

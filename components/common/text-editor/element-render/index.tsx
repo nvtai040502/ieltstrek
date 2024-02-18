@@ -1,6 +1,6 @@
 import { RenderElementProps } from 'slate-react';
 import CompletionBlankRender from '@/components/question-type/completion/blank-render';
-import { MatchingBlankRender } from '@/components/question-type/matching/matching';
+import { MatchingBlankRender } from '@/components/question-type/matching/blank-render';
 import ResultBlankRender from '@/components/score/review-and-explain/completion-render/blank';
 
 type ReadonlyElementRenderProps =

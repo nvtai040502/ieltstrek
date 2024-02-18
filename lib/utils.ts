@@ -1,9 +1,12 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { QuestionGroup } from '@prisma/client';
 import { type ClassValue, clsx } from 'clsx';
+import { Editor, Transforms } from 'slate';
+import { Element as SlateElement } from 'slate';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
+import { CustomEditor } from '@/types/text-editor';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,6 +15,32 @@ export const getTotalQuestions = (questionGroup: QuestionGroup) => {
   return (
     questionGroup.endQuestionNumber - questionGroup.startQuestionNumber + 1
   );
+};
+export const countBlankOccurrences = ({
+  editor,
+  startQuesNum
+}: {
+  editor: CustomEditor;
+  startQuesNum: number;
+}) => {
+  let blankCount = 0;
+
+  for (const [node, path] of Editor.nodes(editor, {
+    at: []
+  })) {
+    if (SlateElement.isElement(node) && node.type === 'blank') {
+      const { type, ...props } = node;
+
+      const newNode = {
+        ...props,
+        type,
+        questionNumber: startQuesNum + blankCount
+      };
+      blankCount++;
+      Transforms.setNodes(editor, { ...newNode }, { at: path });
+    }
+  }
+  return blankCount;
 };
 // export const formatTime = (time: number) => {
 //   const hours = Math.floor(time / 3600);
