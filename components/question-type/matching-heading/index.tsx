@@ -1,7 +1,6 @@
 'use client';
 
 import { useContext, useEffect } from 'react';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { QuestionType } from '@prisma/client';
 import { ExamContext } from '@/global/exam-context';
 
