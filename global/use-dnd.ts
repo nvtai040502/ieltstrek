@@ -13,8 +13,16 @@ export const useDnd = () => {
     setMatchingChoiceId,
     setQuestionGroupId
   } = useContext(DndContext);
-  const { selectedPart, setUserAnswers, userAnswers } = useContext(ExamContext);
+  const {
+    selectedPart,
+    setUserAnswers,
+    userAnswers,
+    setCurrentRef,
+    questionRefs
+  } = useContext(ExamContext);
   const handleDragEnd = () => {
+    setChoiceGroupOver(false);
+
     const questionGroup = selectedPart?.questionGroups.find(
       (questionGroup) => questionGroup.id === questionGroupId
     );
@@ -30,6 +38,8 @@ export const useDnd = () => {
     if (!question) {
       return;
     }
+
+    setQuestionId(null);
 
     const matchingChoice =
       questionGroup.matching?.matchingChoiceGroup.matchingChoiceList.find(
@@ -61,6 +71,7 @@ export const useDnd = () => {
         )
       );
     }
+
     setUserAnswers((prevAnswers) => {
       const updatedAnswers = [...prevAnswers];
       const findAnswerIndex = updatedAnswers.findIndex(
@@ -88,10 +99,8 @@ export const useDnd = () => {
   };
   const handleDragStart = (
     questionGroupId: string,
-    matchingChoiceId: string,
-    event: DragEvent
+    matchingChoiceId: string
   ) => {
-    event.stopPropagation();
     setQuestionGroupId(questionGroupId);
     setMatchingChoiceId(matchingChoiceId);
   };
@@ -119,9 +128,29 @@ export const useDnd = () => {
     }
   };
   const handleDragLeave = (event: DragEvent) => {
-    event.preventDefault();
+    // event.preventDefault();
     setChoiceGroupOver(false);
     setQuestionId(null);
   };
-  return { handleDragEnd, handleDragStart, handleDragOver, handleDragLeave };
+  const handleDrop = ({
+    event,
+    quesNum
+  }: {
+    event: DragEvent;
+    quesNum: number;
+  }) => {
+    event.preventDefault();
+    setCurrentRef(quesNum - 1);
+    const ref = questionRefs[quesNum - 1].current;
+    if (ref) {
+      ref.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  return {
+    handleDragEnd,
+    handleDragStart,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop
+  };
 };

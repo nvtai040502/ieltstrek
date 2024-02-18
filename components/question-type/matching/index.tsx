@@ -1,7 +1,6 @@
 'use client';
 
-import { DragEvent, useContext, useEffect, useState } from 'react';
-import { QuestionType } from '@prisma/client';
+import { useContext, useEffect } from 'react';
 import { DndContext } from '@/global/dnd-context';
 import { useDnd } from '@/global/use-dnd';
 import { QuestionGroupExtended } from '@/types/test-exam';
@@ -57,15 +56,14 @@ export const MatchingRender = ({
           {matchingChoiceList.map((matchingChoice) => (
             <div
               key={matchingChoice.id}
-              draggable={true}
-              onDragStart={(event) =>
-                handleDragStart(
-                  matching.questionGroupId,
-                  matchingChoice.id,
-                  event
-                )
+              draggable
+              onDragStart={() =>
+                handleDragStart(matching.questionGroupId, matchingChoice.id)
               }
-              className={cn('border-2', matchingChoice.content ? '' : 'p-4')}
+              className={cn(
+                ' bg-background border-2',
+                matchingChoice.content ? '' : 'p-4 border-secondary'
+              )}
             >
               {matchingChoice.content}
             </div>
