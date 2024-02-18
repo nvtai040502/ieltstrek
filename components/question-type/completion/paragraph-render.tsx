@@ -56,6 +56,7 @@ export const ReadonlyElementRender = ({
   props,
   type
 }: {
+  props: RenderElementProps;
   type: 'Matching' | 'Completion';
 }) => {
   const { attributes, children, element } = props;

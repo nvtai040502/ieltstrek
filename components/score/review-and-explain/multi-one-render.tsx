@@ -38,10 +38,11 @@ export const MultiOneListRender = async ({
                   <div
                     className={cn(
                       'flex  items-center space-x-2 px-4 w-full',
-                      choice.isCorrect ? 'bg-success' : '',
-                      CHOICE_OPTIONS[choice.order] === question.respond
-                        ? ' bg-destructive'
-                        : ''
+                      choice.isCorrect
+                        ? 'bg-success'
+                        : CHOICE_OPTIONS[choice.order] === question.respond
+                          ? ' bg-destructive'
+                          : ''
                     )}
                     key={choice.id}
                   >

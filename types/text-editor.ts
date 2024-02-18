@@ -10,21 +10,61 @@ export type ParagraphElement = {
   align?: TextAlignType;
   children: CustomText[];
 };
+export type BlankElement = {
+  type: 'blank';
+  questionNumber: number;
+  children: CustomText[];
+};
 export type TableElement = {
   type: 'table';
-  children: TableRow[];
+  children: CustomText[];
 };
-export type TableRow = {
+export type TableRowElement = {
   type: 'table-row';
-  children: TableCell[];
-};
-
-export type TableCell = {
-  type: 'table-cell';
   children: CustomText[];
 };
 
-export type CustomElement = ParagraphElement | TableElement;
+export type TableCellElement = {
+  type: 'table-cell';
+  children: CustomText[];
+};
+export type BlockQuoteElement = {
+  type: 'blockquote';
+  children: CustomText[];
+};
+export type BulletedListElement = {
+  type: 'bulleted-list';
+  children: CustomText[];
+};
+export type HeadingOneElement = {
+  type: 'heading-one';
+  children: CustomText[];
+};
+export type HeadingTwoElement = {
+  type: 'heading-two';
+  children: CustomText[];
+};
+export type ListItemElement = {
+  type: 'list-item';
+  children: CustomText[];
+};
+export type NumberedListElement = {
+  type: 'numbered-list';
+  children: CustomText[];
+};
+
+export type CustomElement =
+  | ParagraphElement
+  | TableElement
+  | BlankElement
+  | TableCellElement
+  | TableRowElement
+  | HeadingOneElement
+  | HeadingTwoElement
+  | ListItemElement
+  | NumberedListElement
+  | BlockQuoteElement
+  | BulletedListElement;
 
 export type FormattedText = {
   text: string;
