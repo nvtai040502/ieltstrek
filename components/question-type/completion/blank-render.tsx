@@ -8,16 +8,14 @@ import { InputGap } from '@/components/ui/input';
 function CompletionBlankRender({ questionNumber }: { questionNumber: number }) {
   const { questionRefs, currentRef, userAnswers, setCurrentRef } =
     useContext(ExamContext);
-  const { handleAnswerChange } = useExamHandler();
+  const { handleAnswerChange, handleQuestionSelected } = useExamHandler();
   const answer = userAnswers.find(
     (answer) => answer.questionNumber === questionNumber
   );
   return (
     <InputGap
       className="inline-block"
-      onFocus={() => {
-        setCurrentRef(questionNumber - 1);
-      }}
+      onFocus={() => handleQuestionSelected(questionNumber)}
       value={answer && answer.type === 'COMPLETION' ? answer.content : ''}
       placeholder="Enter a word"
       onChange={(event) => {

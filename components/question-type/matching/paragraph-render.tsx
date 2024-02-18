@@ -1,10 +1,6 @@
 'use client';
 
 import { useCallback, useMemo } from 'react';
-import { ReadonlyElementRender } from '@/components/text-editor/text-render/element-render';
-import { LeafReadOnlyMatchingRender } from '@/components/text-editor/text-render/leaf-render';
-import { MatchingExtended } from '@/types/test-exam';
-import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
 import { createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import {
@@ -14,6 +10,10 @@ import {
   Slate,
   withReact
 } from 'slate-react';
+import { MatchingExtended } from '@/types/test-exam';
+import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
+import { ReadonlyElementRender } from '@/components/common/text-editor/text-render/element-render';
+import { LeafReadOnlyMatchingRender } from '@/components/common/text-editor/text-render/leaf-render';
 
 declare module 'slate' {
   interface CustomTypes {

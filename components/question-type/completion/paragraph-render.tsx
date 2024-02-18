@@ -12,7 +12,7 @@ import {
 } from 'slate-react';
 import { CompletionExtended } from '@/types/test-exam';
 import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
-import { LeafReadOnlyRender } from '@/components/text-editor/text-render/leaf-render';
+import { LeafReadOnlyRender } from '@/components/common/text-editor/text-render/leaf-render';
 import CompletionBlankRender from './blank-render';
 
 declare module 'slate' {

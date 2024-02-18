@@ -7,6 +7,7 @@ import {
   updateRespond
 } from '@/actions/test-exam/question';
 import { createOrUpdateResult } from '@/actions/test-exam/result';
+import { number } from 'zod';
 import { CHOICE_OPTIONS } from '@/config/constants';
 import { AnswerType, ExamContext } from './exam-context';
 
@@ -29,53 +30,63 @@ export const useExamHandler = () => {
     if (!selectedAssessment) {
       return null;
     }
-    // setIsSubmit(true);
     console.log('User Answers:', userAnswers);
-    // let totalCorrectAnswers = 0;
+    setIsSubmit(true);
+    let totalCorrectAnswers = 0;
 
-    // const promises = userAnswers.map(async (userAnswer) => {
-    //   const question = await getQuestion({
-    //     assessmentId: selectedAssessment.id,
-    //     questionNumber: userAnswer.questionNumber
-    //   });
-    //   if (userAnswer.type === 'MULTIPLE_CHOICE_ONE_ANSWER') {
-    //     const choice = await getChoiceById(userAnswer.choiceId);
-    //     const respond = CHOICE_OPTIONS[choice.order];
-    //     await updateRespond({ questionId: question.id, respond });
-    //     if (choice.isCorrect === true) {
-    //       totalCorrectAnswers += 1;
-    //     }
-    //   }
-    //   else if (userAnswer.type === 'MULTI_MORE') {
-    //     await Promise.all(
-    //       userAnswer.choiceIdList.map(async (choiceId) => {
-    //         const choiceCorrect = await isChoiceCorrect(choiceId);
-    //         if (choiceCorrect) {
-    //           totalCorrectAnswers += 1;
-    //         }
-    //       })
-    //     );
-    //   }
-    //   else if (userAnswer.type === 'IDENTIFY_INFO') {
-    //     const respond = userAnswer.content;
-    //     await updateRespond({ questionId: question.id, respond });
-    //     if (question.correctAnswer === respond) {
-    //       totalCorrectAnswers += 1;
-    //     }
-    //   }
-    // });
-    // await Promise.all(promises);
-    // const timeSpent = selectedAssessment.duration - timeRemaining;
-    // const score = 0.25 * totalCorrectAnswers;
-    // await createOrUpdateResult({
-    //   score,
-    //   timeSpent,
-    //   totalCorrectAnswers,
-    //   assessmentId: selectedAssessment.id
-    // });
-    // setMode(null);
-    // setIsSubmit(false);
-    // console.log('🚀 ~ handleSubmit ~ score:', score);
+    const promises = userAnswers.map(async (userAnswer) => {
+      const question = await getQuestion({
+        assessmentId: selectedAssessment.id,
+        questionNumber: userAnswer.questionNumber
+      });
+      let respond;
+      switch (userAnswer.type) {
+        case 'MULTIPLE_CHOICE_ONE_ANSWER':
+          const choice = await getChoiceById(userAnswer.choiceId);
+          respond = CHOICE_OPTIONS[choice.order];
+          await updateRespond({ questionId: question.id, respond });
+          if (choice.isCorrect === true) {
+            totalCorrectAnswers++;
+          }
+          break;
+
+        case 'MULTI_MORE':
+          for (const choiceId of userAnswer.choiceIdList) {
+            const choiceCorrect = await isChoiceCorrect(choiceId);
+            if (choiceCorrect) {
+              totalCorrectAnswers++;
+            }
+          }
+          break;
+
+        case 'IDENTIFY_INFO':
+        case 'COMPLETION':
+          respond = userAnswer.content;
+          await updateRespond({ questionId: question.id, respond });
+          if (question.correctAnswer === respond) {
+            totalCorrectAnswers++;
+          }
+          break;
+
+        default:
+          break;
+      }
+    });
+    await Promise.all(promises);
+    const timeSpent = selectedAssessment.duration - timeRemaining;
+    const score = 0.25 * totalCorrectAnswers;
+    await createOrUpdateResult({
+      score,
+      timeSpent,
+      totalCorrectAnswers,
+      assessmentId: selectedAssessment.id
+    });
+    setMode(null);
+    setIsSubmit(false);
+    console.log('🚀 ~ handleSubmit ~ score:', score);
+  }
+  function handleQuestionSelected(questionNumber: number) {
+    setCurrentRef(questionNumber - 1);
   }
   function handleAnswerChange(props: AnswerType) {
     const { questionNumber, type } = props;
@@ -90,12 +101,12 @@ export const useExamHandler = () => {
       // Create a new answer object based on the type
       const newAnswer = (() => {
         switch (type) {
-          // case 'MULTIPLE_CHOICE_ONE_ANSWER':
-          //   return { questionId, type, choiceId: props.choiceId };
-          // case 'MULTI_MORE':
-          //   return { questionId, type, choiceIdList: props.choiceIdList };
-          // case 'IDENTIFY_INFO':
-          //   return { questionId, type, content: props.content };
+          case 'MULTIPLE_CHOICE_ONE_ANSWER':
+            return { questionNumber, type, choiceId: props.choiceId };
+          case 'MULTI_MORE':
+            return { questionNumber, type, choiceIdList: props.choiceIdList };
+          case 'IDENTIFY_INFO':
+            return { questionNumber, type, content: props.content };
           case 'COMPLETION':
             return { questionNumber, type, content: props.content };
           default:
@@ -142,7 +153,7 @@ export const useExamHandler = () => {
 
     const startQuestionNumber =
       selectedPart.questionGroups[0].startQuestionNumber;
-    if (currentRef - 1 >= startQuestionNumber) {
+    if (currentRef >= startQuestionNumber) {
       setCurrentRef(currentRef - 1);
       const ref = questionRefs[currentRef - 1].current;
       if (ref) {
@@ -173,6 +184,7 @@ export const useExamHandler = () => {
     handleSubmit,
     handleNextQuestion,
     handlePrevQuestion,
+    handleQuestionSelected,
     isHasNextQuestion,
     isHasPrevQuestion
   };

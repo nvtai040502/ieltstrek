@@ -2,18 +2,6 @@
 
 import { useCallback, useMemo, useTransition } from 'react';
 import { updateMatchingSentence } from '@/actions/question-type/matching-sentence';
-import { EditElementRender } from '@/components/text-editor/text-render/element-render';
-import { LeafEditorRender } from '@/components/text-editor/text-render/leaf-render';
-import Toolbar from '@/components/text-editor/toolbar';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContentWithScrollArea
-} from '@/components/ui/dialog';
-import { useEditHook } from '@/global/use-edit-hook';
-import { catchError } from '@/lib/utils';
-import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
 import { Editor, createEditor } from 'slate';
 import { Transforms } from 'slate';
 import { withHistory } from 'slate-history';
@@ -25,6 +13,18 @@ import {
   withReact
 } from 'slate-react';
 import { toast } from 'sonner';
+import { useEditHook } from '@/global/use-edit-hook';
+import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
+import { catchError } from '@/lib/utils';
+import { EditElementRender } from '@/components/common/text-editor/text-render/element-render';
+import { LeafEditorRender } from '@/components/common/text-editor/text-render/leaf-render';
+import Toolbar from '@/components/common/text-editor/toolbar';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContentWithScrollArea
+} from '@/components/ui/dialog';
 
 declare module 'slate' {
   interface CustomTypes {

@@ -16,9 +16,9 @@ import { toast } from 'sonner';
 import { useEditHook } from '@/global/use-edit-hook';
 import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
 import { catchError } from '@/lib/utils';
-import { EditElementRender } from '@/components/text-editor/text-render/element-render';
-import { LeafEditorRender } from '@/components/text-editor/text-render/leaf-render';
-import Toolbar from '@/components/text-editor/toolbar';
+import { EditElementRender } from '@/components/common/text-editor/text-render/element-render';
+import { LeafEditorRender } from '@/components/common/text-editor/text-render/leaf-render';
+import Toolbar from '@/components/common/text-editor/toolbar';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

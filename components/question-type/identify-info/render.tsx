@@ -20,10 +20,10 @@ export const IdentifyInfoRender = ({
   const { handleAnswerChange: handleAnswerSelected } = useExamHandler();
   useEffect(() => {
     const answer = userAnswers.find(
-      (answer) => answer.questionId === identifyInfo.questionId
+      (answer) => answer.questionNumber === identifyInfo.question.questionNumber
     );
     setAnswer(answer);
-  }, [userAnswers, identifyInfo.questionId]);
+  }, [userAnswers, identifyInfo.question]);
   return (
     <div
       className="space-y-2"
@@ -52,7 +52,7 @@ export const IdentifyInfoRender = ({
       <RadioGroup
         onValueChange={(value: IdentifyChoice) =>
           handleAnswerSelected({
-            questionId: identifyInfo.questionId,
+            questionNumber: identifyInfo.question.questionNumber,
             type: 'IDENTIFY_INFO',
             content: value
           })

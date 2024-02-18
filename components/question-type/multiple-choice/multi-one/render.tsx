@@ -15,18 +15,13 @@ export const MultiOneRender = ({
   multiOne: MultiOneExtended;
 }) => {
   const { questionRefs, currentRef, userAnswers } = useContext(ExamContext);
-  const [answer, setAnswer] = useState<AnswerType | undefined>(undefined);
-  const { handleAnswerChange: handleAnswerSelected } = useExamHandler();
-  useEffect(() => {
-    const answer = userAnswers.find(
-      (answer) => answer.questionId === multiOne.questionId
-    );
-    setAnswer(answer);
-  }, [userAnswers, multiOne.questionId]);
+  const { handleAnswerChange, handleQuestionSelected } = useExamHandler();
   if (!multiOne) {
     return null;
   }
-
+  const answer = userAnswers.find(
+    (answer) => answer.questionNumber === multiOne.question.questionNumber
+  );
   return (
     <div
       className="space-y-2"
@@ -52,13 +47,14 @@ export const MultiOneRender = ({
         />
       </div>
       <RadioGroup
-        onValueChange={(choiceId) =>
-          handleAnswerSelected({
-            questionId: multiOne.questionId,
+        onValueChange={(choiceId) => {
+          handleQuestionSelected(multiOne.question.questionNumber);
+          handleAnswerChange({
+            questionNumber: multiOne.question.questionNumber,
             type: 'MULTIPLE_CHOICE_ONE_ANSWER',
             choiceId
-          })
-        }
+          });
+        }}
         value={
           answer && answer.type === 'MULTIPLE_CHOICE_ONE_ANSWER'
             ? answer.choiceId
@@ -72,7 +68,13 @@ export const MultiOneRender = ({
                 className="flex items-center space-x-2 px-4 w-full hover:bg-secondary"
                 key={choice.id}
               >
-                <RadioGroupItem value={choice.id} id={choice.id} />
+                <RadioGroupItem
+                  onSelect={() =>
+                    handleQuestionSelected(multiOne.question.questionNumber)
+                  }
+                  value={choice.id}
+                  id={choice.id}
+                />
                 <Label
                   htmlFor={choice.id}
                   className="py-4 w-full cursor-pointer"
