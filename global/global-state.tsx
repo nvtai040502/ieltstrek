@@ -37,6 +37,7 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [matchingChoiceList, setMatchingChoiceList] = useState<
     MatchingChoice[]
   >([]);
+  const [choiceGroupOver, setChoiceGroupOver] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
 
   useEffect(() => {
@@ -121,6 +122,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
             questionId,
             matchingChoiceList,
             prevContent,
+            choiceGroupOver,
+            setChoiceGroupOver,
             setPrevContent,
             setMatchingChoiceList,
             setQuestionId,

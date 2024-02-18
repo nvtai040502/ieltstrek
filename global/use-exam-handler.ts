@@ -31,59 +31,59 @@ export const useExamHandler = () => {
       return null;
     }
     console.log('User Answers:', userAnswers);
-    setIsSubmit(true);
-    let totalCorrectAnswers = 0;
+    // setIsSubmit(true);
+    // let totalCorrectAnswers = 0;
 
-    const promises = userAnswers.map(async (userAnswer) => {
-      const question = await getQuestion({
-        assessmentId: selectedAssessment.id,
-        questionNumber: userAnswer.questionNumber
-      });
-      let respond;
-      switch (userAnswer.type) {
-        case 'MULTIPLE_CHOICE_ONE_ANSWER':
-          const choice = await getChoiceById(userAnswer.choiceId);
-          respond = CHOICE_OPTIONS[choice.order];
-          await updateRespond({ questionId: question.id, respond });
-          if (choice.isCorrect === true) {
-            totalCorrectAnswers++;
-          }
-          break;
+    // const promises = userAnswers.map(async (userAnswer) => {
+    //   const question = await getQuestion({
+    //     assessmentId: selectedAssessment.id,
+    //     questionNumber: userAnswer.questionNumber
+    //   });
+    //   let respond;
+    //   switch (userAnswer.type) {
+    //     case 'MULTIPLE_CHOICE_ONE_ANSWER':
+    //       const choice = await getChoiceById(userAnswer.choiceId);
+    //       respond = CHOICE_OPTIONS[choice.order];
+    //       await updateRespond({ questionId: question.id, respond });
+    //       if (choice.isCorrect === true) {
+    //         totalCorrectAnswers++;
+    //       }
+    //       break;
 
-        case 'MULTI_MORE':
-          for (const choiceId of userAnswer.choiceIdList) {
-            const choiceCorrect = await isChoiceCorrect(choiceId);
-            if (choiceCorrect) {
-              totalCorrectAnswers++;
-            }
-          }
-          break;
+    //     case 'MULTI_MORE':
+    //       for (const choiceId of userAnswer.choiceIdList) {
+    //         const choiceCorrect = await isChoiceCorrect(choiceId);
+    //         if (choiceCorrect) {
+    //           totalCorrectAnswers++;
+    //         }
+    //       }
+    //       break;
 
-        case 'IDENTIFY_INFO':
-        case 'COMPLETION':
-          respond = userAnswer.content;
-          await updateRespond({ questionId: question.id, respond });
-          if (question.correctAnswer === respond) {
-            totalCorrectAnswers++;
-          }
-          break;
+    //     case 'IDENTIFY_INFO':
+    //     case 'COMPLETION':
+    //       respond = userAnswer.content;
+    //       await updateRespond({ questionId: question.id, respond });
+    //       if (question.correctAnswer === respond) {
+    //         totalCorrectAnswers++;
+    //       }
+    //       break;
 
-        default:
-          break;
-      }
-    });
-    await Promise.all(promises);
-    const timeSpent = selectedAssessment.duration - timeRemaining;
-    const score = 0.25 * totalCorrectAnswers;
-    await createOrUpdateResult({
-      score,
-      timeSpent,
-      totalCorrectAnswers,
-      assessmentId: selectedAssessment.id
-    });
-    setMode(null);
-    setIsSubmit(false);
-    console.log('🚀 ~ handleSubmit ~ score:', score);
+    //     default:
+    //       break;
+    //   }
+    // });
+    // await Promise.all(promises);
+    // const timeSpent = selectedAssessment.duration - timeRemaining;
+    // const score = 0.25 * totalCorrectAnswers;
+    // await createOrUpdateResult({
+    //   score,
+    //   timeSpent,
+    //   totalCorrectAnswers,
+    //   assessmentId: selectedAssessment.id
+    // });
+    // setMode(null);
+    // setIsSubmit(false);
+    // console.log('🚀 ~ handleSubmit ~ score:', score);
   }
   function handleQuestionSelected(questionNumber: number) {
     setCurrentRef(questionNumber - 1);

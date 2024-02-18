@@ -25,6 +25,7 @@ const MatchingParagraphRender = ({
     ),
     []
   );
+
   const renderLeaf = useCallback(
     (props: RenderLeafProps) => <LeafRender {...props} />,
     []

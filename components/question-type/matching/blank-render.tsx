@@ -11,7 +11,7 @@ export function MatchingBlankRender({
 }) {
   const { userAnswers, selectedPart, questionRefs } = useContext(ExamContext);
 
-  const { handleDragOver } = useDnd();
+  const { handleDragOver, handleDragLeave } = useDnd();
   const { setQuestionId } = useContext(DndContext);
   const {
     setCurrentRef: setCurrentQuestionIndex,
@@ -19,7 +19,7 @@ export function MatchingBlankRender({
   } = useContext(ExamContext);
   const [isOver, setIsOver] = useState(false);
 
-  const userAnswer = userAnswers.find(
+  const answer = userAnswers.find(
     (prev) => prev.questionNumber === questionNumber
   );
   const question = selectedPart?.questions.find(
@@ -31,7 +31,7 @@ export function MatchingBlankRender({
 
   const handleDrop = (event: DragEvent) => {
     event.preventDefault();
-    // setQuestionId(questionId);
+    setQuestionId(question.id);
     setCurrentQuestionIndex(question.questionNumber - 1);
     const ref = questionRefs[question.questionNumber - 1].current;
     if (ref) {
@@ -39,22 +39,33 @@ export function MatchingBlankRender({
     }
   };
 
-  const handleDragLeave = (event: DragEvent) => {
-    event.preventDefault();
-    setIsOver(false);
-  };
   return (
-    <div
-      onDrop={handleDrop}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      ref={questionRefs[question.questionNumber - 1]}
-      className={cn(
-        'border border-secondary-foreground w-full p-4',
-        currentQuestionIndex === question.questionNumber - 1 ? 'bg-red-500' : ''
+    <>
+      {answer && answer.type === 'MATCHING' && answer.content ? (
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          draggable
+          onDragLeave={handleDragLeave}
+          ref={questionRefs[question.questionNumber - 1]}
+          className={cn('border-4 border-dotted w-full p-4')}
+        >
+          {answer.content}
+        </div>
+      ) : (
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          ref={questionRefs[question.questionNumber - 1]}
+          className={cn(
+            'border-4 border-dotted  w-full p-4',
+            currentQuestionIndex === question.questionNumber - 1
+              ? ' '
+              : 'border-secondary'
+          )}
+        />
       )}
-    >
-      {/* {userAnswer && userAnswer.type === ""} */}
-    </div>
+    </>
   );
 }
