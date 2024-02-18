@@ -3,6 +3,18 @@
 import { useContext, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createQuestionGroup } from '@/actions/test-exam/question-group';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { QuestionType } from '@prisma/client';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { ExamContext } from '@/global/exam-context';
+import { useEditHook } from '@/global/use-edit-hook';
+import { catchError } from '@/lib/utils';
+import {
+  QuestionGroupSchema,
+  QuestionGroupSchemaType
+} from '@/lib/validations/question-group';
 import { AutosizeTextarea } from '@/components/ui/autosize-text-area';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
@@ -22,15 +34,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { ExamContext } from '@/global/exam-context';
-import { useEditHook } from '@/global/use-edit-hook';
-import { catchError } from '@/lib/utils';
-import { QuestionGroupSchema } from '@/lib/validations/question-group';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { QuestionType } from '@prisma/client';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
 
 export function CreateQuestionGroupForm() {
   const [isPending, startTransition] = useTransition();
@@ -39,11 +42,10 @@ export function CreateQuestionGroupForm() {
 
   const isModalOpen = isOpen && type === 'createQuestionGroup';
 
-  const form = useForm<z.infer<typeof QuestionGroupSchema>>({
+  const form = useForm<QuestionGroupSchemaType>({
     resolver: zodResolver(QuestionGroupSchema),
     defaultValues: {
       title: '',
-      // type: '',
       startQuestionNumber: 1,
       endQuestionNumber: 4,
       description: ''
@@ -54,7 +56,7 @@ export function CreateQuestionGroupForm() {
     return null;
   }
 
-  const onSubmit = async (values: z.infer<typeof QuestionGroupSchema>) => {
+  const onSubmit = async (values: QuestionGroupSchemaType) => {
     startTransition(async () => {
       try {
         await createQuestionGroup({
@@ -63,6 +65,7 @@ export function CreateQuestionGroupForm() {
         });
 
         toast.success('Created');
+        form.reset();
         onClose();
       } catch (err) {
         catchError(err);

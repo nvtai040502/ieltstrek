@@ -3,7 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { db } from '@/lib/db';
-import { QuestionGroupSchema } from '@/lib/validations/question-group';
+import {
+  QuestionGroupSchema,
+  QuestionGroupSchemaType
+} from '@/lib/validations/question-group';
 import { createCompletion } from '../question-type/completion';
 import { createIdentifyInfoList } from '../question-type/identify-info';
 import { createMatching } from '../question-type/matching';
@@ -15,7 +18,7 @@ export const createQuestionGroup = async ({
   formData,
   partId
 }: {
-  formData: z.infer<typeof QuestionGroupSchema>;
+  formData: QuestionGroupSchemaType;
   partId: string;
 }) => {
   const { numberColumns, numberRows, ...rest } = formData;
@@ -80,7 +83,7 @@ export const createQuestionGroup = async ({
         questionGroup: questionGroup,
         assessmentId: part.assessmentId,
         numberColumns: formData.numberColumns,
-        numberRows: numberRows!
+        numberRows: formData.numberRows
       });
       break;
     case 'MATCHING':

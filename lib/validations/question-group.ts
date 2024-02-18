@@ -1,9 +1,7 @@
 import { QuestionType } from '@prisma/client';
 import { z } from 'zod';
-import { QUESTION_TYPE_VALUE } from '@/config/constants';
 
-const a = QUESTION_TYPE_VALUE;
-export type QuestionGroup = {
+export type QuestionGroupSchemaType = {
   title: string;
   description?: string;
   type: QuestionType;
@@ -11,12 +9,12 @@ export type QuestionGroup = {
   endQuestionNumber: number;
 } & (
   | {
-      type: Exclude<QuestionType>;
+      type: Exclude<QuestionType, 'TABLE_COMPLETION'>;
       numberColumns?: never;
       numberRows?: never;
     }
   | {
-      type: QUESTION_TYPE_VALUE;
+      type: 'TABLE_COMPLETION';
       numberColumns: number;
       numberRows: number;
     }
