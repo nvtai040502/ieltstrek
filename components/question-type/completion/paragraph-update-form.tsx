@@ -16,8 +16,8 @@ import { toast } from 'sonner';
 import { useEditHook } from '@/global/use-edit-hook';
 import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
 import { catchError } from '@/lib/utils';
-import { EditElementRender } from '@/components/common/text-editor/text-render/element-render';
-import { LeafEditorRender } from '@/components/common/text-editor/text-render/leaf-render';
+import { ElementRender } from '@/components/common/text-editor/element-render';
+import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
 import Toolbar from '@/components/common/text-editor/toolbar';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,11 +36,13 @@ declare module 'slate' {
 
 const CompletionParagraphUpdateForm = () => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <EditElementRender props={props} />,
+    (props: RenderElementProps) => (
+      <ElementRender slateProps={props} type="Completion" mode="edit" />
+    ),
     []
   );
   const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <LeafEditorRender {...props} />,
+    (props: RenderLeafProps) => <LeafRender {...props} />,
     []
   );
   const { onClose, data, isOpen, type } = useEditHook();

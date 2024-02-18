@@ -71,6 +71,7 @@ export type FormattedText = {
   text: string;
   bold?: boolean;
   italic?: boolean;
+  underline?: boolean;
 };
 
 export type CustomText = FormattedText;

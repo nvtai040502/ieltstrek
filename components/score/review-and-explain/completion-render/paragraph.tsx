@@ -13,7 +13,7 @@ import {
 import { CompletionExtended } from '@/types/test-exam';
 import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
 import { ElementRender } from '@/components/common/text-editor/element-render';
-import { LeafReadOnlyRender } from '@/components/common/text-editor/text-render/leaf-render';
+import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
 
 declare module 'slate' {
   interface CustomTypes {
@@ -40,7 +40,7 @@ const ParagraphRender = ({
     []
   );
   const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <LeafReadOnlyRender {...props} />,
+    (props: RenderLeafProps) => <LeafRender {...props} />,
     []
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);

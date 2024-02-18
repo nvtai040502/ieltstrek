@@ -6,8 +6,7 @@ import { useExamHandler } from '@/global/use-exam-handler';
 import { InputGap } from '@/components/ui/input';
 
 function CompletionBlankRender({ questionNumber }: { questionNumber: number }) {
-  const { questionRefs, currentRef, userAnswers, setCurrentRef } =
-    useContext(ExamContext);
+  const { questionRefs, userAnswers } = useContext(ExamContext);
   const { handleAnswerChange, handleQuestionSelected } = useExamHandler();
   const answer = userAnswers.find(
     (answer) => answer.questionNumber === questionNumber
