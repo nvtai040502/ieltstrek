@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useTransition } from 'react';
 import { updateCompletionParagraph } from '@/actions/question-type/completion';
 import { Editor, createEditor } from 'slate';
-import { Transforms } from 'slate';
+import { Element, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
 import {
   Editable,
@@ -59,18 +59,19 @@ const CompletionParagraphUpdateForm = () => {
     let blankCount = 0;
 
     for (const [node, path] of Editor.nodes(editor, {
-      at: [],
-      match: (n) => n.type === 'blank'
+      at: []
     })) {
-      const { type, ...props } = node;
+      if (Element.isElement(node) && node.type === 'blank') {
+        const { type, ...props } = node;
 
-      const newNode = {
-        ...props,
-        type,
-        questionNumber: completion.questions[0].questionNumber + blankCount
-      };
-      blankCount++;
-      Transforms.setNodes(editor, { ...newNode }, { at: path });
+        const newNode = {
+          ...props,
+          type,
+          questionNumber: completion.questions[0].questionNumber + blankCount
+        };
+        blankCount++;
+        Transforms.setNodes(editor, { ...newNode }, { at: path });
+      }
     }
     return blankCount;
   };
@@ -123,7 +124,7 @@ const CompletionParagraphUpdateForm = () => {
 
 export default CompletionParagraphUpdateForm;
 
-const withInline = (editor) => {
+const withInline = (editor: CustomEditor) => {
   const { isInline } = editor;
 
   editor.isInline = (element) =>

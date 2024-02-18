@@ -1,7 +1,8 @@
 import { BaseEditor, Descendant } from 'slate';
+import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
 
-export type CustomEditor = BaseEditor & ReactEditor;
+export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor;
 
 export type TextAlignType = 'center' | 'left' | 'right' | 'justify';
 

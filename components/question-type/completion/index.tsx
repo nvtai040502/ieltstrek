@@ -1,6 +1,6 @@
 'use client';
 
-import { CompletionExtended, QuestionGroupExtended } from '@/types/test-exam';
+import { QuestionGroupExtended } from '@/types/test-exam';
 import { ActionButton } from '@/components/test-exam/action-button';
 import { buttonVariants } from '@/components/ui/button';
 import CompletionParagraphRender from './paragraph-render';
