@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { db } from '@/lib/db';
+import { CompletionRender } from './completion-render/render';
 import { IdentifyInfoListRender } from './identify-info-render';
 import { MultiOneListRender } from './multi-one-render';
 
@@ -27,24 +28,11 @@ async function QuestionGroupRender({ partId }: { partId: string }) {
               <IdentifyInfoListRender questionGroupId={questionGroup.id} />
             )}
           </Suspense>
-          {/* {questionGroup.type === 'MULTIPLE_CHOICE_MORE_ANSWERS' &&
-            questionGroup.multiMoreList.map((multiMore) => (
-              <MultiMoreRender multiMore={multiMore} key={multiMore.id} />
-            ))}
-          {questionGroup.type === 'IDENTIFYING_INFORMATION' &&
-            questionGroup.identifyInfoList.map((identifyInfo) => (
-              <IdentifyInfoRender
-                identifyInfo={identifyInfo}
-                key={identifyInfo.id}
-              />
-            ))}
-          {(questionGroup.type === 'NOTE_COMPLETION' ||
-            questionGroup.type === 'TABLE_COMPLETION') && (
-            <CompletionRender completion={questionGroup.completion} />
-          )}
-          {questionGroup.type === 'MATCHING' && (
-            <TestMatchingRender questionGroup={questionGroup} />
-          )} */}
+          <Suspense fallback={<></>}>
+            {questionGroup.type === 'COMPLETION' && (
+              <CompletionRender questionGroupId={questionGroup.id} />
+            )}
+          </Suspense>
         </div>
       ))}
     </>
