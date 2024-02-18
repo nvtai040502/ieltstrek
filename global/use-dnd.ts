@@ -31,10 +31,9 @@ export const useDnd = () => {
     );
     if (!question) return;
     setQuestionId(null);
-    const matchingChoice =
-      questionGroup.matching?.matchingChoiceGroup.matchingChoiceList.find(
-        (matchingChoice) => matchingChoice.id === matchingChoiceId
-      );
+    const matchingChoice = questionGroup.matching?.matchingChoiceList.find(
+      (matchingChoice) => matchingChoice.id === matchingChoiceId
+    );
     if (!matchingChoice) return;
 
     const existAnswer = userAnswers.find(

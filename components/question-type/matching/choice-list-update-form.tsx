@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { updateMatchingChoiceGroup } from '@/actions/question-type/list-match-choices';
+import { updateMatchingChoiceList } from '@/actions/question-type/matching';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useEditHook } from '@/global/use-edit-hook';
 import { catchError } from '@/lib/utils';
-import { ListMatchingChoicesSchema } from '@/lib/validations/question-type';
+import { MatchingChoiceListSchema } from '@/lib/validations/question-type';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContentWithScrollArea } from '@/components/ui/dialog';
 import {
@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-export function MatchingChoiceGroupUpdateForm() {
+export function MatchingChoiceListUpdateForm() {
   const [isPending, startTransition] = useTransition();
   const [listMatchingChoicesDynamic, setListMatchingChoicesDynamic] = useState<
     string[]
@@ -29,45 +29,45 @@ export function MatchingChoiceGroupUpdateForm() {
   const { onClose, isOpen, type, data } = useEditHook();
   const isModalOpen = isOpen && type === 'editMatchingChoiceList';
   const questionGroup = data?.questionGroup;
-  const matchingChoiceGroup = questionGroup?.matching?.matchingChoiceGroup;
+  const matching = questionGroup?.matching;
 
-  const form = useForm<z.infer<typeof ListMatchingChoicesSchema>>({
-    resolver: zodResolver(ListMatchingChoicesSchema),
+  const form = useForm<z.infer<typeof MatchingChoiceListSchema>>({
+    resolver: zodResolver(MatchingChoiceListSchema),
     defaultValues: {
-      title: '',
-      matchingChoices: []
+      titleForQuestion: '',
+      matchingChoiceList: []
     }
   });
   useEffect(() => {
-    if (matchingChoiceGroup) {
-      form.setValue('title', matchingChoiceGroup.title || '');
+    if (matching) {
+      form.setValue('titleForQuestion', matching.titleForQuestion || '');
       setListMatchingChoicesDynamic(
-        matchingChoiceGroup.matchingChoiceList.map((item) => item.content)
+        matching.matchingChoiceList.map((item) => item.content)
       );
     }
-  }, [form, matchingChoiceGroup]);
+  }, [form, matching]);
 
   useEffect(() => {
     if (
       listMatchingChoicesDynamic.length <
-      form.getValues().matchingChoices.length
+      form.getValues().matchingChoiceList.length
     ) {
-      form.resetField('matchingChoices');
+      form.resetField('matchingChoiceList');
     }
     listMatchingChoicesDynamic.forEach((content, index) => {
-      form.setValue(`matchingChoices.${index}`, content);
+      form.setValue(`matchingChoiceList.${index}`, content);
     });
   }, [form, listMatchingChoicesDynamic]);
-  if (!isModalOpen || !matchingChoiceGroup || !questionGroup) {
+  if (!isModalOpen || !matching || !questionGroup) {
     return null;
   }
-  const onSubmit = (values: z.infer<typeof ListMatchingChoicesSchema>) => {
+  const onSubmit = (values: z.infer<typeof MatchingChoiceListSchema>) => {
     console.log(values);
     startTransition(async () => {
       try {
-        await updateMatchingChoiceGroup({
+        await updateMatchingChoiceList({
           formData: values,
-          id: matchingChoiceGroup.id
+          id: matching.id
         });
         toast.success('Updated');
         onClose();
@@ -95,7 +95,7 @@ export function MatchingChoiceGroupUpdateForm() {
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="title"
+                name="titleForQuestion"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Title</FormLabel>
@@ -114,12 +114,12 @@ export function MatchingChoiceGroupUpdateForm() {
                 <FormField
                   control={form.control}
                   key={i}
-                  name={`matchingChoices.${i}`}
+                  name={`matchingChoiceList.${i}`}
                   render={({ field }) => (
                     <FormItem>
-                      {matchingChoiceGroup.matchingChoiceList[i] &&
-                      matchingChoiceGroup.matchingChoiceList[i].question ? (
-                        <FormLabel>{`Question ${matchingChoiceGroup.matchingChoiceList[i].question?.questionNumber}`}</FormLabel>
+                      {matching.matchingChoiceList[i] &&
+                      matching.matchingChoiceList[i].question ? (
+                        <FormLabel>{`Question ${matching.matchingChoiceList[i].question?.questionNumber}`}</FormLabel>
                       ) : (
                         <>
                           <FormLabel>Fake Choice</FormLabel>

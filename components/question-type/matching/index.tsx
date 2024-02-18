@@ -25,11 +25,11 @@ export const MatchingRender = ({
   } = useDnd();
 
   useEffect(() => {
-    if (matching && matching.matchingChoiceGroup) {
-      setMatchingChoiceList(matching.matchingChoiceGroup.matchingChoiceList);
+    if (matching) {
+      setMatchingChoiceList(matching.matchingChoiceList);
     }
   }, [matching, setMatchingChoiceList]);
-  if (!matching || !matching.matchingChoiceGroup) {
+  if (!matching) {
     return null;
   }
 
@@ -43,7 +43,7 @@ export const MatchingRender = ({
       <div onDragEnd={handleDragEnd}>
         <MatchingParagraphRender matching={matching} />
         <div className="flex justify-between items-center">
-          <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
+          <p className="font-bold">{matching.titleForQuestion}</p>
           <ActionButton
             editType="editMatchingChoiceList"
             actionType="update"

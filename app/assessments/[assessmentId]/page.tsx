@@ -52,18 +52,14 @@ const AssessmentIdPage = async ({
               },
               matching: {
                 include: {
-                  matchingChoiceGroup: {
-                    include: {
-                      matchingChoiceList: {
-                        orderBy: {
-                          question: {
-                            questionNumber: 'asc'
-                          }
-                        },
-                        include: {
-                          question: true
-                        }
+                  matchingChoiceList: {
+                    orderBy: {
+                      question: {
+                        questionNumber: 'asc'
                       }
+                    },
+                    include: {
+                      question: true
                     }
                   }
                 }

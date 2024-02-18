@@ -3,9 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import { QuestionGroup } from '@prisma/client';
 import { Descendant } from 'slate';
+import { z } from 'zod';
 import { FormattedText } from '@/types/text-editor';
 import { db } from '@/lib/db';
 import { getTotalQuestions } from '@/lib/utils';
+import { MatchingChoiceListSchema } from '@/lib/validations/question-type';
 
 export const createMatching = async (
   questionGroup: QuestionGroup,
@@ -36,10 +38,11 @@ export const createMatching = async (
   const totalFakeChoices = 3;
   const totalChoicesCreated = totalFakeChoices + totalQuestions;
 
-  const matchingChoiceGroup = await db.matchingChoiceGroup.create({
+  await db.matching.create({
     data: {
-      title: 'List of Heading',
       questionGroupId: questionGroup.id,
+      paragraph: JSON.stringify(matchingInitial),
+      titleForQuestion: 'List of Heading',
       matchingChoiceList: {
         create: Array.from({ length: totalChoicesCreated }).map((_, i) => ({
           content: `This is an example sentence number ${i + 1}`,
@@ -57,13 +60,6 @@ export const createMatching = async (
           })
         }))
       }
-    }
-  });
-  await db.matching.create({
-    data: {
-      questionGroupId: questionGroup.id,
-      paragraph: JSON.stringify(matchingInitial),
-      matchingChoiceGroupId: matchingChoiceGroup.id
     }
   });
 };
@@ -92,6 +88,77 @@ export const updateMatchingParagraph = async ({
       paragraph
     }
   });
+
+  revalidatePath(`/assessments/${matching.questionGroup.part.assessmentId}`);
+};
+
+export const updateMatchingChoiceList = async ({
+  id,
+  formData
+}: {
+  id: string;
+  formData: z.infer<typeof MatchingChoiceListSchema>;
+}) => {
+  const { titleForQuestion, matchingChoiceList } = formData;
+  const matching = await db.matching.findUnique({
+    where: { id },
+    include: {
+      matchingChoiceList: {
+        orderBy: { question: { questionNumber: 'asc' } }
+      },
+      questionGroup: {
+        include: {
+          part: { select: { assessmentId: true } },
+          questions: { orderBy: { questionNumber: 'asc' } }
+        }
+      }
+    }
+  });
+  if (!matching) {
+    throw new Error('matching Id not found');
+  }
+
+  if (matchingChoiceList.length !== matching.matchingChoiceList.length) {
+    await db.matching.delete({
+      where: { id }
+    });
+
+    await db.matching.create({
+      data: {
+        titleForQuestion,
+        questionGroupId: matching.questionGroup.id,
+        paragraph: matching.paragraph,
+        matchingChoiceList: {
+          createMany: {
+            data: matchingChoiceList.map((content, i) => ({
+              content,
+              questionId:
+                i < matching.questionGroup.questions.length - 1
+                  ? matching.questionGroup.questions[i].id
+                  : null
+            }))
+          }
+        }
+      }
+    });
+  } else {
+    await db.matching.update({
+      where: { id: matching.id },
+      data: {
+        titleForQuestion,
+        matchingChoiceList: {
+          update: matching.matchingChoiceList.map((matchingChoice, i) => ({
+            where: {
+              id: matchingChoice.id
+            },
+            data: {
+              content: matchingChoiceList[i]
+            }
+          }))
+        }
+      }
+    });
+  }
 
   revalidatePath(`/assessments/${matching.questionGroup.part.assessmentId}`);
 };
