@@ -1,10 +1,10 @@
 'use client';
 
-import MatchingParagraphRender from './paragraph-render';
-import { ActionButton } from '@/components/test-exam/action-button';
-import { QuestionGroupExtended } from '@/types/test-exam';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { QuestionType } from '@prisma/client';
+import { QuestionGroupExtended } from '@/types/test-exam';
+import { ActionButton } from '@/components/test-exam/action-button';
+import MatchingParagraphRender from './paragraph-render';
 
 export const MatchingRender = ({
   questionGroup
@@ -27,11 +27,11 @@ export const MatchingRender = ({
         <MatchingParagraphRender matching={matching} />
         <div className="flex justify-between items-center">
           <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
-          <ActionButton
+          {/* <ActionButton
             editType="editListMatchingChoices"
             actionType="update"
             data={{ listMatchingChoices: matching.matchingChoiceGroup }}
-          />
+          /> */}
         </div>
         <Droppable
           type={QuestionType.MATCHING}

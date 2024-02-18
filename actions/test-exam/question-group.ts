@@ -87,9 +87,7 @@ export const createQuestionGroup = async ({
       });
       break;
     case 'MATCHING':
-      await createMatching({
-        questionGroupId: questionGroup.id
-      });
+      await createMatching(questionGroup, part.assessmentId);
       break;
     default:
       throw new Error(`Unsupported question group type: ${formData.type}`);

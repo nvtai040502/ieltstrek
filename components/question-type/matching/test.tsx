@@ -1,30 +1,30 @@
-'use client'
+'use client';
 
-import { DragEvent, useContext, useEffect, useState } from 'react'
-import { QuestionType } from '@prisma/client'
-import { DndContext } from '@/global/dnd-context'
-import { useDnd } from '@/global/use-dnd'
-import { QuestionGroupExtended } from '@/types/test-exam'
-import { cn } from '@/lib/utils'
-import { ActionButton } from '@/components/test-exam/action-button'
-import MatchingParagraphRender from './paragraph-render'
+import { DragEvent, useContext, useEffect, useState } from 'react';
+import { QuestionType } from '@prisma/client';
+import { DndContext } from '@/global/dnd-context';
+import { useDnd } from '@/global/use-dnd';
+import { QuestionGroupExtended } from '@/types/test-exam';
+import { cn } from '@/lib/utils';
+import { ActionButton } from '@/components/test-exam/action-button';
+import MatchingParagraphRender from './paragraph-render';
 
 export const TestMatchingRender = ({
-  questionGroup,
+  questionGroup
 }: {
-  questionGroup: QuestionGroupExtended
+  questionGroup: QuestionGroupExtended;
 }) => {
-  const matching = questionGroup.matching
-  const { setMatchingChoiceList, matchingChoiceList } = useContext(DndContext)
-  const { handleDragEnd, handleDragStart, handleDragOver } = useDnd()
+  const matching = questionGroup.matching;
+  const { setMatchingChoiceList, matchingChoiceList } = useContext(DndContext);
+  const { handleDragEnd, handleDragStart, handleDragOver } = useDnd();
 
   useEffect(() => {
     if (matching && matching.matchingChoiceGroup) {
-      setMatchingChoiceList(matching.matchingChoiceGroup.matchingChoiceList)
+      setMatchingChoiceList(matching.matchingChoiceGroup.matchingChoiceList);
     }
-  }, [matching, setMatchingChoiceList])
+  }, [matching, setMatchingChoiceList]);
   if (!matching || !matching.matchingChoiceGroup) {
-    return null
+    return null;
   }
 
   return (
@@ -38,11 +38,11 @@ export const TestMatchingRender = ({
         <MatchingParagraphRender matching={matching} />
         <div className="flex justify-between items-center">
           <p className="font-bold">{matching.matchingChoiceGroup.title}</p>
-          <ActionButton
+          {/* <ActionButton
             editType="editListMatchingChoices"
             actionType="update"
             data={{ listMatchingChoices: matching.matchingChoiceGroup }}
-          />
+          /> */}
         </div>
         <div onDragOver={handleDragOver} className="flex flex-col gap-4">
           {matchingChoiceList.map((matchingChoice) => (
@@ -60,5 +60,5 @@ export const TestMatchingRender = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};

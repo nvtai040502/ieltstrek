@@ -12,8 +12,8 @@ import {
 } from 'slate-react';
 import { MatchingExtended } from '@/types/test-exam';
 import { CustomEditor, CustomElement, CustomText } from '@/types/text-editor';
-import { ReadonlyElementRender } from '@/components/common/text-editor/text-render/element-render';
-import { LeafReadOnlyMatchingRender } from '@/components/common/text-editor/text-render/leaf-render';
+import { ElementRender } from '@/components/common/text-editor/element-render';
+import { LeafRender } from '@/components/common/text-editor/leaf-render/leaf-render';
 
 declare module 'slate' {
   interface CustomTypes {
@@ -29,11 +29,13 @@ const MatchingParagraphRender = ({
   matching: MatchingExtended;
 }) => {
   const renderElement = useCallback(
-    (props: RenderElementProps) => <ReadonlyElementRender props={props} />,
+    (props: RenderElementProps) => (
+      <ElementRender slateProps={props} type="Matching" mode="readonly" />
+    ),
     []
   );
   const renderLeaf = useCallback(
-    (props: RenderLeafProps) => <LeafReadOnlyMatchingRender {...props} />,
+    (props: RenderLeafProps) => <LeafRender {...props} />,
     []
   );
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);

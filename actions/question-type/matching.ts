@@ -1,72 +1,71 @@
-'use server'
+'use server';
 
-import { revalidatePath } from 'next/cache'
-import { Descendant } from 'slate'
-import { db } from '@/lib/db'
+import { QuestionGroup } from '@prisma/client';
+import { Descendant } from 'slate';
+import { FormattedText } from '@/types/text-editor';
+import { db } from '@/lib/db';
+import { getTotalQuestions } from '@/lib/utils';
 
-export const createMatching = async ({
-  questionGroupId,
-}: {
-  questionGroupId: string
-}) => {
-  const questionGroup = await db.questionGroup.findUnique({
-    where: { id: questionGroupId },
-    include: {
-      questions: true,
+export const createMatching = async (
+  questionGroup: QuestionGroup,
+  assessmentId: string
+) => {
+  const totalQuestions = getTotalQuestions(questionGroup);
+  const matchingInitial: Descendant[] = Array.from(
+    {
+      length: totalQuestions
     },
-  })
-
-  if (!questionGroup) {
-    throw new Error('Question Group Id not found')
-  }
-
-  const matchingInitial: Descendant[] = questionGroup.questions.map(
-    (question) => ({
+    (_, i) => ({
       type: 'paragraph',
       children: [
-        { text: `This is matching sentence example` },
+        { text: `This is note completion example ` },
         {
           type: 'blank',
-          children: [{ text: 'editable button' }],
-          questionId: question.id,
+          children: [{ text: ' hello' }],
+          questionNumber: questionGroup.startQuestionNumber + i
         },
-        { text: 'rich', bold: true },
+        { text: ' rich', bold: true },
         { text: ' text, ' },
-        { text: 'much', italic: true },
-        { text: ' better than a!' },
-      ],
+        { text: ' much', italic: true },
+        { text: ' better than a!' }
+      ] as FormattedText[]
     })
-  )
+  );
 
-  const totalQuestions = questionGroup.questions.length
-  const totalFakeChoices = 3
-  const totalChoicesCreated = totalFakeChoices + totalQuestions
+  const totalFakeChoices = 3;
+  const totalChoicesCreated = totalFakeChoices + totalQuestions;
 
   const matchingChoiceGroup = await db.matchingChoiceGroup.create({
     data: {
       title: 'List of Heading',
-      questionGroupId,
+      questionGroupId: questionGroup.id,
       matchingChoiceList: {
-        createMany: {
-          data: Array.from({ length: totalChoicesCreated }).map((_, i) => ({
-            content: `This is a example sentence number ${i + 1}`,
-            questionId:
-              i < totalQuestions - 1 ? questionGroup.questions[i].id : null,
-          })),
-        },
-      },
-    },
-  })
+        create: Array.from({ length: totalChoicesCreated }).map((_, i) => ({
+          content: `This is an example sentence number ${i + 1}`,
+          // Ensure that question is created only if i < totalQuestions
+          ...(i < totalQuestions && {
+            question: {
+              create: {
+                questionNumber: questionGroup.startQuestionNumber + i,
+                correctAnswer: `This is an example sentence number ${i + 1}`,
+                questionGroupId: questionGroup.id,
+                partId: questionGroup.partId,
+                assessmentId
+              }
+            }
+          })
+        }))
+      }
+    }
+  });
   await db.matching.create({
     data: {
-      questionGroupId,
+      questionGroupId: questionGroup.id,
       paragraph: JSON.stringify(matchingInitial),
-      matchingChoiceGroupId: matchingChoiceGroup.id,
-    },
-  })
-
-  return
-}
+      matchingChoiceGroupId: matchingChoiceGroup.id
+    }
+  });
+};
 
 // export const updateMatchingSentence = async ({
 //   id,
