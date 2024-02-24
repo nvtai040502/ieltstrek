@@ -1,0 +1,21 @@
+{
+  "/_not-found": "app/_not-found.js",
+  "/api/admin/route": "app/api/admin/route.js",
+  "/assessments/[assessmentId]/page": "app/assessments/[assessmentId]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/test/page": "app/test/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(root)/page": "app/(root)/page.js",
+  "/(root)/score/[assessmentId]/page": "app/(root)/score/[assessmentId]/page.js",
+  "/auth/error/page": "app/auth/error/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/new-password/page": "app/auth/new-password/page.js",
+  "/auth/new-verification/page": "app/auth/new-verification/page.js",
+  "/auth/register/page": "app/auth/register/page.js",
+  "/auth/reset/page": "app/auth/reset/page.js",
+  "/dashboard/admin/page": "app/dashboard/admin/page.js",
+  "/dashboard/client/page": "app/dashboard/client/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/server/page": "app/dashboard/server/page.js",
+  "/dashboard/settings/page": "app/dashboard/settings/page.js"
+}
