@@ -1,22 +1,7 @@
-'use client';
 import { testBackend } from '@/actions/backend';
-import React, { useEffect, useState } from 'react';
 
-function App() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-        const data = await testBackend()
-        if (!data) {
-          throw new Error('Failed to fetch data');
-        }
-      console.log(data)
-        setData(data);
-    };
-    fetchData();
-  }, []);
-
+async function App() {
+  const data = await testBackend()
   return (
     <div>
       {data ? (
